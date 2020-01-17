@@ -174,7 +174,7 @@ typedef struct
 } SD_CardInfo;
 extern SD_CardInfo SDCardInfo;//SD card information			 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-//SDIO Ö¸Áî¼¯
+//SDIO Ö¸ï¿½î¼¯
 #define SD_CMD_GO_IDLE_STATE                       ((u8)0)
 #define SD_CMD_SEND_OP_COND                        ((u8)1)
 #define SD_CMD_ALL_SEND_CID                        ((u8)2)
@@ -224,7 +224,7 @@ extern SD_CardInfo SDCardInfo;//SD card information
 
 /** 
   * @brief Following commands are SD Card Specific commands.
-  *        SDIO_APP_CMD £ºCMD55 should be sent before sending these commands. 
+  *        SDIO_APP_CMD ï¿½ï¿½CMD55 should be sent before sending these commands. 
   */
 #define SD_CMD_APP_SD_SET_BUSWIDTH                 ((u8)6)  /*!< For SD Card only */
 #define SD_CMD_SD_APP_STAUS                        ((u8)13) /*!< For SD Card only */
@@ -324,7 +324,7 @@ extern SD_CardInfo SDCardInfo;//SD card information
 #define SD_CCCC_WRITE_PROT              ((u32)0x00000040)
 #define SD_CCCC_ERASE                   ((u32)0x00000020)
 																	 
-//CMD8Ö¸Áî
+//CMD8Ö¸ï¿½ï¿½
 #define SDIO_SEND_IF_COND               ((u32)0x00000008)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -367,8 +367,8 @@ SD_Error FindSCR(u16 rca,u32 *pscr);
 u8 convert_from_bytes_to_power_of_two(u16 NumberOfBytes); 
 void SD_DMA_Config(u32*mbuf,u32 bufsize,u8 dir); 
 
-u8 SD_ReadDisk(u8*buf,u32 sector,u8 cnt); 	//¶ÁSD¿¨,fatfs/usbµ÷ÓÃ
-u8 SD_WriteDisk(u8*buf,u32 sector,u8 cnt);	//Ð´SD¿¨,fatfs/usbµ÷ÓÃ
+u8 SD_ReadDisk(u8*buf,u32 sector,u8 cnt); 	//ï¿½ï¿½SDï¿½ï¿½,fatfs/usbï¿½ï¿½ï¿½ï¿½
+u8 SD_WriteDisk(u8*buf,u32 sector,u8 cnt);	//Ð´SDï¿½ï¿½,fatfs/usbï¿½ï¿½ï¿½ï¿½
 
 #endif 
 
