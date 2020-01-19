@@ -25,31 +25,26 @@ void menuAutoLeveling(void)
     switch(key_num)
     {
       case KEY_ICON_0:
-        storeCmd("G28\n");
-        storeCmd("G29\n");
-        #ifdef AUTO_SAVE_LOAD_LEVELING_VALUE
-          storeCmd("M500\n");
-        #endif
+        storeCmd("G92 X0\n");
         break;
       case KEY_ICON_1:
-        storeCmd("M280 P0 S10\n");
+        storeCmd("G92 Y0\n");
         break;
       case KEY_ICON_2:
-        storeCmd("M280 P0 S90\n");
+        storeCmd("G92 Z0\n");
         break;
       case KEY_ICON_3:
-        storeCmd("M280 P0 S120\n");
+        storeCmd("G92 X0 Y0 Z0\n");
         break;
       case KEY_ICON_4:
-        storeCmd("M48\n");
+        storeCmd("M107\n");
         break;
       case KEY_ICON_5:
-        storeCmd("M851\n");
-        infoMenu.menu[++infoMenu.cur] = menuProbeOffset;
-        break;      
+        storeCmd("M106 S5\n");
+        break;
       case KEY_ICON_6:
-        infoMenu.menu[++infoMenu.cur] = menuBabyStep;
-        break; 
+        storeCmd("M106 S255\n");
+        break;    
       case KEY_ICON_7:
         infoMenu.cur--; break;
       default:break;

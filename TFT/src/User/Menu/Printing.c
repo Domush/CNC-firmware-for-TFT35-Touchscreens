@@ -10,16 +10,22 @@ LABEL_BACKGROUND,
   {ICON_BACKGROUND,           LABEL_BACKGROUND},
   {ICON_BACKGROUND,           LABEL_BACKGROUND},
   {ICON_STOP,                 LABEL_STOP},
-  {ICON_HEAT,                 LABEL_HEAT},
-  {ICON_PERCENTAGE,           LABEL_PERCENTAGE},
+  {ICON_FAN,                  LABEL_FAN},
+  {ICON_PERCENTAGE,           LABEL_PERCENTAGE_SPEED},
   {ICON_BABYSTEP,             LABEL_BABYSTEP},
-  {ICON_MORE,                 LABEL_MORE},}
+  {ICON_MOVE,                 LABEL_MOVE},}
 };
 
 const ITEM itemIsPause[2] = {
 // icon                       label
   {ICON_PAUSE,                LABEL_PAUSE},
   {ICON_RESUME,               LABEL_RESUME},
+};
+
+const ITEM itemIsFinished[2] = {
+// icon                       label
+  {ICON_STOP,                 LABEL_STOP},
+  {ICON_BACK,                 LABEL_BACK},
 };
 
 #ifndef M27_WATCH_OTHER_SOURCES
@@ -103,17 +109,12 @@ void startGcodeExecute(void)
 void endGcodeExecute(void)
 {
   mustStoreCmd("G90\n");
-  mustStoreCmd("G92 E0\n");
-  for(TOOL i = BED; i < HEATER_NUM; i++)
-  {
-    mustStoreCmd("%s S0\n", heatCmd[i]);  
-  }
   for(u8 i = 0; i < FAN_NUM; i++)
   {
     mustStoreCmd("%s S0\n", fanCmd[i]);  
   }
   mustStoreCmd("T0\n");
-  mustStoreCmd("M18\n");
+  mustStoreCmd("M18 X Y\n");
 }
 
 //only return gcode file name except path
@@ -374,6 +375,12 @@ void menuPrinting(void)
   memset(&nowHeat, 0, sizeof(HEATER));
   
   printingItems.items[KEY_ICON_0] = itemIsPause[infoPrinting.pause];
+
+   if(isPrinting())				
+    printingItems.items[KEY_ICON_3] = itemIsFinished[0];
+  else
+    printingItems.items[KEY_ICON_3] = itemIsFinished[1];	 
+
   printingDrawPage();
 
   while(infoMenu.menu[infoMenu.cur] == menuPrinting)
@@ -440,7 +447,7 @@ void menuPrinting(void)
         break;
         
       case KEY_ICON_4:
-        infoMenu.menu[++infoMenu.cur] = menuHeat;
+        infoMenu.menu[++infoMenu.cur] = menuFan;
         break;
       
       case KEY_ICON_5:
@@ -452,7 +459,7 @@ void menuPrinting(void)
         break;
       
       case KEY_ICON_7:
-        infoMenu.menu[++infoMenu.cur] = menuMore;
+        infoMenu.menu[++infoMenu.cur] = menuMove;
         break;
       
       default :break;
@@ -490,6 +497,10 @@ void endPrinting(void)
 void completePrinting(void)
 {
   endPrinting();  
+
+  printingItems.items[KEY_ICON_3] = itemIsFinished[1];	 
+  printingDrawPage(); 
+
   if(infoSettings.auto_off) // Auto shut down after printing
   {
 		infoMenu.menu[++infoMenu.cur] = menuShutDown;

@@ -1,4 +1,5 @@
 #include "Fan.h"
+#include "Move.h"
 #include "includes.h"
 
 
@@ -12,8 +13,9 @@ LABEL_FAN,
   {ICON_BACKGROUND,           LABEL_BACKGROUND},
   {ICON_INC,                  LABEL_INC},
   {ICON_FAN ,                 LABEL_FAN},
+  {ICON_BLTOUCH,              LABEL_BLTOUCH},
+  {ICON_BLTOUCH_TEST ,        LABEL_BLTOUCH_TEST},
   {ICON_FAN_FULL_SPEED,       LABEL_FAN_FULL_SPEED},
-  {ICON_STOP,                 LABEL_STOP},
   {ICON_BACK,                 LABEL_BACK},}
 };
 
@@ -125,16 +127,17 @@ void menuFan(void)
         break;
         
       case KEY_ICON_4:
-        curIndex = (curIndex + 1) % FAN_NUM;
-        showFanSpeed();
+        fanSpeed[curIndex] = 0;
         break;
       
       case KEY_ICON_5:
-        fanSpeed[curIndex] = fanMaxPWM[curIndex];
+        // fanSpeed[curIndex] = fanMaxPWM[curIndex]*0.02;
+        mustStoreCmd("M120\n");
+        mustStoreCmd("G0 X0 Y-200 Z40 F%d\n",DEFAULT_SPEED_MOVE);
         break;
       
       case KEY_ICON_6:
-        fanSpeed[curIndex] = 0;
+        fanSpeed[curIndex] = fanMaxPWM[curIndex];
         break;
       
       case KEY_ICON_7:
