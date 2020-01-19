@@ -230,6 +230,6 @@ custom gcode below are compatible only if MENU_LIST_MODE is active
 //#define CUSTOM_14_GCODE "M105\n"
 #endif
 
-#define CANCEL_PRINT_GCODE "G28 X0 Y0\n"
+#define CANCEL_PRINT_GCODE "M5\nM107\nG1 Z40\nG0 X0 Y0\n"
 
 #endif
