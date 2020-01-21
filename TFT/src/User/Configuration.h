@@ -32,45 +32,77 @@
 #define SHOW_BTT_BOOTSCREEN
 
 // TFT mode color
-#define TITLE_BACKGROUND_COLOR      BLACK  // Title background color // 0xD928
-#define BACKGROUND_COLOR            BLACK  // Background color // 0x0A29
-#define FONT_COLOR                  WHITE  // Font foreground color
-#define REMINDER_FONT_COLOR         RED    // Reminder font color, such as: "No print attached", "Busy process", etc...
-#define VOLUME_REMINDER_FONT_COLOR  GBLUE  // Volume reminder font color,such as: "Card inserted", "Card removed"
+#define TITLE_BACKGROUND_COLOR BLACK     // Title background color // 0xD928
+#define BACKGROUND_COLOR BLACK           // Background color // 0x0A29
+#define FONT_COLOR WHITE                 // Font foreground color
+#define REMINDER_FONT_COLOR RED          // Reminder font color, such as: "No print attached", "Busy process", etc...
+#define VOLUME_REMINDER_FONT_COLOR GBLUE // Volume reminder font color,such as: "Card inserted", "Card removed"
 
-
-#define TOOL_NUM     1    // set in 1~6
-#define EXTRUDER_NUM 1    // set in 1~6
-#define FAN_NUM      1    // set in 1~6
+#define TOOL_NUM 1     // set in 1~6
+#define EXTRUDER_NUM 1 // set in 1~6
+#define FAN_NUM 1      // set in 1~6
 
 //                       PLA      PETG       ABS
-#define PREHEAT_BED      {60,      70,       100}
-#define PREHEAT_HOTEND   {200,     250,      230}
-#define PREHEAT_TEXT     {"PLA",  "PETG",   "ABS"}
+#define PREHEAT_BED \
+  {                 \
+    60, 70, 100     \
+  }
+#define PREHEAT_HOTEND \
+  {                    \
+    200, 250, 230      \
+  }
+#define PREHEAT_TEXT     \
+  {                      \
+    "PLA", "PETG", "ABS" \
+  }
 
-#define HEAT_MAX_TEMP    {150,    275,       275,       275,       275,       275,       275}    //max temperature can be set
-#define HEAT_SIGN_ID     {"B:",   "T0:",     "T1:",     "T2:",     "T3:",     "T4:",     "T5:"}
-#define HEAT_DISPLAY_ID  {"Bed",  "T0",      "T1",      "T2",      "T3",      "T4",      "T5"}
-#define HEAT_CMD         {"M140", "M104 T0", "M104 T1", "M104 T2", "M104 T3", "M104 T4", "M104 T5" };
-#define HEAT_WAIT_CMD    {"M190", "M109 T0", "M109 T1", "M109 T2", "M109 T3", "M109 T4", "M109 T5" };
+#define HEAT_MAX_TEMP                 \
+  {                                   \
+    150, 275, 275, 275, 275, 275, 275 \
+  } //max temperature can be set
+#define HEAT_SIGN_ID                               \
+  {                                                \
+    "B:", "T0:", "T1:", "T2:", "T3:", "T4:", "T5:" \
+  }
+#define HEAT_DISPLAY_ID                       \
+  {                                           \
+    "Bed", "T0", "T1", "T2", "T3", "T4", "T5" \
+  }
+#define HEAT_CMD {"M140", "M104 T0", "M104 T1", "M104 T2", "M104 T3", "M104 T4", "M104 T5"};
+#define HEAT_WAIT_CMD {"M190", "M109 T0", "M109 T1", "M109 T2", "M109 T3", "M109 T4", "M109 T5"};
 
-#define TOOL_CHANGE      {"T0",   "T1",      "T2",      "T3",      "T4",      "T5"}
-#define EXTRUDER_ID      {"E0",   "E1",      "E2",      "E3",      "E4",      "E5"}
+#define TOOL_CHANGE                    \
+  {                                    \
+    "T0", "T1", "T2", "T3", "T4", "T5" \
+  }
+#define EXTRUDER_ID                    \
+  {                                    \
+    "E0", "E1", "E2", "E3", "E4", "E5" \
+  }
 
-#define FAN_MAX_PWM      {255,       255,       255,       255,       255,       255}
-#define FAN_ID           {"F0",    "F1",    "F2",    "F3",    "F4",    "F5"}
-#define FAN_CMD          {"M106 P0", "M106 P1", "M106 P2", "M106 P3", "M106 P4", "M106 P5" };
+#define FAN_MAX_PWM              \
+  {                              \
+    255, 255, 255, 255, 255, 255 \
+  }
+#define FAN_ID                         \
+  {                                    \
+    "F0", "F1", "F2", "F3", "F4", "F5" \
+  }
+#define FAN_CMD {"M106 P0", "M106 P1", "M106 P2", "M106 P3", "M106 P4", "M106 P5"};
 
-#define SPEED_ID         {"Sp.", "Fr."}
+#define SPEED_ID \
+  {              \
+    "Sp.", "Fr." \
+  }
 
 // Default move speed mm/min
-#define DEFAULT_SPEED_MOVE      3000
-#define SPEED_MOVE_SLOW         1000
-#define SPEED_MOVE_FAST         5000
+#define DEFAULT_SPEED_MOVE 3000
+#define SPEED_MOVE_SLOW 1000
+#define SPEED_MOVE_FAST 5000
 // Extrude speed mm/min
-#define EXTRUDE_SLOW_SPEED      60
-#define EXTRUDE_NORMAL_SPEED    600
-#define EXTRUDE_FAST_SPEED      1200
+#define EXTRUDE_SLOW_SPEED 60
+#define EXTRUDE_NORMAL_SPEED 600
+#define EXTRUDE_FAST_SPEED 1200
 
 // Size of machine
 #define X_MIN_POS 0
@@ -81,43 +113,43 @@
 #define Z_MAX_POS 150
 
 // Specify a pause position as { X, Y, Z_raise }
-#define NOZZLE_PAUSE_RETRACT_LENGTH 0   // (mm)
-#define NOZZLE_RESUME_PURGE_LENGTH  0   // (mm)
-#define NOZZLE_PAUSE_X_POSITION     (X_MIN_POS + 10)  // (mm) Must be an integer
-#define NOZZLE_PAUSE_Y_POSITION     (Y_MIN_POS + 10)  // (mm) Must be an integer
-#define NOZZLE_PAUSE_Z_RAISE        20   // (mm)
-#define NOZZLE_PAUSE_E_FEEDRATE     3000 // (mm/min) retract & purge feedrate
-#define NOZZLE_PAUSE_XY_FEEDRATE    3000 // (mm/min) X and Y axes feedrate
-#define NOZZLE_PAUSE_Z_FEEDRATE     600  // (mm/min) Z axis feedrate
+#define NOZZLE_PAUSE_RETRACT_LENGTH 0            // (mm)
+#define NOZZLE_RESUME_PURGE_LENGTH 0             // (mm)
+#define NOZZLE_PAUSE_X_POSITION (X_MIN_POS + 10) // (mm) Must be an integer
+#define NOZZLE_PAUSE_Y_POSITION (Y_MIN_POS + 10) // (mm) Must be an integer
+#define NOZZLE_PAUSE_Z_RAISE 20                  // (mm)
+#define NOZZLE_PAUSE_E_FEEDRATE 3000             // (mm/min) retract & purge feedrate
+#define NOZZLE_PAUSE_XY_FEEDRATE 3000            // (mm/min) X and Y axes feedrate
+#define NOZZLE_PAUSE_Z_FEEDRATE 600              // (mm/min) Z axis feedrate
 
 // Send G29 for auto bed leveling
 //#define AUTO_BED_LEVELING
 #ifdef AUTO_BED_LEVELING
-  // Enable this will send "M500" after "G29" to store leveling value
-  // and send "M420 S1" to enable leveling state after startup
-  #define AUTO_SAVE_LOAD_LEVELING_VALUE
+// Enable this will send "M500" after "G29" to store leveling value
+// and send "M420 S1" to enable leveling state after startup
+#define AUTO_SAVE_LOAD_LEVELING_VALUE
 #endif
 
 // Move to four corner points to Leveling manually (Point 1, Point 2, Point 3, Point 4)
-#define LEVELING_POINT_1_X         (X_MIN_POS + 20)
-#define LEVELING_POINT_1_Y         (Y_MIN_POS + 20)
-#define LEVELING_POINT_2_X         (X_MAX_POS - 20)
-#define LEVELING_POINT_2_Y         (Y_MIN_POS + 20)
-#define LEVELING_POINT_3_X         (X_MAX_POS - 20)
-#define LEVELING_POINT_3_Y         (Y_MAX_POS - 20)
-#define LEVELING_POINT_4_X         (X_MIN_POS + 20)
-#define LEVELING_POINT_4_Y         (Y_MAX_POS - 20)
-#define LEVELING_POINT_Z           0.2f  // Z-axis position when nozzle stays for leveling
-#define LEVELING_POINT_MOVE_Z      10.0f // Z-axis position when nozzle move to next point
-#define LEVELING_POINT_XY_FEEDRATE 3000  // (mm/min) X and Y axes move feedrate
-#define LEVELING_POINT_Z_FEEDRATE  600   // (mm/min) Z axis move feedrate
+#define LEVELING_POINT_1_X (X_MIN_POS + 20)
+#define LEVELING_POINT_1_Y (Y_MIN_POS + 20)
+#define LEVELING_POINT_2_X (X_MAX_POS - 20)
+#define LEVELING_POINT_2_Y (Y_MIN_POS + 20)
+#define LEVELING_POINT_3_X (X_MAX_POS - 20)
+#define LEVELING_POINT_3_Y (Y_MAX_POS - 20)
+#define LEVELING_POINT_4_X (X_MIN_POS + 20)
+#define LEVELING_POINT_4_Y (Y_MAX_POS - 20)
+#define LEVELING_POINT_Z 0.2f           // Z-axis position when nozzle stays for leveling
+#define LEVELING_POINT_MOVE_Z 10.0f     // Z-axis position when nozzle move to next point
+#define LEVELING_POINT_XY_FEEDRATE 3000 // (mm/min) X and Y axes move feedrate
+#define LEVELING_POINT_Z_FEEDRATE 600   // (mm/min) Z axis move feedrate
 
 // Power Supply
-#define PS_ON_ACTIVE_HIGH    true   // Set 'false' for ATX (1), 'true' for X-Box (2)
+#define PS_ON_ACTIVE_HIGH true // Set 'false' for ATX (1), 'true' for X-Box (2)
 
 // Filament runout detection
-#define FIL_RUNOUT_INVERTING true  // Set to false to invert the logic of the sensor.
-#define FIL_NOISE_THRESHOLD  10     // 10*10 = 100ms,  Pause print when filament runout is detected for 100ms.
+#define FIL_RUNOUT_INVERTING true // Set to false to invert the logic of the sensor.
+#define FIL_NOISE_THRESHOLD 10    // 10*10 = 100ms,  Pause print when filament runout is detected for 100ms.
 
 // Smart filament runout detection
 // For use with an encoder disc that toggles runout pin as filament moves
@@ -146,17 +178,15 @@
  */
 #define MENU_LIST_MODE
 
-
 //-------RESET SETTINGS & TOUCH SCREEN CALIBRATION------||
 // To reset the touch screen create a text file with name 'reset.txt' in root folder of the sd card and press reset button.
-
 
 // SD support
 #define ONBOARD_SD_SUPPORT
 #ifdef ONBOARD_SD_SUPPORT
-  #define M27_AUTOREPORT                      // Disable M27 polling if you enable enable AUTO_REPORT_SD_STATUS in Marlin
-  #define M27_REFRESH                3        // Time in sec for M27 command
-  #define M27_WATCH_OTHER_SOURCES    true     // if true the polling on M27 report is always active. Case: SD print started not from TFT35
+#define M27_AUTOREPORT               // Disable M27 polling if you enable enable AUTO_REPORT_SD_STATUS in Marlin
+#define M27_REFRESH 3                // Time in sec for M27 command
+#define M27_WATCH_OTHER_SOURCES true // if true the polling on M27 report is always active. Case: SD print started not from TFT35
 #endif
 
 /**
@@ -168,7 +198,6 @@
 //#define BTT_MINI_UPS // Backup power / UPS to move the Z axis steppers on power loss
 #define POWER_LOSS_ZRAISE 10 // (mm) Z axis raise on resume (on power loss with UPS)
 
-
 // Prevent extrusion if the temperature is below set temperature
 #define PREVENT_COLD_EXTRUSION_MINTEMP 170
 
@@ -179,7 +208,7 @@
   */
 #define AUTO_SHUT_DOWN_MAXTEMP 50
 
-#define EXTRUDE_STEPS  100.0f
+#define EXTRUDE_STEPS 100.0f
 
 #define SHOW_FAN_PERCENTAGE // enable to show fan speed as a percentage instead of a value
 
