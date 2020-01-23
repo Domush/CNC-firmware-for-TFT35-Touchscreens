@@ -349,7 +349,7 @@ void loopFrontEnd(void) {
 }
 
 void loopProcess(void) {
-  temp_Change();
+  // temp_Change();
   loopBackEnd();
   loopFrontEnd();
 }

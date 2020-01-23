@@ -271,8 +271,11 @@ bool setPrintPause(bool is_pause, bool is_m0pause) {
   return true;
 }
 
-const GUI_RECT progressRect = {1 * SPACE_X_PER_ICON, 0 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y + ICON_HEIGHT / 4,
-                               3 * SPACE_X_PER_ICON, 0 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y + ICON_HEIGHT * 3 / 4};
+const GUI_RECT progressRect = {
+    1 * SPACE_X_PER_ICON,
+    ICON_START_Y + ICON_HEIGHT / 4,
+    3 * SPACE_X_PER_ICON,
+    ICON_START_Y + ICON_HEIGHT * 3 / 4};
 
 #define BED_X (progressRect.x1 - 9 * BYTE_WIDTH)
 #define TEMP_Y (progressRect.y1 + 3)
@@ -301,11 +304,17 @@ void reDrawTime(void) {
 
 void reDrawProgress(u8 progress) {
   char buf[5];
-  const GUI_RECT percentageRect = {BED_X, TEMP_Y - 3 * BYTE_HEIGHT, BED_X + 5 * BYTE_WIDTH, TEMP_Y - 2 * BYTE_HEIGHT};
-  GUI_FillRectColor(progressRect.x0, progressRect.y0, progress, progressRect.y1, BLUE);
-  GUI_FillRectColor(progress, progressRect.y0, progressRect.x1, progressRect.y1, GRAY);
+  GUI_FillRectColor(progressRect.x0, progressRect.y0, (progressRect.x1 - progressRect.x0) * (progress / 100), progressRect.y1, BLUE);
+  if (progress < 100)
+    GUI_FillRectColor((progressRect.x1 - progressRect.x0) * (progress / 100) + 1, progressRect.y0, progressRect.x1, progressRect.y1, GRAY);
+
   my_sprintf(buf, "%d%%", progress);
   // GUI_SetTextMode(GUI_TEXTMODE_TRANS);
+  const GUI_RECT percentageRect = {
+      BED_X,
+      TEMP_Y - 3 * BYTE_HEIGHT,
+      BED_X + 5 * BYTE_WIDTH,
+      TEMP_Y - 2 * BYTE_HEIGHT};
   GUI_DispStringInPrect(&percentageRect, (u8 *)buf);
   // GUI_SetTextMode(GUI_TEXTMODE_NORMAL);
 }
