@@ -108,6 +108,7 @@ const char *const en_pack[LABEL_NUM]={
   EN_1_MM,
   EN_5_MM,
   EN_10_MM,
+  EN_100_MM,
   EN_1_PERCENT,
   EN_5_PERCENT,
   EN_10_PERCENT,

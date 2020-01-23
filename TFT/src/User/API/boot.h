@@ -1,33 +1,32 @@
 #ifndef _BOOT_H_
 #define _BOOT_H_
 
-#include "variants.h"
 #include "stdbool.h"
+#include "variants.h"
 
-#define W25QXX_SECTOR_SIZE (0x1000) // 4096-4K
+#define W25QXX_SECTOR_SIZE (0x1000)  // 4096-4K
 
 //address in spiflash W25Qxx
-#define LOGO_ADDR               0x0
-#define ICON_ADDR(num)          ((num)*0x5000+0x4B000)
+#define LOGO_ADDR 0x0
+#define ICON_ADDR(num) ((num)*0x5000 + 0x4B000)
 
 //
-#define WORD_UNICODE            0x280000 // unicode (+0x480000 4.5M)
-#define BYTE_ASCII_ADDR         0x700000 // ascii (+0x1000 4K)
+#define WORD_UNICODE 0x280000     // unicode (+0x480000 4.5M)
+#define BYTE_ASCII_ADDR 0x700000  // ascii (+0x1000 4K)
 //#define BYTE_RESERVE_ADDR      0x710000
 
-#define INFOBOX_ADDR            (BYTE_ASCII_ADDR + 0x1000) // total byte size 0xA7F8
-#define SMALL_ICON_START_ADDR   (INFOBOX_ADDR+0xA7F8)
-#define SMALL_ICON_ADDR(num)    ((num)*0x1000+SMALL_ICON_START_ADDR)
+#define INFOBOX_ADDR (BYTE_ASCII_ADDR + 0x1000)  // total byte size 0xA7F8
+#define SMALL_ICON_START_ADDR (INFOBOX_ADDR + 0xA7F8)
+#define SMALL_ICON_ADDR(num) ((num)*0x1000 + SMALL_ICON_START_ADDR)
 
-#define BMP		(1<<1)
-#define FONT	(1<<2)
+#define BMP (1 << 1)
+#define FONT (1 << 2)
 
-#define BMP_ROOT_DIR "0:"ROOT_DIR"/bmp"
-#define FONT_ROOT_DIR "0:"ROOT_DIR"/font"
+#define BMP_ROOT_DIR "0:" ROOT_DIR "/bmp"
+#define FONT_ROOT_DIR "0:" ROOT_DIR "/font"
 #define TFT_RESET_FILE "0:reset.txt"
 
-enum
-{
+enum {
   ICON_HEAT = 0,
   ICON_MOVE,
   ICON_HOME,
@@ -35,7 +34,7 @@ enum
   ICON_EXTRUDE,
   ICON_FAN,
   ICON_SETTINGS,
-  ICON_LEVELING,  
+  ICON_LEVELING,
   ICON_INC,
   ICON_DEC,
   ICON_NOZZLE,
@@ -51,9 +50,10 @@ enum
   ICON_01_MM,
   ICON_1_MM,
   ICON_10_MM,
+  ICON_100_MM,
   ICON_X_DEC,
   ICON_Y_DEC,
-  ICON_Z_DEC,  
+  ICON_Z_DEC,
   ICON_X_HOME,
   ICON_Y_HOME,
   ICON_Z_HOME,
@@ -62,7 +62,7 @@ enum
   ICON_PAGE_UP,
   ICON_PAGE_DOWN,
   ICON_PAUSE,
-  ICON_RESUME,  
+  ICON_RESUME,
   ICON_LOAD,
   ICON_UNLOAD,
   ICON_SLOW_SPEED,
@@ -70,7 +70,7 @@ enum
   ICON_FAST_SPEED,
   ICON_E_1_MM,
   ICON_E_5_MM,
-  ICON_E_10_MM,  
+  ICON_E_10_MM,
   ICON_FAN_FULL_SPEED,
   ICON_FAN_HALF_SPEED,
   ICON_ROTATE_UI,
@@ -81,14 +81,14 @@ enum
   ICON_BKCOLOR,
   ICON_FONTCOLOR,
   ICON_DISCONNECT,
-  ICON_BAUDRATE,  
+  ICON_BAUDRATE,
   ICON_PERCENTAGE,
   ICON_BABYSTEP,
   ICON_001_MM,
   ICON_BSD_SOURCE,
   ICON_SD_SOURCE,
   ICON_U_DISK,
-  ICON_RUNOUT,  
+  ICON_RUNOUT,
   ICON_POINT_1,
   ICON_POINT_2,
   ICON_POINT_3,
@@ -143,26 +143,25 @@ enum
   ICON_GLOBAL_BED,
   ICON_LEDCOLOR,
 
-//add new icons above this line  only 
-//  ICON_RESERVE
+  //add new icons above this line  only
+  //  ICON_RESERVE
 
-// Preview should be in the last place before ICON_BACKGROUND to save flash storage space
+  // Preview should be in the last place before ICON_BACKGROUND to save flash storage space
   ICON_PREVIEW,
-// Back ground sign
+  // Back ground sign
   ICON_BACKGROUND
 };
 
-typedef union
-{
-	u16 color;
-	struct{
-	u16  b:5;
-	u16  g:6;
-	u16  r:5;
- }RGB;
-}GUI_COLOR;
+typedef union {
+  u16 color;
+  struct {
+    u16 b : 5;
+    u16 g : 6;
+    u16 r : 5;
+  } RGB;
+} GUI_COLOR;
 
 void scanUpdates(void);
 bool bmpDecode(char *bmp, u32 addr);
 
-#endif 
+#endif
