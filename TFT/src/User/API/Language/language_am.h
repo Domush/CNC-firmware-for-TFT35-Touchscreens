@@ -7,7 +7,6 @@
     #define AM_HOME                 "Սկզբնական"
     #define AM_PRINT                "Տպել"
     #define AM_EXTRUDE              "Հալել"
-    #define AM_ROUTER                  "Հովացնել"
     #define AM_SETTINGS             "Կարգավորումներ"
     #define AM_SCREEN_SETTINGS      "Screen"
     #define AM_MACHINE_SETTINGS     "Machine"

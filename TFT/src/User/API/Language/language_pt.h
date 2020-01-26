@@ -7,7 +7,6 @@
     #define PT_HOME                 "Inicio"
     #define PT_PRINT                "Imprimir"
     #define PT_EXTRUDE              "Extrudir"
-    #define PT_ROUTER                  "Ventoinha"
     #define PT_SETTINGS             "Configurar"
     #define PT_SCREPT_SETTINGS      "Ecra"
     #define PT_MACHINE_SETTINGS     "Impressora"

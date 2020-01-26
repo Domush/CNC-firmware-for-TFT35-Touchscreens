@@ -7,7 +7,6 @@
     #define PL_HOME                 "Powrót"
     #define PL_PRINT                "Druk"
     #define PL_EXTRUDE              "Extrude"
-    #define PL_ROUTER                  "Wentylator"
     #define PL_SETTINGS             "Ustawienia"
     #define PL_SCREEN_SETTINGS      "Ekran"
     #define PL_MACHINE_SETTINGS     "Drukarka"

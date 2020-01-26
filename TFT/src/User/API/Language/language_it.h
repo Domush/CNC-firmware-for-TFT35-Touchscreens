@@ -7,7 +7,6 @@
     #define IT_HOME                 "Home"
     #define IT_PRINT                "Stampa"
     #define IT_EXTRUDE              "Estrudi"
-    #define IT_ROUTER                  "Ventola"
     #define IT_SETTINGS             "Opzioni"
     #define IT_SCREEN_SETTINGS      "Schermo"
     #define IT_MACHINE_SETTINGS     "Stampante"

@@ -7,7 +7,6 @@
 #define EN_HOME "Homing"
 #define EN_PRINT "Cut"
 #define EN_EXTRUDE "Extrude"
-#define EN_ROUTER "Router"
 #define EN_SETTINGS "Settings"
 #define EN_SCREEN_SETTINGS "Screen"
 #define EN_MACHINE_SETTINGS "Machine"

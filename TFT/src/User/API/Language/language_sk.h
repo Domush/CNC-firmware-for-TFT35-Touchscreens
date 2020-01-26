@@ -7,7 +7,6 @@
     #define SK_HOME                 "Domov"
     #define SK_PRINT                "Tlačiť"
     #define SK_EXTRUDE              "Extrúder"
-    #define SK_ROUTER                  "Ofuk"
     #define SK_SETTINGS             "Nastavenia"
     #define SK_SCREEN_SETTINGS      "Obrazovka"
     #define SK_MACHINE_SETTINGS     "Tlačireň"

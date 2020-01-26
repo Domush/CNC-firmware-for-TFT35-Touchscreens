@@ -300,6 +300,7 @@ void parametersetting(void) {
 }
 
 void temp_Change(void) {
+  return;
   //static FP_MENU NUM[MAX_MENU_DEPTH];
   static int16_t compare[2];
 
@@ -327,7 +328,7 @@ void show_GlobalInfo(void) {
   return;
 }
 void drawGlobalInfo(void) {
-  char tempstr[100];
+  // char tempstr[100];
   //GUI_SetColor(GANTRYLBL_BKCOLOR);
   //GUI_FillPrect(&RecXYZ);
 //   GUI_ClearRect(LCD_WIDTH / 2, BYTE_HEIGHT, LCD_WIDTH, BYTE_HEIGHT * 2);

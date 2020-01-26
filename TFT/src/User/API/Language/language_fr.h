@@ -7,7 +7,6 @@
     #define FR_HOME                 "Origines"
     #define FR_PRINT                "Impression"
     #define FR_EXTRUDE              "Extruder"
-    #define FR_ROUTER                  "Ventiler"
     #define FR_SETTINGS             "Paramètres"
     #define FR_SCREEN_SETTINGS      "Écran"
     #define FR_MACHINE_SETTINGS     "Machine"

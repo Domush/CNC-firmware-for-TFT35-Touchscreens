@@ -7,7 +7,6 @@
     #define ES_HOME                 "Origen"
     #define ES_PRINT                "Imprimir"
     #define ES_EXTRUDE              "Extruir"
-    #define ES_ROUTER                  "Ventilar"
     #define ES_SETTINGS             "Configurar"
     #define ES_SCREEN_SETTINGS      "Pantalla"
     #define ES_MACHINE_SETTINGS     "Máquina"

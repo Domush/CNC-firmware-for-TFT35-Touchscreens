@@ -7,7 +7,6 @@
     #define CN_HOME                 "回原点"
     #define CN_PRINT                "打印"
     #define CN_EXTRUDE              "挤出"
-    #define CN_ROUTER                  "风扇"
     #define CN_SETTINGS             "设置"
     #define CN_SCREEN_SETTINGS      "屏幕设置"
     #define CN_MACHINE_SETTINGS     "机器设置"

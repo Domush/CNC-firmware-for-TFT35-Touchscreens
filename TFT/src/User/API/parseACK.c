@@ -36,7 +36,7 @@ static char ack_cmp(const char *str) {
     if (str[i] != dmaL2Cache[i])
       return false;
   }
-  if (dmaL2Cache[i] != 0) return false;
+  if (i < ACK_MAX_SIZE && dmaL2Cache[i] != 0) return false;
   return true;
 }
 

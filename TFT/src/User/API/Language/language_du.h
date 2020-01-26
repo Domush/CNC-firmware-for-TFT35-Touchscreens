@@ -7,7 +7,6 @@
     #define DU_HOME                 "Thuis"
     #define DU_PRINT                "Print"
     #define DU_EXTRUDE              "Extrudeer"
-    #define DU_ROUTER                  "Ventilator"
     #define DU_SETTINGS             "Instellingen"
     #define DU_SCREEN_SETTINGS      "Scherm"
     #define DU_MACHINE_SETTINGS     "Machine"

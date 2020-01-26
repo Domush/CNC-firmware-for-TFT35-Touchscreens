@@ -241,13 +241,16 @@ void updateFont(char *font, u32 addr) {
 
   if (f_open(&myfp, font, FA_OPEN_EXISTING | FA_READ) != FR_OK) return;
 
-  tempbuf = malloc(W25QXX_SECTOR_SIZE);
-  if (tempbuf == NULL) return;
   GUI_Clear(BACKGROUND_COLOR);
   my_sprintf((void *)buffer, "%s \nSize: %dKB", font, (u32)f_size(&myfp) >> 10);
   GUI_DispString(0, 100, (u8 *)buffer);
   GUI_DispString(0, 140, (u8 *)"Updating:   %");
 
+  tempbuf = malloc(W25QXX_SECTOR_SIZE);
+  if (tempbuf == NULL) {
+    free(tempbuf);
+    return;
+  }
   while (!f_eof(&myfp)) {
     if (f_read(&myfp, tempbuf, W25QXX_SECTOR_SIZE, &rnum) != FR_OK) break;
 

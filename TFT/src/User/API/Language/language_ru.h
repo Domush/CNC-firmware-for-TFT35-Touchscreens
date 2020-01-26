@@ -7,7 +7,6 @@
     #define RU_HOME                 "Домой"
     #define RU_PRINT                "Печать"
     #define RU_EXTRUDE              "Экструзия"
-    #define RU_ROUTER                  "Вентилятор"
     #define RU_SETTINGS             "Настройки"
     #define RU_SCREEN_SETTINGS      "Экран"
     #define RU_MACHINE_SETTINGS     "Принтер"

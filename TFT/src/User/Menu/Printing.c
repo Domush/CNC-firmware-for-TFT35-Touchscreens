@@ -1,5 +1,5 @@
+#include "Fan.h"
 #include "Printing.h"
-#include "Fan.c"
 #include "includes.h"
 
 //1title, ITEM_PER_PAGE item(icon + label)
@@ -92,7 +92,8 @@ void printSetUpdateWaiting(bool isWaiting) {
 }
 
 void startGcodeExecute(void) {
-  routerControl(routerMaxPWM[curIndex]);
+  u8 speed = ROUTER_MAX_PWM;
+  routerControl(speed);
 }
 
 void endGcodeExecute(void) {
@@ -202,7 +203,7 @@ bool setPrintPause(bool is_pause, bool is_m0pause) {
     case BOARD_SD:
       infoPrinting.pause = is_pause;
       if (is_pause) {
-        infoPrinting.routerSpeed = routerGetSpeed(curIndex);
+        infoPrinting.routerSpeed = routerGetSpeed(routerGetCurIndex(0));
         routerControl(0);
         request_M25();
       } else {
@@ -227,7 +228,7 @@ bool setPrintPause(bool is_pause, bool is_m0pause) {
       if (infoPrinting.pause) {
         //restore status before pause
         //if pause was triggered through M0/M1 then break
-        infoPrinting.routerSpeed = routerGetSpeed(curIndex);
+        infoPrinting.routerSpeed = routerGetSpeed(routerGetCurIndex(0));
         routerControl(0);
         if (is_m0pause == true) {
           setM0Pause(is_m0pause);
@@ -339,7 +340,7 @@ extern GUI_RECT titleRect;
 void printingDrawPage(void) {
   int16_t i;
   menuDrawPage(&printingItems);
-  Scroll_CreatePara(&titleScroll, infoFile.title, &titleRect);
+  Scroll_CreatePara(&titleScroll, (u8 *)infoFile.title, &titleRect);
   // printed time
   GUI_DispString(progressRect.x0, TIME_Y, (u8 *)"T:");
   GUI_DispString(progressRect.x0 + BYTE_WIDTH * 4, TIME_Y, (u8 *)":");

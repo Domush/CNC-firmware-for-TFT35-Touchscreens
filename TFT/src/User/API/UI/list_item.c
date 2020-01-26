@@ -12,7 +12,6 @@ const uint16_t ICON_COLOR[ICONCHAR_NUM]=
   BLACK,     //ICONCHAR_BLANK = 0
   WHITE,    //ICONCHAR_ROUTER
   WHITE,    //ICONCHAR_BED
-  WHITE,    //ICONCHAR_ROUTER
   MAT_YELLOW,    //ICONCHAR_FOLDER
   MAT_BLUE,    //ICONCHAR_FILE
   WHITE,    //ICONCHAR_PAGEUP
@@ -119,7 +118,6 @@ const uint16_t ICON_COLOR[ICONCHAR_NUM]=
 #define CHAR_BLANK            ""
 #define CHAR_ROUTER           "࡟"
 #define CHAR_BED              "ࡠ"
-#define CHAR_ROUTER              "ࡡ"
 #define CHAR_FOLDER           "ࡢ"
 #define CHAR_FILE             "ࡣ"
 
@@ -226,7 +224,6 @@ const char *const GET_ICONCHAR[ICONCHAR_NUM]={
   CHAR_BLANK,
   CHAR_ROUTER,
   CHAR_BED,
-  CHAR_ROUTER,
   CHAR_FOLDER,
   CHAR_FILE,
   CHAR_PAGEUP,

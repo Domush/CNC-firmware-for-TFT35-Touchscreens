@@ -7,7 +7,6 @@
     #define DE_HOME                 "Home"
     #define DE_PRINT                "Drucken"
     #define DE_EXTRUDE              "Extruder"
-    #define DE_ROUTER                  "Lüfter"
     #define DE_SETTINGS             "Setup"
     #define DE_SCREEN_SETTINGS      "Screen"
     #define DE_MACHINE_SETTINGS     "Drucker"

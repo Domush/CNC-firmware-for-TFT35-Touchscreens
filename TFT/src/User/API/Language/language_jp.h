@@ -7,7 +7,6 @@
     #define JP_HOME                 "ゼロにする"
     #define JP_PRINT                "プリント"
     #define JP_EXTRUDE              "押出"
-    #define JP_ROUTER                  "ファン"
     #define JP_SETTINGS             "設定"
     #define JP_SCREEN_SETTINGS      "Screen"
     #define JP_MACHINE_SETTINGS     "Machine"

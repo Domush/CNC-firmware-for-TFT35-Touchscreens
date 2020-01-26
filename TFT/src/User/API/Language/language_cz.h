@@ -7,7 +7,6 @@
     #define CZ_HOME                 "Domů"
     #define CZ_PRINT                "Tisknout"
     #define CZ_EXTRUDE              "Filament"
-    #define CZ_ROUTER                  "Ofuk"
     #define CZ_SETTINGS             "Nastavení"
     #define CZ_SCREEN_SETTINGS      "Rozhraní"
     #define CZ_MACHINE_SETTINGS     "Tiskárna"
