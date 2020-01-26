@@ -2,7 +2,7 @@
 #define _LEVELING_H_
 
 void menuManualLeveling(void);
-void menuAutoLeveling(void);
+void menuHoming(void);
 
 #endif
 

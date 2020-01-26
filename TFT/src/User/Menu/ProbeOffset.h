@@ -1,10 +1,10 @@
-#ifndef _PROBEOFFSET_H_
-#define _PROBEOFFSET_H_
+#ifndef _ZEROAXIS_H_
+#define _ZEROAXIS_H_
 
 #include "stdint.h"
 
 
-void menuProbeOffset(void);
+void menuZeroAxis(void);
 
 void setCurrentOffset(float offset);
 #endif

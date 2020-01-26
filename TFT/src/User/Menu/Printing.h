@@ -15,6 +15,7 @@ typedef struct
   bool printing;  // 1 means printing, 0 means idle
   bool pause;     //1 means paused
   bool m0_pause;  //pause triggered through M0/M1 gcode
+  u8 routerSpeed; // Current router speed
 } PRINTING;
 
 void exitPrinting(void);

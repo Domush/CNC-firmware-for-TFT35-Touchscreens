@@ -201,6 +201,15 @@ const LISTITEM itemMoveSpeed[ITEM_SPEED_NUM] = {
 };
 const u8 item_movespeed[ITEM_SPEED_NUM] = {LABEL_NORMAL_SPEED, LABEL_SLOW_SPEED, LABEL_FAST_SPEED};
 
+#define ITEM_ROUTER_CONTROL 3
+const LISTITEM itemRouterControl[ITEM_ROUTER_CONTROL] = {
+    // icon          ItemType           Item Title              item value text(only for custom value)
+    {ICONCHAR_BLANK, LIST_CUSTOMVALUE, LABEL_ROUTER_CONTROL, LABEL_DISABLED},
+    {ICONCHAR_BLANK, LIST_CUSTOMVALUE, LABEL_ROUTER_CONTROL, LABEL_M3M5},
+    {ICONCHAR_BLANK, LIST_CUSTOMVALUE, LABEL_ROUTER_CONTROL, LABEL_FAN0},
+};
+const u8 item_routercontrol[ITEM_ROUTER_CONTROL] = {LABEL_DISABLED, LABEL_M3M5, LABEL_FAN0};
+
 #ifdef LED_color_PIN
 #define LED_color_NUM 9
 const LISTITEM itemLedcolor[LED_color_NUM] = {
@@ -241,6 +250,7 @@ typedef enum {
   SKEY_RUNOUT,
 #endif
   SKEY_SPEED,
+  SKEY_ROUTER_POWER,
 #ifdef LED_color_PIN
   SKEY_KNOB,
 #endif
@@ -318,6 +328,12 @@ void updateFeatureSettings(uint8_t key_val) {
       featureSettingsItems.items[key_val] = settingPage[item_index];
       break;
 
+    case SKEY_ROUTER_POWER:
+      infoSettings.router_power = (infoSettings.router_power + 1) % ITEM_ROUTER_CONTROL;
+      settingPage[item_index] = itemRouterControl[infoSettings.router_power];
+      featureSettingsItems.items[key_val] = settingPage[item_index];
+      break;
+
 #ifdef LED_color_PIN
     case SKEY_KNOB:
       infoSettings.led_color = (infoSettings.led_color + 1) % LED_color_NUM;
@@ -381,6 +397,10 @@ void loadFeatureSettings() {
 
       case SKEY_SPEED:
         featureSettingsItems.items[i] = itemMoveSpeed[infoSettings.move_speed];
+        break;
+
+      case SKEY_ROUTER_POWER:
+        featureSettingsItems.items[i] = itemRouterControl[infoSettings.router_power];
         break;
 
 #ifdef LED_color_PIN

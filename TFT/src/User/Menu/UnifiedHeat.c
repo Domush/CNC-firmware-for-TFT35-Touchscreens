@@ -4,11 +4,11 @@
 //1 title, ITEM_PER_PAGE items(icon + label)
 const MENUITEMS UnifiedHeatItems = {
 // title
-lABEL_UNIFIEDHEAT,
+LABEL_UNIFIEDHEAT,
 // icon                       label
  {{ICON_HEAT,                 LABEL_PREHEAT},
   {ICON_HEAT,                 LABEL_HEAT},
-  {ICON_FAN,                  LABEL_FAN},
+  {ICON_ROUTER,                  LABEL_ROUTER},
   {ICON_COOLDOWN,             LABEL_COOLDOWN},
   {ICON_BACKGROUND,           LABEL_BACKGROUND},
   {ICON_BACKGROUND,           LABEL_BACKGROUND},
@@ -27,7 +27,7 @@ void menuUnifiedHeat(void)
     {
       case KEY_ICON_0: infoMenu.menu[++infoMenu.cur] = menuPreheat;   break;
       case KEY_ICON_1: infoMenu.menu[++infoMenu.cur] = menuHeat;    break;
-      case KEY_ICON_2: infoMenu.menu[++infoMenu.cur] = menuFan;    break;
+      case KEY_ICON_2: infoMenu.menu[++infoMenu.cur] = menuRouter;    break;
       case KEY_ICON_3:
         for(TOOL i = BED; i < HEATER_NUM; i++)
         {

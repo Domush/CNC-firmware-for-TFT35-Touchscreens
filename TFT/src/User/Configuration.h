@@ -40,25 +40,25 @@
 
 #define TOOL_NUM 1      // set in 1~6
 #define EXTRUDER_NUM 1  // set in 1~6
-#define FAN_NUM 1       // set in 1~6
+#define ROUTER_NUM 1       // set in 1~6
 
 //                       PLA      PETG       ABS
 #define PREHEAT_BED {60, 70, 100};
 #define PREHEAT_HOTEND {200, 250, 230};
 #define PREHEAT_TEXT {"PLA", "PETG", "ABS"};
 
-#define HEAT_MAX_TEMP {150, 275, 275, 275, 275, 275, 275};  //max temperature can be set
-#define HEAT_SIGN_ID {"B:", "T0:", "T1:", "T2:", "T3:", "T4:", "T5:"};
-#define HEAT_DISPLAY_ID {"Bed", "T0", "T1", "T2", "T3", "T4", "T5"};
-#define HEAT_CMD {"M140", "M104 T0", "M104 T1", "M104 T2", "M104 T3", "M104 T4", "M104 T5"};
-#define HEAT_WAIT_CMD {"M190", "M109 T0", "M109 T1", "M109 T2", "M109 T3", "M109 T4", "M109 T5"};
+#define HEAT_MAX_TEMP {150, 275};  //max temperature can be set
+#define HEAT_SIGN_ID {"B:", "T0:"};
+#define HEAT_DISPLAY_ID {"Bed", "T0"};
+#define HEAT_CMD {"M140", "M104 T0"};
+#define HEAT_WAIT_CMD {"M190", "M109 T0"};
 
-#define TOOL_CHANGE {"T0", "T1", "T2", "T3", "T4", "T5"};
-#define EXTRUDER_ID {"E0", "E1", "E2", "E3", "E4", "E5"};
+#define TOOL_CHANGE {"T0"};
+#define EXTRUDER_ID {"E0"};
 
-#define FAN_MAX_PWM {255, 255, 255, 255, 255, 255};
-#define FAN_ID {"F0", "F1", "F2", "F3", "F4", "F5"};
-#define FAN_CMD {"M106 P0", "M106 P1", "M106 P2", "M106 P3", "M106 P4", "M106 P5"};
+#define ROUTER_MAX_PWM {255};
+#define ROUTER_ID {"F0"};
+#define ROUTER_CMD {"M106 P0"};
 
 #define SPEED_ID {"Sp.", "Fr."};
 
@@ -80,14 +80,14 @@
 #define Z_MAX_POS 150
 
 // Specify a pause position as { X, Y, Z_raise }
-#define NOZZLE_PAUSE_RETRACT_LENGTH 0             // (mm)
-#define NOZZLE_RESUME_PURGE_LENGTH 0              // (mm)
-#define NOZZLE_PAUSE_X_POSITION (X_MIN_POS + 10)  // (mm) Must be an integer
-#define NOZZLE_PAUSE_Y_POSITION (Y_MIN_POS + 10)  // (mm) Must be an integer
-#define NOZZLE_PAUSE_Z_RAISE 20                   // (mm)
-#define NOZZLE_PAUSE_E_FEEDRATE 3000              // (mm/min) retract & purge feedrate
-#define NOZZLE_PAUSE_XY_FEEDRATE 3000             // (mm/min) X and Y axes feedrate
-#define NOZZLE_PAUSE_Z_FEEDRATE 600               // (mm/min) Z axis feedrate
+#define ROUTER_PAUSE_RETRACT_LENGTH 0             // (mm)
+#define ROUTER_RESUME_PURGE_LENGTH 0              // (mm)
+#define ROUTER_PAUSE_X_POSITION (X_MIN_POS + 10)  // (mm) Must be an integer
+#define ROUTER_PAUSE_Y_POSITION (Y_MIN_POS + 10)  // (mm) Must be an integer
+#define ROUTER_PAUSE_Z_RAISE 40                   // (mm)
+#define ROUTER_PAUSE_E_FEEDRATE 3000              // (mm/min) retract & purge feedrate
+#define ROUTER_PAUSE_XY_FEEDRATE 3000             // (mm/min) X and Y axes feedrate
+#define ROUTER_PAUSE_Z_FEEDRATE 600               // (mm/min) Z axis feedrate
 
 // Send G29 for auto bed leveling
 //#define AUTO_BED_LEVELING
@@ -98,10 +98,10 @@
 #endif
 
 // Move to four corner points to Leveling manually (Point 1, Point 2, Point 3, Point 4)
-#define LEVELING_POINT_1_X (X_MIN_POS + 20)
-#define LEVELING_POINT_1_Y (Y_MIN_POS + 20)
-#define LEVELING_POINT_2_X (X_MAX_POS - 20)
-#define LEVELING_POINT_2_Y (Y_MIN_POS + 20)
+#define LEVELING_DISABLE_XY_X (X_MIN_POS + 20)
+#define LEVELING_DISABLE_XY_Y (Y_MIN_POS + 20)
+#define LEVELING_DISABLE_Z_X (X_MAX_POS - 20)
+#define LEVELING_DISABLE_Z_Y (Y_MIN_POS + 20)
 #define LEVELING_POINT_3_X (X_MAX_POS - 20)
 #define LEVELING_POINT_3_Y (Y_MAX_POS - 20)
 #define LEVELING_POINT_4_X (X_MIN_POS + 20)
@@ -171,13 +171,13 @@
 /**
   * Maximum hotend temperature of automatic shut down after printing.
   * When enable automatic shutdown(Auto Power), when the hotend temperature is higher than this value
-  * turn on the fan to cool down, wait for the hotend temperature to be lower than this value, then turn off the power automatically
+  * turn on the router to cool down, wait for the hotend temperature to be lower than this value, then turn off the power automatically
   */
 #define AUTO_SHUT_DOWN_MAXTEMP 50
 
 #define EXTRUDE_STEPS 100.0f
 
-#define SHOW_FAN_PERCENTAGE  // enable to show fan speed as a percentage instead of a value
+#define SHOW_ROUTER_PERCENTAGE  // enable to show router speed as a percentage instead of a value
 
 /** CUSTOM GCODE COMMANDS
  * Support up to 7 custom gcodes in Icon mode and 15 in List Mode.
@@ -226,6 +226,7 @@ custom gcode below are compatible only if MENU_LIST_MODE is active
 //#define CUSTOM_14_GCODE "M105\n"
 #endif
 
-#define CANCEL_PRINT_GCODE "M5\nM107\nG1 Z40\nG0 X0 Y0\n"
+// #define CANCEL_PRINT_GCODE "M5\nM107\nG0 Z40 F3000\nG0 X0 Y0 F3000\n"
+#define CANCEL_PRINT_GCODE ""
 
 #endif

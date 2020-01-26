@@ -8,8 +8,8 @@
 typedef enum
 {
   BED = 0,
-  NOZZLE0 = 1,
-  HEATER_NUM = TOOL_NUM + NOZZLE0,
+  ROUTER0 = 1,
+  HEATER_NUM = TOOL_NUM + ROUTER0,
 }TOOL;
 
 typedef struct

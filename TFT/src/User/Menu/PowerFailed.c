@@ -73,9 +73,9 @@ void powerFailedCache(u32 offset)
   }
   infoBreakPoint.nozzle = heatGetCurrentToolNozzle();
   
-  for(u8 i = 0; i < FAN_NUM; i++)
+  for(u8 i = 0; i < ROUTER_NUM; i++)
   {
-   infoBreakPoint.fan[i] = fanGetSpeed(i);
+   infoBreakPoint.router[i] = routerGetSpeed(i);
   }
   infoBreakPoint.relative = coorGetRelative();
   infoBreakPoint.relative_e = eGetRelative();
@@ -136,13 +136,13 @@ bool powerOffGetData(void)
       mustStoreCacheCmd("%s S%d\n", heatWaitCmd[i], infoBreakPoint.target[i]);
   }
   
-  for(u8 i=0; i < FAN_NUM; i++)
+  for(u8 i=0; i < ROUTER_NUM; i++)
   {
-    if(infoBreakPoint.fan[i] != 0)
-      mustStoreCacheCmd("%s S%d\n", fanCmd[i], infoBreakPoint.fan[i]);
+    if(infoBreakPoint.router[i] != 0)
+      mustStoreCacheCmd("%s S%d\n", routerCmd[i], infoBreakPoint.router[i]);
   }
   
-  mustStoreCacheCmd("%s\n", tool_change[infoBreakPoint.nozzle - NOZZLE0]);
+  mustStoreCacheCmd("%s\n", tool_change[infoBreakPoint.nozzle - ROUTER0]);
   if(infoBreakPoint.feedrate != 0)
   {
     mustStoreCacheCmd("G92 Z%.3f\n", infoBreakPoint.axis[Z_AXIS]
@@ -159,12 +159,12 @@ bool powerOffGetData(void)
     #endif
     mustStoreCacheCmd("M83\n");
     mustStoreCacheCmd("G1 E30 F300\n");
-    mustStoreCacheCmd("G1 E-%d F4800\n", NOZZLE_PAUSE_RETRACT_LENGTH);
+    mustStoreCacheCmd("G1 E-%d F4800\n", ROUTER_PAUSE_RETRACT_LENGTH);
     mustStoreCacheCmd("G1 X%.3f Y%.3f Z%.3f F3000\n",
                           infoBreakPoint.axis[X_AXIS],
                           infoBreakPoint.axis[Y_AXIS],
                           infoBreakPoint.axis[Z_AXIS]);
-    mustStoreCacheCmd("G1 E%d F4800\n", NOZZLE_RESUME_PURGE_LENGTH);
+    mustStoreCacheCmd("G1 E%d F4800\n", ROUTER_RESUME_PURGE_LENGTH);
     mustStoreCacheCmd("G92 E%.5f\n",infoBreakPoint.axis[E_AXIS]);
     mustStoreCacheCmd("G1 F%d\n",infoBreakPoint.feedrate);        
 

@@ -176,14 +176,14 @@ void sendQueueCmd(void) {
         case 109:  //M109
         {
           TOOL i = heatGetCurrentToolNozzle();
-          if (cmd_seen('T')) i = (TOOL)(cmd_value() + NOZZLE0);
+          if (cmd_seen('T')) i = (TOOL)(cmd_value() + ROUTER0);
           infoCmd.queue[infoCmd.index_r].gcode[3] = '4';
           heatSetIsWaiting(i, true);
         }
         case 104:  //M104
         {
           TOOL i = heatGetCurrentToolNozzle();
-          if (cmd_seen('T')) i = (TOOL)(cmd_value() + NOZZLE0);
+          if (cmd_seen('T')) i = (TOOL)(cmd_value() + ROUTER0);
           if (cmd_seen('S')) {
             heatSyncTargetTemp(i, cmd_value());
           } else {
@@ -202,26 +202,28 @@ void sendQueueCmd(void) {
 #endif
           break;
 
+        case 3: //M3 spindle speed
         case 106:  //M106
         {
           u8 i = 0;
           if (cmd_seen('P')) i = cmd_value();
           if (cmd_seen('S')) {
-            fanSetSpeed(i, cmd_value());
+            routerSetSpeed(i, cmd_value());
           } else {
             char buf[12];
-            sprintf(buf, "S%d\n", fanGetSpeed(i));
+            sprintf(buf, "S%d\n", routerGetSpeed(i));
             strcat(infoCmd.queue[infoCmd.index_r].gcode, (const char *)buf);
-            fanSetSendWaiting(i, false);
+            routerSetSendWaiting(i, false);
           }
           break;
         }
 
-        case 107:  //M107
+        case 5:  //M5 spindle off
+        case 107:  //M107 fan/router off
         {
           u8 i = 0;
           if (cmd_seen('P')) i = cmd_value();
-          fanSetSpeed(i, 0);
+          routerSetSpeed(i, 0);
           break;
         }
 
@@ -327,7 +329,7 @@ void sendQueueCmd(void) {
 
     case 'T':
       cmd = strtol(&infoCmd.queue[infoCmd.index_r].gcode[1], NULL, 10);
-      heatSetCurrentToolNozzle((TOOL)(cmd + NOZZLE0));
+      heatSetCurrentToolNozzle((TOOL)(cmd + ROUTER0));
       break;
   }
 

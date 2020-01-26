@@ -7,7 +7,7 @@ typedef enum
 {
   BOTH = 0,
   BED_PREHEAT = 1,
-  NOZZLE0_PREHEAT = 2,
+  ROUTER0_PREHEAT = 2,
 }TOOLPREHEAT;
 
 

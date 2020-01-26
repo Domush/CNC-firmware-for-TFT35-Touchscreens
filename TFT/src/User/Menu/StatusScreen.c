@@ -7,9 +7,9 @@ MENUITEMS StatusItems = {
     LABEL_READY,
     // icon                       label
     {
-        {ICON_STATUSNOZZLE, LABEL_BACKGROUND},
+        {ICON_STATUSROUTER, LABEL_BACKGROUND},
         {ICON_STATUSBED, LABEL_BACKGROUND},
-        {ICON_STATUSFAN, LABEL_BACKGROUND},
+        {ICON_STATUSROUTER, LABEL_BACKGROUND},
         {ICON_STATUS_SPEED, LABEL_BACKGROUND},
         {ICON_MAINMENU, LABEL_MAINMENU},
         {ICON_BACKGROUND, LABEL_BACKGROUND},  //Reserved for gantry position to be added later
@@ -19,12 +19,12 @@ MENUITEMS StatusItems = {
 
 const ITEM ToolItems[3] = {
     // icon                       label
-    {ICON_STATUSNOZZLE, LABEL_BACKGROUND},
+    {ICON_STATUSROUTER, LABEL_BACKGROUND},
     {ICON_STATUSBED, LABEL_BACKGROUND},
-    {ICON_STATUSFAN, LABEL_BACKGROUND},
+    {ICON_STATUSROUTER, LABEL_BACKGROUND},
     //{ICON_HEAT_STATUS,          LABEL_BACKGROUND},
     //{ICON_BED_STATUS,           LABEL_BACKGROUND},
-    //{ICON_FAN_STATUS,           LABEL_BACKGROUND},
+    //{ICON_ROUTER_STATUS,           LABEL_BACKGROUND},
 };
 const ITEM SpeedItems[2] = {
     // icon                       label
@@ -46,8 +46,8 @@ static float yaxis;
 static float zaxis;
 static bool gantryCmdWait = false;
 
-TOOL current_Ext = NOZZLE0;
-int current_fan = 0;
+TOOL current_Ext = ROUTER0;
+int current_router = 0;
 int current_speedID = 0;
 const char *SpeedID[2] = SPEED_ID;
 // text position rectangles for Live icons
@@ -113,19 +113,19 @@ void drawTemperature(void) {
   GUI_DispStringInPrect(&rectB[1], (u8 *)tempstr);  //Bed value
 
   GUI_SetColor(HEADING_COLOR);
-  menuDrawIconOnly(&ToolItems[2], 2);                                         //Fan icon
-  GUI_DispStringRight(pointID[2].x, pointID[2].y, (u8 *)fanID[current_fan]);  //Fan label
+  menuDrawIconOnly(&ToolItems[2], 2);                                         //Router icon
+  GUI_DispStringRight(pointID[2].x, pointID[2].y, (u8 *)routerID[current_router]);  //Router label
   GUI_SetColor(VAL_COLOR);
 
   u8 fs;
-#ifdef SHOW_FAN_PERCENTAGE
-  fs = (fanGetSpeed(current_fan) * 100) / 255;
+#ifdef SHOW_ROUTER_PERCENTAGE
+  fs = (routerGetSpeed(current_router) * 100) / 255;
   my_sprintf(tempstr, "%d%%", fs);
 #else
-  fs = fanSpeed[curIndex];
+  fs = routerSpeed[curIndex];
   my_sprintf(tempstr, "%d", fs);
 #endif
-  GUI_DispStringInPrect(&rectB[2], (u8 *)tempstr);  //Fan value
+  GUI_DispStringInPrect(&rectB[2], (u8 *)tempstr);  //Router value
 
   GUI_SetColor(HEADING_COLOR);
   menuDrawIconOnly(&SpeedItems[current_speedID], 3);                                //Speed / flow icon
@@ -232,6 +232,11 @@ void statusScreen_setMsg(const uint8_t *title, const uint8_t *msg) {
   if (infoMenu.menu[infoMenu.cur] == menuStatus) {
     drawStatusScreenMsg();
   }
+  else
+  {
+    storeCmd("M118 E1 %d: %d\n", title, msg); //relay prompts to USB host
+  }
+  
 }
 
 void drawStatusScreenMsg(void) {
@@ -266,8 +271,8 @@ void toggleTool(void) {
         current_Ext += 1;
       }
     }
-    if (FAN_NUM > 1) {
-      current_fan = (current_fan + 1) % FAN_NUM;
+    if (ROUTER_NUM > 1) {
+      current_router = (current_router + 1) % ROUTER_NUM;
     }
     current_speedID = (current_speedID + 1) % 2;
     nowTime = OS_GetTime();
@@ -292,7 +297,7 @@ void menuStatus(void) {
   GUI_SetColor(GANTRYLBL_BKCOLOR);
   //GUI_ClearPrect(&RecGantry);
   GUI_FillPrect(&RecGantry);
-  drawTemperature();
+  // drawTemperature();
   drawStatusScreenMsg();
 
   while (infoMenu.menu[infoMenu.cur] == menuStatus) {
@@ -314,7 +319,7 @@ void menuStatus(void) {
         infoMenu.menu[++infoMenu.cur] = menuUnifiedHeat;
         break;
       case KEY_ICON_2:
-        infoMenu.menu[++infoMenu.cur] = menuFan;
+        infoMenu.menu[++infoMenu.cur] = menuRouter;
         break;
       case KEY_ICON_3:
         infoMenu.menu[++infoMenu.cur] = menuSpeed;
@@ -329,7 +334,7 @@ void menuStatus(void) {
       default:
         break;
     }
-    toggleTool();
+    // toggleTool();
     loopProcess();
   }
 }

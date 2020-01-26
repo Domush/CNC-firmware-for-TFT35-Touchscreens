@@ -10,7 +10,7 @@ LABEL_HEAT,
   {ICON_BACKGROUND,           LABEL_BACKGROUND},
   {ICON_BACKGROUND,           LABEL_BACKGROUND},
   {ICON_INC,                  LABEL_INC},
-  {ICON_NOZZLE,               LABEL_NOZZLE},
+  {ICON_ROUTER,               LABEL_ROUTER},
   {ICON_5_DEGREE,             LABEL_5_DEGREE},
   {ICON_STOP,                 LABEL_STOP},
   {ICON_BACK,                 LABEL_BACK},}
@@ -20,12 +20,12 @@ LABEL_HEAT,
 const ITEM itemTool[] = {
 // icon                       label
   {ICON_BED,                  LABEL_BED},
-  {ICON_NOZZLE,               LABEL_NOZZLE},
-  {ICON_NOZZLE,               LABEL_NOZZLE},
-  {ICON_NOZZLE,               LABEL_NOZZLE},
-  {ICON_NOZZLE,               LABEL_NOZZLE},
-  {ICON_NOZZLE,               LABEL_NOZZLE},
-  {ICON_NOZZLE,               LABEL_NOZZLE},
+  {ICON_ROUTER,               LABEL_ROUTER},
+  {ICON_ROUTER,               LABEL_ROUTER},
+  {ICON_ROUTER,               LABEL_ROUTER},
+  {ICON_ROUTER,               LABEL_ROUTER},
+  {ICON_ROUTER,               LABEL_ROUTER},
+  {ICON_ROUTER,               LABEL_ROUTER},
 };    
 
 #define ITEM_DEGREE_NUM 3
@@ -44,8 +44,8 @@ const char* const heatDisplayID[] = HEAT_DISPLAY_ID;
 const char* heatCmd[] = HEAT_CMD;
 const char* heatWaitCmd[] = HEAT_WAIT_CMD;
 
-static HEATER  heater = {{}, NOZZLE0, NOZZLE0};
-static HEATER  lastHeater = {{}, NOZZLE0, NOZZLE0};
+static HEATER  heater = {{}, ROUTER0, ROUTER0};
+static HEATER  lastHeater = {{}, ROUTER0, ROUTER0};
 static u32     update_time = 300;
 static bool    update_waiting = false;
 static bool    send_waiting[HEATER_NUM];
@@ -135,7 +135,7 @@ TOOL heatGetCurrentTool(void)
 /* Set current nozzle */
 void heatSetCurrentToolNozzle(TOOL tool)
 {
-  if(tool >= HEATER_NUM && tool < NOZZLE0) return;
+  if(tool >= HEATER_NUM && tool < ROUTER0) return;
   heater.nozzle = tool;
   heater.tool = tool;
 }

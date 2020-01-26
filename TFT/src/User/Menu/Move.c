@@ -87,12 +87,12 @@ MENUITEMS moveItems = {
 #define ITEM_MOVE_LEN_NUM 3
 const ITEM itemMoveLen[ITEM_MOVE_LEN_NUM] = {
     // icon                       label
-    {ICON_100_MM, LABEL_100_MM},
-    {ICON_10_MM, LABEL_10_MM},
     {ICON_1_MM, LABEL_1_MM},
+    {ICON_10_MM, LABEL_10_MM},
+    {ICON_100_MM, LABEL_100_MM},
 };
-const float item_move_len[ITEM_MOVE_LEN_NUM] = {100, 10, 1};
-static u8 item_move_len_i = 1;
+const float item_move_len[ITEM_MOVE_LEN_NUM] = {1, 10, 100};
+static u8 item_move_len_i = 10;
 
 static u32 nowTime = 0;
 static u32 update_time = 50;  // 1 seconds is 100
@@ -305,7 +305,7 @@ void menuMove(void) {
 #endif
     }
     loopProcess();
-    update_gantry();
+    // update_gantry();
   }
   mustStoreCmd("G90\n");
 }

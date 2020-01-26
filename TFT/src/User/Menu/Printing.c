@@ -1,4 +1,5 @@
 #include "Printing.h"
+#include "Fan.c"
 #include "includes.h"
 
 //1title, ITEM_PER_PAGE item(icon + label)
@@ -11,7 +12,7 @@ MENUITEMS printingItems = {
         {ICON_BACKGROUND, LABEL_BACKGROUND},
         {ICON_BACKGROUND, LABEL_BACKGROUND},
         {ICON_STOP, LABEL_STOP},
-        {ICON_FAN, LABEL_FAN},
+        {ICON_ROUTER, LABEL_ROUTER},
         {ICON_PERCENTAGE, LABEL_PERCENTAGE_SPEED},
         {ICON_BABYSTEP, LABEL_BABYSTEP},
         {ICON_MOVE, LABEL_MOVE},
@@ -91,15 +92,18 @@ void printSetUpdateWaiting(bool isWaiting) {
 }
 
 void startGcodeExecute(void) {
+  routerControl(routerMaxPWM[curIndex]);
 }
 
 void endGcodeExecute(void) {
   mustStoreCmd("G90\n");
-  for (u8 i = 0; i < FAN_NUM; i++) {
-    mustStoreCmd("%s S0\n", fanCmd[i]);
-  }
-  mustStoreCmd("T0\n");
-  mustStoreCmd("M18 X Y\n");
+  routerControl(0);
+  // for (u8 i = 0; i < ROUTER_NUM; i++) {
+  //   mustStoreCmd("%s S0\n", routerCmd[i]);
+  // }
+  // mustStoreCmd("T0\n");
+  mustStoreCmd("G0 X0 Y0 Z1\n");
+  // mustStoreCmd("M18 X Y\n");
 }
 
 //only return gcode file name except path
@@ -198,8 +202,11 @@ bool setPrintPause(bool is_pause, bool is_m0pause) {
     case BOARD_SD:
       infoPrinting.pause = is_pause;
       if (is_pause) {
+        infoPrinting.routerSpeed = routerGetSpeed(curIndex);
+        routerControl(0);
         request_M25();
       } else {
+        routerControl(infoPrinting.routerSpeed);
         request_M24(0);
       }
       break;
@@ -220,6 +227,8 @@ bool setPrintPause(bool is_pause, bool is_m0pause) {
       if (infoPrinting.pause) {
         //restore status before pause
         //if pause was triggered through M0/M1 then break
+        infoPrinting.routerSpeed = routerGetSpeed(curIndex);
+        routerControl(0);
         if (is_m0pause == true) {
           setM0Pause(is_m0pause);
           popupReminder(textSelect(LABEL_PAUSE), textSelect(LABEL_M0_PAUSE));
@@ -232,10 +241,10 @@ bool setPrintPause(bool is_pause, bool is_m0pause) {
         // if (isExtrudeRelative == true)  mustStoreCmd("M82\n");
 
         // if (heatGetCurrentTemp(heatGetCurrentToolNozzle()) > PREVENT_COLD_EXTRUSION_MINTEMP)
-        //   mustStoreCmd("G1 E%.5f F%d\n", tmp.axis[E_AXIS] - NOZZLE_PAUSE_RETRACT_LENGTH, NOZZLE_PAUSE_E_FEEDRATE);
+        //   mustStoreCmd("G1 E%.5f F%d\n", tmp.axis[E_AXIS] - ROUTER_PAUSE_RETRACT_LENGTH, ROUTER_PAUSE_E_FEEDRATE);
         if (coordinateIsClear()) {
-          mustStoreCmd("G1 Z%.3f F%d\n", tmp.axis[Z_AXIS] + NOZZLE_PAUSE_Z_RAISE, NOZZLE_PAUSE_Z_FEEDRATE);
-          mustStoreCmd("G1 X%d Y%d F%d\n", NOZZLE_PAUSE_X_POSITION, NOZZLE_PAUSE_Y_POSITION, NOZZLE_PAUSE_XY_FEEDRATE);
+          mustStoreCmd("G1 Z%.3f F%d\n", tmp.axis[Z_AXIS] + ROUTER_PAUSE_Z_RAISE, ROUTER_PAUSE_Z_FEEDRATE);
+          mustStoreCmd("G1 X%d Y%d F%d\n", ROUTER_PAUSE_X_POSITION, ROUTER_PAUSE_Y_POSITION, ROUTER_PAUSE_XY_FEEDRATE);
         }
 
         if (isCoorRelative == true)
@@ -252,11 +261,12 @@ bool setPrintPause(bool is_pause, bool is_m0pause) {
         // if (isExtrudeRelative == true)  mustStoreCmd("M82\n");
 
         if (coordinateIsClear()) {
-          mustStoreCmd("G1 X%.3f Y%.3f F%d\n", tmp.axis[X_AXIS], tmp.axis[Y_AXIS], NOZZLE_PAUSE_XY_FEEDRATE);
-          mustStoreCmd("G1 Z%.3f F%d\n", tmp.axis[Z_AXIS], NOZZLE_PAUSE_Z_FEEDRATE);
+          mustStoreCmd("G1 X%.3f Y%.3f F%d\n", tmp.axis[X_AXIS], tmp.axis[Y_AXIS], ROUTER_PAUSE_XY_FEEDRATE);
+          mustStoreCmd("G1 Z%.3f F%d\n", tmp.axis[Z_AXIS], ROUTER_PAUSE_Z_FEEDRATE);
         }
+        routerControl(infoPrinting.routerSpeed);
         // if(heatGetCurrentTemp(heatGetCurrentToolNozzle()) > PREVENT_COLD_EXTRUSION_MINTEMP)
-        //   mustStoreCmd("G1 E%.5f F%d\n", tmp.axis[E_AXIS] - NOZZLE_PAUSE_RETRACT_LENGTH + NOZZLE_RESUME_PURGE_LENGTH, NOZZLE_PAUSE_E_FEEDRATE);
+        //   mustStoreCmd("G1 E%.5f F%d\n", tmp.axis[E_AXIS] - ROUTER_PAUSE_RETRACT_LENGTH + ROUTER_RESUME_PURGE_LENGTH, ROUTER_PAUSE_E_FEEDRATE);
         // mustStoreCmd("G92 E%.5f\n", tmp.axis[E_AXIS]);
         mustStoreCmd("G1 F%d\n", tmp.feedrate);
 
@@ -304,17 +314,21 @@ void reDrawTime(void) {
 
 void reDrawProgress(u8 progress) {
   char buf[5];
-  GUI_FillRectColor(progressRect.x0, progressRect.y0, (progressRect.x1 - progressRect.x0) * (progress / 100), progressRect.y1, BLUE);
+  // GUI_FillRectColor(progressRect.x0, progressRect.y0, (progressRect.x1 - progressRect.x0) * (progress / 100), progressRect.y1, BLUE);
+  // if (progress < 100)
+  //   GUI_FillRectColor((progressRect.x1 - progressRect.x0) * (progress / 100) + 1, progressRect.y0, progressRect.x1, progressRect.y1, GRAY);
+  GUI_FillRectColor(120, 73, (240 * (progress / 100)), 121, BLUE);
   if (progress < 100)
-    GUI_FillRectColor((progressRect.x1 - progressRect.x0) * (progress / 100) + 1, progressRect.y0, progressRect.x1, progressRect.y1, GRAY);
+    GUI_FillRectColor((240 * (progress / 100)) + 1, 73, 360, 121, GRAY);
 
   my_sprintf(buf, "%d%%", progress);
-  // GUI_SetTextMode(GUI_TEXTMODE_TRANS);
+  // GUI_SetTextMode(GUI_TEXTMODE_TRANS) ;
   const GUI_RECT percentageRect = {
       BED_X,
       TEMP_Y - 3 * BYTE_HEIGHT,
       BED_X + 5 * BYTE_WIDTH,
       TEMP_Y - 2 * BYTE_HEIGHT};
+  GUI_ClearPrect(&percentageRect);
   GUI_DispStringInPrect(&percentageRect, (u8 *)buf);
   // GUI_SetTextMode(GUI_TEXTMODE_NORMAL);
 }
@@ -416,7 +430,7 @@ void menuPrinting(void) {
         break;
 
       case KEY_ICON_4:
-        infoMenu.menu[++infoMenu.cur] = menuFan;
+        infoMenu.menu[++infoMenu.cur] = menuRouter;
         break;
 
       case KEY_ICON_5:
@@ -487,7 +501,8 @@ void abortPrinting(void) {
   heatClearIsWaiting();
 
   mustStoreCmd("G0 Z%d F3000\n", limitValue(0, (int)coordinateGetAxisTarget(Z_AXIS) + 10, Z_MAX_POS));
-  mustStoreCmd(CANCEL_PRINT_GCODE);
+  if (strlen(CANCEL_PRINT_GCODE) > 0)
+    mustStoreCmd(CANCEL_PRINT_GCODE);
 
   endPrinting();
   exitPrinting();
@@ -522,8 +537,8 @@ void menuShutDown(void) {
 
   popupDrawPage(bottomDoubleBtn, textSelect(LABEL_SHUT_DOWN), textSelect(LABEL_WAIT_TEMP_SHUT_DOWN), textSelect(LABEL_FORCE_SHUT_DOWN), textSelect(LABEL_CANNEL));
 
-  for (u8 i = 0; i < FAN_NUM; i++) {
-    mustStoreCmd("%s S255\n", fanCmd[i]);
+  for (u8 i = 0; i < ROUTER_NUM; i++) {
+    mustStoreCmd("%s S255\n", routerCmd[i]);
   }
   while (infoMenu.menu[infoMenu.cur] == menuShutDown) {
     key_num = KEY_GetValue(2, doubleBtnRect);
@@ -536,14 +551,14 @@ void menuShutDown(void) {
         break;
     }
     tempIsLower = true;
-    for (TOOL i = NOZZLE0; i < HEATER_NUM; i++) {
-      if (heatGetCurrentTemp(NOZZLE0) >= AUTO_SHUT_DOWN_MAXTEMP)
+    for (TOOL i = ROUTER0; i < HEATER_NUM; i++) {
+      if (heatGetCurrentTemp(ROUTER0) >= AUTO_SHUT_DOWN_MAXTEMP)
         tempIsLower = false;
     }
     if (tempIsLower) {
     shutdown:
-      for (u8 i = 0; i < FAN_NUM; i++) {
-        mustStoreCmd("%s S0\n", fanCmd[i]);
+      for (u8 i = 0; i < ROUTER_NUM; i++) {
+        mustStoreCmd("%s S0\n", routerCmd[i]);
       }
       mustStoreCmd("M81\n");
       infoMenu.cur--;

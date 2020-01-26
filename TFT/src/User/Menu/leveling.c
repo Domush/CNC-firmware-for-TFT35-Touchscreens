@@ -1,83 +1,81 @@
 #include "leveling.h"
 #include "includes.h"
 
-const MENUITEMS autoLevelingItems = {
-// title
-LABEL_ABL,
-// icon                        label
- {{ICON_BLTOUCH_DEPLOY,        LABEL_BLTOUCH_DEPLOY},
-  {ICON_BLTOUCH_STOW,          LABEL_BLTOUCH_STOW},
-  {ICON_BLTOUCH_REPEAT,        LABEL_BLTOUCH_REPEAT},
-  {ICON_PROBE_OFFSET,          LABEL_PROBE_OFFSET},
-  {ICON_BLTOUCH,               LABEL_BLTOUCH},
-  {ICON_BLTOUCH_TEST ,         LABEL_BLTOUCH_TEST},
-  {ICON_FAN_FULL_SPEED,        LABEL_FAN_FULL_SPEED},
-  {ICON_BACK,                  LABEL_BACK},}
-};
-
-void menuAutoLeveling(void)
-{
-  KEY_VALUES key_num=KEY_IDLE;
-  menuDrawPage(&autoLevelingItems);
-  while(infoMenu.menu[infoMenu.cur] == menuAutoLeveling)
-  {
-    key_num = menuKeyGetValue();
-    switch(key_num)
+const MENUITEMS autoHomingItems = {
+    // title
+    LABEL_ABL,
+    // icon                        label
     {
-      case KEY_ICON_0:
+        {ICON_ZERO_X, LABEL_ZERO_X},
+        {ICON_ZERO_Y, LABEL_ZERO_Y},
+        {ICON_ZERO_Z, LABEL_ZERO_Z},
+        {ICON_ZERO_ALL, LABEL_ZERO_ALL},
+        {ICON_ROUTER_OFF, LABEL_ROUTER_OFF},
+        {ICON_SWAP_BITS, LABEL_SWAP_BITS},
+        {ICON_ROUTER_ON, LABEL_ROUTER_ON},
+        {ICON_BACK, LABEL_BACK},
+    }};
+
+void menuHoming(void) {
+  KEY_VALUES key_num = KEY_IDLE;
+  menuDrawPage(&autoHomingItems);
+  while (infoMenu.menu[infoMenu.cur] == menuHoming) {
+    key_num = menuKeyGetValue();
+    switch (key_num) {
+      case KEY_ICON_0:  // Home X
         storeCmd("G92 X0\n");
         break;
-      case KEY_ICON_1:
+      case KEY_ICON_1:  // Home Y
         storeCmd("G92 Y0\n");
         break;
-      case KEY_ICON_2:
+      case KEY_ICON_2:  // Home Z
         storeCmd("G92 Z0\n");
         break;
-      case KEY_ICON_3:
+      case KEY_ICON_3:  // Home all
         storeCmd("G92 X0 Y0 Z0\n");
         break;
-      case KEY_ICON_4:
-        storeCmd("M107\n");
+      case KEY_ICON_4:  // Router off
+        routerControl(0);
         break;
-      case KEY_ICON_5:
-        storeCmd("M106 S5\n");
+      case KEY_ICON_5:  // Router replace bit
+        routerChangeBit();
         break;
-      case KEY_ICON_6:
-        storeCmd("M106 S255\n");
-        break;    
-      case KEY_ICON_7:
-        infoMenu.cur--; break;
-      default:break;
+      case KEY_ICON_6:  // Router on
+        routerControl(255);
+        break;
+      case KEY_ICON_7:  // Back
+        infoMenu.cur--;
+        break;
+      default:
+        break;
     }
     loopProcess();
   }
 }
 
-
 const MENUITEMS manualLevelingItems = {
-// title
-LABEL_LEVELING,
-// icon                        label
- {{ICON_POINT_1,               LABEL_POINT_1},
-  {ICON_POINT_2,               LABEL_POINT_2},
-  {ICON_POINT_3,               LABEL_POINT_3},
-  {ICON_POINT_4,               LABEL_POINT_4},
-  {ICON_BACKGROUND,            LABEL_BACKGROUND},
-  {ICON_BACKGROUND,            LABEL_BACKGROUND},
-  {ICON_BACKGROUND,            LABEL_BACKGROUND},
-  {ICON_BACK,                  LABEL_BACK},}
-};
+    // title
+    LABEL_LEVELING,
+    // icon                        label
+    {
+        {ICON_DISABLE_XY, LABEL_DISABLE_XY},
+        {ICON_DISABLE_Z, LABEL_DISABLE_Z},
+        {ICON_POINT_3, LABEL_POINT_3},
+        {ICON_POINT_4, LABEL_POINT_4},
+        {ICON_BACKGROUND, LABEL_BACKGROUND},
+        {ICON_BACKGROUND, LABEL_BACKGROUND},
+        {ICON_BACKGROUND, LABEL_BACKGROUND},
+        {ICON_BACK, LABEL_BACK},
+    }};
 
-void moveToLevelingPoint(u8 point)
-{
+void moveToLevelingPoint(u8 point) {
   static const s16 pointPosition[][2] = {
-    {LEVELING_POINT_1_X, LEVELING_POINT_1_Y},
-    {LEVELING_POINT_2_X, LEVELING_POINT_2_Y},
-    {LEVELING_POINT_3_X, LEVELING_POINT_3_Y},
-    {LEVELING_POINT_4_X, LEVELING_POINT_4_Y},
+      {LEVELING_DISABLE_XY_X, LEVELING_DISABLE_XY_Y},
+      {LEVELING_DISABLE_Z_X, LEVELING_DISABLE_Z_Y},
+      {LEVELING_POINT_3_X, LEVELING_POINT_3_Y},
+      {LEVELING_POINT_4_X, LEVELING_POINT_4_Y},
   };
-  if(coordinateIsClear() == false)
-  {
+  if (coordinateIsClear() == false) {
     storeCmd("G28\n");
   }
   storeCmd("G0 Z%.3f F%d\n", LEVELING_POINT_MOVE_Z, LEVELING_POINT_Z_FEEDRATE);
@@ -85,22 +83,29 @@ void moveToLevelingPoint(u8 point)
   storeCmd("G0 Z%.3f F%d\n", LEVELING_POINT_Z, LEVELING_POINT_Z_FEEDRATE);
 }
 
-void menuManualLeveling(void)
-{
-  KEY_VALUES key_num=KEY_IDLE;
+void menuManualLeveling(void) {
+  KEY_VALUES key_num = KEY_IDLE;
   menuDrawPage(&manualLevelingItems);
-  while(infoMenu.menu[infoMenu.cur] == menuManualLeveling)
-  {
+  while (infoMenu.menu[infoMenu.cur] == menuManualLeveling) {
     key_num = menuKeyGetValue();
-    switch(key_num)
-    {
-      case KEY_ICON_0: moveToLevelingPoint(0); break;
-      case KEY_ICON_1: moveToLevelingPoint(1); break;
-      case KEY_ICON_2: moveToLevelingPoint(2); break;
-      case KEY_ICON_3: moveToLevelingPoint(3); break;
+    switch (key_num) {
+      case KEY_ICON_0:
+        moveToLevelingPoint(0);
+        break;
+      case KEY_ICON_1:
+        moveToLevelingPoint(1);
+        break;
+      case KEY_ICON_2:
+        moveToLevelingPoint(2);
+        break;
+      case KEY_ICON_3:
+        moveToLevelingPoint(3);
+        break;
       case KEY_ICON_7:
-        infoMenu.cur--; break;
-      default:break;
+        infoMenu.cur--;
+        break;
+      default:
+        break;
     }
     loopProcess();
   }

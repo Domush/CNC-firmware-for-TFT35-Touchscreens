@@ -28,12 +28,12 @@ const ITEM itemToolPreheat[] = {
 // icon                       label
   {ICON_PREHEAT_BOTH,         LABEL_PREHEAT_BOTH},
   {ICON_BED,                  LABEL_BED},
-  {ICON_NOZZLE,               LABEL_NOZZLE},
-  {ICON_NOZZLE,               LABEL_NOZZLE},
-  {ICON_NOZZLE,               LABEL_NOZZLE},
-  {ICON_NOZZLE,               LABEL_NOZZLE},
-  {ICON_NOZZLE,               LABEL_NOZZLE},
-  {ICON_NOZZLE,               LABEL_NOZZLE},
+  {ICON_ROUTER,               LABEL_ROUTER},
+  {ICON_ROUTER,               LABEL_ROUTER},
+  {ICON_ROUTER,               LABEL_ROUTER},
+  {ICON_ROUTER,               LABEL_ROUTER},
+  {ICON_ROUTER,               LABEL_ROUTER},
+  {ICON_ROUTER,               LABEL_ROUTER},
 };   
 
 const u16   preheat_bed_temp[] = PREHEAT_BED;
@@ -63,7 +63,7 @@ void menuPreheat(void)
           case BED_PREHEAT:
             heatSetTargetTemp(BED, preheat_bed_temp[key_num]);
             break;
-          case NOZZLE0_PREHEAT:
+          case ROUTER0_PREHEAT:
             heatSetTargetTemp(heatGetCurrentToolNozzle(), preheat_hotend_temp[key_num]);
             break;
         }

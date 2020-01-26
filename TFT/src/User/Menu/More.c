@@ -29,7 +29,7 @@ MENUITEMS moreItems = {
 //  title
 LABEL_MORE,
 // icon                       label
- {{ICON_FAN,                  LABEL_FAN},
+ {{ICON_ROUTER,                  LABEL_ROUTER},
   {ICON_RGB_SETTINGS,         LABEL_RGB_SETTINGS},
   {ICON_EXTRUDE,              LABEL_EXTRUDE},
   {ICON_FEATURE_SETTINGS,     LABEL_FEATURE_SETTINGS},
@@ -50,7 +50,7 @@ void menuMore(void)
     switch(key_num)
     {
       case KEY_ICON_0:
-        infoMenu.menu[++infoMenu.cur] = menuFan;
+        infoMenu.menu[++infoMenu.cur] = menuRouter;
         break;
       
       case KEY_ICON_1:

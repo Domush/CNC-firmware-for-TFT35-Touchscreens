@@ -6,7 +6,7 @@ SETTINGS infoSettings;
 // Reset settings data
 void infoSettingsReset(void)
 {
-  infoSettings.baudrate = 115200;
+  infoSettings.baudrate = 250000;
   infoSettings.language = ENGLISH;
   infoSettings.mode = SERIAL_TSC;
   infoSettings.runout = 0;
@@ -18,6 +18,7 @@ void infoSettingsReset(void)
   infoSettings.terminalACK = 0;
   infoSettings.invert_yaxis = 0;
   infoSettings.move_speed = 0;
+  infoSettings.router_power = 0;
   infoSettings.led_color = LED_OFF;
   infoSettings.invert_zaxis = 0;
   
@@ -27,7 +28,9 @@ void infoSettingsReset(void)
 void menuInfo(void)
 {
   const char* hardware = "Board   : BIGTREETECH_" HARDWARE_VERSION;
-  const char* firmware = "Firmware: "HARDWARE_VERSION"." STRINGIFY(SOFTWARE_VERSION) " " __DATE__;
+  const char* firmware = "Firmware: "HARDWARE_VERSION"." STRINGIFY(SOFTWARE_VERSION);
+  const char* build_date = "Build date: " __DATE__;
+  const char* build_author = "Build author: Edward Webber";
   
   u16 HW_X = (LCD_WIDTH - GUI_StrPixelWidth((u8 *)hardware))/2;
   u16 FW_X = (LCD_WIDTH - GUI_StrPixelWidth((u8 *)firmware))/2;
@@ -38,6 +41,8 @@ void menuInfo(void)
 
   GUI_DispString(startX, centerY - BYTE_HEIGHT, (u8 *)hardware);
   GUI_DispString(startX, centerY, (u8 *)firmware);
+  GUI_DispString(startX, centerY + BYTE_HEIGHT, (u8 *)build_author);
+  GUI_DispString(startX, centerY + (BYTE_HEIGHT * 2), (u8 *)build_date);
   GUI_DispStringInRect(20, LCD_HEIGHT - (BYTE_HEIGHT*2), LCD_WIDTH-20, LCD_HEIGHT, textSelect(LABEL_TOUCH_TO_EXIT));
 
   while(!isPress()) loopProcess();

@@ -9,9 +9,9 @@ int MODEselect;
 const char *const ignoreEcho[] = {
     "Now fresh file:",
     "Probe Z Offset:",
-    "//Action:",
-    "//action:",
-    "action:",
+    // "//Action:",
+    // "//action:",
+    // "action:",
     "M0/1 Break"};
 
 void setCurrentAckSrc(uint8_t src) {
@@ -126,12 +126,12 @@ void parseACK(void) {
     }
     if (ack_seen("X:")) {
       storegantry(0, ack_value());
-      //storeCmd("M118 %d\n", ack_value());
+      storeCmd("M118 %d\n", ack_value()); //update X position
       if (ack_seen("Y:")) {
         storegantry(1, ack_value());
-        //storeCmd("M118 %d\n", ack_value());
+        storeCmd("M118 %d\n", ack_value()); //update Y position
         if (ack_seen("Z:")) {
-          //storeCmd("M118 %d\n", ack_value());
+          storeCmd("M118 %d\n", ack_value()); //update Z position
           storegantry(2, ack_value());
         }
       }
@@ -210,14 +210,18 @@ void parseACK(void) {
     else if (ack_seen(errormagic)) {
       ackPopupInfo(errormagic);
     } else if (ack_seen(echomagic)) {
+      storeCmd("M118 E1 Full Message:%d\n", dmaL2Cache); //debug pause message
       for (u8 i = 0; i < COUNT(ignoreEcho); i++) {
-        if (strstr(dmaL2Cache, ignoreEcho[i])) goto parse_end;
+        if (strstr(dmaL2Cache, ignoreEcho[i])) {
+          storeCmd("M118 E1 Ignore triggered:%d\n", ignoreEcho[i]); //debug pause message
+          goto parse_end;
+        }
       }
       ackPopupInfo(echomagic);
     }
   }
   if (ack_seen(" F0:")) {
-    fanSetSpeed(0, ack_value());
+    routerSetSpeed(0, ack_value());
   }
 
 parse_end:

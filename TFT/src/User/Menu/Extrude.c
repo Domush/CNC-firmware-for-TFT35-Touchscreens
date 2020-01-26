@@ -10,7 +10,7 @@ LABEL_EXTRUDE,
   {ICON_BACKGROUND,           LABEL_BACKGROUND},
   {ICON_BACKGROUND,           LABEL_BACKGROUND},
   {ICON_LOAD,                 LABEL_LOAD},
-  {ICON_NOZZLE,               LABEL_NOZZLE},
+  {ICON_ROUTER,               LABEL_ROUTER},
   {ICON_NORMAL_SPEED,         LABEL_NORMAL_SPEED},
   {ICON_E_5_MM,               LABEL_5_MM},
   {ICON_BACK,                 LABEL_BACK},}
@@ -126,7 +126,7 @@ void menuExtrude(void)
     {
       extrudeCoordinate = eTemp;
       extrudeCoordinateReDraw();
-      if(item_extruder_i != heatGetCurrentToolNozzle() - NOZZLE0)
+      if(item_extruder_i != heatGetCurrentToolNozzle() - ROUTER0)
         storeCmd("%s\n", tool_change[item_extruder_i]);
       storeCmd("G0 E%.5f F%d\n", extrudeCoordinate, item_speed[item_speed_i]);
     }

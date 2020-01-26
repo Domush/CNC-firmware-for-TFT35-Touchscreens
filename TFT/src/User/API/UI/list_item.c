@@ -10,9 +10,9 @@ char * dynamic_label[LISTITEM_PER_PAGE];
 const uint16_t ICON_COLOR[ICONCHAR_NUM]=
 {
   BLACK,     //ICONCHAR_BLANK = 0
-  WHITE,    //ICONCHAR_NOZZLE
+  WHITE,    //ICONCHAR_ROUTER
   WHITE,    //ICONCHAR_BED
-  WHITE,    //ICONCHAR_FAN
+  WHITE,    //ICONCHAR_ROUTER
   MAT_YELLOW,    //ICONCHAR_FOLDER
   MAT_BLUE,    //ICONCHAR_FILE
   WHITE,    //ICONCHAR_PAGEUP
@@ -117,9 +117,9 @@ const uint16_t ICON_COLOR[ICONCHAR_NUM]=
 };
 
 #define CHAR_BLANK            ""
-#define CHAR_NOZZLE           "࡟"
+#define CHAR_ROUTER           "࡟"
 #define CHAR_BED              "ࡠ"
-#define CHAR_FAN              "ࡡ"
+#define CHAR_ROUTER              "ࡡ"
 #define CHAR_FOLDER           "ࡢ"
 #define CHAR_FILE             "ࡣ"
 
@@ -224,9 +224,9 @@ const uint16_t ICON_COLOR[ICONCHAR_NUM]=
 
 const char *const GET_ICONCHAR[ICONCHAR_NUM]={
   CHAR_BLANK,
-  CHAR_NOZZLE,
+  CHAR_ROUTER,
   CHAR_BED,
-  CHAR_FAN,
+  CHAR_ROUTER,
   CHAR_FOLDER,
   CHAR_FILE,
   CHAR_PAGEUP,
