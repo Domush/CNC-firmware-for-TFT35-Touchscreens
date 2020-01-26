@@ -102,7 +102,7 @@
     #define RU_LOADING              "Загрузка..."
     #define RU_POWER_FAILED         "Продолжить печать?"
     #define RU_CONTINUE             "Продолжение"
-    #define RU_CANNEL               "Отмена"
+    #define RU_CANCEL               "Отмена"
     #define RU_ADJUST_TITLE         "Калибровка экрана"
     #define RU_ADJUST_INFO          "Нажмите на красную точку"
     #define RU_ADJUST_OK            "Успешная калибровка"

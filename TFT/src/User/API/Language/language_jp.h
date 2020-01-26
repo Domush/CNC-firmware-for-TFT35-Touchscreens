@@ -102,7 +102,7 @@
     #define JP_LOADING              "ロッド中..."
     #define JP_POWER_FAILED         "プリントを継続しますか?"
     #define JP_CONTINUE             "継続"
-    #define JP_CANNEL               "キャンセル"
+    #define JP_CANCEL               "キャンセル"
     #define JP_ADJUST_TITLE         "タッチスクリーン較正"
     #define JP_ADJUST_INFO          "赤星をタッチ"
     #define JP_ADJUST_OK            "校正が成功しました"

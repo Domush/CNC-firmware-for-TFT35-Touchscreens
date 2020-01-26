@@ -102,7 +102,7 @@
     #define AM_LOADING              "Բեռնում է..."  
     #define AM_POWER_FAILED         "Տպելը չի ավարտվել, շարունակե՞լ"
     #define AM_CONTINUE             "Շարունակել"
-    #define AM_CANNEL               "Չեղարկել"
+    #define AM_CANCEL               "Չեղարկել"
     #define AM_ADJUST_TITLE         "Էկրանի կարգավորում"
     #define AM_ADJUST_INFO          "Please click on the red dot"
     #define AM_ADJUST_OK            "Adjustment Success"

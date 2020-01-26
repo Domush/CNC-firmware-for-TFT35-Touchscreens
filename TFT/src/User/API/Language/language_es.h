@@ -102,7 +102,7 @@
     #define ES_LOADING              "Cargando..."
     #define ES_POWER_FAILED         "¿Continuar imprimiendo?"
     #define ES_CONTINUE             "Continuar"
-    #define ES_CANNEL               "Cancelar"
+    #define ES_CANCEL               "Cancelar"
     #define ES_ADJUST_TITLE         "¡Calibrar la pantalla táctil"
     #define ES_ADJUST_INFO          "Por favor haga clic en el punto rojo"
     #define ES_ADJUST_OK            "Ajuste correcto"

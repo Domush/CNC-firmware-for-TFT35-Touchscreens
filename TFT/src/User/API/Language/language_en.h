@@ -103,7 +103,7 @@
 #define EN_LOADING "Loading..."
 #define EN_POWER_FAILED "Continue last job?"
 #define EN_CONTINUE "Continue"
-#define EN_CANNEL "Cancel"
+#define EN_CANCEL "Cancel"
 #define EN_ADJUST_TITLE "Touch Screen Calibration"
 #define EN_ADJUST_INFO "Please click on the red dot"
 #define EN_ADJUST_OK "Adjustment Success"

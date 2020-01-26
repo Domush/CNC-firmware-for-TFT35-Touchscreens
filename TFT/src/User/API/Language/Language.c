@@ -1,19 +1,19 @@
 #include "Language.h"
 #include "includes.h"
 #include "language_en.h"
-#include "language_cn.h"
-#include "language_ru.h"
-#include "language_jp.h"
-#include "language_de.h"
-#include "language_am.h"
-#include "language_cz.h"
-#include "language_es.h"
-#include "language_fr.h"
-#include "language_pt.h"
-#include "language_it.h"
-#include "language_pl.h"
-#include "language_sk.h"
-#include "language_du.h"
+// #include "language_cn.h"
+// #include "language_ru.h"
+// #include "language_jp.h"
+// #include "language_de.h"
+// #include "language_am.h"
+// #include "language_cz.h"
+// #include "language_es.h"
+// #include "language_fr.h"
+// #include "language_pt.h"
+// #include "language_it.h"
+// #include "language_pl.h"
+// #include "language_sk.h"
+// #include "language_du.h"
 
 const char *const en_pack[LABEL_NUM]={
   EN_LANGUAGE,
@@ -22,7 +22,6 @@ const char *const en_pack[LABEL_NUM]={
   EN_HOME,
   EN_PRINT,
   EN_EXTRUDE,
-  EN_ROUTER,
   EN_SETTINGS,
   EN_SCREEN_SETTINGS,
   EN_MACHINE_SETTINGS,
@@ -119,7 +118,7 @@ const char *const en_pack[LABEL_NUM]={
   EN_LOADING,
   EN_POWER_FAILED,
   EN_CONTINUE,
-  EN_CANNEL,
+  EN_CANCEL,
   EN_ADJUST_TITLE,
   EN_ADJUST_INFO,
   EN_ADJUST_OK,
@@ -166,10 +165,14 @@ const char *const en_pack[LABEL_NUM]={
   EN_INVERT_YAXIS,
   EN_INVERT_ZAXIS,
   EN_MOVE_SPEED,
+  EN_ROUTER_CONTROL,
+  EN_DISABLED,
+  EN_M3M5,
+  EN_FAN0,
   EN_KNOB_LED,
   EN_M0_PAUSE,
 };
-
+/*
 const char *const cn_pack[LABEL_NUM]={
   CN_LANGUAGE,
   CN_HEAT,
@@ -263,6 +266,7 @@ const char *const cn_pack[LABEL_NUM]={
   CN_1_MM,
   CN_5_MM,
   CN_10_MM,
+  CN_100_MM,
   CN_1_PERCENT,
   CN_5_PERCENT,
   CN_10_PERCENT,
@@ -273,7 +277,7 @@ const char *const cn_pack[LABEL_NUM]={
   CN_LOADING,
   CN_POWER_FAILED,
   CN_CONTINUE,
-  CN_CANNEL,
+  CN_CANCEL,
   CN_ADJUST_TITLE,
   CN_ADJUST_INFO,
   CN_ADJUST_OK,
@@ -417,6 +421,7 @@ const char *const ru_pack[LABEL_NUM]={
   RU_1_MM,
   RU_5_MM,
   RU_10_MM,
+  RU_100_MM,
   RU_1_PERCENT,
   RU_5_PERCENT,
   RU_10_PERCENT,
@@ -427,7 +432,7 @@ const char *const ru_pack[LABEL_NUM]={
   RU_LOADING,
   RU_POWER_FAILED,
   RU_CONTINUE,
-  RU_CANNEL,
+  RU_CANCEL,
   RU_ADJUST_TITLE,
   RU_ADJUST_INFO,
   RU_ADJUST_OK,
@@ -571,6 +576,7 @@ const char *const jp_pack[LABEL_NUM]={
   JP_1_MM,
   JP_5_MM,
   JP_10_MM,
+  JP_100_MM,
   JP_1_PERCENT,
   JP_5_PERCENT,
   JP_10_PERCENT,
@@ -581,7 +587,7 @@ const char *const jp_pack[LABEL_NUM]={
   JP_LOADING,
   JP_POWER_FAILED,
   JP_CONTINUE,
-  JP_CANNEL,
+  JP_CANCEL,
   JP_ADJUST_TITLE,
   JP_ADJUST_INFO,
   JP_ADJUST_OK,
@@ -725,6 +731,7 @@ const char *const am_pack[LABEL_NUM]={
   AM_1_MM,
   AM_5_MM,
   AM_10_MM,
+  AM_100_MM,
   AM_1_PERCENT,
   AM_5_PERCENT,
   AM_10_PERCENT,
@@ -735,7 +742,7 @@ const char *const am_pack[LABEL_NUM]={
   AM_LOADING,
   AM_POWER_FAILED,
   AM_CONTINUE,
-  AM_CANNEL,
+  AM_CANCEL,
   AM_ADJUST_TITLE,
   AM_ADJUST_INFO,
   AM_ADJUST_OK,
@@ -879,6 +886,7 @@ const char *const de_pack[LABEL_NUM]={
   DE_1_MM,
   DE_5_MM,
   DE_10_MM,
+  DE_100_MM,
   DE_1_PERCENT,
   DE_5_PERCENT,
   DE_10_PERCENT,
@@ -889,7 +897,7 @@ const char *const de_pack[LABEL_NUM]={
   DE_LOADING,
   DE_POWER_FAILED,
   DE_CONTINUE,
-  DE_CANNEL,
+  DE_CANCEL,
   DE_ADJUST_TITLE,
   DE_ADJUST_INFO,
   DE_ADJUST_OK,
@@ -1033,6 +1041,7 @@ const char *const cz_pack[LABEL_NUM]={
   CZ_1_MM,
   CZ_5_MM,
   CZ_10_MM,
+  CZ_100_MM,
   CZ_1_PERCENT,
   CZ_5_PERCENT,
   CZ_10_PERCENT,
@@ -1043,7 +1052,7 @@ const char *const cz_pack[LABEL_NUM]={
   CZ_LOADING,
   CZ_POWER_FAILED,
   CZ_CONTINUE,
-  CZ_CANNEL,
+  CZ_CANCEL,
   CZ_ADJUST_TITLE,
   CZ_ADJUST_INFO,
   CZ_ADJUST_OK,
@@ -1187,6 +1196,7 @@ const char *const es_pack[LABEL_NUM]={
   ES_1_MM,
   ES_5_MM,
   ES_10_MM,
+  ES_100_MM,
   ES_1_PERCENT,
   ES_5_PERCENT,
   ES_10_PERCENT,
@@ -1197,7 +1207,7 @@ const char *const es_pack[LABEL_NUM]={
   ES_LOADING,
   ES_POWER_FAILED,
   ES_CONTINUE,
-  ES_CANNEL,
+  ES_CANCEL,
   ES_ADJUST_TITLE,
   ES_ADJUST_INFO,
   ES_ADJUST_OK,
@@ -1341,6 +1351,7 @@ const char *const fr_pack[LABEL_NUM]={
   FR_1_MM,
   FR_5_MM,
   FR_10_MM,
+  FR_100_MM,
   FR_1_PERCENT,
   FR_5_PERCENT,
   FR_10_PERCENT,
@@ -1351,7 +1362,7 @@ const char *const fr_pack[LABEL_NUM]={
   FR_LOADING,
   FR_POWER_FAILED,
   FR_CONTINUE,
-  FR_CANNEL,
+  FR_CANCEL,
   FR_ADJUST_TITLE,
   FR_ADJUST_INFO,
   FR_ADJUST_OK,
@@ -1411,7 +1422,7 @@ const char *const pt_pack[LABEL_NUM]={
   PT_EXTRUDE,
   PT_ROUTER,
   PT_SETTINGS,
-  PT_SCREPT_SETTINGS,
+  PT_SCREEN_SETTINGS,
   PT_MACHINE_SETTINGS,
   PT_FEATURE_SETTINGS,
   PT_SILENT_ON,
@@ -1452,9 +1463,9 @@ const char *const pt_pack[LABEL_NUM]={
   PT_ROUTER_ON,
   PT_CHANGE_BIT,
   PT_ROTATE_UI,
-  PT_TOUCHSCREPT_ADJUST,
+  PT_TOUCHSCREEN_ADJUST,
   PT_MORE,
-  PT_SCREPT_INFO,
+  PT_SCREEN_INFO,
   PT_WHITE,
   PT_BLACK,
   PT_BLUE,
@@ -1495,6 +1506,7 @@ const char *const pt_pack[LABEL_NUM]={
   PT_1_MM,
   PT_5_MM,
   PT_10_MM,
+  PT_100_MM,
   PT_1_PERCENT,
   PT_5_PERCENT,
   PT_10_PERCENT,
@@ -1505,7 +1517,7 @@ const char *const pt_pack[LABEL_NUM]={
   PT_LOADING,
   PT_POWER_FAILED,
   PT_CONTINUE,
-  PT_CANNEL,
+  PT_CANCEL,
   PT_ADJUST_TITLE,
   PT_ADJUST_INFO,
   PT_ADJUST_OK,
@@ -1649,6 +1661,7 @@ const char *const it_pack[LABEL_NUM]={
   IT_1_MM,
   IT_5_MM,
   IT_10_MM,
+  IT_100_MM,
   IT_1_PERCENT,
   IT_5_PERCENT,
   IT_10_PERCENT,
@@ -1659,7 +1672,7 @@ const char *const it_pack[LABEL_NUM]={
   IT_LOADING,
   IT_POWER_FAILED,
   IT_CONTINUE,
-  IT_CANNEL,
+  IT_CANCEL,
   IT_ADJUST_TITLE,
   IT_ADJUST_INFO,
   IT_ADJUST_OK,
@@ -1803,6 +1816,7 @@ const char *const pl_pack[LABEL_NUM]={
   PL_1_MM,
   PL_5_MM,
   PL_10_MM,
+  PL_100_MM,
   PL_1_PERCENT,
   PL_5_PERCENT,
   PL_10_PERCENT,
@@ -1813,7 +1827,7 @@ const char *const pl_pack[LABEL_NUM]={
   PL_LOADING,
   PL_POWER_FAILED,
   PL_CONTINUE,
-  PL_CANNEL,
+  PL_CANCEL,
   PL_ADJUST_TITLE,
   PL_ADJUST_INFO,
   PL_ADJUST_OK,
@@ -1957,6 +1971,7 @@ const char *const sk_pack[LABEL_NUM]={
   SK_1_MM,
   SK_5_MM,
   SK_10_MM,
+  SK_100_MM,
   SK_1_PERCENT,
   SK_5_PERCENT,
   SK_10_PERCENT,
@@ -1967,7 +1982,7 @@ const char *const sk_pack[LABEL_NUM]={
   SK_LOADING,
   SK_POWER_FAILED,
   SK_CONTINUE,
-  SK_CANNEL,
+  SK_CANCEL,
   SK_ADJUST_TITLE,
   SK_ADJUST_INFO,
   SK_ADJUST_OK,
@@ -2111,6 +2126,7 @@ const char *const du_pack[LABEL_NUM]={
   DU_1_MM,
   DU_5_MM,
   DU_10_MM,
+  DU_100_MM,
   DU_1_PERCENT,
   DU_5_PERCENT,
   DU_10_PERCENT,
@@ -2121,7 +2137,7 @@ const char *const du_pack[LABEL_NUM]={
   DU_LOADING,
   DU_POWER_FAILED,
   DU_CONTINUE,
-  DU_CANNEL,
+  DU_CANCEL,
   DU_ADJUST_TITLE,
   DU_ADJUST_INFO,
   DU_ADJUST_OK,
@@ -2171,25 +2187,25 @@ const char *const du_pack[LABEL_NUM]={
   DU_KNOB_LED,
   DU_M0_PAUSE,
 };
-
+*/
 u8 * textSelect(u8 sel)
 {
   switch(infoSettings.language)
   {
     case ENGLISH:     return (u8 *)en_pack[sel];
-    case CHINESE:     return (u8 *)cn_pack[sel];
-    case RUSSIAN:     return (u8 *)ru_pack[sel];
-    case JAPANESE:    return (u8 *)jp_pack[sel];
-    case ARMENIAN:    return (u8 *)am_pack[sel];
-    case GERMAN:      return (u8 *)de_pack[sel];
-    case CZECH:       return (u8 *)cz_pack[sel];
-    case SPAIN:       return (u8 *)es_pack[sel];
-    case FRENCH:      return (u8 *)fr_pack[sel];
-    case PORTUGUESE:  return (u8 *)pt_pack[sel];
-    case ITALIAN:     return (u8 *)it_pack[sel];
-    case POLISH:      return (u8 *)pl_pack[sel];
-    case SLOVAK:      return (u8 *)sk_pack[sel];
-    case DUTCH:       return (u8 *)du_pack[sel];
+    // case CHINESE:     return (u8 *)cn_pack[sel];
+    // case RUSSIAN:     return (u8 *)ru_pack[sel];
+    // case JAPANESE:    return (u8 *)jp_pack[sel];
+    // case ARMENIAN:    return (u8 *)am_pack[sel];
+    // case GERMAN:      return (u8 *)de_pack[sel];
+    // case CZECH:       return (u8 *)cz_pack[sel];
+    // case SPAIN:       return (u8 *)es_pack[sel];
+    // case FRENCH:      return (u8 *)fr_pack[sel];
+    // case PORTUGUESE:  return (u8 *)pt_pack[sel];
+    // case ITALIAN:     return (u8 *)it_pack[sel];
+    // case POLISH:      return (u8 *)pl_pack[sel];
+    // case SLOVAK:      return (u8 *)sk_pack[sel];
+    // case DUTCH:       return (u8 *)du_pack[sel];
 
     default:        return NULL;
   }

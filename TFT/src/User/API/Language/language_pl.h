@@ -102,7 +102,7 @@
     #define PL_LOADING              "Loading..."
     #define PL_POWER_FAILED         "Kontynuować drukowanie?"
     #define PL_CONTINUE             "Kontynuuj"
-    #define PL_CANNEL               "Anuluj"
+    #define PL_CANCEL               "Anuluj"
     #define PL_ADJUST_TITLE         "Kalibracja ekranu dotykowego"
     #define PL_ADJUST_INFO          "Dotykaj czerwoną kropkę"
     #define PL_ADJUST_OK            "Kalibracja poprawna"

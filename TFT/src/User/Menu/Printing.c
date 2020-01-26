@@ -512,7 +512,7 @@ void abortPrinting(void) {
 void menuStopPrinting(void) {
   u16 key_num = IDLE_TOUCH;
 
-  popupDrawPage(bottomDoubleBtn, textSelect(LABEL_WARNING), textSelect(LABEL_STOP_PRINT), textSelect(LABEL_CONFIRM), textSelect(LABEL_CANNEL));
+  popupDrawPage(bottomDoubleBtn, textSelect(LABEL_WARNING), textSelect(LABEL_STOP_PRINT), textSelect(LABEL_CONFIRM), textSelect(LABEL_CANCEL));
 
   while (infoMenu.menu[infoMenu.cur] == menuStopPrinting) {
     key_num = KEY_GetValue(2, doubleBtnRect);
@@ -536,7 +536,7 @@ void menuShutDown(void) {
   bool tempIsLower;
   u16 key_num = IDLE_TOUCH;
 
-  popupDrawPage(bottomDoubleBtn, textSelect(LABEL_SHUT_DOWN), textSelect(LABEL_WAIT_TEMP_SHUT_DOWN), textSelect(LABEL_FORCE_SHUT_DOWN), textSelect(LABEL_CANNEL));
+  popupDrawPage(bottomDoubleBtn, textSelect(LABEL_SHUT_DOWN), textSelect(LABEL_WAIT_TEMP_SHUT_DOWN), textSelect(LABEL_FORCE_SHUT_DOWN), textSelect(LABEL_CANCEL));
 
   for (u8 i = 0; i < ROUTER_NUM; i++) {
     mustStoreCmd("%s S255\n", routerCmd[i]);

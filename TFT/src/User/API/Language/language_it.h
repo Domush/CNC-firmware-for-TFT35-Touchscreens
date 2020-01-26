@@ -102,7 +102,7 @@
     #define IT_LOADING              "Caricamento..."
     #define IT_POWER_FAILED         "Vuoi continuare la stampa?"
     #define IT_CONTINUE             "Continua"
-    #define IT_CANNEL               "Cancella"
+    #define IT_CANCEL               "Cancella"
     #define IT_ADJUST_TITLE         "Calibrazione Touch Screen"
     #define IT_ADJUST_INFO          "Premi sui punti rossi"
     #define IT_ADJUST_OK            "Regolazione Completata!"

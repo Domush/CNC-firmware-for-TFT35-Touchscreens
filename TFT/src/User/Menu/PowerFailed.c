@@ -139,15 +139,15 @@ bool powerOffGetData(void) {
 #else
     mustStoreCacheCmd("G28 R0 XY\n");
 #endif
-    mustStoreCacheCmd("M83\n");
-    mustStoreCacheCmd("G1 E30 F300\n");
-    mustStoreCacheCmd("G1 E-%d F4800\n", ROUTER_PAUSE_RETRACT_LENGTH);
+    // mustStoreCacheCmd("M83\n");
+    // mustStoreCacheCmd("G1 E30 F300\n");
+    // mustStoreCacheCmd("G1 E-%d F4800\n", ROUTER_PAUSE_RETRACT_LENGTH);
     mustStoreCacheCmd("G1 X%.3f Y%.3f Z%.3f F3000\n",
                       infoBreakPoint.axis[X_AXIS],
                       infoBreakPoint.axis[Y_AXIS],
                       infoBreakPoint.axis[Z_AXIS]);
-    mustStoreCacheCmd("G1 E%d F4800\n", ROUTER_RESUME_PURGE_LENGTH);
-    mustStoreCacheCmd("G92 E%.5f\n", infoBreakPoint.axis[E_AXIS]);
+    // mustStoreCacheCmd("G1 E%d F4800\n", ROUTER_RESUME_PURGE_LENGTH);
+    // mustStoreCacheCmd("G92 E%.5f\n", infoBreakPoint.axis[E_AXIS]);
     mustStoreCacheCmd("G1 F%d\n", infoBreakPoint.feedrate);
 
     if (infoBreakPoint.relative_e == false) {
@@ -169,7 +169,7 @@ void menuPowerOff(void) {
   GUI_DispString((LCD_WIDTH - GUI_StrPixelWidth(textSelect(LABEL_LOADING))) / 2, LCD_HEIGHT / 2 - BYTE_HEIGHT, textSelect(LABEL_LOADING));
 
   if (mountFS() == true && powerFailedExist()) {
-    popupDrawPage(bottomDoubleBtn, textSelect(LABEL_POWER_FAILED), (u8 *)infoFile.title, textSelect(LABEL_CONFIRM), textSelect(LABEL_CANNEL));
+    popupDrawPage(bottomDoubleBtn, textSelect(LABEL_POWER_FAILED), (u8 *)infoFile.title, textSelect(LABEL_CONFIRM), textSelect(LABEL_CANCEL));
 
     while (infoMenu.menu[infoMenu.cur] == menuPowerOff) {
       key_num = KEY_GetValue(2, doubleBtnRect);

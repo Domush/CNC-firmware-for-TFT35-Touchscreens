@@ -102,7 +102,7 @@
     #define DU_LOADING              "Opladen..."
     #define DU_POWER_FAILED         "Verder met printen?"
     #define DU_CONTINUE             "Verder"
-    #define DU_CANNEL               "Afbreken"
+    #define DU_CANCEL               "Afbreken"
     #define DU_ADJUST_TITLE         "Touch Screen Calibratie"
     #define DU_ADJUST_INFO          "Klik op de rode punt"
     #define DU_ADJUST_OK            "Calibratie Gelukt"

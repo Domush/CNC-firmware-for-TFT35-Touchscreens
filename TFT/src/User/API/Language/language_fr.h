@@ -102,7 +102,7 @@
     #define FR_LOADING              "Chargement..."
     #define FR_POWER_FAILED         "Continuer l’impression ?"
     #define FR_CONTINUE             "Continuer"
-    #define FR_CANNEL               "Annuler"
+    #define FR_CANCEL               "Annuler"
     #define FR_ADJUST_TITLE         "Calibration écran tactile"
     #define FR_ADJUST_INFO          "SVP Touchez le point rouge"
     #define FR_ADJUST_OK            "Ajustement OK"

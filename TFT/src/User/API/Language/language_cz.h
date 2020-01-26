@@ -102,7 +102,7 @@
     #define CZ_LOADING              "Nahrávám..."
     #define CZ_POWER_FAILED         "Obnovit tisk?"
     #define CZ_CONTINUE             "Pokračovat"
-    #define CZ_CANNEL               "Zrušit"
+    #define CZ_CANCEL               "Zrušit"
     #define CZ_ADJUST_TITLE         "Kalibrace dotykové obrazovky"
     #define CZ_ADJUST_INFO          "Dotkněte se postupně všech bodů"
     #define CZ_ADJUST_OK            "Kalibrace úspěšná"

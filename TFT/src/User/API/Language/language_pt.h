@@ -102,7 +102,7 @@
     #define PT_LOADING              "Carregando..."
     #define PT_POWER_FAILED         "Continuar a imprimir?"
     #define PT_CONTINUE             "Continuar"
-    #define PT_CANNEL               "Cancelar"
+    #define PT_CANCEL               "Cancelar"
     #define PT_ADJUST_TITLE         "Calibracao do Touch Screen"
     #define PT_ADJUST_INFO          "Por favor, clique no ponto vermelho"
     #define PT_ADJUST_OK            "Ajustado com sucesso"

@@ -102,7 +102,7 @@
     #define CN_LOADING              "加载中..." 
     #define CN_POWER_FAILED         "是否继续打印?"
     #define CN_CONTINUE             "继续"
-    #define CN_CANNEL               "取消"
+    #define CN_CANCEL               "取消"
     #define CN_ADJUST_TITLE         "触屏校准"
     #define CN_ADJUST_INFO          "请点击红点中心位置"
     #define CN_ADJUST_OK            "校准成功"

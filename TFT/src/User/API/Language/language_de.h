@@ -102,7 +102,7 @@
     #define DE_LOADING              "Laden..."
     #define DE_POWER_FAILED         "Druck fortsetzen?"
     #define DE_CONTINUE             "Fortsetzen"
-    #define DE_CANNEL               "Abbruch"
+    #define DE_CANCEL               "Abbruch"
     #define DE_ADJUST_TITLE         "Touchscreen kalibrieren"
     #define DE_ADJUST_INFO          "Auf den roten Punkt drücken"
     #define DE_ADJUST_OK            "Anpassung erfolgreich"
