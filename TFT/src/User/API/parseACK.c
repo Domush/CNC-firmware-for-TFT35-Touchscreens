@@ -12,7 +12,8 @@ const char *const ignoreEcho[] = {
     // "//Action:",
     // "//action:",
     // "action:",
-    "M0/1 Break"};
+    // "M0/1 Break"
+    };
 
 void setCurrentAckSrc(uint8_t src) {
   ack_cur_src = src;
@@ -55,13 +56,13 @@ static float ack_second_value() {
 }
 
 void ackPopupInfo(const char *info) {
-  if (infoMenu.menu[infoMenu.cur] == parametersetting) return;
+  if (infoMenu.menu[infoMenu.cur] == ParameterSetting) return;
 
-  if (info == echomagic) {
+  if (info == replyEcho) {
     statusScreen_setMsg((u8 *)info, (u8 *)dmaL2Cache + ack_index);
   }
   if (infoMenu.menu[infoMenu.cur] == menuTerminal) return;
-  if (infoMenu.menu[infoMenu.cur] == menuStatus && info == echomagic) return;
+  if (infoMenu.menu[infoMenu.cur] == menuStatus && info == replyEcho) return;
 
   popupReminder((u8 *)info, (u8 *)dmaL2Cache + ack_index);
 }
@@ -111,7 +112,7 @@ void parseACK(void) {
     } else {
       requestCommandInfo.done = true;
       requestCommandInfo.inResponse = false;
-      ackPopupInfo(errormagic);
+      ackPopupInfo(replyError);
     }
     infoHost.wait = false;
     goto parse_end;
@@ -136,20 +137,20 @@ void parseACK(void) {
         }
       }
     } else if (ack_seen("T:") || ack_seen("T0:")) {
-      heatSetCurrentTemp(heatGetCurrentToolNozzle(), ack_value() + 0.5);
-      heatSyncTargetTemp(heatGetCurrentToolNozzle(), ack_second_value() + 0.5);
-      for (TOOL i = BED; i < HEATER_NUM; i++) {
-        if (ack_seen(toolID[i])) {
-          heatSetCurrentTemp(i, ack_value() + 0.5);
-          heatSyncTargetTemp(i, ack_second_value() + 0.5);
-        }
-      }
+      // heatSetCurrentTemp(heatGetCurrentToolNozzle(), ack_value() + 0.5);
+      // heatSyncTargetTemp(heatGetCurrentToolNozzle(), ack_second_value() + 0.5);
+      // for (TOOL i = BED; i < HEATER_NUM; i++) {
+      //   if (ack_seen(toolID[i])) {
+      //     heatSetCurrentTemp(i, ack_value() + 0.5);
+      //     heatSyncTargetTemp(i, ack_second_value() + 0.5);
+      //   }
+      // }
 #ifdef MENU_LIST_MODE
       avoid_terminal = infoSettings.terminalACK;
 #endif
     } else if (ack_seen("B:")) {
-      heatSetCurrentTemp(BED, ack_value() + 0.5);
-      heatSyncTargetTemp(BED, ack_second_value() + 0.5);
+      // heatSetCurrentTemp(BED, ack_value() + 0.5);
+      // heatSyncTargetTemp(BED, ack_second_value() + 0.5);
 #ifdef MENU_LIST_MODE
       avoid_terminal = infoSettings.terminalACK;
 #endif
@@ -163,9 +164,9 @@ void parseACK(void) {
     } else if (ack_seen("Count E:"))  // parse actual position, response of "M114"
     {
       coordinateSetAxisActualSteps(E_AXIS, ack_value());
-    } else if (ack_seen(echomagic) && ack_seen(busymagic) && ack_seen("processing")) {
+    } else if (ack_seen(replyEcho) && ack_seen(replyBusy) && ack_seen("processing")) {
       busyIndicator(STATUS_BUSY);
-    } else if (ack_seen(echomagic) && ack_seen(busymagic) && ack_seen("paused for user")) {
+    } else if (ack_seen(replyEcho) && ack_seen(replyBusy) && ack_seen("paused for user")) {
       goto parse_end;
     } else if (ack_seen("X driver current: ")) {
       Get_parameter_value[0] = ack_value();
@@ -191,10 +192,10 @@ void parseACK(void) {
         Get_parameter_value[7] = ack_value();
     }
 #ifdef ONBOARD_SD_SUPPORT
-    else if (ack_seen(bsdnoprintingmagic) && infoMenu.menu[infoMenu.cur] == menuPrinting) {
+    else if (ack_seen(replySDNotPrinting) && infoMenu.menu[infoMenu.cur] == menuPrinting) {
       infoHost.printing = false;
       completePrinting();
-    } else if (ack_seen(bsdprintingmagic)) {
+    } else if (ack_seen(replySDPrinting)) {
       if (infoMenu.menu[infoMenu.cur] != menuPrinting && !infoHost.printing) {
         infoMenu.menu[++infoMenu.cur] = menuPrinting;
         infoHost.printing = true;
@@ -207,9 +208,9 @@ void parseACK(void) {
       //      powerFailedCache(position);
     }
 #endif
-    else if (ack_seen(errormagic)) {
-      ackPopupInfo(errormagic);
-    } else if (ack_seen(echomagic)) {
+    else if (ack_seen(replyError)) {
+      ackPopupInfo(replyError);
+    } else if (ack_seen(replyEcho)) {
       storeCmd("M118 E1 Full Message:%d\n", dmaL2Cache); //debug pause message
       for (u8 i = 0; i < COUNT(ignoreEcho); i++) {
         if (strstr(dmaL2Cache, ignoreEcho[i])) {
@@ -217,7 +218,7 @@ void parseACK(void) {
           goto parse_end;
         }
       }
-      ackPopupInfo(echomagic);
+      ackPopupInfo(replyEcho);
     }
   }
   if (ack_seen(" F0:")) {

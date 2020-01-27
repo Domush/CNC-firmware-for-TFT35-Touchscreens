@@ -418,7 +418,7 @@ void menuMachineSettings(void)
         break;
 
       case KEY_ICON_4:
-        infoMenu.menu[++infoMenu.cur] = parametersetting;
+        infoMenu.menu[++infoMenu.cur] = ParameterSetting;
         break;
       
       case KEY_ICON_7:

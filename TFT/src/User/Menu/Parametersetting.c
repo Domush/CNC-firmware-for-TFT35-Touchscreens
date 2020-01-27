@@ -1,7 +1,7 @@
 #include "Parametersetting.h"
 #include "includes.h"
 
-SKEY_VALUES Select_Paranmeter;
+SKEY_VALUES Select_Parameter;
 bool getsetparameter, rev_success;
 int cmd_getparameter_num = 0;
 char *Get_value[VALUE_NUM];
@@ -227,10 +227,10 @@ void Setting_parameter(void) {
           ParameterBuf[nowIndex++] = '\n';
           ParameterBuf[nowIndex] = 0;
 #if 1
-          cmd_long = strlen(parameter_cmd[Select_Paranmeter]);
+          cmd_long = strlen(parameter_cmd[Select_Parameter]);
           cmd_buff = malloc(cmd_long + strlen(ParameterBuf));
           if (cmd_buff) {
-            strcpy(cmd_buff, parameter_cmd[Select_Paranmeter]);
+            strcpy(cmd_buff, parameter_cmd[Select_Parameter]);
             storeCmd(strcat(cmd_buff, ParameterBuf));
             free(cmd_buff);
           }
@@ -264,13 +264,13 @@ void Setting_parameter(void) {
   return;
 }
 
-void parametersetting(void) {
+void ParameterSetting(void) {
   TSC_ReDrawIcon = NULL;
   Draw_parameterbutton();
   Send_Settingcmd();
   SKEY_VALUES key_num = SKEY_IDLE;
 
-  while (infoMenu.menu[infoMenu.cur] == parametersetting) {
+  while (infoMenu.menu[infoMenu.cur] == ParameterSetting) {
     key_num = SKeyGetValue();
     switch (key_num) {
       case SKEY_3:
@@ -281,7 +281,7 @@ void parametersetting(void) {
       case SKEY_8:
       case SKEY_9:
       case SKEY_10:
-        Select_Paranmeter = key_num;
+        Select_Parameter = key_num;
         infoMenu.menu[++infoMenu.cur] = Setting_parameter;
         break;
 
@@ -323,8 +323,7 @@ void temp_Change(void) {
 void show_GlobalInfo(void) {
   if (infoHost.connected == false) return;
   if (infoMenu.menu[infoMenu.cur] == menuMove || infoMenu.menu[infoMenu.cur] == menuStatus) return;
-  drawGlobalInfo();
-
+  // drawGlobalInfo();
   return;
 }
 void drawGlobalInfo(void) {

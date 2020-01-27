@@ -1,10 +1,10 @@
 #include "GUI.h"
 #include "includes.h"
 
-uint16_t foreGroundColor = WHITE;
-uint16_t backGroundColor = BLACK;
-GUI_TEXT_MODE guiTextMode = GUI_TEXTMODE_NORMAL;
-GUI_NUM_MODE guiNumMode = GUI_NUMMODE_SPACE;
+uint16_t textColor          = WHITE;
+uint16_t bgColor            = BLACK;
+GUI_TEXT_MODE guiTextMode   = GUI_TEXTMODE_NORMAL;
+GUI_NUM_MODE guiNumMode     = GUI_NUMMODE_SPACE;
 
 void LCD_SetWindow(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey) {
   LCD_WR_REG(0x2A);
@@ -20,19 +20,19 @@ void LCD_SetWindow(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey) {
 }
 
 void GUI_SetColor(uint16_t color) {
-  foreGroundColor = color;
+  textColor = color;
 }
 
 uint16_t GUI_GetColor(void) {
-  return foreGroundColor;
+  return textColor;
 }
 
 void GUI_SetBkColor(uint16_t bkcolor) {
-  backGroundColor = bkcolor;
+  bgColor = bkcolor;
 }
 
 uint16_t GUI_GetBkColor(void) {
-  return backGroundColor;
+  return bgColor;
 }
 
 void GUI_SetTextMode(GUI_TEXT_MODE mode) {
@@ -86,7 +86,7 @@ void GUI_DrawPixel(int16_t x, int16_t y, uint16_t color) {
 void GUI_DrawPoint(uint16_t x, uint16_t y) {
   LCD_SetWindow(x, y, x, y);
   LCD_WR_REG(0x2C);
-  LCD_WR_16BITS_DATA(foreGroundColor);
+  LCD_WR_16BITS_DATA(textColor);
 }
 
 void GUI_FillRect(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey) {
@@ -95,7 +95,7 @@ void GUI_FillRect(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey) {
   LCD_WR_REG(0x2C);
   for (i = sx; i < ex; i++) {
     for (j = sy; j < ey; j++) {
-      LCD_WR_16BITS_DATA(foreGroundColor);
+      LCD_WR_16BITS_DATA(textColor);
     }
   }
 }
@@ -110,7 +110,7 @@ void GUI_ClearRect(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey) {
   LCD_WR_REG(0x2C);
   for (i = sx; i < ex; i++) {
     for (j = sy; j < ey; j++) {
-      LCD_WR_16BITS_DATA(backGroundColor);
+      LCD_WR_16BITS_DATA(bgColor);
     }
   }
 }
@@ -207,7 +207,7 @@ void GUI_HLine(uint16_t x1, uint16_t y, uint16_t x2) {
   LCD_SetWindow(x1, y, x2 - 1, y);
   LCD_WR_REG(0x2C);
   for (i = x1; i < x2; i++) {
-    LCD_WR_16BITS_DATA(foreGroundColor);
+    LCD_WR_16BITS_DATA(textColor);
   }
 }
 void GUI_VLine(uint16_t x, uint16_t y1, uint16_t y2) {
@@ -215,7 +215,7 @@ void GUI_VLine(uint16_t x, uint16_t y1, uint16_t y2) {
   LCD_SetWindow(x, y1, x, y2 - 1);
   LCD_WR_REG(0x2C);
   for (i = y1; i < y2; i++) {
-    LCD_WR_16BITS_DATA(foreGroundColor);
+    LCD_WR_16BITS_DATA(textColor);
   }
 }
 
@@ -467,9 +467,9 @@ CHAR_INFO GUI_DispOne(int16_t sx, int16_t sy, const uint8_t *p) {
 
     for (y = 0; y < info.pixelHeight; y++) {
       if (temp & (1 << (info.pixelHeight - 1)))
-        GUI_DrawPixel(sx, sy + y, foreGroundColor);
+        GUI_DrawPixel(sx, sy + y, textColor);
       else if (guiTextMode == GUI_TEXTMODE_NORMAL)
-        GUI_DrawPixel(sx, sy + y, backGroundColor);
+        GUI_DrawPixel(sx, sy + y, bgColor);
       temp <<= 1;
     }
     sx++;
@@ -632,7 +632,7 @@ void GUI_DispFloat(int16_t x, int16_t y, float num, uint8_t llen, uint8_t rlen, 
     floatBuf[bufIndex++] = bit_value + '0';
     alen++;
   }
-  floatBuf[bufIndex++] = '.';
+  floatBuf[bufIndex++] = ',';
   alen++;
 
   for (i = 0; i < rlen; i++) {
@@ -649,41 +649,58 @@ void GUI_DispFloat(int16_t x, int16_t y, float num, uint8_t llen, uint8_t rlen, 
 /****************************************************     Widget    *******************************************************************/
 #define RADIO_SELECTED_COLOR GREEN
 #define RADIO_IDLE_COLOR WHITE
-void RADIO_Create(RADIO *raido) {
-  u16 tmp = GUI_GetColor();
+/**
+ * @brief 
+ * 
+ * @param rOptions 
+ */
+void RADIO_Create(RADIO *rOptions) {
+  u16 textColor = GUI_GetColor();
   uint8_t i = 0;
-  for (i = 0; i < raido->num; i++) {
-    if (i == raido->select)
+  for (i = 0; i < rOptions->num; i++) {
+    if (i == rOptions->select)
       GUI_SetColor(RADIO_SELECTED_COLOR);
     else
       GUI_SetColor(RADIO_IDLE_COLOR);
-    GUI_FillCircle(raido->sx + BYTE_HEIGHT / 2, i * raido->distance + raido->sy + BYTE_HEIGHT / 2, BYTE_HEIGHT / 8);
-    GUI_DrawCircle(raido->sx + BYTE_HEIGHT / 2, i * raido->distance + raido->sy + BYTE_HEIGHT / 2, BYTE_HEIGHT / 4);
-    GUI_DispString(raido->sx + BYTE_HEIGHT, i * raido->distance + raido->sy, raido->context[i]);
+    GUI_FillCircle(rOptions->sx + BYTE_HEIGHT / 2, i * rOptions->distance + rOptions->sy + BYTE_HEIGHT / 2, BYTE_HEIGHT / 8);
+    GUI_DrawCircle(rOptions->sx + BYTE_HEIGHT / 2, i * rOptions->distance + rOptions->sy + BYTE_HEIGHT / 2, BYTE_HEIGHT / 4);
+    GUI_DispString(rOptions->sx + BYTE_HEIGHT, i * rOptions->distance + rOptions->sy, rOptions->context[i]);
   }
-  GUI_SetColor(tmp);
+  GUI_SetColor(textColor);
 }
 
-void RADIO_Select(RADIO *raido, uint8_t select) {
-  u16 tmp = GUI_GetColor();
+/**
+ * @brief 
+ * 
+ * @param rOptions 
+ * @param select 
+ */
+void RADIO_Select(RADIO *rOptions, uint8_t select) {
+  u16 textColor = GUI_GetColor();
   uint8_t i = 0;
-  if (raido->select == select)
+  if (rOptions->select == select)
     return;
   for (i = 0; i < 2; i++) {
     if (i == 0) {
       GUI_SetColor(RADIO_IDLE_COLOR);
     } else {
-      raido->select = select;
+      rOptions->select = select;
       GUI_SetColor(RADIO_SELECTED_COLOR);
     }
-    GUI_FillCircle(raido->sx + BYTE_HEIGHT / 2, raido->select * raido->distance + raido->sy + BYTE_HEIGHT / 2, BYTE_HEIGHT / 8);
-    GUI_DrawCircle(raido->sx + BYTE_HEIGHT / 2, raido->select * raido->distance + raido->sy + BYTE_HEIGHT / 2, BYTE_HEIGHT / 4);
-    GUI_DispString(raido->sx + BYTE_HEIGHT, raido->select * raido->distance + raido->sy, raido->context[raido->select]);
+    GUI_FillCircle(rOptions->sx + BYTE_HEIGHT / 2, rOptions->select * rOptions->distance + rOptions->sy + BYTE_HEIGHT / 2, BYTE_HEIGHT / 8);
+    GUI_DrawCircle(rOptions->sx + BYTE_HEIGHT / 2, rOptions->select * rOptions->distance + rOptions->sy + BYTE_HEIGHT / 2, BYTE_HEIGHT / 4);
+    GUI_DispString(rOptions->sx + BYTE_HEIGHT, rOptions->select * rOptions->distance + rOptions->sy, rOptions->context[rOptions->select]);
   }
-  GUI_SetColor(tmp);
+  GUI_SetColor(textColor);
 }
 
-//
+/**
+ * @brief 
+ * 
+ * @param para 
+ * @param pstr 
+ * @param rect 
+ */
 void Scroll_CreatePara(SCROLL *para, uint8_t *pstr, const GUI_RECT *rect) {
   memset(para, 0, sizeof(SCROLL));
   para->text = pstr;
@@ -693,6 +710,12 @@ void Scroll_CreatePara(SCROLL *para, uint8_t *pstr, const GUI_RECT *rect) {
   para->rect = rect;
 }
 
+/**
+ * @brief 
+ * 
+ * @param para 
+ * @param align 
+ */
 void Scroll_DispString(SCROLL *para, uint8_t align) {
   uint16_t i = 0;
   CHAR_INFO info;
@@ -716,7 +739,7 @@ void Scroll_DispString(SCROLL *para, uint8_t align) {
         para->curPixelWidth--;
         if (para->curPixelWidth < para->maxPixelWidth) {
           for (i = para->rect->y0; i < para->rect->y1; i++) {
-            GUI_DrawPixel(para->rect->x0 + para->curPixelWidth, i, backGroundColor);
+            GUI_DrawPixel(para->rect->x0 + para->curPixelWidth, i, bgColor);
           }
         }
       }
