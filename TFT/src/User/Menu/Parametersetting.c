@@ -330,28 +330,28 @@ void drawGlobalInfo(void) {
   // char tempstr[100];
   //GUI_SetColor(GANTRYLBL_BKCOLOR);
   //GUI_FillPrect(&RecXYZ);
-//   GUI_ClearRect(LCD_WIDTH / 2, BYTE_HEIGHT, LCD_WIDTH, BYTE_HEIGHT * 2);
-//   my_sprintf(tempstr, "X:%.1f  ", getAxisLocation(0));
-//   GUI_DispString(START_X + 1 * SPACE_X + 1 * ICON_WIDTH, BYTE_HEIGHT, (u8 *)tempstr);
-//   my_sprintf(tempstr, "Y:%.1f  ", getAxisLocation(1));
-//   GUI_DispString(START_X + 2 * SPACE_X + 2 * ICON_WIDTH, BYTE_HEIGHT, (u8 *)tempstr);
-//   my_sprintf(tempstr, "Z:%.1f  ", getAxisLocation(2));
-//   GUI_DispString(START_X + 3 * SPACE_X + 3 * ICON_WIDTH, BYTE_HEIGHT, (u8 *)tempstr);
+  //   GUI_ClearRect(LCD_WIDTH / 2, BYTE_HEIGHT, LCD_WIDTH, BYTE_HEIGHT * 2);
+  //   my_sprintf(tempstr, "X:%.1f  ", getAxisLocation(0));
+  //   GUI_DispString(START_X + 1 * SPACE_X + 1 * ICON_WIDTH, BYTE_HEIGHT, (u8 *)tempstr);
+  //   my_sprintf(tempstr, "Y:%.1f  ", getAxisLocation(1));
+  //   GUI_DispString(START_X + 2 * SPACE_X + 2 * ICON_WIDTH, BYTE_HEIGHT, (u8 *)tempstr);
+  //   my_sprintf(tempstr, "Z:%.1f  ", getAxisLocation(2));
+  //   GUI_DispString(START_X + 3 * SPACE_X + 3 * ICON_WIDTH, BYTE_HEIGHT, (u8 *)tempstr);
 
   //GUI_SetBkColor(BACKGROUND_COLOR);
   //GUI_SetColor(FONT_COLOR);
 
-//   char tempstr[10];
+  //   char tempstr[10];
 
-//   GUI_ClearRect(LCD_WIDTH / 3, 0, LCD_WIDTH, BYTE_HEIGHT);
+  //   GUI_ClearRect(LCD_WIDTH / 3, 0, LCD_WIDTH, BYTE_HEIGHT);
 
-//   //global nozzle
-//   lcd_frame_display(ICON_ROUTER_X, 0, 2 * BYTE_WIDTH, BYTE_HEIGHT, ICON_ADDR(ICON_GLOBAL_ROUTER0));
-//   my_sprintf(tempstr, "%d/%d", heatGetCurrentTemp(ROUTER0), heatGetTargetTemp(ROUTER0));
-//   GUI_DispStringInRect(VALUE_ROUTER_X, 0, VALUE_ROUTER_X + 8 * BYTE_WIDTH, BYTE_HEIGHT, (u8 *)tempstr);
+  //   //global nozzle
+  //   lcd_frame_display(ICON_ROUTER_X, 0, 2 * BYTE_WIDTH, BYTE_HEIGHT, ICON_ADDR(ICON_GLOBAL_ROUTER0));
+  //   my_sprintf(tempstr, "%d/%d", heatGetCurrentTemp(ROUTER0), heatGetTargetTemp(ROUTER0));
+  //   GUI_DispStringInRect(VALUE_ROUTER_X, 0, VALUE_ROUTER_X + 8 * BYTE_WIDTH, BYTE_HEIGHT, (u8 *)tempstr);
 
-//   //global bed
-//   lcd_frame_display(ICON_BED_X, 0, 2 * BYTE_WIDTH, BYTE_HEIGHT, ICON_ADDR(ICON_GLOBAL_BED));
-//   my_sprintf(tempstr, "%d/%d", heatGetCurrentTemp(BED), heatGetTargetTemp(BED));
-//   GUI_DispStringInRect(VALUE_BED_X, 0, VALUE_BED_X + 8 * BYTE_WIDTH, BYTE_HEIGHT, (u8 *)tempstr);
+  //   //global bed
+  //   lcd_frame_display(ICON_BED_X, 0, 2 * BYTE_WIDTH, BYTE_HEIGHT, ICON_ADDR(ICON_GLOBAL_BED));
+  //   my_sprintf(tempstr, "%d/%d", heatGetCurrentTemp(BED), heatGetTargetTemp(BED));
+  //   GUI_DispStringInRect(VALUE_BED_X, 0, VALUE_BED_X + 8 * BYTE_WIDTH, BYTE_HEIGHT, (u8 *)tempstr);
 }

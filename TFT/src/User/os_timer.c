@@ -1,107 +1,97 @@
 #include "os_timer.h"
 #include "includes.h"
 
-u32 os_counter=0;
+u32 os_counter = 0;
 
-//ÓÃÓÚ²úÉúÏµÍ³Ê±ÖÓ£¬±¾¹¤³ÌÉèÖÃ10msÖÐ¶ÏÒ»´Î
-void OS_TimerInit(u16 psc,u16 arr)
-{
+//ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ÏµÍ³Ê±ï¿½Ó£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½10msï¿½Ð¶ï¿½Ò»ï¿½ï¿½
+void OS_TimerInit(u16 psc, u16 arr) {
   NVIC_InitTypeDef NVIC_InitStructure;
 
-  NVIC_InitStructure.NVIC_IRQChannel = TIM4_IRQn;  
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;  
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0; 
-  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; 
-  NVIC_Init(&NVIC_InitStructure); 
+  NVIC_InitStructure.NVIC_IRQChannel = TIM4_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_Init(&NVIC_InitStructure);
 
-  RCC->APB1ENR|=1<<2;	           //TIM4Ê±ÖÓÊ¹ÄÜ    
-  TIM4->ARR=arr;  	             //Éè¶¨×Ô¶¯ÖØ×°Öµ   
-  TIM4->PSC=psc;  	             //Ô¤·ÖÆµÆ÷
-  TIM4->SR = (uint16_t)~(1<<0);  //Çå³ý¸üÐÂÖÐ¶Ï
-  TIM4->DIER|=1<<0;              //ÔÊÐí¸üÐÂÖÐ¶Ï	  
-  TIM4->CR1|=0x01;               //Ê¹ÄÜ¶¨Ê±Æ÷3	
+  RCC->APB1ENR |= 1 << 2;           //TIM4Ê±ï¿½ï¿½Ê¹ï¿½ï¿½
+  TIM4->ARR = arr;                  //ï¿½è¶¨ï¿½Ô¶ï¿½ï¿½ï¿½×°Öµ
+  TIM4->PSC = psc;                  //Ô¤ï¿½ï¿½Æµï¿½ï¿½
+  TIM4->SR = (uint16_t) ~(1 << 0);  //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½
+  TIM4->DIER |= 1 << 0;             //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½
+  TIM4->CR1 |= 0x01;                //Ê¹ï¿½Ü¶ï¿½Ê±ï¿½ï¿½3
 }
 
-void TIM4_IRQHandler(void)   //TIM4ÖÐ¶Ï
+void TIM4_IRQHandler(void)  //TIM4ï¿½Ð¶ï¿½
 {
-  if ((TIM4->SR&0x01) != 0) //¼ì²éÖ¸¶¨µÄTIMÖÐ¶Ï·¢ÉúÓë·ñ:TIM ÖÐ¶ÏÔ´ 
+  if ((TIM4->SR & 0x01) != 0)  //ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½TIMï¿½Ð¶Ï·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:TIM ï¿½Ð¶ï¿½Ô´
   {
     os_counter++;
-    //´òÓ¡¹ý³ÌÖÐÍ³¼Æ´òÓ¡ºÄÊ±		
+    //ï¿½ï¿½Ó¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í³ï¿½Æ´ï¿½Ó¡ï¿½ï¿½Ê±
     setPrintingTime(os_counter);
 
     loopTouchScreen();
 
-    //¼ÆÊ±Òç³ö		
-    if(os_counter==(1<<30))
-    {
-      os_counter=0;
+    //ï¿½ï¿½Ê±ï¿½ï¿½ï¿½
+    if (os_counter == (1 << 30)) {
+      os_counter = 0;
     }
 
-    TIM4->SR = (uint16_t)~(1<<0);  //Çå³ýTIMxµÄÖÐ¶Ï´ý´¦ÀíÎ»:TIM ÖÐ¶ÏÔ´ 
+    TIM4->SR = (uint16_t) ~(1 << 0);  //ï¿½ï¿½ï¿½TIMxï¿½ï¿½ï¿½Ð¶Ï´ï¿½ï¿½ï¿½ï¿½ï¿½Î»:TIM ï¿½Ð¶ï¿½Ô´
   }
 }
 
-/* ÏµÍ³Ê±¼ä µ¥Î»ÊÇ 10ms */
-u32 OS_GetTime(void)
-{
+/* ÏµÍ³Ê±ï¿½ï¿½ ï¿½ï¿½Î»ï¿½ï¿½ 10ms */
+u32 OS_GetTime(void) {
   return os_counter;
 }
 
 /*
-¹¦ÄÜ:ÈÎÎñ½á¹¹Ìå³õÊ¼»¯
-²ÎÊý:
-task_t:´ýÌî³äµÄÈÎÎñ½á¹¹Ìå
-time:ÈÎÎñ¶à¾ÃÖ´ÐÐÒ»´Î
-task:´ýÖ´ÐÐµÄÈÎÎñ
-para:´ýÖ´ÐÐÈÎÎñµÄ²ÎÊý
+ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½ï¿½ï¿½á¹¹ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½:
+task_t:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á¹¹ï¿½ï¿½
+time:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½Ò»ï¿½ï¿½
+task:ï¿½ï¿½Ö´ï¿½Ðµï¿½ï¿½ï¿½ï¿½ï¿½
+para:ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä²ï¿½ï¿½ï¿½
 */
-void OS_TaskInit(OS_TASK *task, u32 time, FP_TASK function, void *para)
-{
+void OS_TaskInit(OS_TASK *task, u32 time, FP_TASK function, void *para) {
   task->time = time;
   task->task = function;
   task->para = para;
 }
 /*
-¹¦ÄÜ:ÔÚÖ÷Ñ­»·ÖÐµ÷ÓÃ,¼ì²âÊÇ·ñÐèÒªÖ´ÐÐÈÎÎñ
-²ÎÊý:´ýÖ´ÐÐÈÎÎñ¶ÔÓ¦µÄÈÎÎñ½á¹¹Ìå
+ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½ï¿½ï¿½Ñ­ï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½,ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ÒªÖ´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á¹¹ï¿½ï¿½
 */
-void OS_TaskCheck(OS_TASK *task_t)
-{
-  if(task_t->is_exist==0)   return;
-  if(OS_GetTime()<task_t->start_time+task_t->time)  return;
-  if(task_t->is_repeat==0)
-  {
-    task_t->is_exist=0; 
-  }
-  else
-  {
-    task_t->start_time=OS_GetTime();
+void OS_TaskCheck(OS_TASK *task_t) {
+  if (task_t->is_exist == 0) return;
+  if (OS_GetTime() < task_t->start_time + task_t->time) return;
+  if (task_t->is_repeat == 0) {
+    task_t->is_exist = 0;
+  } else {
+    task_t->start_time = OS_GetTime();
   }
   (*task_t->task)(task_t->para);
 }
 
 /*
-¹¦ÄÜ:Ê¹ÄÜ task_t ¶ÔÓ¦µÄÈÎÎñ
-²ÎÊý:
-task_t:´ýÖ´ÐÐÈÎÎñ¶ÔÓ¦µÄÈÎÎñ½á¹¹Ìå
-is_exec:´ËÈÎÎñÊÇ·ñÁ¢¼´Ö´ÐÐ
-is_repeat£º´ËÈÎÎñÊÇ·ñÖØ¸´Ö´ÐÐ
+ï¿½ï¿½ï¿½ï¿½:Ê¹ï¿½ï¿½ task_t ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½:
+task_t:ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á¹¹ï¿½ï¿½
+is_exec:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½
+is_repeatï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½Ø¸ï¿½Ö´ï¿½ï¿½
 */
-void OS_TaskEnable(OS_TASK *task_t,u8 is_exec,u8 is_repeat)
-{
-  task_t->is_exist=1; 
-  task_t->is_repeat=is_repeat; 
-  task_t->start_time=OS_GetTime();
-  if(is_exec)    
+void OS_TaskEnable(OS_TASK *task_t, u8 is_exec, u8 is_repeat) {
+  task_t->is_exist = 1;
+  task_t->is_repeat = is_repeat;
+  task_t->start_time = OS_GetTime();
+  if (is_exec)
     (*task_t->task)(task_t->para);
 }
 
 /*
-¹¦ÄÜ:Ê§ÄÜ task_t ¶ÔÓ¦µÄÈÎÎñ
-²ÎÊý:´ýÖ´ÐÐÈÎÎñ¶ÔÓ¦µÄÈÎÎñ½á¹¹Ìå
+ï¿½ï¿½ï¿½ï¿½:Ê§ï¿½ï¿½ task_t ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½ï¿½:ï¿½ï¿½Ö´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á¹¹ï¿½ï¿½
 */
-void OS_TaskDisable(OS_TASK *task_t)
-{
-  task_t->is_exist=0;
+void OS_TaskDisable(OS_TASK *task_t) {
+  task_t->is_exist = 0;
 }

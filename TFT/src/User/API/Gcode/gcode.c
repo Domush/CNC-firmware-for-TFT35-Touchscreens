@@ -2,26 +2,24 @@
 #include "includes.h"
 
 REQUEST_COMMAND_INFO requestCommandInfo;
-bool WaitingGcodeResponse=0;
+bool WaitingGcodeResponse = 0;
 
-static void resetRequestCommandInfo(void) 
-{
+static void resetRequestCommandInfo(void) {
   requestCommandInfo.cmd_rev_buf = malloc(CMD_MAX_REV);
-  while(!requestCommandInfo.cmd_rev_buf); // malloc failed
-  memset(requestCommandInfo.cmd_rev_buf,0,CMD_MAX_REV);
+  while (!requestCommandInfo.cmd_rev_buf)
+    ;  // malloc failed
+  memset(requestCommandInfo.cmd_rev_buf, 0, CMD_MAX_REV);
   requestCommandInfo.inWaitResponse = true;
   requestCommandInfo.inResponse = false;
   requestCommandInfo.done = false;
   requestCommandInfo.inError = false;
 }
 
-bool RequestCommandInfoIsRunning(void)
-{
-   return WaitingGcodeResponse;  //i try to use requestCommandInfo.done but does not work as expected ...
+bool RequestCommandInfoIsRunning(void) {
+  return WaitingGcodeResponse;  //i try to use requestCommandInfo.done but does not work as expected ...
 }
 
-void clearRequestCommandInfo(void) 
-{
+void clearRequestCommandInfo(void) {
   free(requestCommandInfo.cmd_rev_buf);
 }
 
@@ -34,19 +32,17 @@ void clearRequestCommandInfo(void)
     echo:SD init fail
 
 */
-bool request_M21(void)
-{
-  strcpy(requestCommandInfo.command,"M21\n");
-  strcpy(requestCommandInfo.startMagic,"SD");
-  strcpy(requestCommandInfo.stopMagic,"card ok");
-  strcpy(requestCommandInfo.errorMagic,"init fail");
+bool request_M21(void) {
+  strcpy(requestCommandInfo.command, "M21\n");
+  strcpy(requestCommandInfo.startMagic, "SD");
+  strcpy(requestCommandInfo.stopMagic, "card ok");
+  strcpy(requestCommandInfo.errorMagic, "init fail");
 
   resetRequestCommandInfo();
   mustStoreCmd(requestCommandInfo.command);
   // Wait for response
   WaitingGcodeResponse = 1;
-  while (!requestCommandInfo.done)
-  {
+  while (!requestCommandInfo.done) {
     loopProcess();
   }
   WaitingGcodeResponse = 0;
@@ -69,25 +65,22 @@ PI3MK2~1.GCO 11081207
 /YEST~1/PI3MK2~2.GCO 11081207
 End file list
 */
-char *request_M20(void)
-{
-  strcpy(requestCommandInfo.command,"M20\n");
-  strcpy(requestCommandInfo.startMagic,"Begin file list");
-  strcpy(requestCommandInfo.stopMagic,"End file list");
-  strcpy(requestCommandInfo.errorMagic,"Error");
+char *request_M20(void) {
+  strcpy(requestCommandInfo.command, "M20\n");
+  strcpy(requestCommandInfo.startMagic, "Begin file list");
+  strcpy(requestCommandInfo.stopMagic, "End file list");
+  strcpy(requestCommandInfo.errorMagic, "Error");
   resetRequestCommandInfo();
   mustStoreCmd(requestCommandInfo.command);
   // Wait for response
   WaitingGcodeResponse = 1;
-  while (!requestCommandInfo.done)
-  {
+  while (!requestCommandInfo.done) {
     loopProcess();
   }
   WaitingGcodeResponse = 0;
   //clearRequestCommandInfo(); //shall be call after copying the buffer ...
   return requestCommandInfo.cmd_rev_buf;
 }
-
 
 /*
  * M33 retrieve long filename from short file name
@@ -95,25 +88,22 @@ char *request_M20(void)
  * Output:
  *   /Miscellaneous/Armchair/Armchair.gcode
 */
-char * request_M33(char *filename)
-{
-  sprintf(requestCommandInfo.command, "M33 %s\n",filename);
-  strcpy(requestCommandInfo.startMagic,"/"); //un caractere qui est dans la ligne a traiter
-  strcpy(requestCommandInfo.stopMagic,"ok");
-  strcpy(requestCommandInfo.errorMagic,"Cannot open subdir");
+char *request_M33(char *filename) {
+  sprintf(requestCommandInfo.command, "M33 %s\n", filename);
+  strcpy(requestCommandInfo.startMagic, "/");  //un caractere qui est dans la ligne a traiter
+  strcpy(requestCommandInfo.stopMagic, "ok");
+  strcpy(requestCommandInfo.errorMagic, "Cannot open subdir");
   resetRequestCommandInfo();
   mustStoreCmd(requestCommandInfo.command);
   // Wait for response
   WaitingGcodeResponse = 1;
-  while (!requestCommandInfo.done)
-  {
+  while (!requestCommandInfo.done) {
     loopProcess();
   }
   WaitingGcodeResponse = 0;
   //clearRequestCommandInfo(); //shall be call after copying the buffer ...
   return requestCommandInfo.cmd_rev_buf;
 }
-
 
 /**
  * Select the file to print 
@@ -124,24 +114,22 @@ char * request_M33(char *filename)
  * File opened: PI3MK2~5.GCO Size: 11081207
  * File selected
  **/
-long request_M23(char *filename)
-{
-  sprintf(requestCommandInfo.command, "M23 %s\n",filename);
+long request_M23(char *filename) {
+  sprintf(requestCommandInfo.command, "M23 %s\n", filename);
   strcpy(requestCommandInfo.startMagic, "File opened");
-  strcpy(requestCommandInfo.stopMagic,"File selected");
-  strcpy(requestCommandInfo.errorMagic,"open failed");
+  strcpy(requestCommandInfo.stopMagic, "File selected");
+  strcpy(requestCommandInfo.errorMagic, "open failed");
   resetRequestCommandInfo();
   mustStoreCmd(requestCommandInfo.command);
   // Wait for response
   WaitingGcodeResponse = 1;
-  while (!requestCommandInfo.done)
-  {
+  while (!requestCommandInfo.done) {
     loopProcess();
   }
   WaitingGcodeResponse = 0;
   // Find file size and report its.
   char *ptr;
-  long size = strtol(strstr(requestCommandInfo.cmd_rev_buf,"Size:")+5, &ptr, 10);  
+  long size = strtol(strstr(requestCommandInfo.cmd_rev_buf, "Size:") + 5, &ptr, 10);
   clearRequestCommandInfo();
   return size;
 }
@@ -149,14 +137,13 @@ long request_M23(char *filename)
 /**
  * Start o resume print 
  **/
-bool request_M24(int pos)
-{
-  if(pos == 0){
-      mustStoreCmd("M24\n");
+bool request_M24(int pos) {
+  if (pos == 0) {
+    mustStoreCmd("M24\n");
   } else {
-      char command[100];
-      sprintf(command, "M24 S%d\n",pos);
-      mustStoreCmd(command);
+    char command[100];
+    sprintf(command, "M24 S%d\n", pos);
+    mustStoreCmd(command);
   }
   return true;
 }
@@ -164,16 +151,14 @@ bool request_M24(int pos)
 /**
  * Abort print 
  **/
-bool request_M524(void)
-{
+bool request_M524(void) {
   mustStoreCmd("M524\n");
   return true;
 }
 /**
  * Pause print 
  **/
-bool request_M25(void)
-{
+bool request_M25(void) {
   mustStoreCmd("M25\n");
   return true;
 }
@@ -183,10 +168,9 @@ bool request_M25(void)
  * ->  SD printing byte 123/12345
  * ->  Not SD printing
  **/
-bool request_M27(int seconds)
-{
+bool request_M27(int seconds) {
   char command[10];
-  sprintf(command, "M27 S%d\n",seconds);
+  sprintf(command, "M27 S%d\n", seconds);
   mustStoreCmd(command);
   return true;
 }

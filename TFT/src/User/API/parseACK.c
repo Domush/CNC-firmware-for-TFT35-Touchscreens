@@ -13,7 +13,7 @@ const char *const ignoreEcho[] = {
     // "//action:",
     // "action:",
     // "M0/1 Break"
-    };
+};
 
 void setCurrentAckSrc(uint8_t src) {
   ack_cur_src = src;
@@ -127,12 +127,12 @@ void parseACK(void) {
     }
     if (ack_seen("X:")) {
       storegantry(0, ack_value());
-      storeCmd("M118 %d\n", ack_value()); //update X position
+      storeCmd("M118 %d\n", ack_value());  //update X position
       if (ack_seen("Y:")) {
         storegantry(1, ack_value());
-        storeCmd("M118 %d\n", ack_value()); //update Y position
+        storeCmd("M118 %d\n", ack_value());  //update Y position
         if (ack_seen("Z:")) {
-          storeCmd("M118 %d\n", ack_value()); //update Z position
+          storeCmd("M118 %d\n", ack_value());  //update Z position
           storegantry(2, ack_value());
         }
       }
@@ -211,10 +211,10 @@ void parseACK(void) {
     else if (ack_seen(replyError)) {
       ackPopupInfo(replyError);
     } else if (ack_seen(replyEcho)) {
-      storeCmd("M118 E1 Full Message:%d\n", dmaL2Cache); //debug pause message
+      storeCmd("M118 E1 Full Message:%d\n", dmaL2Cache);  //debug pause message
       for (u8 i = 0; i < COUNT(ignoreEcho); i++) {
         if (strstr(dmaL2Cache, ignoreEcho[i])) {
-          storeCmd("M118 E1 Ignore triggered:%d\n", ignoreEcho[i]); //debug pause message
+          storeCmd("M118 E1 Ignore triggered:%d\n", ignoreEcho[i]);  //debug pause message
           goto parse_end;
         }
       }

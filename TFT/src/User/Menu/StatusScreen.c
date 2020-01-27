@@ -113,7 +113,7 @@ void drawTemperature(void) {
   GUI_DispStringInPrect(&rectB[1], (u8 *)tempstr);  //Bed value
 
   GUI_SetColor(HEADING_COLOR);
-  menuDrawIconOnly(&ToolItems[2], 2);                                         //Router icon
+  menuDrawIconOnly(&ToolItems[2], 2);                                               //Router icon
   GUI_DispStringRight(pointID[2].x, pointID[2].y, (u8 *)routerID[current_router]);  //Router label
   GUI_SetColor(VAL_COLOR);
 
@@ -231,12 +231,9 @@ void statusScreen_setMsg(const uint8_t *title, const uint8_t *msg) {
 
   if (infoMenu.menu[infoMenu.cur] == menuStatus) {
     drawStatusScreenMsg();
+  } else {
+    storeCmd("M118 E1 %d: %d\n", title, msg);  //relay prompts to USB host
   }
-  else
-  {
-    storeCmd("M118 E1 %d: %d\n", title, msg); //relay prompts to USB host
-  }
-  
 }
 
 void drawStatusScreenMsg(void) {

@@ -1,5 +1,5 @@
-#include "Fan.h"
 #include "Printing.h"
+#include "Fan.h"
 #include "includes.h"
 
 //1title, ITEM_PER_PAGE item(icon + label)

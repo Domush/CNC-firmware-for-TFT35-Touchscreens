@@ -1,10 +1,10 @@
 #include "GUI.h"
 #include "includes.h"
 
-uint16_t textColor          = WHITE;
-uint16_t bgColor            = BLACK;
-GUI_TEXT_MODE guiTextMode   = GUI_TEXTMODE_NORMAL;
-GUI_NUM_MODE guiNumMode     = GUI_NUMMODE_SPACE;
+uint16_t textColor = WHITE;
+uint16_t bgColor = BLACK;
+GUI_TEXT_MODE guiTextMode = GUI_TEXTMODE_NORMAL;
+GUI_NUM_MODE guiNumMode = GUI_NUMMODE_SPACE;
 
 void LCD_SetWindow(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey) {
   LCD_WR_REG(0x2A);

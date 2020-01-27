@@ -40,7 +40,7 @@
 
 #define TOOL_NUM 1      // set in 1~6
 #define EXTRUDER_NUM 1  // set in 1~6
-#define ROUTER_NUM 1       // set in 1~6
+#define ROUTER_NUM 1    // set in 1~6
 
 //                       PLA      PETG       ABS
 #define PREHEAT_BED {60, 70, 100};

@@ -1,33 +1,31 @@
 #ifndef _HEAT_H_
 #define _HEAT_H_
 
-#include "stdint.h"
-#include "stdbool.h"
 #include "Configuration.h"
+#include "stdbool.h"
+#include "stdint.h"
 
-typedef enum
-{
+typedef enum {
   BED = 0,
   ROUTER0 = 1,
   HEATER_NUM = TOOL_NUM + ROUTER0,
-}TOOL;
+} TOOL;
 
 typedef struct
 {
   int16_t current,
-          target;
-  bool    waiting;
-}_HEATER;
+      target;
+  bool waiting;
+} _HEATER;
 
 typedef struct
 {
   _HEATER T[HEATER_NUM];
-  TOOL    tool;
-  TOOL    nozzle;
-}HEATER;
+  TOOL tool;
+  TOOL nozzle;
+} HEATER;
 
-
-extern const uint16_t   heat_max_temp[];
+extern const uint16_t heat_max_temp[];
 extern const char* toolID[];
 extern const char* const heatDisplayID[];
 extern const char* heatCmd[];
@@ -42,7 +40,7 @@ void heatSetCurrentTemp(TOOL tool, int16_t temp);
 int16_t heatGetCurrentTemp(TOOL tool);
 bool heatGetIsWaiting(TOOL tool);
 bool heatHasWaiting(void);
-void heatSetIsWaiting(TOOL tool,bool isWaiting);
+void heatSetIsWaiting(TOOL tool, bool isWaiting);
 void heatClearIsWaiting(void);
 void heatSetCurrentTool(TOOL tool);
 TOOL heatGetCurrentTool(void);
@@ -54,4 +52,3 @@ void heatSetSendWaiting(TOOL tool, bool isWaiting);
 void loopCheckHeater(void);
 
 #endif
-

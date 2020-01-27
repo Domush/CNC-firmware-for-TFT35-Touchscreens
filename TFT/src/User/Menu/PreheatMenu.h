@@ -3,15 +3,12 @@
 
 #include "Configuration.h"
 
-typedef enum
-{
+typedef enum {
   BOTH = 0,
   BED_PREHEAT = 1,
   ROUTER0_PREHEAT = 2,
-}TOOLPREHEAT;
-
+} TOOLPREHEAT;
 
 void menuPreheat(void);
 
 #endif
-

@@ -11,8 +11,8 @@ enum {
 };
 
 typedef enum {
-  GUI_TEXTMODE_TRANS, // Transpart rectangles
-  GUI_TEXTMODE_NORMAL, // Background filled rectangles
+  GUI_TEXTMODE_TRANS,   // Transpart rectangles
+  GUI_TEXTMODE_NORMAL,  // Background filled rectangles
 } GUI_TEXT_MODE;
 
 typedef enum {

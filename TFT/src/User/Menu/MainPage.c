@@ -1,6 +1,6 @@
 #include "MainPage.h"
-#include "includes.h"
 #include "Move.h"
+#include "includes.h"
 
 //1 title, ITEM_PER_PAGE items(icon+label)
 const MENUITEMS mainPageItems = {

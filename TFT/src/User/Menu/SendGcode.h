@@ -3,8 +3,7 @@
 
 #include "menu.h"
 
-typedef enum
-{
+typedef enum {
   GKEY_0 = 0,
   GKEY_1,
   GKEY_2,
@@ -32,14 +31,12 @@ typedef enum
   GKEY_BACK,
   GKEY_SEND,
   GKEY_IDLE = IDLE_TOUCH,
-}GKEY_VALUES;
+} GKEY_VALUES;
 
-typedef enum
-{
+typedef enum {
   TERMINAL_GCODE,
   TERMINAL_ACK,
-}TERMINAL_SRC;
-
+} TERMINAL_SRC;
 
 void menuSendGcode(void);
 void menuTerminal(void);
