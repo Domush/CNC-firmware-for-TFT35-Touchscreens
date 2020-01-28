@@ -380,10 +380,19 @@ void printingDrawPage(void)
   reDrawTime();
   // z_axis coordinate
   GUI_DispString(BED_X + BYTE_WIDTH, TIME_Y, (u8* )"Z:");
-  
-  i = get_Pre_Icon((char *)getCurGcodeName(infoFile.title));
-  if(i != ICON_BACKGROUND)
-    lcd_frame_display(1*ICON_WIDTH + 1 * SPACE_X + START_X, 0 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y, ICON_WIDTH, ICON_HEIGHT, ICON_ADDR(i));
+
+  if(get_Pre_Icon() == true){
+    //printingItems.items[key_pause - 1] = itemBlank;
+    printingItems.items[KEY_ICON_1].icon = ICON_PREVIEW;
+    printingItems.items[KEY_ICON_1].label.index = LABEL_BACKGROUND;
+  }
+  else{
+    printingItems.items[KEY_ICON_1] = itemBabyStep;
+  }
+
+  // i = get_Pre_Icon((char *)getCurGcodeName(infoFile.title));
+  // if(i != ICON_BACKGROUND)
+  //   lcd_frame_display(1*ICON_WIDTH + 1 * SPACE_X + START_X, 0 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y, ICON_WIDTH, ICON_HEIGHT, ICON_ADDR(i));
 }
 
 
@@ -396,6 +405,8 @@ void menuPrinting(void)
   
   printingItems.items[KEY_ICON_0] = itemIsPause[infoPrinting.pause];
   printingDrawPage();
+  // printingItems.items[key_pause] = itemIsPause[infoPrinting.pause];
+
 
   while(infoMenu.menu[infoMenu.cur] == menuPrinting)
   {		
