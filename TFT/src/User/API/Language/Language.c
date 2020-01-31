@@ -2188,11 +2188,10 @@ const char *const du_pack[LABEL_NUM]={
   DU_M0_PAUSE,
 };
 */
-uint8_t *textSelect(uint8_t sel) {
+u8 *textSelect(u8 sel) {
   switch (infoSettings.language) {
     case ENGLISH:
-    if (t['en'].label == "LANGUAGE") {};
-      return t['en'].label[sel];
+      return (u8 *)en_pack[sel];
       // case CHINESE:     return (u8 *)cn_pack[sel];
       // case RUSSIAN:     return (u8 *)ru_pack[sel];
       // case JAPANESE:    return (u8 *)jp_pack[sel];
@@ -2211,4 +2210,3 @@ uint8_t *textSelect(uint8_t sel) {
       return NULL;
   }
 }
-
