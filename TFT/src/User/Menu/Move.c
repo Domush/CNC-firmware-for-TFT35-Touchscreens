@@ -46,7 +46,7 @@ MENUITEMS moveItems = {
         {ICON_Z_DEC, LABEL_Z_DEC},
         {ICON_Y_INC, LABEL_Y_INC},
         {ICON_Z_INC, LABEL_Z_INC},
-        {ICON_1_MM, LABEL_1_MM},
+        {ICON_10_MM, LABEL_10_MM},
         {ICON_X_DEC, LABEL_X_DEC},
         {ICON_Y_DEC, LABEL_Y_DEC},
         {ICON_X_INC, LABEL_X_INC},
@@ -55,7 +55,7 @@ MENUITEMS moveItems = {
         {ICON_Z_DEC, LABEL_Z_DEC},
         {ICON_Y_INC, LABEL_YAXIS_UP},
         {ICON_Z_INC, LABEL_Z_INC},
-        {ICON_1_MM, LABEL_1_MM},
+        {ICON_10_MM, LABEL_10_MM},
         {ICON_X_DEC, LABEL_X_DEC},
         {ICON_Y_DEC, LABEL_YAXIS_DOWN},
         {ICON_X_INC, LABEL_X_INC},
@@ -66,7 +66,7 @@ MENUITEMS moveItems = {
         {ICON_X_INC, LABEL_X_INC},
         {ICON_Y_INC, LABEL_Y_INC},
         {ICON_Z_INC, LABEL_Z_INC},
-        {ICON_1_MM, LABEL_1_MM},
+        {ICON_10_MM, LABEL_10_MM},
         {ICON_X_DEC, LABEL_X_DEC},
         {ICON_Y_DEC, LABEL_Y_DEC},
         {ICON_Z_DEC, LABEL_Z_DEC},
@@ -75,7 +75,7 @@ MENUITEMS moveItems = {
         {ICON_X_INC, LABEL_X_INC},
         {ICON_Y_INC, LABEL_YAXIS_UP},
         {ICON_Z_INC, LABEL_ZAXIS_UP},
-        {ICON_1_MM, LABEL_1_MM},
+        {ICON_10_MM, LABEL_10_MM},
         {ICON_X_DEC, LABEL_X_DEC},
         {ICON_Y_DEC, LABEL_YAXIS_DOWN},
         {ICON_Z_DEC, LABEL_ZAXIS_DOWN},
@@ -87,11 +87,11 @@ MENUITEMS moveItems = {
 #define ITEM_MOVE_LEN_NUM 3
 const ITEM itemMoveLen[ITEM_MOVE_LEN_NUM] = {
     // icon                       label
-    {ICON_1_MM, LABEL_1_MM},
     {ICON_10_MM, LABEL_10_MM},
     {ICON_100_MM, LABEL_100_MM},
+    {ICON_1_MM, LABEL_1_MM},
 };
-const float item_move_len[ITEM_MOVE_LEN_NUM] = {1, 10, 100};
+const float item_move_len[ITEM_MOVE_LEN_NUM] = {10, 100, 1};
 static u8 item_move_len_i = 10;
 
 static u32 nowTime = 0;
@@ -320,15 +320,20 @@ void update_gantry(void) {
   }
 }
 void drawXYZ(void) {
-  char tempstr[100];
+  uint8_t dispText[100];
+  uint8_t tmpText[10];
   //GUI_SetColor(GANTRYLBL_BKCOLOR);
   //GUI_FillPrect(&RecXYZ);
-  my_sprintf(tempstr, "X:%.1f  ", getAxisLocation(0));
-  GUI_DispString(START_X + 1 * SPACE_X + 1 * ICON_WIDTH, (ICON_START_Y - BYTE_HEIGHT) / 2, (u8 *)tempstr);
-  my_sprintf(tempstr, "Y:%.1f  ", getAxisLocation(1));
-  GUI_DispString(START_X + 2 * SPACE_X + 2 * ICON_WIDTH, (ICON_START_Y - BYTE_HEIGHT) / 2, (u8 *)tempstr);
-  my_sprintf(tempstr, "Z:%.1f  ", getAxisLocation(2));
-  GUI_DispString(START_X + 3 * SPACE_X + 3 * ICON_WIDTH, (ICON_START_Y - BYTE_HEIGHT) / 2, (u8 *)tempstr);
+  my_sprintf(tmpText, "X:%.1f", getAxisLocation(0));
+  dispText[100] = dispText[100] + tmpText;
+  // GUI_DispString(START_X + 1 * SPACE_X + 1 * ICON_WIDTH, (ICON_START_Y - BYTE_HEIGHT) / 2, (u8 *)dispText);
+  my_sprintf(tmpText, "Y:%.1f", getAxisLocation(1));
+  dispText[100] = dispText[100] + tmpText;
+  // GUI_DispString(START_X + 2 * SPACE_X + 2 * ICON_WIDTH, (ICON_START_Y - BYTE_HEIGHT) / 2, (u8 *)dispText);
+  my_sprintf(tmpText, "Z:%.1f", getAxisLocation(2));
+  dispText[100] = dispText[100] + tmpText;
+  // GUI_DispString(START_X + 3 * SPACE_X + 3 * ICON_WIDTH, (ICON_START_Y - BYTE_HEIGHT) / 2, (u8 *)dispText);
+  GUI_DispStringRight(START_X + 2 * SPACE_X + 2 * ICON_WIDTH, BYTE_HEIGHT, dispText);
 
   //GUI_SetBkColor(BACKGROUND_COLOR);
   //GUI_SetColor(FONT_COLOR);

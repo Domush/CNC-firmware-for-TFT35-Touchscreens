@@ -99,10 +99,6 @@ void startGcodeExecute(void) {
 void endGcodeExecute(void) {
   mustStoreCmd("G90\n");
   routerControl(0);
-  // for (u8 i = 0; i < ROUTER_NUM; i++) {
-  //   mustStoreCmd("%s S0\n", routerCmd[i]);
-  // }
-  // mustStoreCmd("T0\n");
   mustStoreCmd("G0 X0 Y0 Z1\n");
   // mustStoreCmd("M18 X Y\n");
 }
@@ -123,11 +119,6 @@ void menuBeforePrinting(void) {
     case BOARD_SD:  // GCode from file on ONBOARD SD
       size = request_M23(infoFile.title + 5);
 
-      //  if( powerFailedCreate(infoFile.title)==false)
-      //  {
-      //
-      //  }	  // FIXME: Powerfail resume is not yet supported for ONBOARD_SD. Need more work.
-
       if (size == 0) {
         ExitDir();
         infoMenu.cur--;
@@ -135,15 +126,7 @@ void menuBeforePrinting(void) {
       }
 
       infoPrinting.size = size;
-
-      //    if(powerFailedExist())
-      //    {
       request_M24(0);
-      //    }
-      //    else
-      //    {
-      //      request_M24(infoBreakPoint.offset);
-      //    }
       printSetUpdateWaiting(true);
 
 #ifdef M27_AUTOREPORT
@@ -239,10 +222,6 @@ bool setPrintPause(bool is_pause, bool is_m0pause) {
         coordinateGetAll(&tmp);
         if (isCoorRelative == true)
           mustStoreCmd("G90\n");
-        // if (isExtrudeRelative == true)  mustStoreCmd("M82\n");
-
-        // if (heatGetCurrentTemp(heatGetCurrentToolNozzle()) > PREVENT_COLD_EXTRUSION_MINTEMP)
-        //   mustStoreCmd("G1 E%.5f F%d\n", tmp.axis[E_AXIS] - ROUTER_PAUSE_RETRACT_LENGTH, ROUTER_PAUSE_E_FEEDRATE);
         if (coordinateIsClear()) {
           mustStoreCmd("G1 Z%.3f F%d\n", tmp.axis[Z_AXIS] + ROUTER_PAUSE_Z_RAISE, ROUTER_PAUSE_Z_FEEDRATE);
           mustStoreCmd("G1 X%d Y%d F%d\n", ROUTER_PAUSE_X_POSITION, ROUTER_PAUSE_Y_POSITION, ROUTER_PAUSE_XY_FEEDRATE);
@@ -250,7 +229,6 @@ bool setPrintPause(bool is_pause, bool is_m0pause) {
 
         if (isCoorRelative == true)
           mustStoreCmd("G91\n");
-        // if (isExtrudeRelative == true)  mustStoreCmd("M83\n");
       } else {
         if (isM0_Pause() == true) {
           setM0Pause(is_m0pause);
@@ -259,21 +237,16 @@ bool setPrintPause(bool is_pause, bool is_m0pause) {
         }
         if (isCoorRelative == true)
           mustStoreCmd("G90\n");
-        // if (isExtrudeRelative == true)  mustStoreCmd("M82\n");
 
         if (coordinateIsClear()) {
           mustStoreCmd("G1 X%.3f Y%.3f F%d\n", tmp.axis[X_AXIS], tmp.axis[Y_AXIS], ROUTER_PAUSE_XY_FEEDRATE);
           mustStoreCmd("G1 Z%.3f F%d\n", tmp.axis[Z_AXIS], ROUTER_PAUSE_Z_FEEDRATE);
         }
         routerControl(infoPrinting.routerSpeed);
-        // if(heatGetCurrentTemp(heatGetCurrentToolNozzle()) > PREVENT_COLD_EXTRUSION_MINTEMP)
-        //   mustStoreCmd("G1 E%.5f F%d\n", tmp.axis[E_AXIS] - ROUTER_PAUSE_RETRACT_LENGTH + ROUTER_RESUME_PURGE_LENGTH, ROUTER_PAUSE_E_FEEDRATE);
-        // mustStoreCmd("G92 E%.5f\n", tmp.axis[E_AXIS]);
         mustStoreCmd("G1 F%d\n", tmp.feedrate);
 
         if (isCoorRelative == true)
           mustStoreCmd("G91\n");
-        // if (isExtrudeRelative == true)  mustStoreCmd("M83\n");
       }
       break;
   }
