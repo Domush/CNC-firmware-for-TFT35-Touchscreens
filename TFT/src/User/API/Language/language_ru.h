@@ -150,7 +150,11 @@
     #define RU_INVERT_YAXIS         "Инверсия оси Y"
     #define RU_INVERT_ZAXIS         "Инверсия оси Z"
     #define RU_MOVE_SPEED           "Скорость (X Y Z)"
-    #define RU_KNOB_LED             "LED энкодер"
-    #define RU_M0_PAUSE             "Пауза по команде M0"
+    #define RU_KNOB_LED             "Rotary Knob LED"
+    #define RU_M0_PAUSE             "Paused by M0 command"
+    #define RU_SEND_START_GCODE     "Start Gcode before print"
+    #define RU_SEND_END_GCODE       "End Gcode after print"
+    #define RU_PERSISTANT_STATUS_INFO "Persistent Status Info"
+    #define RU_FILE_LISTMODE        "Files viewer List Mode"
     
 #endif
