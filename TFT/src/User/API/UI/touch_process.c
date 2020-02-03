@@ -35,6 +35,10 @@ void TS_Get_Coordinates(u16 *x, u16 *y) {
 
   *x = (A * tp_x + B * tp_y + C) / K;
   *y = (D * tp_x + E * tp_y + F) / K;
+  if (ptrvalue(*x) > LCD_WIDTH || ptrvalue(*y) > LCD_HEIGHT) {
+    TSC_Calibration();
+    storePara();
+  }
 }
 
 #define TS_ERR_RANGE 10

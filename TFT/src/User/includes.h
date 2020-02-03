@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "my_misc.h"
+#include "ff.h"
 
 #include "delay.h"
 #include "os_timer.h"
@@ -45,7 +46,6 @@
 #include "Selectmode.h"
 #include "Vfs/vfs.h"
 #include "coordinate.h"
-#include "ff.h"
 #include "flashStore.h"
 #include "interfaceCmd.h"
 #include "myfatfs.h"

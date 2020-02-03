@@ -7,8 +7,8 @@
 /* storage control modules to the FatFs module with a defined API.       */
 /*-----------------------------------------------------------------------*/
 
-#include "diskio.h" /* Declarations of disk functions */
 #include "ff.h"     /* Obtains integer types */
+#include "diskio.h" /* Declarations of disk functions */
 #include "usb_conf.h"
 #include "usbh_msc_core.h"
 #include "usbh_usr.h"

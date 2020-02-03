@@ -2207,6 +2207,6 @@ u8 *textSelect(u8 sel) {
       // case DUTCH:       return (u8 *)du_pack[sel];
 
     default:
-      return NULL;
+      return (u8 *)en_pack[sel];
   }
 }
