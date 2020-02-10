@@ -93,6 +93,7 @@
     #define EN_1_MM                 "1mm"
     #define EN_5_MM                 "5mm"
     #define EN_10_MM                "10mm"
+    #define EN_100_MM               "100mm"
     #define EN_1_PERCENT            "1% steps"
     #define EN_5_PERCENT            "5% steps"
     #define EN_10_PERCENT           "10% steps"
