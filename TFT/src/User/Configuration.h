@@ -240,6 +240,6 @@ custom gcode below are compatible only if CUSTOM_GCODE_LIST_MODE is active
 //
 #define PRINT_END_GCODE "G90\nG1 E-4\nG92 E0\nM18\n" //reduce filament pressure , reset Extruder position, disable steppers
 
-#define CANCEL_PRINT_GCODE "G28 X0 Y0\n"
+#define CANCEL_PRINT_GCODE "M5\nM107\nG1 Z40\nG0 X0 Y0\n"
 
 #endif
