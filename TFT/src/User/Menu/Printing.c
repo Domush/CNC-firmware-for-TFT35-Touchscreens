@@ -359,7 +359,6 @@ extern GUI_RECT titleRect;
 void printingDrawPage(void)
 {
   int16_t i;
-  menuDrawPage(&printingItems);
   //	Scroll_CreatePara(&titleScroll, infoFile.title,&titleRect);  //
   // printed time
   GUI_DispString(progressRect.x0, TIME_Y, (u8* )"T:");
@@ -386,9 +385,10 @@ void printingDrawPage(void)
     printingItems.items[KEY_ICON_1].icon = ICON_PREVIEW;
     printingItems.items[KEY_ICON_1].label.index = LABEL_BACKGROUND;
   }
-  else{
-    printingItems.items[KEY_ICON_1] = itemBabyStep;
-  }
+  // else{
+  //   printingItems.items[KEY_ICON_1] = itemBabyStep;
+  // }
+  menuDrawPage(&printingItems);
 
   // i = get_Pre_Icon((char *)getCurGcodeName(infoFile.title));
   // if(i != ICON_BACKGROUND)
