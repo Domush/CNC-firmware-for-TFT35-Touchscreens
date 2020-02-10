@@ -174,7 +174,7 @@ void menuBeforePrinting(void)
       {
         ExitDir();
         infoMenu.cur--;		
-        return ;
+        return;
       }
       if( powerFailedCreate(infoFile.title)==false)
       {
@@ -233,7 +233,7 @@ bool setPrintPause(bool is_pause, bool is_m0pause)
       }
 
       bool isCoorRelative = coorGetRelative();
-      bool isExtrudeRelative = eGetRelative();
+      // bool isExtrudeRelative = eGetRelative();
       static COORDINATE tmp;
       
       if(infoPrinting.pause)
@@ -248,10 +248,10 @@ bool setPrintPause(bool is_pause, bool is_m0pause)
       
         coordinateGetAll(&tmp);
         if (isCoorRelative == true)     mustStoreCmd("G90\n");
-        if (isExtrudeRelative == true)  mustStoreCmd("M82\n");
+        // if (isExtrudeRelative == true)  mustStoreCmd("M82\n");
         
-        if (heatGetCurrentTemp(heatGetCurrentToolNozzle()) > PREVENT_COLD_EXTRUSION_MINTEMP)
-          mustStoreCmd("G1 E%.5f F%d\n", tmp.axis[E_AXIS] - NOZZLE_PAUSE_RETRACT_LENGTH, NOZZLE_PAUSE_E_FEEDRATE);
+        // if (heatGetCurrentTemp(heatGetCurrentToolNozzle()) > PREVENT_COLD_EXTRUSION_MINTEMP)
+        //   mustStoreCmd("G1 E%.5f F%d\n", tmp.axis[E_AXIS] - NOZZLE_PAUSE_RETRACT_LENGTH, NOZZLE_PAUSE_E_FEEDRATE);
         if (coordinateIsClear())
         {
           mustStoreCmd("G1 Z%.3f F%d\n", tmp.axis[Z_AXIS] + NOZZLE_PAUSE_Z_RAISE, NOZZLE_PAUSE_Z_FEEDRATE);
@@ -259,7 +259,7 @@ bool setPrintPause(bool is_pause, bool is_m0pause)
         }
         
         if (isCoorRelative == true)     mustStoreCmd("G91\n");
-        if (isExtrudeRelative == true)  mustStoreCmd("M83\n");
+        // if (isExtrudeRelative == true)  mustStoreCmd("M83\n");
       }
       else
       {
@@ -269,20 +269,20 @@ bool setPrintPause(bool is_pause, bool is_m0pause)
         break;
         }
         if (isCoorRelative == true)     mustStoreCmd("G90\n");
-        if (isExtrudeRelative == true)  mustStoreCmd("M82\n");
+        // if (isExtrudeRelative == true)  mustStoreCmd("M82\n");
         
         if (coordinateIsClear())
         {
           mustStoreCmd("G1 X%.3f Y%.3f F%d\n", tmp.axis[X_AXIS], tmp.axis[Y_AXIS], NOZZLE_PAUSE_XY_FEEDRATE);
           mustStoreCmd("G1 Z%.3f F%d\n", tmp.axis[Z_AXIS], NOZZLE_PAUSE_Z_FEEDRATE);
         }
-        if(heatGetCurrentTemp(heatGetCurrentToolNozzle()) > PREVENT_COLD_EXTRUSION_MINTEMP)
-          mustStoreCmd("G1 E%.5f F%d\n", tmp.axis[E_AXIS] - NOZZLE_PAUSE_RETRACT_LENGTH + NOZZLE_RESUME_PURGE_LENGTH, NOZZLE_PAUSE_E_FEEDRATE);
-        mustStoreCmd("G92 E%.5f\n", tmp.axis[E_AXIS]);
+        // if(heatGetCurrentTemp(heatGetCurrentToolNozzle()) > PREVENT_COLD_EXTRUSION_MINTEMP)
+        //   mustStoreCmd("G1 E%.5f F%d\n", tmp.axis[E_AXIS] - NOZZLE_PAUSE_RETRACT_LENGTH + NOZZLE_RESUME_PURGE_LENGTH, NOZZLE_PAUSE_E_FEEDRATE);
+        // mustStoreCmd("G92 E%.5f\n", tmp.axis[E_AXIS]);
         mustStoreCmd("G1 F%d\n", tmp.feedrate);
         
         if (isCoorRelative == true)     mustStoreCmd("G91\n");
-        if (isExtrudeRelative == true)  mustStoreCmd("M83\n");
+        // if (isExtrudeRelative == true)  mustStoreCmd("M83\n");
       }
       break;
   }
@@ -299,15 +299,15 @@ const GUI_RECT progressRect = {1 * SPACE_X_PER_ICON, 0 * ICON_HEIGHT + 0 * SPACE
 #define TIME_Y (TEMP_Y + 1 * BYTE_HEIGHT + 3)
 void reValueNozzle(void)
 {
-  GUI_DispString(BED_X, TEMP_Y - 2 * BYTE_HEIGHT, (u8* )heatDisplayID[heatGetCurrentToolNozzle()]);
-  GUI_DispDec(BED_X + 3 * BYTE_WIDTH, TEMP_Y - 2 * BYTE_HEIGHT , heatGetCurrentTemp(heatGetCurrentToolNozzle()), 3, RIGHT);
-  GUI_DispDec(BED_X + 7 * BYTE_WIDTH, TEMP_Y - 2 * BYTE_HEIGHT, heatGetTargetTemp(heatGetCurrentToolNozzle()),  3, LEFT);
+  // GUI_DispString(BED_X, TEMP_Y - 2 * BYTE_HEIGHT, (u8* )heatDisplayID[heatGetCurrentToolNozzle()]);
+  // GUI_DispDec(BED_X + 3 * BYTE_WIDTH, TEMP_Y - 2 * BYTE_HEIGHT , heatGetCurrentTemp(heatGetCurrentToolNozzle()), 3, RIGHT);
+  // GUI_DispDec(BED_X + 7 * BYTE_WIDTH, TEMP_Y - 2 * BYTE_HEIGHT, heatGetTargetTemp(heatGetCurrentToolNozzle()),  3, LEFT);
 }
 
 void reValueBed(void)
 {
-  GUI_DispDec(BED_X + 3 * BYTE_WIDTH, TEMP_Y - BYTE_HEIGHT, heatGetCurrentTemp(BED), 3, RIGHT);
-  GUI_DispDec(BED_X + 7 * BYTE_WIDTH, TEMP_Y - BYTE_HEIGHT, heatGetTargetTemp(BED),  3, LEFT);
+  // GUI_DispDec(BED_X + 3 * BYTE_WIDTH, TEMP_Y - BYTE_HEIGHT, heatGetCurrentTemp(BED), 3, RIGHT);
+  // GUI_DispDec(BED_X + 7 * BYTE_WIDTH, TEMP_Y - BYTE_HEIGHT, heatGetTargetTemp(BED),  3, LEFT);
 }
 
 void reDrawTime(void)
@@ -405,6 +405,11 @@ void menuPrinting(void)
   memset(&nowHeat, 0, sizeof(HEATER));
   
   printingItems.items[KEY_ICON_0] = itemIsPause[infoPrinting.pause];
+  if (isPrinting())
+    printingItems.items[KEY_ICON_3] = itemIsFinished[0];
+  else
+    printingItems.items[KEY_ICON_3] = itemIsFinished[1];
+
   printingDrawPage();
   // printingItems.items[key_pause] = itemIsPause[infoPrinting.pause];
 
@@ -430,20 +435,20 @@ void menuPrinting(void)
       }	
     }            
 
-    if (nowHeat.T[heatGetCurrentToolNozzle()].current != heatGetCurrentTemp(heatGetCurrentToolNozzle()) 
-     || nowHeat.T[heatGetCurrentToolNozzle()].target != heatGetTargetTemp(heatGetCurrentToolNozzle()))
-    {
-      nowHeat.T[heatGetCurrentToolNozzle()].current = heatGetCurrentTemp(heatGetCurrentToolNozzle());
-      nowHeat.T[heatGetCurrentToolNozzle()].target = heatGetTargetTemp(heatGetCurrentToolNozzle());
-      reValueNozzle();	
-    }
-    if (nowHeat.T[BED].current != heatGetCurrentTemp(BED) 
-     || nowHeat.T[BED].target != heatGetTargetTemp(BED))
-    {
-      nowHeat.T[BED].current = heatGetCurrentTemp(BED);
-      nowHeat.T[BED].target = heatGetTargetTemp(BED);
-      reValueBed();	
-    }
+    // if (nowHeat.T[heatGetCurrentToolNozzle()].current != heatGetCurrentTemp(heatGetCurrentToolNozzle()) 
+    //  || nowHeat.T[heatGetCurrentToolNozzle()].target != heatGetTargetTemp(heatGetCurrentToolNozzle()))
+    // {
+    //   nowHeat.T[heatGetCurrentToolNozzle()].current = heatGetCurrentTemp(heatGetCurrentToolNozzle());
+    //   nowHeat.T[heatGetCurrentToolNozzle()].target = heatGetTargetTemp(heatGetCurrentToolNozzle());
+    //   reValueNozzle();	
+    // }
+    // if (nowHeat.T[BED].current != heatGetCurrentTemp(BED) 
+    //  || nowHeat.T[BED].target != heatGetTargetTemp(BED))
+    // {
+    //   nowHeat.T[BED].current = heatGetCurrentTemp(BED);
+    //   nowHeat.T[BED].target = heatGetTargetTemp(BED);
+    //   reValueBed();	
+    // }
     
     if(time!=infoPrinting.time)
     {
@@ -474,7 +479,7 @@ void menuPrinting(void)
         break;
         
       case KEY_ICON_4:
-        infoMenu.menu[++infoMenu.cur] = menuHeat;
+        infoMenu.menu[++infoMenu.cur] = menuFan;
         break;
       
       case KEY_ICON_5:
@@ -486,7 +491,7 @@ void menuPrinting(void)
         break;
       
       case KEY_ICON_7:
-        infoMenu.menu[++infoMenu.cur] = menuMore;
+        infoMenu.menu[++infoMenu.cur] = menuMove;
         break;
       
       default :break;
@@ -526,6 +531,9 @@ void endPrinting(void)
 void completePrinting(void)
 {
   endPrinting();  
+
+  printingItems.items[KEY_ICON_3] = itemIsFinished[1];
+  printingDrawPage();
   if(infoSettings.auto_off) // Auto shut down after printing
   {
 		infoMenu.menu[++infoMenu.cur] = menuShutDown;

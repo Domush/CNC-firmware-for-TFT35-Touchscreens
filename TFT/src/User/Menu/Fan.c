@@ -130,6 +130,8 @@ void menuFan(void)
         break;
       
       case KEY_ICON_5:
+        mustStoreCmd("M5\n");
+        mustStoreCmd("M107\n");
         mustStoreCmd("M120\n");
         mustStoreCmd("G0 X0 Y-200 Z40 F%d\n",DEFAULT_SPEED_MOVE);
         break;
