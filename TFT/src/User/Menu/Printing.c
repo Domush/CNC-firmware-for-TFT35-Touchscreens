@@ -10,16 +10,22 @@ LABEL_BACKGROUND,
   {ICON_BACKGROUND,           LABEL_BACKGROUND},
   {ICON_BACKGROUND,           LABEL_BACKGROUND},
   {ICON_STOP,                 LABEL_STOP},
-  {ICON_HEAT,                 LABEL_HEAT},
-  {ICON_PERCENTAGE,           LABEL_PERCENTAGE},
+  {ICON_FAN,                  LABEL_FAN},
+  {ICON_PERCENTAGE,           LABEL_PERCENTAGE_SPEED},
   {ICON_BABYSTEP,             LABEL_BABYSTEP},
-  {ICON_MORE,                 LABEL_MORE},}
+  {ICON_MOVE,                 LABEL_MOVE},}
 };
 
 const ITEM itemIsPause[2] = {
 // icon                       label
   {ICON_PAUSE,                LABEL_PAUSE},
   {ICON_RESUME,               LABEL_RESUME},
+};
+
+const ITEM itemIsFinished[2] = {
+// icon                       label
+  {ICON_STOP,                 LABEL_STOP},
+  {ICON_BACK,                 LABEL_BACK},
 };
 
 #ifndef M27_WATCH_OTHER_SOURCES
@@ -102,11 +108,6 @@ void startGcodeExecute(void)
 
 void endGcodeExecute(void)
 {
-
-  for(TOOL i = BED; i < HEATER_NUM; i++)
-  {
-    mustStoreCmd("%s S0\n", heatCmd[i]);  
-  }
   for(u8 i = 0; i < FAN_NUM; i++)
   {
     mustStoreCmd("%s S0\n", fanCmd[i]);  
@@ -365,16 +366,16 @@ void printingDrawPage(void)
   GUI_DispString(progressRect.x0 + 4 * BYTE_WIDTH, TIME_Y, (u8* )":");
   GUI_DispString(progressRect.x0 + 7 * BYTE_WIDTH, TIME_Y, (u8* )":");
   // nozzle temperature 
-  GUI_DispString(BED_X + 2 * BYTE_WIDTH, TEMP_Y - 2 * BYTE_HEIGHT , (u8* )":");
-  GUI_DispString(BED_X + 6 * BYTE_WIDTH, TEMP_Y - 2 * BYTE_HEIGHT, (u8* )"/");
+  // GUI_DispString(BED_X + 2 * BYTE_WIDTH, TEMP_Y - 2 * BYTE_HEIGHT , (u8* )":");
+  // GUI_DispString(BED_X + 6 * BYTE_WIDTH, TEMP_Y - 2 * BYTE_HEIGHT, (u8* )"/");
   // hotbed temperature
-  GUI_DispString(BED_X + BYTE_WIDTH, TEMP_Y - BYTE_HEIGHT, (u8* )"B:");
-  GUI_DispString(BED_X + 6 * BYTE_WIDTH, TEMP_Y - BYTE_HEIGHT, (u8* )"/");
+  // GUI_DispString(BED_X + BYTE_WIDTH, TEMP_Y - BYTE_HEIGHT, (u8* )"B:");
+  // GUI_DispString(BED_X + 6 * BYTE_WIDTH, TEMP_Y - BYTE_HEIGHT, (u8* )"/");
   // fan speed
   GUI_DispString(BED_X + BYTE_WIDTH, TEMP_Y, (u8* )"F:");
   reDrawProgress(infoPrinting.progress);
-  reValueNozzle();
-  reValueBed();
+  // reValueNozzle();
+  // reValueBed();
   reDrawFan();
   reDrawTime();
   // z_axis coordinate

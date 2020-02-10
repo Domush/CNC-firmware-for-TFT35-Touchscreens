@@ -1,4 +1,5 @@
 #include "Fan.h"
+#include "Move.h"
 #include "includes.h"
 
 
@@ -12,8 +13,9 @@ LABEL_FAN,
   {ICON_BACKGROUND,           LABEL_BACKGROUND},
   {ICON_INC,                  LABEL_INC},
   {ICON_FAN ,                 LABEL_FAN},
+  {ICON_BLTOUCH,              LABEL_BLTOUCH},
+  {ICON_BLTOUCH_TEST ,        LABEL_BLTOUCH_TEST},
   {ICON_FAN_FULL_SPEED,       LABEL_FAN_FULL_SPEED},
-  {ICON_STOP,                 LABEL_STOP},
   {ICON_BACK,                 LABEL_BACK},}
 };
 
@@ -91,11 +93,6 @@ void menuFan(void)
 
   menuDrawPage(&fanItems);
   showFanSpeed();
-
-  #if LCD_ENCODER_SUPPORT
-    encoderPosition = 0;    
-  #endif
-
   while(infoMenu.menu[infoMenu.cur] == menuFan)
   {
     key_num = menuKeyGetValue();
@@ -130,16 +127,16 @@ void menuFan(void)
         break;
         
       case KEY_ICON_4:
-        curIndex = (curIndex + 1) % FAN_NUM;
-        showFanSpeed();
+        fanSpeed[curIndex] = 0;
         break;
       
       case KEY_ICON_5:
-        fanSpeed[curIndex] = fanMaxPWM[curIndex];
+        mustStoreCmd("M120\n");
+        mustStoreCmd("G0 X0 Y-200 Z40 F%d\n",DEFAULT_SPEED_MOVE);
         break;
       
       case KEY_ICON_6:
-        fanSpeed[curIndex] = 0;
+        fanSpeed[curIndex] = fanMaxPWM[curIndex];
         break;
       
       case KEY_ICON_7:
@@ -147,37 +144,6 @@ void menuFan(void)
         break;
       
       default:
-        #if LCD_ENCODER_SUPPORT
-          if(encoderPosition)
-          {
-            if (fanSpeed[curIndex] < fanMaxPWM[curIndex] && encoderPosition > 0){
-              #ifdef SHOW_FAN_PERCENTAGE
-                if (fanSpeed[curIndex]+2 <= fanMaxPWM[curIndex]){
-                  fanSpeed[curIndex]+=2; //2.55 is 1 percent, rounding down
-                } else {
-                  fanSpeed[curIndex]=fanMaxPWM[curIndex];
-                }
-              #else
-                fanSpeed[curIndex]++;
-              #endif   
-            }
-
-            if (fanSpeed[curIndex] > 0 && encoderPosition < 0) {
-              #ifdef SHOW_FAN_PERCENTAGE 
-                if ((fanSpeed[curIndex]-2) > 0) {
-                  fanSpeed[curIndex]-=2; //2.55 is 1 percent, rounding down
-                } else {
-                  fanSpeed[curIndex]=0;
-                }
-              #else
-                fanSpeed[curIndex]--;
-              #endif   
-            }
-
-            encoderPosition = 0;    
-          }
-          LCD_LoopEncoder();
-        #endif
         break;
     }
     

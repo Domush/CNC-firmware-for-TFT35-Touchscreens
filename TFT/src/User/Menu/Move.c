@@ -52,7 +52,7 @@ const ITEM itemMoveLen[ITEM_MOVE_LEN_NUM] = {
   {ICON_10_MM,                LABEL_10_MM},
 };
 
-const  float item_move_len[ITEM_MOVE_LEN_NUM] = {0.1f, 1, 10};
+const  float item_move_len[ITEM_MOVE_LEN_NUM] = {100, 1, 10};
 static u8    item_move_len_i = 1;
 
 static u32 nowTime = 0;
@@ -128,10 +128,6 @@ void menuMove(void)
   }
   mustStoreCmd("M114\n");
   drawXYZ();
-
-  #if LCD_ENCODER_SUPPORT
-    encoderPosition = 0;    
-  #endif
 
   while(infoMenu.menu[infoMenu.cur] == menuMove)
   {
@@ -223,13 +219,13 @@ void drawXYZ(void){
   //GUI_FillPrect(&RecXYZ);
   my_sprintf(tempstr, "X:%.1f  ", getAxisLocation(0));  
   GUI_DispString(START_X+1*SPACE_X+1*ICON_WIDTH,(ICON_START_Y-BYTE_HEIGHT)/2,(u8 *)tempstr);
-  GUI_SetColor(FONT_COLOR);
+  // GUI_SetColor(FONT_COLOR);
   my_sprintf(tempstr, "Y:%.1f  ", getAxisLocation(1));
   GUI_DispString(START_X+2*SPACE_X+2*ICON_WIDTH,(ICON_START_Y-BYTE_HEIGHT)/2,(u8 *)tempstr);
-  GUI_SetColor(FONT_COLOR);
+  // GUI_SetColor(FONT_COLOR);
   my_sprintf(tempstr, "Z:%.1f  ", getAxisLocation(2));
   GUI_DispString(START_X+3*SPACE_X+3*ICON_WIDTH,(ICON_START_Y-BYTE_HEIGHT)/2,(u8 *)tempstr);
   
   //GUI_SetBkColor(BACKGROUND_COLOR);
-  GUI_SetColor(FONT_COLOR);
+  // GUI_SetColor(FONT_COLOR);
 }
