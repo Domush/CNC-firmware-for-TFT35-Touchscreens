@@ -110,4 +110,3 @@ typedef struct
 extern HOST infoHost;
 
 #endif
-

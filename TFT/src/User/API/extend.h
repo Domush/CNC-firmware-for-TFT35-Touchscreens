@@ -3,8 +3,7 @@
 
 #include "stdbool.h"
 
-enum
-{
+enum {
   FILAMENT_RUNOUT_OFF = 0,
   FILAMENT_RUNOUT_ON,
   FILAMENT_SMART_RUNOUT_ON,

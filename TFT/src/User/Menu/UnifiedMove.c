@@ -27,7 +27,7 @@ void menuUnifiedMove(void)
     {
       case KEY_ICON_0: infoMenu.menu[++infoMenu.cur] = menuHome; break;
       case KEY_ICON_1: infoMenu.menu[++infoMenu.cur] = menuMove; break;
-      case KEY_ICON_2: infoMenu.menu[++infoMenu.cur] = menuAutoLeveling; break;
+      case KEY_ICON_2: infoMenu.menu[++infoMenu.cur] = menuHoming; break;
       case KEY_ICON_3: infoMenu.menu[++infoMenu.cur] = menuManualLeveling; break;
       case KEY_ICON_7: infoMenu.cur--; break;
       default: break;            

@@ -8,8 +8,8 @@
 typedef enum
 {
   BED = 0,
-  NOZZLE0 = 1,
-  HEATER_NUM = TOOL_NUM + NOZZLE0,
+  SPINDLE0 = 1,
+  HEATER_NUM = TOOL_NUM + SPINDLE0,
 }TOOL;
 
 typedef struct
@@ -23,7 +23,7 @@ typedef struct
 {
   _HEATER T[HEATER_NUM];
   TOOL    tool;
-  TOOL    nozzle;
+  TOOL    spindle;
 }HEATER;
 
 
@@ -46,8 +46,8 @@ void heatSetIsWaiting(TOOL tool,bool isWaiting);
 void heatClearIsWaiting(void);
 void heatSetCurrentTool(TOOL tool);
 TOOL heatGetCurrentTool(void);
-void heatSetCurrentToolNozzle(TOOL tool);
-TOOL heatGetCurrentToolNozzle(void);
+void heatSetCurrentToolSpindle(TOOL tool);
+TOOL heatGetCurrentToolSpindle(void);
 void heatSetUpdateTime(uint32_t time);
 void heatSetUpdateWaiting(bool isWaiting);
 void heatSetSendWaiting(TOOL tool, bool isWaiting);

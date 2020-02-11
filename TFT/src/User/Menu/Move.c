@@ -47,7 +47,7 @@ const ITEM itemMoveLen[ITEM_MOVE_LEN_NUM] = {
 };
 
 const float item_move_len[ITEM_MOVE_LEN_NUM] = {100, 10, 1};
-static u8 item_move_len_i = 1;
+static u8 item_move_len_i = 100;
 
 static u32 nowTime = 0;
 static u32 update_time = 50;  // 1 seconds is 100
@@ -197,7 +197,7 @@ void menuMove(void) {
 #endif
     }
     loopProcess();
-    update_gantry();
+    // update_gantry();
   }
   mustStoreCmd("G90\n");
 }
@@ -215,13 +215,11 @@ void drawXYZ(void) {
   char tempstr[100];
   //GUI_SetColor(GANTRYLBL_BKCOLOR);
   //GUI_FillPrect(&RecXYZ);
-  my_sprintf(tempstr, "X:%.1f  ", getAxisLocation(0));
+  my_sprintf(tempstr, "X:%.1f", getAxisLocation(0));
   GUI_DispString(START_X + 1 * SPACE_X + 1 * ICON_WIDTH, (ICON_START_Y - BYTE_HEIGHT) / 2, (u8 *)tempstr);
-  // GUI_SetColor(FONT_COLOR);
-  my_sprintf(tempstr, "Y:%.1f  ", getAxisLocation(1));
+  my_sprintf(tempstr, "Y:%.1f", getAxisLocation(1));
   GUI_DispString(START_X + 2 * SPACE_X + 2 * ICON_WIDTH, (ICON_START_Y - BYTE_HEIGHT) / 2, (u8 *)tempstr);
-  // GUI_SetColor(FONT_COLOR);
-  my_sprintf(tempstr, "Z:%.1f  ", getAxisLocation(2));
+  my_sprintf(tempstr, "Z:%.1f", getAxisLocation(2));
   GUI_DispString(START_X + 3 * SPACE_X + 3 * ICON_WIDTH, (ICON_START_Y - BYTE_HEIGHT) / 2, (u8 *)tempstr);
 
   //GUI_SetBkColor(BACKGROUND_COLOR);

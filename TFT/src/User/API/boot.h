@@ -4,38 +4,37 @@
 #include "variants.h"
 #include "stdbool.h"
 
-#define W25QXX_SECTOR_SIZE (0x1000) // 4096-4K
+#define W25QXX_SECTOR_SIZE (0x1000)  // 4096-4K
 
 //address in spiflash W25Qxx
-#define LOGO_ADDR               0x0
-#define WORD_UNICODE            0x4B000 // unicode (+0x480000 4.5M)
-#define BYTE_ASCII_ADDR         (WORD_UNICODE+0x480000) // ascii (+0x1000 4K)
+#define LOGO_ADDR 0x0
+#define WORD_UNICODE 0x4B000                       // unicode (+0x480000 4.5M)
+#define BYTE_ASCII_ADDR (WORD_UNICODE + 0x480000)  // ascii (+0x1000 4K)
 //#define BYTE_RESERVE_ADDR      0x710000
-#define ICON_ADDR(num)          ((num)*0x5000+BYTE_ASCII_ADDR+0x1000)
-#define INFOBOX_ADDR            (ICON_ADDR(ICON_PREVIEW) + 0x5000) // total byte size 0xA7F8
-#define SMALL_ICON_START_ADDR   (INFOBOX_ADDR+0xA7F8)
-#define SMALL_ICON_ADDR(num)    ((num)*0x1000+SMALL_ICON_START_ADDR)
+#define ICON_ADDR(num) ((num)*0x5000 + BYTE_ASCII_ADDR + 0x1000)
+#define INFOBOX_ADDR (ICON_ADDR(ICON_PREVIEW) + 0x5000)  // total byte size 0xA7F8
+#define SMALL_ICON_START_ADDR (INFOBOX_ADDR + 0xA7F8)
+#define SMALL_ICON_ADDR(num) ((num)*0x1000 + SMALL_ICON_START_ADDR)
 
-#define BMP		(1<<1)
-#define FONT	(1<<2)
+#define BMP (1 << 1)
+#define FONT (1 << 2)
 
-#define BMP_ROOT_DIR "0:"ROOT_DIR"/bmp"
-#define FONT_ROOT_DIR "0:"ROOT_DIR"/font"
+#define BMP_ROOT_DIR "0:" ROOT_DIR "/bmp"
+#define FONT_ROOT_DIR "0:" ROOT_DIR "/font"
 #define TFT_RESET_FILE "0:reset.txt"
 
-enum
-{
+enum {
   ICON_HEAT = 0,
   ICON_MOVE,
   ICON_HOME,
   ICON_PRINT,
   ICON_EXTRUDE,
-  ICON_FAN,
+  ICON_ROUTER,
   ICON_SETTINGS,
-  ICON_LEVELING,  
+  ICON_LEVELING,
   ICON_INC,
   ICON_DEC,
-  ICON_NOZZLE,
+  ICON_SPINDLE,
   ICON_BED,
   ICON_1_DEGREE,
   ICON_5_DEGREE,
@@ -45,6 +44,7 @@ enum
   ICON_X_INC,
   ICON_Y_INC,
   ICON_Z_INC,
+  ICON_001_MM,
   ICON_01_MM,
   ICON_1_MM,
   ICON_10_MM,
@@ -60,7 +60,7 @@ enum
   ICON_PAGE_UP,
   ICON_PAGE_DOWN,
   ICON_PAUSE,
-  ICON_RESUME,  
+  ICON_RESUME,
   ICON_LOAD,
   ICON_UNLOAD,
   ICON_SLOW_SPEED,
@@ -69,8 +69,8 @@ enum
   ICON_E_1_MM,
   ICON_E_5_MM,
   ICON_E_10_MM,
-  ICON_FAN_FULL_SPEED,
-  ICON_FAN_HALF_SPEED,
+  ICON_ROUTER_ON,
+  ICON_CHANGE_BIT,
   ICON_ROTATE_UI,
   ICON_LANGUAGE,
   ICON_TOUCHSCREEN_ADJUST,
@@ -79,31 +79,29 @@ enum
   ICON_BKCOLOR,
   ICON_FONTCOLOR,
   ICON_DISCONNECT,
-  ICON_BAUDRATE,  
+  ICON_BAUDRATE,
   ICON_PERCENTAGE,
   ICON_BABYSTEP,
-  ICON_001_MM,
   ICON_BSD_SOURCE,
   ICON_SD_SOURCE,
   ICON_U_DISK,
-  ICON_POINT_1,
-  ICON_POINT_2,
+  ICON_DISABLE_XY,
+  ICON_DISABLE_Z,
   ICON_POINT_3,
   ICON_POINT_4,
   ICON_MARLIN,
   ICON_BIGTREE,
   ICON_GCODE,
-  ICON_BLTOUCH,
-  ICON_BLTOUCH_DEPLOY,
-  ICON_BLTOUCH_STOW,
-  ICON_BLTOUCH_TEST,
-  ICON_BLTOUCH_REPEAT,
+  ICON_ROUTER_OFF,
+  ICON_ZERO_X,
+  ICON_ZERO_Y,
+  ICON_ZERO_Z,
+  ICON_ZERO_ALL,
   ICON_SCREEN_SETTINGS,
   ICON_MACHINE_SETTINGS,
   ICON_FEATURE_SETTINGS,
-  ICON_PROBE_OFFSET,
   ICON_EEPROM_SAVE,
-  ICON_SILENT_ON,
+  ICON_SOUND_OFF,
   ICON_SHUT_DOWN,
   ICON_RGB_SETTINGS,
   ICON_RGB_RED,
@@ -124,40 +122,31 @@ enum
   ICON_CUSTOM_5,
   ICON_CUSTOM_6,
   ICON_HOME_MOVE,
-  ICON_HEAT_FAN,
+  ICON_HEAT_ROUTER,
   ICON_MANUAL_LEVEL,
   ICON_COOLDOWN,
-  ICON_SILENT_OFF,
-  ICON_STATUSNOZZLE,
-  ICON_STATUSBED,
-  ICON_STATUSFAN,
+  ICON_SOUND_ON,
   ICON_MAINMENU,
-  ICON_STATUS_SPEED,
-  ICON_STATUS_FLOW,
-  ICON_PARAMETER,
-  ICON_GLOBAL_NOZZLE0,
-  ICON_GLOBAL_BED,
 
-//add new icons above this line  only 
-//  ICON_RESERVE
+  //add new icons above this line  only
+  //  ICON_RESERVE
 
-// Preview should be in the last place before ICON_BACKGROUND to save flash storage space
+  // Preview should be in the last place before ICON_BACKGROUND to save flash storage space
   ICON_PREVIEW,
-// Back ground sign
+  // Back ground sign
   ICON_BACKGROUND
 };
 
-typedef union
-{
-	u16 color;
-	struct{
-	u16  b:5;
-	u16  g:6;
-	u16  r:5;
- }RGB;
-}GUI_COLOR;
+typedef union {
+  u16 color;
+  struct {
+    u16 b : 5;
+    u16 g : 6;
+    u16 r : 5;
+  } RGB;
+} GUI_COLOR;
 
 void scanUpdates(void);
 bool bmpDecode(char *bmp, u32 addr);
 
-#endif 
+#endif

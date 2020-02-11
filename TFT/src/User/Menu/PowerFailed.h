@@ -15,8 +15,8 @@ typedef struct
   u32   feedrate;
   u16   speed,flow;
   u16	  target[HEATER_NUM],
-        fan[FAN_NUM];
-  TOOL  nozzle;
+        router[ROUTER_NUM];
+  TOOL  spindle;
   u32	  offset;
   bool  relative,
         relative_e;

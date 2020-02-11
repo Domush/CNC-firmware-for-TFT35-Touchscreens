@@ -28,12 +28,12 @@ const ITEM itemToolPreheat[] = {
 // icon                       label
   {ICON_PREHEAT_BOTH,         LABEL_PREHEAT_BOTH},
   {ICON_BED,                  LABEL_BED},
-  {ICON_NOZZLE,               LABEL_NOZZLE},
-  {ICON_NOZZLE,               LABEL_NOZZLE},
-  {ICON_NOZZLE,               LABEL_NOZZLE},
-  {ICON_NOZZLE,               LABEL_NOZZLE},
-  {ICON_NOZZLE,               LABEL_NOZZLE},
-  {ICON_NOZZLE,               LABEL_NOZZLE},
+  {ICON_SPINDLE,               LABEL_SPINDLE},
+  {ICON_SPINDLE,               LABEL_SPINDLE},
+  {ICON_SPINDLE,               LABEL_SPINDLE},
+  {ICON_SPINDLE,               LABEL_SPINDLE},
+  {ICON_SPINDLE,               LABEL_SPINDLE},
+  {ICON_SPINDLE,               LABEL_SPINDLE},
 };   
 
 const u16   preheat_bed_temp[] = PREHEAT_BED;
@@ -58,13 +58,13 @@ void menuPreheat(void)
         switch(nowHeater){
           case BOTH:
             heatSetTargetTemp(BED, preheat_bed_temp[key_num]);
-            heatSetTargetTemp(heatGetCurrentToolNozzle(), preheat_hotend_temp[key_num]);
+            heatSetTargetTemp(heatGetCurrentToolSpindle(), preheat_hotend_temp[key_num]);
             break;
           case BED_PREHEAT:
             heatSetTargetTemp(BED, preheat_bed_temp[key_num]);
             break;
-          case NOZZLE0_PREHEAT:
-            heatSetTargetTemp(heatGetCurrentToolNozzle(), preheat_hotend_temp[key_num]);
+          case SPINDLE0_PREHEAT:
+            heatSetTargetTemp(heatGetCurrentToolSpindle(), preheat_hotend_temp[key_num]);
             break;
         }
         break;

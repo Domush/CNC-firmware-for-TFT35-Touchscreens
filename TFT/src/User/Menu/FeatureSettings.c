@@ -43,6 +43,14 @@ const LABEL itemMoveSpeed[ITEM_SPEED_NUM] = {
 };
 const u8 item_movespeed[ITEM_SPEED_NUM] = {LABEL_NORMAL_SPEED, LABEL_SLOW_SPEED, LABEL_FAST_SPEED};
 
+#define ITEM_ROUTER_CONTROL 3
+const LABEL itemRouterControl[ITEM_ROUTER_CONTROL] = {
+    //item value text(only for custom value)
+    LABEL_DISABLED,
+    LABEL_M3M5,
+    LABEL_FAN0,
+};
+const u8 item_routercontrol[ITEM_ROUTER_CONTROL] = {LABEL_DISABLED, LABEL_M3M5, LABEL_FAN0};
 #ifdef LED_color_PIN
 #define LED_color_NUM 9
 const LABEL itemLedcolor[LED_color_NUM] = {
@@ -84,6 +92,7 @@ typedef enum {
   SKEY_RUNOUT,
 #endif
   SKEY_SPEED,
+  SKEY_ROUTER_POWER,
   SKEY_STARTGCODE,
   SKEY_ENDGCODE,
   SKEY_PERSISTENTINFO,
@@ -111,6 +120,7 @@ LISTITEM settingPage[SKEY_COUNT] = {
     {ICONCHAR_BLANK, LIST_CUSTOMVALUE, LABEL_FILAMENT_RUNOUT, LABEL_OFF},
 #endif
     {ICONCHAR_BLANK, LIST_CUSTOMVALUE, LABEL_MOVE_SPEED, LABEL_NORMAL_SPEED},
+    {ICONCHAR_BLANK, LIST_CUSTOMVALUE, LABEL_ROUTER_CONTROL, LABEL_DISABLED},
     {ICONCHAR_TOGGLE_ON, LIST_TOGGLE, LABEL_SEND_START_GCODE, LABEL_BACKGROUND},
     {ICONCHAR_TOGGLE_ON, LIST_TOGGLE, LABEL_SEND_END_GCODE, LABEL_BACKGROUND},
     {ICONCHAR_TOGGLE_ON, LIST_TOGGLE, LABEL_PERSISTENT_STATUS_INFO, LABEL_BACKGROUND},
@@ -177,6 +187,12 @@ void updateFeatureSettings(uint8_t key_val) {
       featureSettingsItems.items[key_val] = settingPage[item_index];
 
       menuDrawListItem(&featureSettingsItems.items[key_val], key_val);
+      break;
+
+    case SKEY_ROUTER_POWER:
+      infoSettings.router_power = (infoSettings.router_power + 1) % ITEM_ROUTER_CONTROL;
+      settingPage[item_index].valueLabel = itemRouterControl[infoSettings.router_power];
+      featureSettingsItems.items[key_val] = settingPage[item_index];
       break;
 
     case SKEY_STARTGCODE:
@@ -265,6 +281,11 @@ void loadFeatureSettings() {
 
       case SKEY_SPEED:
         settingPage[item_index].valueLabel = itemMoveSpeed[infoSettings.move_speed];
+        featureSettingsItems.items[i] = settingPage[item_index];
+        break;
+
+      case SKEY_ROUTER_POWER:
+        settingPage[item_index].valueLabel = itemMoveSpeed[infoSettings.router_power];
         featureSettingsItems.items[i] = settingPage[item_index];
         break;
 

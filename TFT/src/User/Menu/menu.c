@@ -224,7 +224,7 @@ void menuDrawTitle(const uint8_t *content)  //(const MENUITEMS * menuItems)
     GUI_SetTextMode(GUI_TEXTMODE_NORMAL);
   }
 
-  show_GlobalInfo();
+  // show_GlobalInfo();
   if (reminder.status == STATUS_IDLE) return;
   GUI_SetColor(RED);
   GUI_DispStringInPrect(&reminder.rect, textSelect(reminder.inf));
@@ -325,7 +325,7 @@ void loopBackEnd(void) {
 
   parseRcvGcode();  //Parse the received Gcode from other UART, such as: ESP3D, etc...
 
-  loopCheckHeater();  //Temperature related settings
+  // loopCheckHeater();  //Temperature related settings
 
 #if defined ONBOARD_SD_SUPPORT && !defined M27_AUTOREPORT
   loopCheckPrinting();  //Check if there is a SD or USB print running.
@@ -358,4 +358,5 @@ void loopProcess(void) {
   // temp_Change();
   loopBackEnd();
   loopFrontEnd();
+  update_gantry();
 }

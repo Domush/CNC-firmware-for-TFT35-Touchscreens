@@ -12,12 +12,12 @@ const char iconBmpName[][32] = {
     "Home",
     "Print",
     "Extrude",
-    "Fan",
+    "Router",
     "Settings",
     "Leveling",
     "Inc",
     "Dec",
-    "Nozzle",
+    "Spindle",
     "Hotbed",
     "Temp_1",
     "Temp_5",
@@ -27,6 +27,7 @@ const char iconBmpName[][32] = {
     "Inc_X",
     "Inc_Y",
     "Inc_Z",
+    "Mmm_001",
     "Mmm_01",
     "Mmm_1",
     "Mmm_10",
@@ -51,11 +52,11 @@ const char iconBmpName[][32] = {
     "Emm_1",
     "Emm_5",
     "Emm_10",
-    "Full",
-    "Half",
+    "Router_on",
+    "Change_bit",
     "Rotate",
     "Language",
-    "TP_Adjust",
+    "ScreenAdjust",
     "More",
     "About",
     "BackGroundColor",
@@ -64,28 +65,26 @@ const char iconBmpName[][32] = {
     "BaudRate",
     "Percentage",
     "BabyStep",
-    "Mmm_001",
     "OnBoardSD",
     "OnTFTSD",
     "U_Disk",
-    "Point_1",
-    "Point_2",
+    "Disable_XY",
+    "Disable_Z",
     "Point_3",
     "Point_4",
     "Marlin",
     "BigTreeTech",
     "Gcode",
-    "BLTouch",
-    "BLTouchDeploy",
-    "BLTouchStow",
-    "BLTouchTest",
-    "BLTouchRepeat",
-    "TSCSettings",
+    "Router_off",
+    "Zero_X",
+    "Zero_Y",
+    "Zero_Z",
+    "Zero_All",
+    "ScreenSettings",
     "MachineSettings",
     "FeatureSettings",
-    "ProbeOffset",
     "EEPROMSave",
-    "SilentOn",
+    "Sound_off",
     "ShutDown",
     "RGB_Settings",
     "RGB_Red",
@@ -105,20 +104,12 @@ const char iconBmpName[][32] = {
     "Custom4",
     "Custom5",
     "Custom6",
-    "Home_Move",
-    "Heat_Fan",
+    "Move",
+    "Router",
     "ManualLevel",
     "CoolDown",
-    "SilentOff",
-    "StatusNozzle",
-    "StatusBed",
-    "StatusFan",
+    "Sound_on",
     "MainMenu",
-    "StatusSpeed",
-    "StatusFlow",
-    "parametersetting",
-    "global_nozzle",
-    "global_bed",
 };
 
 u8 scanUpdateFile(void) {
@@ -244,9 +235,12 @@ void updateFont(char *font, u32 addr) {
   if (f_open(&myfp, font, FA_OPEN_EXISTING | FA_READ) != FR_OK) return;
 
   tempbuf = malloc(W25QXX_SECTOR_SIZE);
-  if (tempbuf == NULL) return;
+  if (tempbuf == NULL) {
+    free(tempbuf);
+    return;
+  }
   GUI_Clear(BACKGROUND_COLOR);
-  my_sprintf((void *)buffer, "%s Size: %dKB", font, (u32)f_size(&myfp) >> 10);
+  my_sprintf((void *)buffer, "%s \nSize: %dKB", font, (u32)f_size(&myfp) >> 10);
   GUI_DispString(0, 100, (u8 *)buffer);
   GUI_DispString(0, 140, (u8 *)"Updating:   %");
 

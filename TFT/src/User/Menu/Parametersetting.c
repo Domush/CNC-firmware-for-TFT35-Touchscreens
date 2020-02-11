@@ -1,7 +1,7 @@
 #include "Parametersetting.h"
 #include "includes.h"
 
-SKEY_VALUES Select_Paranmeter;
+SKEY_VALUES Select_Parameter;
 bool getsetparameter, rev_success;
 int cmd_getparameter_num = 0;
 char *Get_value[VALUE_NUM];
@@ -227,10 +227,10 @@ void Setting_parameter(void) {
           ParameterBuf[nowIndex++] = '\n';
           ParameterBuf[nowIndex] = 0;
 #if 1
-          cmd_long = strlen(parameter_cmd[Select_Paranmeter]);
+          cmd_long = strlen(parameter_cmd[Select_Parameter]);
           cmd_buff = malloc(cmd_long + strlen(ParameterBuf));
           if (cmd_buff) {
-            strcpy(cmd_buff, parameter_cmd[Select_Paranmeter]);
+            strcpy(cmd_buff, parameter_cmd[Select_Parameter]);
             storeCmd(strcat(cmd_buff, ParameterBuf));
             free(cmd_buff);
           }
@@ -281,7 +281,7 @@ void parametersetting(void) {
       case SKEY_8:
       case SKEY_9:
       case SKEY_10:
-        Select_Paranmeter = key_num;
+        Select_Parameter = key_num;
         infoMenu.menu[++infoMenu.cur] = Setting_parameter;
         break;
 
@@ -307,11 +307,11 @@ void temp_Change(void) {
   if (infoHost.connected == false || infoMenu.menu[infoMenu.cur] == menuPrinting) return;
   if (infoMenu.menu[infoMenu.cur] == menuMove || infoMenu.menu[infoMenu.cur] == menuStatus) return;
 
-  if (heatGetCurrentTemp(NOZZLE0) != compare[0] || heatGetCurrentTemp(BED) != compare[1])
+  if (heatGetCurrentTemp(SPINDLE0) != compare[0] || heatGetCurrentTemp(BED) != compare[1])
   //|| strcmp((char *)infoMenu.menu[infoMenu.cur],(char *)NUM)!=0)
   {
     //strcpy((char *)NUM ,(char *)infoMenu.menu[infoMenu.cur]);
-    compare[0] = heatGetCurrentTemp(NOZZLE0);
+    compare[0] = heatGetCurrentTemp(SPINDLE0);
     compare[1] = heatGetCurrentTemp(BED);
 
     drawGlobalInfo();
@@ -338,15 +338,4 @@ void drawGlobalInfo(void) {
   my_sprintf(tempstr, "Z:%.1f", getAxisLocation(2));
   GUI_DispString(START_X + 3 * SPACE_X + 3 * ICON_WIDTH, BYTE_HEIGHT, (u8 *)tempstr);
 
-//   GUI_ClearRect(LCD_WIDTH / 3, 0, LCD_WIDTH, BYTE_HEIGHT);
-
-//   //global nozzle
-//   lcd_frame_display(ICON_NOZZLE_X, 0, 2 * BYTE_WIDTH, BYTE_HEIGHT, ICON_ADDR(ICON_GLOBAL_NOZZLE0));
-//   my_sprintf(tempstr, "%d/%d", heatGetCurrentTemp(NOZZLE0), heatGetTargetTemp(NOZZLE0));
-//   GUI_DispStringInRect(VALUE_NOZZLE_X, 0, VALUE_NOZZLE_X + 8 * BYTE_WIDTH, BYTE_HEIGHT, (u8 *)tempstr);
-
-//   //global bed
-//   lcd_frame_display(ICON_BED_X, 0, 2 * BYTE_WIDTH, BYTE_HEIGHT, ICON_ADDR(ICON_GLOBAL_BED));
-//   my_sprintf(tempstr, "%d/%d", heatGetCurrentTemp(BED), heatGetTargetTemp(BED));
-//   GUI_DispStringInRect(VALUE_BED_X, 0, VALUE_BED_X + 8 * BYTE_WIDTH, BYTE_HEIGHT, (u8 *)tempstr);
 }

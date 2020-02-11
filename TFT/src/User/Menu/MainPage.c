@@ -1,5 +1,6 @@
 #include "MainPage.h"
 #include "includes.h"
+#include "Move.h"
 
 //1 title, ITEM_PER_PAGE items(icon+label)
 const MENUITEMS mainPageItems = {
@@ -7,7 +8,7 @@ const MENUITEMS mainPageItems = {
     LABEL_READY,
 // icon                       label
 #ifdef UNIFIED_MENU  //if Unified menu is selected
-    {{ICON_HEAT_FAN, lABEL_UNIFIEDHEAT},
+    {{ICON_HEAT_ROUTER, LABEL_UNIFIEDHEAT},
      {ICON_HOME_MOVE, LABEL_UNIFIEDMOVE},
      {ICON_EXTRUDE, LABEL_EXTRUDE},
      {ICON_PRINT, LABEL_PRINT},
@@ -23,9 +24,9 @@ const MENUITEMS mainPageItems = {
         {ICON_MOVE, LABEL_MOVE},
         {ICON_LEVELING, LABEL_LEVELING},
         {ICON_PRINT, LABEL_PRINT},
-        {ICON_FAN, LABEL_FAN},
-        {ICON_POINT_1, LABEL_POINT_1},
-        {ICON_POINT_2, LABEL_POINT_2},
+        {ICON_ROUTER, LABEL_ROUTER},
+        {ICON_DISABLE_XY, LABEL_DISABLE_XY},
+        {ICON_DISABLE_Z, LABEL_DISABLE_Z},
         {ICON_SETTINGS, LABEL_SETTINGS},
     }
 #endif
@@ -56,7 +57,7 @@ void menuMain(void) {
         infoMenu.menu[++infoMenu.cur] = menuSendGcode;
         break;
       case KEY_ICON_5: {
-        storeCmd("M107\n");  //disable cooling fan
+        storeCmd("M107\n");  //disable cooling router
         storeCmd("M112\n");  //Emergency Stop : Used for emergency stopping, a reset is required to return to operational mode.
                              // it may need to wait for a space to open up in the command queue.
                              // Enable EMERGENCY_PARSER in Marlin Firmware for an instantaneous M112 command.
@@ -77,13 +78,13 @@ void menuMain(void) {
         infoMenu.menu[++infoMenu.cur] = menuMove;
         break;
       case KEY_ICON_2:
-        infoMenu.menu[++infoMenu.cur] = menuAutoLeveling;
+        infoMenu.menu[++infoMenu.cur] = menuHoming;
         break;
       case KEY_ICON_3:
         infoMenu.menu[++infoMenu.cur] = menuPrint;
         break;
       case KEY_ICON_4:
-        infoMenu.menu[++infoMenu.cur] = menuFan;
+        infoMenu.menu[++infoMenu.cur] = menuRouter;
         break;
       case KEY_ICON_5: {
         storeCmd("M18 X Y\n");  //disable X and Y motors
