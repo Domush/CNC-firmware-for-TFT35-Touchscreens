@@ -305,7 +305,7 @@ void temp_Change(void) {
   static int16_t compare[2];
 
   if (infoHost.connected == false || infoMenu.menu[infoMenu.cur] == menuPrinting) return;
-  if (infoMenu.menu[infoMenu.cur] == menuMove || infoMenu.menu[infoMenu.cur] == menuStatus) return;
+  if (infoMenu.menu[infoMenu.cur] == menuMove) return;
 
   if (heatGetCurrentTemp(SPINDLE0) != compare[0] || heatGetCurrentTemp(BED) != compare[1])
   //|| strcmp((char *)infoMenu.menu[infoMenu.cur],(char *)NUM)!=0)
@@ -323,7 +323,7 @@ void temp_Change(void) {
 void show_GlobalInfo(void) {
   if (infoSettings.persistent_info != 1) return;
   if (infoHost.connected == false || infoMenu.menu[infoMenu.cur] == menuPrinting) return;
-  if (infoMenu.menu[infoMenu.cur] == menuMove || infoMenu.menu[infoMenu.cur] == menuStatus) return;
+  if (infoMenu.menu[infoMenu.cur] == menuMove) return;
   drawGlobalInfo();
 
   return;

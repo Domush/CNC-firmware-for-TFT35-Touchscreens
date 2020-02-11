@@ -314,7 +314,7 @@ void menuPrintFromSource(void) {
 
 MENUITEMS sourceSelItems = {
     //  title
-    LABEL_PRINT,
+    LABEL_CNC,
     // icon                       label
     {
         {ICON_SD_SOURCE, LABEL_TFTSD},

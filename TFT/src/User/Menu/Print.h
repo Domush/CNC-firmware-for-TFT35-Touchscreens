@@ -1,5 +1,5 @@
-#ifndef _PRINT_H_
-#define _PRINT_H_
+#ifndef _CNC_H_
+#define _CNC_H_
 #include "includes.h"
 
 void menuPrintFromSource(void);

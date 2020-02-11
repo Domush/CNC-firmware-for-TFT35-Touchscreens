@@ -231,7 +231,7 @@ static USBH_Status USBH_MSC_InterfaceInit ( USB_OTG_CORE_HANDLE *pdev,
       LOG_printf("HID device is not supported.\n");
     }
     
-    else if (pphost->device_prop.Itf_Desc[0].bInterfaceClass == USB_PRINTER)
+    else if (pphost->device_prop.Itf_Desc[0].bInterfaceClass == USB_CNC)
     {
       LOG_printf("Printer device is not supported.\n");
     }

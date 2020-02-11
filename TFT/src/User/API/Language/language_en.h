@@ -5,7 +5,7 @@
 #define EN_HEAT "Heat"
 #define EN_MOVE "Move"
 #define EN_HOME "Homing"
-#define EN_PRINT "Cut"
+#define EN_CNC "Cut"
 #define EN_EXTRUDE "Extrude"
 #define EN_ROUTER "Router"
 #define EN_SETTINGS "Settings"
@@ -26,7 +26,6 @@
 #define EN_POINT_4 "Point 4"
 #define EN_ABL "Job Setup"
 #define EN_ROUTER_OFF "Router Off"
-#define EN_CHANGE_BIT "Swap Bits"
 #define EN_ZERO_X "Zero X"
 #define EN_ZERO_Y "Zero Y"
 #define EN_ZERO_Z "Zero Z"
@@ -110,7 +109,7 @@
 #define EN_ADJUST_OK "Adjustment Success"
 #define EN_ADJUST_FAILED "Adjustment failed, Please Try Again"
 #define EN_WARNING "Warning"
-#define EN_STOP_PRINT "Abort the job?"
+#define EN_STOP_CNC "Abort the job?"
 #define EN_CONFIRM "Confirm"
 #define EN_TFTSD "Touchscreen SD slot"
 #define EN_READ_TFTSD_ERROR "Read TFT SD card error!"
@@ -142,7 +141,6 @@
 #define EN_WAIT_TEMP_SHUT_DOWN "Wait for the temperature of hotend to be lower than " STRINGIFY(AUTO_SHUT_DOWN_MAXTEMP) "℃"  // Wait for the temperature of hotend to be lower than 50℃
 #define EN_FORCE_SHUT_DOWN "Force"
 #define EN_SHUTTING_DOWN "Shutting down..."
-#define EN_PARAMETER_SETTING "Parameter"
 #define EN_ON "ON"
 #define EN_OFF "OFF"
 #define EN_AUTO "AUTO"
@@ -161,5 +159,4 @@
 #define EN_SEND_END_GCODE "End Gcode after print"
 #define EN_PERSISTANT_STATUS_INFO "Persistent Status Info"
 #define EN_FILE_LISTMODE "Files viewer List Mode"
-
 #endif

@@ -52,7 +52,7 @@
 #define USB_AUDIO                             0x01 /* Audio */
 #define USB_CDCC                              0x02  /* Communications and CDC Control */
 #define USB_HID                               0x03  /* HID (Human Interface Device) */
-#define USB_PRINTER                           0x07  /* Printer */
+#define USB_CNC                           0x07  /* Printer */
 #define USB_MSC                               0x08  /* Mass Storage */
 #define USB_HUB                               0x09  /* Hub */
 #define USB_CDCD                              0x0A  /* CDC-Data */

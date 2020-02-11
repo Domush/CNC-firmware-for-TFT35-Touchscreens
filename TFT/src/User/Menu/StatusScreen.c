@@ -7,30 +7,11 @@ MENUITEMS StatusItems = {
     LABEL_READY,
     // icon                       label
     {
-        {ICON_STATUSSPINDLE, LABEL_BACKGROUND},
-        {ICON_STATUSBED, LABEL_BACKGROUND},
-        {ICON_STATUSROUTER, LABEL_BACKGROUND},
-        {ICON_STATUS_SPEED, LABEL_BACKGROUND},
         {ICON_MAINMENU, LABEL_MAINMENU},
         {ICON_BACKGROUND, LABEL_BACKGROUND},  //Reserved for gantry position to be added later
         {ICON_BACKGROUND, LABEL_BACKGROUND},  //Reserved for gantry position to be added later
-        {ICON_PRINT, LABEL_PRINT},
+        {ICON_CNC, LABEL_CNC},
     }};
-
-const ITEM ToolItems[3] = {
-    // icon                       label
-    {ICON_STATUSSPINDLE, LABEL_BACKGROUND},
-    {ICON_STATUSBED, LABEL_BACKGROUND},
-    {ICON_STATUSROUTER, LABEL_BACKGROUND},
-    //{ICON_HEAT_STATUS,          LABEL_BACKGROUND},
-    //{ICON_BED_STATUS,           LABEL_BACKGROUND},
-    //{ICON_ROUTER_STATUS,           LABEL_BACKGROUND},
-};
-const ITEM SpeedItems[2] = {
-    // icon                       label
-    {ICON_STATUS_SPEED, LABEL_BACKGROUND},
-    {ICON_STATUS_FLOW, LABEL_BACKGROUND},
-};
 
 static u32 nowTime = 0;
 static u32 update_time = 200;  // 1 seconds is 100
@@ -91,57 +72,6 @@ const GUI_RECT RecGantry = {START_X, 1 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_
   StatusItems.items[3] = SpeedItems[0];
 
 } */
-
-void drawTemperature(void) {
-  //icons and their values are updated one by one to reduce flicker/clipping
-
-  char tempstr[100];
-  GUI_SetTextMode(GUI_TEXTMODE_TRANS);
-  GUI_SetColor(HEADING_COLOR);
-  menuDrawIconOnly(&ToolItems[0], 0);                                                 //Ext icon
-  GUI_DispStringRight(pointID[0].x, pointID[0].y, (u8 *)heatDisplayID[current_Ext]);  //Ext label
-
-  GUI_SetColor(VAL_COLOR);
-  my_sprintf(tempstr, "%d/%d", heatGetCurrentTemp(current_Ext), heatGetTargetTemp(current_Ext));
-  GUI_DispStringInPrect(&rectB[0], (u8 *)tempstr);  //Ext value
-
-  GUI_SetColor(HEADING_COLOR);
-  menuDrawIconOnly(&ToolItems[1], 1);                                         //Bed icon
-  GUI_DispStringRight(pointID[1].x, pointID[1].y, (u8 *)heatDisplayID[BED]);  //Bed label
-  GUI_SetColor(VAL_COLOR);
-  my_sprintf(tempstr, "%d/%d", heatGetCurrentTemp(BED), heatGetTargetTemp(BED));
-  GUI_DispStringInPrect(&rectB[1], (u8 *)tempstr);  //Bed value
-
-  GUI_SetColor(HEADING_COLOR);
-  menuDrawIconOnly(&ToolItems[2], 2);                                         //Router icon
-  GUI_DispStringRight(pointID[2].x, pointID[2].y, (u8 *)routerID[current_router]);  //Router label
-  GUI_SetColor(VAL_COLOR);
-
-  u8 fs;
-#ifdef SHOW_ROUTER_PERCENTAGE
-  fs = (routerGetSpeed(current_router) * 100) / 255;
-  my_sprintf(tempstr, "%d%%", fs);
-#else
-  fs = routerSpeed[current_router];
-  my_sprintf(tempstr, "%d", fs);
-#endif
-  GUI_DispStringInPrect(&rectB[2], (u8 *)tempstr);  //Router value
-
-  GUI_SetColor(HEADING_COLOR);
-  menuDrawIconOnly(&SpeedItems[current_speedID], 3);                                //Speed / flow icon
-  GUI_DispStringRight(pointID[3].x, pointID[3].y, (u8 *)SpeedID[current_speedID]);  //Speed / flow label
-  GUI_SetColor(VAL_COLOR);
-  my_sprintf(tempstr, "%d%s", speedGetPercent(current_speedID), "%");
-  GUI_DispStringInPrect(&rectB[3], (u8 *)tempstr);  //Speed / Flow value
-
-  GUI_SetTextMode(GUI_TEXTMODE_NORMAL);
-  GUI_SetColor(GANTRYLBL_COLOR);
-  GUI_SetBkColor(GANTRYLBL_BKCOLOR);
-  my_sprintf(tempstr, "   X: %.2f   Y: %.2f   Z: %.2f   ", xaxis, yaxis, zaxis);
-  GUI_DispStringInPrect(&RecGantry, (u8 *)tempstr);
-
-  GUI_RestoreColorDefault();
-}
 
 void storegantry(int n, float val) {
   //float* px = &val;
@@ -225,44 +155,6 @@ float getAxisLocation(u8 n) {
   }
 }
 
-void statusScreen_setMsg(const uint8_t *title, const uint8_t *msg) {
-  memcpy(msgtitle, (char *)title, sizeof(msgtitle));
-  memcpy(msgbody, (char *)msg, sizeof(msgbody));
-
-  if (infoMenu.menu[infoMenu.cur] == menuStatus) {
-    drawStatusScreenMsg();
-  }
-  else
-  {
-    storeCmd("M118 E1 %d: %d\n", title, msg); //relay prompts to USB host
-  }
-
-}
-
-void drawStatusScreenMsg(void) {
-  //GUI_ClearRect(RectInfo.x0,RectInfo.y0,RectInfo.x1,RectInfo.y1);
-  GUI_SetTextMode(GUI_TEXTMODE_TRANS);
-
-  ICON_CustomReadDisplay(RectInfo.x0, RectInfo.y0, INFOBOX_WIDTH, INFOBOX_HEIGHT, INFOBOX_ADDR);
-  GUI_SetColor(INFOMSG_BKCOLOR);
-  GUI_DispString(RectInfo.x0 + STATUS_MSG_ICON_XOFFSET, RectInfo.y0 + STATUS_MSG_ICON_YOFFSET, IconCharSelect(ICONCHAR_INFO));
-
-  GUI_DispString(RectInfo.x0 + BYTE_HEIGHT + STATUS_MSG_TITLE_XOFFSET, RectInfo.y0 + STATUS_MSG_ICON_YOFFSET, (u8 *)msgtitle);
-  GUI_SetBkColor(INFOMSG_BKCOLOR);
-  GUI_FillPrect(&msgRect);
-
-  Scroll_CreatePara(&msgScroll, (u8 *)msgbody, &msgRect);
-
-  GUI_RestoreColorDefault();
-}
-
-void scrollMsg(void) {
-  GUI_SetBkColor(INFOMSG_BKCOLOR);
-  GUI_SetColor(INFOMSG_COLOR);
-  Scroll_DispString(&msgScroll, CENTER);
-  GUI_RestoreColorDefault();
-}
-
 void toggleTool(void) {
   if (OS_GetTime() > nowTime + update_time) {
     if (EXTRUDER_NUM > 1) {
@@ -286,55 +178,5 @@ void toggleTool(void) {
     } else {
       gantryCmdWait = false;
     }
-  }
-}
-
-void menuStatus(void) {
-  KEY_VALUES key_num = KEY_IDLE;
-  GUI_SetBkColor(BACKGROUND_COLOR);
-  //set_status_icon();
-  menuDrawPage(&StatusItems);
-  GUI_SetColor(GANTRYLBL_BKCOLOR);
-  //GUI_ClearPrect(&RecGantry);
-  GUI_FillPrect(&RecGantry);
-  // drawTemperature();
-  drawStatusScreenMsg();
-
-  while (infoMenu.menu[infoMenu.cur] == menuStatus) {
-    if (infoHost.connected != lastConnection_status) {
-      if (infoHost.connected == false) {
-        statusScreen_setMsg(textSelect(LABEL_SCREEN_INFO), textSelect(LABEL_UNCONNECTED));
-      } else {
-        statusScreen_setMsg(textSelect(LABEL_SCREEN_INFO), textSelect(LABEL_READY));
-      }
-      lastConnection_status = infoHost.connected;
-    }
-    scrollMsg();
-    key_num = menuKeyGetValue();
-    switch (key_num) {
-      case KEY_ICON_0:
-        infoMenu.menu[++infoMenu.cur] = menuUnifiedHeat;
-        break;
-      case KEY_ICON_1:
-        infoMenu.menu[++infoMenu.cur] = menuUnifiedHeat;
-        break;
-      case KEY_ICON_2:
-        infoMenu.menu[++infoMenu.cur] = menuRouter;
-        break;
-      case KEY_ICON_3:
-        infoMenu.menu[++infoMenu.cur] = menuSpeed;
-        break;
-      case KEY_ICON_4:
-        infoMenu.menu[++infoMenu.cur] = menuMain;
-        break;
-      case KEY_ICON_7:
-        infoMenu.menu[++infoMenu.cur] = menuPrint;
-        break;
-
-      default:
-        break;
-    }
-    // toggleTool();
-    loopProcess();
   }
 }

@@ -10,7 +10,7 @@ const char iconBmpName[][32] = {
     "Heat",
     "Move",
     "Home",
-    "Print",
+    "Cut",
     "Extrude",
     "Router",
     "Settings",

@@ -57,12 +57,7 @@ static float ack_second_value() {
 
 void ackPopupInfo(const char *info) {
   if (infoMenu.menu[infoMenu.cur] == parametersetting) return;
-
-  if (info == replyEcho) {
-    statusScreen_setMsg((u8 *)info, (u8 *)dmaL2Cache + ack_index);
-  }
   if (infoMenu.menu[infoMenu.cur] == menuTerminal) return;
-  if (infoMenu.menu[infoMenu.cur] == menuStatus && info == replyEcho) return;
 
   popupReminder((u8 *)info, (u8 *)dmaL2Cache + ack_index);
 }

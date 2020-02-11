@@ -505,8 +505,8 @@ void abortPrinting(void) {
   heatClearIsWaiting();
 
   mustStoreCmd("G0 Z%d F3000\n", limitValue(0, (int)coordinateGetAxisTarget(Z_AXIS) + 10, Z_MAX_POS));
-  if (strlen(CANCEL_PRINT_GCODE) > 0)
-    mustStoreCmd(CANCEL_PRINT_GCODE);
+  if (strlen(CANCEL_CNC_GCODE) > 0)
+    mustStoreCmd(CANCEL_CNC_GCODE);
 
   endPrinting();
   exitPrinting();
@@ -515,7 +515,7 @@ void abortPrinting(void) {
 void menuStopPrinting(void) {
   u16 key_num = IDLE_TOUCH;
 
-  popupDrawPage(bottomDoubleBtn, textSelect(LABEL_WARNING), textSelect(LABEL_STOP_PRINT), textSelect(LABEL_CONFIRM), textSelect(LABEL_CANCEL));
+  popupDrawPage(bottomDoubleBtn, textSelect(LABEL_WARNING), textSelect(LABEL_STOP_CNC), textSelect(LABEL_CONFIRM), textSelect(LABEL_CANCEL));
 
   while (infoMenu.menu[infoMenu.cur] == menuStopPrinting) {
     key_num = KEY_GetValue(2, doubleBtnRect);

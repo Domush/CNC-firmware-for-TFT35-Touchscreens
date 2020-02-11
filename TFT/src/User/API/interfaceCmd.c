@@ -234,10 +234,7 @@ void sendQueueCmd(void) {
           break;
 
         case 117:  //M117
-          statusScreen_setMsg((u8 *)"M117", (u8 *)&infoCmd.queue[infoCmd.index_r].gcode[5]);
-          if (infoMenu.menu[infoMenu.cur] != menuStatus) {
-            popupReminder((u8 *)"M117", (u8 *)&infoCmd.queue[infoCmd.index_r].gcode[5]);
-          }
+          popupReminder((u8 *)"M117", (u8 *)&infoCmd.queue[infoCmd.index_r].gcode[5]);
           break;
         case 190:  //M190
           infoCmd.queue[infoCmd.index_r].gcode[2] = '4';
