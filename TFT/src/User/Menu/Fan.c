@@ -21,9 +21,9 @@ const MENUITEMS routerItems = {
 const char* routerID[] = ROUTER_ID;
 const char* routerCmd[] = ROUTER_CMD;
 const u8 routerMaxPWM[] = ROUTER_MAX_PWM;
+static u8 curIndex = 0;
 
 static u8 routerSpeed[ROUTER_NUM] = {0};
-static u8 curIndex = 0;
 static bool send_waiting[ROUTER_NUM] = {false};
 
 void routerSetSpeed(u8 i, u8 speed) {

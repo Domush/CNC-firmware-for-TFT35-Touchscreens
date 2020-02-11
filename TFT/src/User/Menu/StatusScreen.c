@@ -16,10 +16,10 @@ MENUITEMS StatusItems = {
 static u32 nowTime = 0;
 static u32 update_time = 200;  // 1 seconds is 100
 SCROLL msgScroll;
-static int lastConnection_status = -1;
+// static int lastConnection_status = -1;
 
-static char msgtitle[20];
-static char msgbody[512];
+// static char msgtitle[20];
+// static char msgbody[512];
 
 //static char msgxyz[512];
 static float xaxis;
@@ -168,7 +168,7 @@ void toggleTool(void) {
     }
     current_speedID = (current_speedID + 1) % 2;
     nowTime = OS_GetTime();
-    drawTemperature();
+    // drawTemperature();
 
     if (infoHost.connected == true) {
       if (gantryCmdWait != true) {

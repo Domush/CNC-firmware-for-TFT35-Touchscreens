@@ -1,4 +1,5 @@
 #include "Printing.h"
+#include "Fan.h"
 #include "includes.h"
 
 //1title, ITEM_PER_PAGE item(icon + label)
@@ -38,13 +39,15 @@ const ITEM itemIsFinished[2] = {
 #endif
 
 static PRINTING infoPrinting;
-static u32 update_time = M27_REFRESH * 100;
+static u16 update_delay = M27_REFRESH * 100;
 
 #ifdef ONBOARD_SD_SUPPORT
 static bool update_waiting = M27_WATCH_OTHER_SOURCES;
 #else
 static bool update_waiting = false;
 #endif
+
+static u8 curIndex = 0;
 
 //
 bool isPrinting(void) {
@@ -329,7 +332,7 @@ extern SCROLL titleScroll;
 extern GUI_RECT titleRect;
 
 void printingDrawPage(void) {
-  int16_t i;
+  // int16_t i;
   //	Scroll_CreatePara(&titleScroll, infoFile.title,&titleRect);  //
   // printed time
   GUI_DispString(progressRect.x0, TIME_Y, (u8*)"T:");
@@ -635,7 +638,7 @@ void loopCheckPrinting(void) {
       nowTime = OS_GetTime();
       break;
     }
-    if (OS_GetTime() < nowTime + update_time) break;
+    if (OS_GetTime() < nowTime + update_delay) break;
 
     if (storeCmd("M27\n") == false) break;
 
