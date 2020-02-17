@@ -337,5 +337,4 @@ void drawGlobalInfo(void) {
   GUI_DispString(START_X + 2 * SPACE_X + 2 * ICON_WIDTH, BYTE_HEIGHT, (u8 *)tempstr);
   my_sprintf(tempstr, "Z:%.1f", getAxisLocation(2));
   GUI_DispString(START_X + 3 * SPACE_X + 3 * ICON_WIDTH, BYTE_HEIGHT, (u8 *)tempstr);
-
 }

@@ -5,4 +5,3 @@ void menuManualLeveling(void);
 void menuHoming(void);
 
 #endif
-

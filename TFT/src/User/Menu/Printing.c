@@ -176,7 +176,7 @@ void menuBeforePrinting(void) {
 }
 
 void resumeToPause(bool is_pause) {
-  if (infoMenu.menu[infoMenu.cur] != menuPrinting) return; // todo: make sure this runs during popups, too
+  if (infoMenu.menu[infoMenu.cur] != menuPrinting) return;  // todo: make sure this runs during popups, too
   printingItems.items[KEY_ICON_0] = itemIsPause[is_pause];
   menuDrawItem(&itemIsPause[is_pause], 0);
 }
@@ -412,13 +412,13 @@ void menuPrinting(void) {
 
     if (time != infoPrinting.time) {
       time = infoPrinting.time;
-      reDrawTime(); // job timer
+      reDrawTime();  // job timer
     }
     //Z_AXIS coordinate
     static COORDINATE tmp;
     coordinateGetAll(&tmp);
-    GUI_DispFloat(BED_X + 3 * BYTE_WIDTH, TIME_Y, tmp.axis[Z_AXIS], 3, 3, LEFT); // z-axis location
-    reDrawRouter(); // router speed
+    GUI_DispFloat(BED_X + 3 * BYTE_WIDTH, TIME_Y, tmp.axis[Z_AXIS], 3, 3, LEFT);  // z-axis location
+    reDrawRouter();                                                               // router speed
 
     key_num = menuKeyGetValue();
     switch (key_num) {

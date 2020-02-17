@@ -4,8 +4,8 @@
 char dmaL2Cache[ACK_MAX_SIZE];
 static u16 ack_index = 0;
 static u8 ack_cur_src = SERIAL_PORT;
-static u16 connectionRetryDelay = 2; // # of seconds to wait before retrying to connect
-static u16 connectionRetryTime = 0; // stored timestamp for reconnect attempt
+static u16 connectionRetryDelay = 2;  // # of seconds to wait before retrying to connect
+static u16 connectionRetryTime = 0;   // stored timestamp for reconnect attempt
 int MODEselect;
 // Ignore reply "echo:" message (don't display in popup menu)
 const char *const ignoreEcho[] = {
@@ -85,7 +85,7 @@ void parseACK(void) {
     if ((!ack_seen("T:") && !ack_seen("T0:")) || !ack_seen("ok")) {
       if (OS_GetTime() - connectionRetryDelay > connectionRetryTime) {
         connectionRetryTime = OS_GetTime();
-        mustStoreCmd("M105\n"); // Attempts to get a "wake up" response to trigger a connection
+        mustStoreCmd("M105\n");  // Attempts to get a "wake up" response to trigger a connection
       }
       goto parse_end;  //the first response should be such as "T:25/50 ok\n"
     }

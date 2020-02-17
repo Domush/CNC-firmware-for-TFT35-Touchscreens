@@ -75,9 +75,9 @@
 #define EN_PERCENTAGE_SPEED "Speed"
 #define EN_PERCENTAGE_FLOW "Flow"
 #define EN_VALUE_ZERO "Zero"
-#define EN_1_DEGREE "1â„ƒ"
-#define EN_5_DEGREE "5â„ƒ"
-#define EN_10_DEGREE "10â„ƒ"
+#define EN_1_DEGREE "1â„?"
+#define EN_5_DEGREE "5â„?"
+#define EN_10_DEGREE "10â„?"
 #define EN_X_INC "X+"
 #define EN_Y_INC "Y+"
 #define EN_Z_INC "Z+"
@@ -138,7 +138,7 @@
 #define EN_EMERGENCYSTOP "EM. STOP"
 #define EN_TOUCH_TO_EXIT "Touch anywhere to exit"
 #define EN_MAINMENU "Menu"
-#define EN_WAIT_TEMP_SHUT_DOWN "Wait for the temperature of hotend to be lower than " STRINGIFY(AUTO_SHUT_DOWN_MAXTEMP) "â„ƒ"  // Wait for the temperature of hotend to be lower than 50â„ƒ
+#define EN_WAIT_TEMP_SHUT_DOWN "Wait for the temperature of hotend to be lower than " STRINGIFY(AUTO_SHUT_DOWN_MAXTEMP) "â„?"  // Wait for the temperature of hotend to be lower than 50â„?
 #define EN_FORCE_SHUT_DOWN "Force"
 #define EN_SHUTTING_DOWN "Shutting down..."
 #define EN_ON "ON"

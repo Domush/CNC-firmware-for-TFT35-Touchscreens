@@ -328,7 +328,6 @@ const char *const de_pack[LABEL_NUM] = {
 
 };
 
-
 const char *const es_pack[LABEL_NUM] = {
     ES_LANGUAGE,
     ES_HEAT,

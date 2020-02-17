@@ -75,9 +75,9 @@
 #define ES_PERCENTAGE_SPEED "Velocidad"
 #define ES_PERCENTAGE_FLOW "Flujo"
 #define ES_VALUE_ZERO "Cero"
-#define ES_1_DEGREE "1â„ƒ"
-#define ES_5_DEGREE "5â„ƒ"
-#define ES_10_DEGREE "10â„ƒ"
+#define ES_1_DEGREE "1â„?"
+#define ES_5_DEGREE "5â„?"
+#define ES_10_DEGREE "10â„?"
 #define ES_X_INC "+X"
 #define ES_Y_INC "+Y"
 #define ES_Z_INC "+Z"
@@ -138,7 +138,7 @@
 #define ES_EMERGENCYSTOP "PARADA EMERGENCIA"
 #define ES_TOUCH_TO_EXIT "Toca cualquier lugar para salir"
 #define ES_MAINMENU "Menu"
-#define ES_WAIT_TEMP_SHUT_DOWN "Espere a que la temperatura del hotend sea inferior a " STRINGIFY(AUTO_SHUT_DOWN_MAXTEMP) "â„ƒ"  // Wait for the temperature of hotend to be lower than 50â„ƒ
+#define ES_WAIT_TEMP_SHUT_DOWN "Espere a que la temperatura del hotend sea inferior a " STRINGIFY(AUTO_SHUT_DOWN_MAXTEMP) "â„?"  // Wait for the temperature of hotend to be lower than 50â„?
 #define ES_FORCE_SHUT_DOWN "Forzar Apagado"
 #define ES_SHUTTING_DOWN "Apagando..."
 #define ES_ON "ON"

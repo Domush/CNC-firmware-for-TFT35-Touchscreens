@@ -75,9 +75,9 @@
 #define DE_PERCENTAGE_SPEED "Speed"
 #define DE_PERCENTAGE_FLOW "Flow"
 #define DE_VALUE_ZERO "Null"
-#define DE_1_DEGREE "1â„ƒ"
-#define DE_5_DEGREE "5â„ƒ"
-#define DE_10_DEGREE "10â„ƒ"
+#define DE_1_DEGREE "1â„?"
+#define DE_5_DEGREE "5â„?"
+#define DE_10_DEGREE "10â„?"
 #define DE_X_INC "X+"
 #define DE_Y_INC "Y+"
 #define DE_Z_INC "Z+"
@@ -138,7 +138,7 @@
 #define DE_EMERGENCYSTOP "EM. STOP"
 #define DE_TOUCH_TO_EXIT "Touch anywhere to exit"
 #define DE_MAINMENU "Menu"
-#define DE_WAIT_TEMP_SHUT_DOWN "Wait for the temperature of hotend to be lower than " STRINGIFY(AUTO_SHUT_DOWN_MAXTEMP) "â„ƒ"  // Wait for the temperature of hotend to be lower than 50â„ƒ
+#define DE_WAIT_TEMP_SHUT_DOWN "Wait for the temperature of hotend to be lower than " STRINGIFY(AUTO_SHUT_DOWN_MAXTEMP) "â„?"  // Wait for the temperature of hotend to be lower than 50â„?
 #define DE_FORCE_SHUT_DOWN "Force"
 #define DE_SHUTTING_DOWN "Shutting down..."
 #define DE_ON "ON"

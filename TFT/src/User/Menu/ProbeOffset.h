@@ -3,7 +3,6 @@
 
 #include "stdint.h"
 
-
 void menuZeroAxis(void);
 
 void setCurrentOffset(float offset);

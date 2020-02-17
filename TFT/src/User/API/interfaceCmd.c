@@ -202,7 +202,7 @@ void sendQueueCmd(void) {
 
           break;
 
-        case 3: //M3 spindle speed
+        case 3:    //M3 spindle speed
         case 106:  //M106
         {
           u8 i = 0;
@@ -218,7 +218,7 @@ void sendQueueCmd(void) {
           break;
         }
 
-        case 5:  //M5 spindle off
+        case 5:    //M5 spindle off
         case 107:  //M107 fan/router off
         {
           u8 i = 0;
