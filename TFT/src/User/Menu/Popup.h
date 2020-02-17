@@ -16,7 +16,8 @@
   #define POPUP_TEXT_HEIGHT   100
   #define POPUP_BOTTOM_HEIGHT 50
 #elif LCD_WIDTH == 480 && LCD_HEIGHT == 320
-  #define POPUP_RECT_WINDOW         {80, 50, 400, 270}
+  // #define POPUP_RECT_WINDOW         {80, 50, 400, 270} // Original config
+  #define POPUP_RECT_WINDOW         {40, 30, 440, 270}
 
   #define POPUP_RECT_SINGLE_CONFIRM {180, 210, 300, 260}
   #define POPUP_RECT_DOUBLE_CONFIRM {90,  210, 210, 260}

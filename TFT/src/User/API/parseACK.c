@@ -4,6 +4,8 @@
 char dmaL2Cache[ACK_MAX_SIZE];
 static u16 ack_index = 0;
 static u8 ack_cur_src = SERIAL_PORT;
+static u16 connectionRetryDelay = 2; // # of seconds to wait before retrying to connect
+static u16 connectionRetryTime = 0; // stored timestamp for reconnect attempt
 int MODEselect;
 // Ignore reply "echo:" message (don't display in popup menu)
 const char *const ignoreEcho[] = {
@@ -80,7 +82,13 @@ void parseACK(void) {
 
   if (infoHost.connected == false)  //not connected to Marlin
   {
-    if ((!ack_seen("T:") && !ack_seen("T0:")) || !ack_seen("ok")) goto parse_end;  //the first response should be such as "T:25/50 ok\n"
+    if ((!ack_seen("T:") && !ack_seen("T0:")) || !ack_seen("ok")) {
+      if (OS_GetTime() - connectionRetryDelay > connectionRetryTime) {
+        connectionRetryTime = OS_GetTime();
+        mustStoreCmd("M105\n"); // Attempts to get a "wake up" response to trigger a connection
+      }
+      goto parse_end;  //the first response should be such as "T:25/50 ok\n"
+    }
     infoHost.connected = true;
 #ifdef AUTO_SAVE_LOAD_LEVELING_VALUE
     storeCmd("M420 S1\n");
@@ -203,10 +211,13 @@ void parseACK(void) {
     else if (ack_seen(replyError)) {
       ackPopupInfo(replyError);
     } else if (ack_seen(replyEcho)) {
-      storeCmd("M118 E1 Full Message:%d\n", dmaL2Cache);  //debug pause message
+      // storeCmd("M118 E1 Full Message:%d\n", dmaL2Cache);  //debug pause message
       for (u8 i = 0; i < COUNT(ignoreEcho); i++) {
         if (strstr(dmaL2Cache, ignoreEcho[i])) {
-          storeCmd("M118 E1 Ignore triggered:%d\n", ignoreEcho[i]);  //debug pause message
+          // storeCmd("M118 E1 Ignore triggered:%d\n", ignoreEcho[i]);  //debug pause message
+          /* Example response message:
+          wait\necho:Load V-Bit -  0.5\" Dia., then Pos@ 0:0:1mm\r\n//action:prompt_end\n//action:prompt_begin M0/1 Break Called\n//action:prompt_button Continue\n//action:prompt_show\n\000t\nwait\n
+          */
           goto parse_end;
         }
       }

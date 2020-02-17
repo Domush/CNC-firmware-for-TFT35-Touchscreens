@@ -18,13 +18,13 @@ GUI_RECT doubleBtnRect[] ={POPUP_RECT_DOUBLE_CONFIRM, POPUP_RECT_DOUBLE_CANCEL};
 
 
 WINDOW window = {
-  POPUP_RECT_WINDOW,       //弹窗的区域
-  10,                      //四角圆弧的半径
-  3,                       //外边的线宽
-  0x5D7B,                  //外边和标题栏的背景色
-  {MAGENTA, 0x5D7B, POPUP_TITLE_HEIGHT},   //标题栏 字体色/背景色/高度
-  {WHITE, BLACK, POPUP_TEXT_HEIGHT},    //文本栏 字体色/背景色/高度
-  {WHITE, GRAY,  POPUP_BOTTOM_HEIGHT},  //底部 (字体色)/背景色/(高度)
+  POPUP_RECT_WINDOW,       //Area of ??popup
+  10,                      //Four-corner arc radius
+  3,                       //Outer line width
+  0x5D7B,                  //Outer and title bar background color
+  {MAGENTA, 0x5D7B, POPUP_TITLE_HEIGHT},   //Title bar font color /background color /height
+  {WHITE, BLACK, POPUP_TEXT_HEIGHT},    //Text bar font color /background color /height
+  {WHITE, GRAY,  POPUP_BOTTOM_HEIGHT},  //Bottom (font color) /background color /(height)
 };
 
 static BUTTON *windowButton =  NULL;
@@ -91,3 +91,13 @@ void popupReminder(u8* info, u8* context)
     infoMenu.menu[++infoMenu.cur] = menuPopup;
   }
 }
+/* Example context:
+<dmaL2Cache+530> "Load V-Bit -  0.5\" Dia., then Pos@ 0:0:1mm\r\n//action:prompt_end\n//action:prompt_begin M0/1 Break Called\n//action:prompt_button Continue\n//action:prompt_show\n"
+*/
+// const char *message = "Load V-Bit -  0.5\" Dia., then Pos@ 0:0:1mm\r\n//action:prompt_end\n//action:prompt_begin M0/1 Break Called\n//action:prompt_button Continue\n//action:prompt_show\n";
+// static char *title;
+// static char *text;
+// static char *button;
+// static char *ptr;
+// u32 position = strtol(strstr(message, "//action:prompt_end") + 5, &ptr, 10);
+// setPrintCur(position);

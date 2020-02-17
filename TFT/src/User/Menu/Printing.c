@@ -176,7 +176,7 @@ void menuBeforePrinting(void) {
 }
 
 void resumeToPause(bool is_pause) {
-  if (infoMenu.menu[infoMenu.cur] != menuPrinting) return;
+  if (infoMenu.menu[infoMenu.cur] != menuPrinting) return; // todo: make sure this runs during popups, too
   printingItems.items[KEY_ICON_0] = itemIsPause[is_pause];
   menuDrawItem(&itemIsPause[is_pause], 0);
 }
@@ -308,8 +308,8 @@ void reDrawRouter(void) {
   fs = routerGetSpeed(0);
 #endif
 #ifdef SHOW_ROUTER_PERCENTAGE
-  char router_s[5];
-  sprintf(router_s, "%d%%", fs);
+  char router_s[15];
+  sprintf(router_s, "Bit Spd:\r\n%d%%", fs);
   GUI_DispString(BED_X + 3 * BYTE_WIDTH, TEMP_Y, (u8*)router_s);
 #else
   GUI_DispDec(BED_X + BYTE_WIDTH, TEMP_Y, fs, 3, LEFT);
@@ -412,13 +412,13 @@ void menuPrinting(void) {
 
     if (time != infoPrinting.time) {
       time = infoPrinting.time;
-      reDrawTime();
+      reDrawTime(); // job timer
     }
     //Z_AXIS coordinate
     static COORDINATE tmp;
     coordinateGetAll(&tmp);
-    GUI_DispFloat(BED_X + 3 * BYTE_WIDTH, TIME_Y, tmp.axis[Z_AXIS], 3, 3, LEFT);
-    reDrawRouter();
+    GUI_DispFloat(BED_X + 3 * BYTE_WIDTH, TIME_Y, tmp.axis[Z_AXIS], 3, 3, LEFT); // z-axis location
+    reDrawRouter(); // router speed
 
     key_num = menuKeyGetValue();
     switch (key_num) {
