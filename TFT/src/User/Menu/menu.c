@@ -267,7 +267,6 @@ void menuDrawTitle(const uint8_t *content)  //(const MENUITEMS * menuItems)
     GUI_SetTextMode(GUI_TEXTMODE_NORMAL);
   }
 
-  // show_GlobalInfo();
   if (reminder.status == STATUS_IDLE) return;
   GUI_SetColor(RED);
   GUI_DispStringInPrect(&reminder.rect, textSelect(reminder.inf));
@@ -281,7 +280,7 @@ void menuDrawPage(const MENUITEMS *menuItems) {
   curMenuItems = menuItems;
   TSC_ReDrawIcon = itemDrawIconPress;
 
-  //GUI_Clear(BLACK);
+  GUI_Clear(BLACK);
   menuClearGaps();  //Use this function instead of GUI_Clear to eliminate the splash screen when clearing the screen.
   menuDrawTitle(labelGetAddress(&menuItems->title));
   for (i = 0; i < ITEM_PER_PAGE; i++) {
@@ -398,7 +397,6 @@ void loopFrontEnd(void) {
 }
 
 void loopProcess(void) {
-  // temp_Change();
   loopBackEnd();
   loopFrontEnd();
   update_gantry();

@@ -19,7 +19,7 @@ long map(long x, long in_min, long in_max, long out_min, long out_max) {
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
-int intToString(char *str, int n, int radix, char isNegative)  //将整数表达成字�?�形�?
+int intToString(char *str, int n, int radix, char isNegative)  //Express integers as words ??
 {
   int i = 0, j = 0, remain = 0;
   int len = 0;
@@ -33,9 +33,9 @@ int intToString(char *str, int n, int radix, char isNegative)  //将整数表达
   do {
     remain = n % radix;
     if (remain > 9)
-      str[i] = remain - 10 + 'A';  //为了十六进制�?10将表示成A
+      str[i] = remain - 10 + 'A';  //For hex, 10 will be expressed as A
     else
-      str[i] = remain + '0';  //将整�?+'0' = 整数对应的ASCII�?
+      str[i] = remain + '0';  //Where? + '0' = ASCII corresponding to the integer?
     i++;
   } while (n /= radix);
 
@@ -44,7 +44,7 @@ int intToString(char *str, int n, int radix, char isNegative)  //将整数表达
   str[i] = '\0';
   len = i;
 
-  for (i--, j = 0; j <= i; j++, i--)  //25%10 = 5,25/10 = 2,2%10 = 2,2/10 = 0，所�?str�?结果�?倒置的，翻转一�?
+  for (i--, j = 0; j <= i; j++, i--)  //25% 10 = 5,25 /10 = 2,2% 10 = 2,2 /10 = 0, so the result of str is inverted, and flipped over.
   {
     tmp = str[j];
     str[j] = str[i];
@@ -80,26 +80,26 @@ int my_vsprintf(char *buf, const char *fmt, my_va_list args) {
       goto repeat;
     }
     switch (*fmt) {
-      case 'd':  //十进制整�?
+      case 'd':  //Decimal integer?
       {
         int n = my_va_arg(p_next_arg, int);
         p += intToString(p, n, 10, 0);
         break;
       }
-      case 'x':  //十六进制整数
+      case 'x':  //Hexadecimal integer
       {
         int n = my_va_arg(p_next_arg, int);
         p += intToString(p, n, 16, 0);
         break;
       }
-      case 'f':  //�?点数
+      case 'f':  //�? Points
       {
-        if ((unsigned long)p_next_arg & 0x7)  //�?变参 �?点数默�?�是double类型 保证内存8字节对齐
+        if ((unsigned long)p_next_arg & 0x7)  //Variable parameters: The default point is double. Guaranteed 8-byte memory alignment.
         {
           p_next_arg = (my_va_list)((unsigned long)p_next_arg + 0x7);
           p_next_arg = (my_va_list)((unsigned long)p_next_arg & 0xFFFFFFF8);
         }
-        double f = my_va_arg(p_next_arg, double);  //%f，输出浮点数
+        double f = my_va_arg(p_next_arg, double);  //% f, output floating point number
         int n = (int)f;
         p += intToString(p, n, 10, f < 0);
         *p++ = '.';
@@ -111,12 +111,12 @@ int my_vsprintf(char *buf, const char *fmt, my_va_list args) {
         }
         break;
       }
-      case 'c':  //单个 ASCII 字�??
+      case 'c':  //Single ASCII word ????
       {
         *p++ = my_va_arg(p_next_arg, int);
         break;
       }
-      case 's':  //字�?�串
+      case 's':  //words? String
       {
         char *str = my_va_arg(p_next_arg, char *);
         for (; *str != 0;) {
@@ -156,21 +156,20 @@ void my_sprintf(char *buf, const char *fmt, ...) {
 /**
  * substr.
  * extracts characters present in src
- * @param	char	*src    	
- * @param	int 	m, int n	
+ * @param	char	*src
+ * @param	int 	m, int n
  * @return	substring between m and n (excluding n)
  */
-char* substr(const char *src, int m, int n)
-{
-	// get length of the destination string
-	int len = n - m;
+char *substr(const char *src, int m, int n) {
+  // get length of the destination string
+  int len = n - m;
 
-	// allocate (len + 1) chars for destination (+1 for extra null character)
-	char *dest = (char*)malloc(sizeof(char) * (len + 1));
+  // allocate (len + 1) chars for destination (+1 for extra null character)
+  char *dest = (char *)malloc(sizeof(char) * (len + 1));
 
-	// start with m'th char and copy 'len' chars into destination
-	strncpy(dest, (src + m), len);
+  // start with m'th char and copy 'len' chars into destination
+  strncpy(dest, (src + m), len);
 
-	// return the destination string
-	return dest;
+  // return the destination string
+  return dest;
 }

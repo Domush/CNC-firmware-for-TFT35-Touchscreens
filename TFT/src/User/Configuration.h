@@ -57,7 +57,7 @@
 #define EXTRUDER_ID {"E0"};
 
 #define ROUTER_MAX_PWM {255};
-#define ROUTER_ID {"F0"};
+#define ROUTER_ID {"Router Power"};
 #define ROUTER_CMD {"M106 P0"};
 
 #define SPEED_ID {"Sp.", "Fr."};
@@ -166,9 +166,9 @@
 
 /*
   Rapid Serial Communication:More frequent Serial communicaiton while printing.
-  The controller will send and parse  gcodes more frequently  while drawing on 
+  The controller will send and parse  gcodes more frequently  while drawing on
   screen to prevent printer idling and stuttering  due to empty printer buffer.
-  
+
   Note: this might make the  graphics slow when switching menus while printing.
 */
 //#define RAPID_SERIAL_COMM

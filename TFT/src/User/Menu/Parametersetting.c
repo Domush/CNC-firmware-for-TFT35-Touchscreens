@@ -9,21 +9,20 @@ char *Get_value[VALUE_NUM];
 const GUI_RECT rect_of_Skey[PARANMETER_NUM] = {
     {BUTTON_WIDTH / 2, 0, LCD_WIDTH - BUTTON_WIDTH / 2, TITLE_SY + BYTE_HEIGHT},                                                                                                        //TITLE
     {3 * START_X, ICON_START_Y - BYTE_HEIGHT / 2, LCD_WIDTH - BUTTON_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2},                                                                            //M906
-    {3 * START_X, ICON_START_Y - BYTE_HEIGHT / 2 + 4 * BYTE_HEIGHT + 7 * BUTTON_SPACE, LCD_WIDTH - BUTTON_WIDTH, ICON_START_Y - BYTE_HEIGHT / 2 + 5 * BYTE_HEIGHT + 7 * BUTTON_SPACE},  //M92
+    {3 * START_X, ICON_START_Y - BYTE_HEIGHT / 2 + 2 * BYTE_HEIGHT + 7 * BUTTON_SPACE, LCD_WIDTH - BUTTON_WIDTH, ICON_START_Y - BYTE_HEIGHT / 2 + 3 * BYTE_HEIGHT + 7 * BUTTON_SPACE},  //M92
 
     {LCD_WIDTH - 1 * BUTTON_WIDTH, ICON_START_Y - BYTE_HEIGHT / 2, LCD_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2},                                                                            //M906_X
     {LCD_WIDTH - 1 * BUTTON_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 0 * BYTE_HEIGHT + 1 * BUTTON_SPACE, LCD_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 1 * BYTE_HEIGHT + 1 * BUTTON_SPACE},  //M906_Y
     {LCD_WIDTH - 1 * BUTTON_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 1 * BYTE_HEIGHT + 2 * BUTTON_SPACE, LCD_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 2 * BYTE_HEIGHT + 2 * BUTTON_SPACE},  //M906_Z
-    // {LCD_WIDTH - 1 * BUTTON_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 2 * BYTE_HEIGHT + 3 * BUTTON_SPACE, LCD_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 3 * BYTE_HEIGHT + 3 * BUTTON_SPACE},  //M906_E
 
-    {LCD_WIDTH - 1 * BUTTON_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 3 * BYTE_HEIGHT + 7 * BUTTON_SPACE, LCD_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 4 * BYTE_HEIGHT + 7 * BUTTON_SPACE},    //M92_X
-    {LCD_WIDTH - 1 * BUTTON_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 4 * BYTE_HEIGHT + 8 * BUTTON_SPACE, LCD_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 5 * BYTE_HEIGHT + 8 * BUTTON_SPACE},    //M92_Y
-    {LCD_WIDTH - 1 * BUTTON_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 5 * BYTE_HEIGHT + 9 * BUTTON_SPACE, LCD_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 6 * BYTE_HEIGHT + 9 * BUTTON_SPACE},    //M92_Z
-    // {LCD_WIDTH - 1 * BUTTON_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 6 * BYTE_HEIGHT + 10 * BUTTON_SPACE, LCD_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 7 * BYTE_HEIGHT + 10 * BUTTON_SPACE},  //M92_E
+    {LCD_WIDTH - 1 * BUTTON_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 3 * BYTE_HEIGHT + 7 * BUTTON_SPACE, LCD_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 4 * BYTE_HEIGHT + 7 * BUTTON_SPACE},  //M92_X
+    {LCD_WIDTH - 1 * BUTTON_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 4 * BYTE_HEIGHT + 8 * BUTTON_SPACE, LCD_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 5 * BYTE_HEIGHT + 8 * BUTTON_SPACE},  //M92_Y
+    {LCD_WIDTH - 1 * BUTTON_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 5 * BYTE_HEIGHT + 9 * BUTTON_SPACE, LCD_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 6 * BYTE_HEIGHT + 9 * BUTTON_SPACE},  //M92_Z
 
     // Back
     //{0, 0, BUTTON_WIDTH/2, LCD_HEIGHT/8},
-    {LCD_WIDTH - BUTTON_WIDTH / 2, 0, LCD_WIDTH, LCD_HEIGHT / 8},
+    // {LCD_WIDTH - BUTTON_WIDTH / 2, 0, LCD_WIDTH, LCD_HEIGHT / 8},
+    {0, 0, LCD_WIDTH / 4, LCD_HEIGHT / 6},
 };
 
 const GUI_RECT rect_of_numkey[KEY_NUM] = {
@@ -47,39 +46,40 @@ const GUI_RECT rect_of_numkey[KEY_NUM] = {
 };
 
 const char *const parameter[PARANMETER_NUM] = {
-    "Parametersetting",
-    "Set TMC Motor Current:",
-    "Set Axis Steps-per-unit:",
+    "Stepper Settings",
+    "TMC Motor Current (mW):",
+    "Axis Steps-per-mm:",
+    // Current
     "X",
     "Y",
     "Z",
-    // "E",
+    // Steps/mm
     "X",
     "Y",
     "Z",
-    // "E",
-    "back",
+    //  Back button
+    "Back",
 };
 
 const char *const parameter_cmd[PARANMETER_NUM] = {
     "0",
     "0",
     "0",
+
     "M906 X",
     "M906 Y",
     "M906 Z",
-    // "M906 E",
+
     "M92 X",
     "M92 Y",
     "M92 Z",
-    // "M92 E",
 };
 
 const char *const Key_Num[KEY_NUM] = {
     "1",
     "2",
     "3",
-    "del",
+    "Del",
     "4",
     "5",
     "6",
@@ -88,8 +88,8 @@ const char *const Key_Num[KEY_NUM] = {
     "8",
     "9",
     "0",
-    "X",
-    "OK",
+    "Cancel",
+    "Okay",
 };
 
 float Get_parameter_value[VALUE_NUM];
@@ -110,38 +110,39 @@ void Send_Settingcmd(void) {
 
 void Draw_parameterbutton(void) {
   TSC_ReDrawIcon = NULL;
-  GUI_SetBkColor(SET_BACKGROUND_COLOR);
+  // GUI_SetBkColor(SET_BACKGROUND_COLOR);
   GUI_ClearRect(0, 0, LCD_WIDTH, LCD_HEIGHT);
 
   for (uint8_t k = 3; k < PARANMETER_NUM - 1; k++) {
-    GUI_SetBkColor(SET_BACKGROUND_COLOR);
+    // GUI_SetBkColor(SET_BACKGROUND_COLOR);
     GUI_ClearRect(rect_of_Skey[k].x0, rect_of_Skey[k].y0, rect_of_Skey[k].x1, rect_of_Skey[k].y1);
   }
   for (uint8_t i = 0; i < PARANMETER_NUM; i++) {
-    GUI_SetColor(BLACK);
+    // GUI_SetColor(BLACK);
     if (i < 1) {
       GUI_DispStringInRect(rect_of_Skey[i].x0, rect_of_Skey[i].y0, rect_of_Skey[i].x1, rect_of_Skey[i].y1, (u8 *)parameter[i]);
       GUI_DrawLine(0, rect_of_Skey[i].y1, LCD_WIDTH, rect_of_Skey[i].y1);
       GUI_DrawLine(0, rect_of_Skey[i].y1 + 1, LCD_WIDTH, rect_of_Skey[i].y1 + 1);
     } else if (i >= 1 && i < 3) {
-      GUI_SetColor(BLACK);
+      // GUI_SetColor(BLACK);
       GUI_DrawLine(0, (rect_of_Skey[2].y0 + rect_of_Skey[6].y1) / 2, LCD_WIDTH, (rect_of_Skey[2].y0 + rect_of_Skey[6].y1) / 2);
       GUI_DrawLine(0, (rect_of_Skey[2].y0 + rect_of_Skey[6].y1) / 2 + 1, LCD_WIDTH, (rect_of_Skey[2].y0 + rect_of_Skey[6].y1) / 2 + 1);
 
       GUI_DispLenString(rect_of_Skey[i].x0, rect_of_Skey[i].y0, (u8 *)parameter[i], LCD_WIDTH - BUTTON_WIDTH);
-      GUI_SetColor(WHITE);
+      // GUI_SetColor(WHITE);
     } else if (i >= 3 && i < PARANMETER_NUM - 1)
       GUI_DispLenString(rect_of_Skey[i].x0, rect_of_Skey[i].y0, (u8 *)parameter[i], rect_of_Skey[i].x1 - rect_of_Skey[i].x0);
     else {
-      GUI_SetColor(WHITE);
+      // GUI_SetColor(WHITE);
       GUI_SetBkColor(WHITE);
       GUI_FillCircle((rect_of_Skey[i].x0 + rect_of_Skey[i].x1) / 2, (rect_of_Skey[i].y0 + rect_of_Skey[i].y1) / 2, BUTTON_WIDTH / 6);
       GUI_SetColor(BLACK);
       GUI_DispStringInPrect(&rect_of_Skey[i], (u8 *)"X");
-      //GUI_DrawCircle((rect_of_Skey[i].x0+rect_of_Skey[i].x1)/2,(rect_of_Skey[i].y0+rect_of_Skey[i].y1)/2,BUTTON_WIDTH/6);
-      GUI_SetBkColor(SET_BACKGROUND_COLOR);
-      GUI_SetColor(BLACK);
-      //GUI_DispStringInPrect(&rect_of_Skey[i],(u8*)parameter[i]);//GUI_FillCircle()  GUI_DrawCircle(RecIinfo.x0 + STATUS_MSG_ICON_XCENTER, RecIinfo.y0 + STATUS_MSG_ICON_YCENTER, BYTE_WIDTH);
+      GUI_RestoreColorDefault();
+      ////GUI_DrawCircle((rect_of_Skey[i].x0+rect_of_Skey[i].x1)/2,(rect_of_Skey[i].y0+rect_of_Skey[i].y1)/2,BUTTON_WIDTH/6);
+      // GUI_SetBkColor(SET_BACKGROUND_COLOR);
+      // GUI_SetColor(BLACK);
+      ////GUI_DispStringInPrect(&rect_of_Skey[i],(u8*)parameter[i]);//GUI_FillCircle()  GUI_DrawCircle(RecIinfo.x0 + STATUS_MSG_ICON_XCENTER, RecIinfo.y0 + STATUS_MSG_ICON_YCENTER, BYTE_WIDTH);
     }
 
     if (i > 0 && i < 3) {
@@ -149,30 +150,32 @@ void Draw_parameterbutton(void) {
       GUI_FillCircle(rect_of_Skey[i].x0 - BYTE_WIDTH, rect_of_Skey[i].y0 + BYTE_HEIGHT / 2, BYTE_WIDTH / 2);
       GUI_SetColor(YELLOW);
       GUI_DrawCircle(rect_of_Skey[i].x0 - BYTE_WIDTH, rect_of_Skey[i].y0 + BYTE_HEIGHT / 2, BYTE_WIDTH / 2);
+      GUI_RestoreColorDefault();
     }
   }
   GUI_SetTextMode(GUI_TEXTMODE_NORMAL);
-  GUI_SetBkColor(BLACK);
+  // GUI_SetBkColor(BLACK);
 
   return;
 }
 
 void Draw_keyboard(void) {
-  GUI_SetBkColor(WHITE);
+  // GUI_SetBkColor(WHITE);
   GUI_ClearRect(0, 0, LCD_WIDTH, rect_of_numkey[0].y0);
-  GUI_SetBkColor(BLUE);
+  // GUI_SetBkColor(BLUE);
   GUI_ClearRect(0, rect_of_numkey[0].y0, LCD_WIDTH, LCD_HEIGHT);
   for (uint8_t i = 0; i < KEY_NUM; i++) {
     if (i >= KEY_NUM - 2)  //return & sure
     {
-      GUI_SetColor(GRAY);
+      // GUI_SetColor(GRAY);
       GUI_FillPrect(&rect_of_numkey[i]);
       GUI_SetTextMode(GUI_TEXTMODE_TRANS);
       GUI_SetColor(BLACK);
       GUI_DispStringInPrect(&rect_of_numkey[i], (u8 *)Key_Num[i]);
       GUI_SetTextMode(GUI_TEXTMODE_NORMAL);
+      GUI_RestoreColorDefault();
     } else {
-      GUI_SetColor(BLACK);
+      // GUI_SetColor(BLACK);
       GUI_DispStringInPrect(&rect_of_numkey[i], (u8 *)Key_Num[i]);
     }
   }
@@ -188,17 +191,15 @@ void show_value(void) {
       {rect_of_Skey[6].x0 + 2 * BYTE_WIDTH, (rect_of_Skey[6].y1 - rect_of_Skey[6].y0 - BYTE_HEIGHT) / 2 + rect_of_Skey[6].y0},
       {rect_of_Skey[7].x0 + 2 * BYTE_WIDTH, (rect_of_Skey[7].y1 - rect_of_Skey[7].y0 - BYTE_HEIGHT) / 2 + rect_of_Skey[7].y0},
       {rect_of_Skey[8].x0 + 2 * BYTE_WIDTH, (rect_of_Skey[8].y1 - rect_of_Skey[8].y0 - BYTE_HEIGHT) / 2 + rect_of_Skey[8].y0},
-      {rect_of_Skey[9].x0 + 2 * BYTE_WIDTH, (rect_of_Skey[9].y1 - rect_of_Skey[9].y0 - BYTE_HEIGHT) / 2 + rect_of_Skey[9].y0},
-      {rect_of_Skey[10].x0 + 2 * BYTE_WIDTH, (rect_of_Skey[10].y1 - rect_of_Skey[10].y0 - BYTE_HEIGHT) / 2 + rect_of_Skey[10].y0},
   };
 
-  GUI_SetBkColor(WHITE);
-  GUI_SetColor(BLACK);
+  // GUI_SetBkColor(WHITE);
+  // GUI_SetColor(BLACK);
   for (int i = 0; i < VALUE_NUM; i++) {
     GUI_DispFloat(value_xy[i].x, value_xy[i].y, Get_parameter_value[i], 4, 1, CENTER);
   }
-  GUI_SetColor(WHITE);
-  GUI_SetBkColor(BLACK);
+  // GUI_SetColor(WHITE);
+  // GUI_SetBkColor(BLACK);
 
   return;
 }
@@ -256,7 +257,7 @@ void Setting_parameter(void) {
 
     if (lastIndex != nowIndex) {
       lastIndex = nowIndex;
-      GUI_SetBkColor(WHITE);
+      // GUI_SetBkColor(WHITE);
       GUI_ClearRect(0, 0, LCD_WIDTH, rect_of_numkey[0].y0);
       GUI_DispStringInPrect(&ParameterRect, (u8 *)ParameterBuf);
     }
@@ -279,16 +280,14 @@ void parametersetting(void) {
       case SKEY_6:
       case SKEY_7:
       case SKEY_8:
-      case SKEY_9:
-      case SKEY_10:
         Select_Parameter = key_num;
         infoMenu.menu[++infoMenu.cur] = Setting_parameter;
         break;
-
-      case SKEY_11:
+      case SKEY_9:
         infoMenu.cur--;
         break;
-
+      // case SKEY_10:
+      // case SKEY_11:
       default:
         break;
     }
@@ -297,44 +296,4 @@ void parametersetting(void) {
     loopBackEnd();
   }
   return;
-}
-
-void temp_Change(void) {
-  if (infoSettings.persistent_info != 1) return;
-  //static FP_MENU NUM[MAX_MENU_DEPTH];
-  static int16_t compare[2];
-
-  if (infoHost.connected == false || infoMenu.menu[infoMenu.cur] == menuPrinting) return;
-  if (infoMenu.menu[infoMenu.cur] == menuMove) return;
-
-  if (heatGetCurrentTemp(SPINDLE0) != compare[0] || heatGetCurrentTemp(BED) != compare[1])
-  //|| strcmp((char *)infoMenu.menu[infoMenu.cur],(char *)NUM)!=0)
-  {
-    //strcpy((char *)NUM ,(char *)infoMenu.menu[infoMenu.cur]);
-    compare[0] = heatGetCurrentTemp(SPINDLE0);
-    compare[1] = heatGetCurrentTemp(BED);
-
-    drawGlobalInfo();
-  }
-
-  return;
-}
-
-void show_GlobalInfo(void) {
-  if (infoSettings.persistent_info != 1) return;
-  if (infoHost.connected == false || infoMenu.menu[infoMenu.cur] == menuPrinting) return;
-  if (infoMenu.menu[infoMenu.cur] == menuMove) return;
-  drawGlobalInfo();
-
-  return;
-}
-void drawGlobalInfo(void) {
-  char tempstr[100];
-  GUI_ClearRect(LCD_WIDTH / 2, BYTE_HEIGHT, LCD_WIDTH, BYTE_HEIGHT * 2);
-  my_sprintf(tempstr, "X:%.1f", getAxisLocation(0));
-  GUI_DispString(START_X + 1 * SPACE_X + 1 * ICON_WIDTH, BYTE_HEIGHT, (u8 *)tempstr);
-  my_sprintf(tempstr, "Y:%.1f", getAxisLocation(1));
-  GUI_DispString(START_X + 2 * SPACE_X + 2 * ICON_WIDTH, BYTE_HEIGHT, (u8 *)tempstr);
-  my_sprintf(tempstr, "Z:%.1f", getAxisLocation(2));
-  GUI_DispString(START_X + 3 * SPACE_X + 3 * ICON_WIDTH, BYTE_HEIGHT, (u8 *)tempstr);
 }

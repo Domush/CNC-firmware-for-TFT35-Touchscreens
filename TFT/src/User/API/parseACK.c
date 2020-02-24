@@ -47,7 +47,7 @@ static char ack_cmp(const char *str) {
 static float ack_value() {
   return (strtod(&dmaL2Cache[ack_index], NULL));
 }
-
+/*
 // Read the value after the / if exists
 static float ack_second_value() {
   char *secondValue = strchr(&dmaL2Cache[ack_index], '/');
@@ -57,7 +57,7 @@ static float ack_second_value() {
     return -0.5;
   }
 }
-
+ */
 void ackPopupInfo(const char *info) {
   if (infoMenu.menu[infoMenu.cur] == parametersetting) return;
   if (infoMenu.menu[infoMenu.cur] == menuTerminal) return;
@@ -140,21 +140,6 @@ void parseACK(void) {
           storegantry(2, ack_value());
         }
       }
-    } else if (ack_seen("T:") || ack_seen("T0:")) {
-      heatSetCurrentTemp(heatGetCurrentToolSpindle(), ack_value() + 0.5);
-      heatSyncTargetTemp(heatGetCurrentToolSpindle(), ack_second_value() + 0.5);
-      for (TOOL i = BED; i < HEATER_NUM; i++) {
-        if (ack_seen(toolID[i])) {
-          heatSetCurrentTemp(i, ack_value() + 0.5);
-          heatSyncTargetTemp(i, ack_second_value() + 0.5);
-        }
-      }
-      avoid_terminal = infoSettings.terminalACK;
-    } else if (ack_seen("B:")) {
-      heatSetCurrentTemp(BED, ack_value() + 0.5);
-      heatSyncTargetTemp(BED, ack_second_value() + 0.5);
-      avoid_terminal = infoSettings.terminalACK;
-
     } else if (ack_seen("Mean:")) {
       popupReminder((u8 *)"Repeatability Test", (u8 *)dmaL2Cache + ack_index - 5);
       //popupReminder((u8* )"Standard Deviation", (u8 *)&infoCmd.queue[infoCmd.index_r].gcode[5]);
@@ -162,9 +147,6 @@ void parseACK(void) {
       if (ack_seen("Z")) {
         setCurrentOffset(ack_value());
       }
-    } else if (ack_seen("Count E:"))  // parse actual position, response of "M114"
-    {
-      coordinateSetAxisActualSteps(E_AXIS, ack_value());
     } else if (ack_seen(replyEcho) && ack_seen(replyBusy) && ack_seen("processing")) {
       busyIndicator(STATUS_BUSY);
     } else if (ack_seen(replyEcho) && ack_seen(replyBusy) && ack_seen("paused for user")) {
@@ -178,19 +160,15 @@ void parseACK(void) {
       if (ack_seen("Z driver current: "))
         Get_parameter_value[2] = ack_value();
 
-      // if (ack_seen("E driver current: "))
-      //   Get_parameter_value[3] = ack_value();
     } else if (ack_seen("M92 X")) {
-      Get_parameter_value[4] = ack_value();
+      Get_parameter_value[3] = ack_value();
 
       if (ack_seen("Y"))
-        Get_parameter_value[5] = ack_value();
+        Get_parameter_value[4] = ack_value();
 
       if (ack_seen("Z"))
-        Get_parameter_value[6] = ack_value();
+        Get_parameter_value[5] = ack_value();
 
-      // if (ack_seen("E"))
-      //   Get_parameter_value[7] = ack_value();
     }
 #ifdef ONBOARD_SD_SUPPORT
     else if (ack_seen(replySDNotPrinting) && infoMenu.menu[infoMenu.cur] == menuPrinting) {
@@ -233,6 +211,7 @@ parse_end:
   if (ack_cur_src != SERIAL_PORT) {
     Serial_Puts(ack_cur_src, dmaL2Cache);
   }
+  showGcodeStatus(dmaL2Cache, TERMINAL_ACK);
   if (avoid_terminal != true) {
     sendGcodeTerminalCache(dmaL2Cache, TERMINAL_ACK);
   }

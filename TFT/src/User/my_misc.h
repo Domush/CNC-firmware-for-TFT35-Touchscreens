@@ -8,13 +8,13 @@
 #define COUNT(n) (sizeof(n) / sizeof(n[0]))
 
 typedef char *my_va_list;
-//_INTSIZEOF(n)宏：将sizeof(n)按sizeof(int)对齐�?
+//_ INTSIZEOF (n) macro: align sizeof (n) by sizeof (int)?
 #define MY_INTSIZEOF(n) ((sizeof(n) + sizeof(int) - 1) & ~(sizeof(int) - 1))
 
-//取format参数之后的�??一�?变参地址�?4字节对齐
+//Take the format parameter and change the parameter address to 4-byte alignment
 #define my_va_start(ap, format) (ap = (my_va_list)&format + MY_INTSIZEOF(format))
 
-//对type类型数据，先取到其四字节对齐地址，再取其�?
+//For type data, first get its 4-byte aligned address, then fetch it?
 #define my_va_arg(ap, type) (*(type *)((ap += MY_INTSIZEOF(type)) - MY_INTSIZEOF(type)))
 
 #define my_va_end(ap) (ap = (my_va_list)0)
@@ -28,6 +28,6 @@ int limitValue(int min, int value, int max);
 long map(long x, long in_min, long in_max, long out_min, long out_max);
 int my_vsprintf(char *buf, const char *fmt, my_va_list args);
 void my_sprintf(char *buf, const char *fmt, ...);
-char* substr(const char *src, int m, int n);
+char *substr(const char *src, int m, int n);
 
 #endif

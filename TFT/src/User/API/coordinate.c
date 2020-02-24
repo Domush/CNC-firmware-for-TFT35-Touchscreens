@@ -2,9 +2,9 @@
 #include "string.h"
 #include "Configuration.h"
 
-const char axis_id[TOTAL_AXIS] = {'X', 'Y', 'Z', 'E'};
+const char axis_id[TOTAL_AXIS] = {'X', 'Y', 'Z'};
 
-COORDINATE targetPosition = {{0.0f, 0.0f, 0.0f, 0.0f}, 3000};
+COORDINATE targetPosition = {{0.0f, 0.0f, 0.0f}, 3000};
 
 //
 static bool relative_mode = false;
@@ -65,7 +65,7 @@ void coordinateGetAll(COORDINATE *tmp) {
   memcpy(tmp, &targetPosition, sizeof(targetPosition));
 }
 
-COORDINATE curPosition = {{0.0f, 0.0f, 0.0f, 0.0f}, 3000};
+COORDINATE curPosition = {{0.0f, 0.0f, 0.0f}, 3000};
 
 void coordinateSetAxisActualSteps(AXIS axis, int steps) {
   curPosition.axis[axis] = steps / EXTRUDE_STEPS;  // TODO: NEED fix, M92 auto get

@@ -47,7 +47,7 @@ const ITEM itemMoveLen[ITEM_MOVE_LEN_NUM] = {
 };
 
 const float item_move_len[ITEM_MOVE_LEN_NUM] = {100, 10, 1};
-static u8 item_move_len_i = 100;
+static u8 item_move_len_i = 0;
 
 static u32 nowTime = 0;
 static u32 update_time = 50;  // 1 seconds is 100
@@ -212,16 +212,18 @@ void update_gantry(void) {
   }
 }
 void drawXYZ(void) {
-  char tempstr[10];
-  GUI_SetColor(YELLOW);
-  //GUI_FillPrect(&RecXYZ);
-  my_sprintf(tempstr, "X:%.1f", getAxisLocation(0));
-  GUI_DispLenString((LCD_WIDTH / 3) * 0 + BYTE_WIDTH, BYTE_HEIGHT * 2, (u8 *)tempstr, LCD_WIDTH / 3);
-  my_sprintf(tempstr, "Y:%.1f", getAxisLocation(1));
-  GUI_DispLenString((LCD_WIDTH / 3) * 1 + BYTE_WIDTH, BYTE_HEIGHT * 2, (u8 *)tempstr, LCD_WIDTH / 3);
-  my_sprintf(tempstr, "Z:%.1f", getAxisLocation(2));
-  GUI_DispLenString((LCD_WIDTH / 3) * 2 + BYTE_WIDTH, BYTE_HEIGHT * 2, (u8 *)tempstr, LCD_WIDTH / 3);
+  if (infoHost.connected) {
+    char tempstr[10];
+    GUI_SetColor(YELLOW);
+    //GUI_FillPrect(&RecXYZ);
+    my_sprintf(tempstr, "X:%.1f", getAxisLocation(0));
+    GUI_DispLenString((LCD_WIDTH / 3) * 0 + 3 * BYTE_WIDTH, BYTE_HEIGHT * 2, (u8 *)tempstr, LCD_WIDTH / 3);
+    my_sprintf(tempstr, "Y:%.1f", getAxisLocation(1));
+    GUI_DispLenString((LCD_WIDTH / 3) * 1 + 3 * BYTE_WIDTH, BYTE_HEIGHT * 2, (u8 *)tempstr, LCD_WIDTH / 3);
+    my_sprintf(tempstr, "Z:%.1f", getAxisLocation(2));
+    GUI_DispLenString((LCD_WIDTH / 3) * 2 + 3 * BYTE_WIDTH, BYTE_HEIGHT * 2, (u8 *)tempstr, LCD_WIDTH / 3);
 
-  //GUI_SetBkColor(BACKGROUND_COLOR);
-  GUI_SetColor(FONT_COLOR);
+    //GUI_SetBkColor(BACKGROUND_COLOR);
+    GUI_SetColor(FONT_COLOR);
+  }
 }

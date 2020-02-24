@@ -212,6 +212,7 @@ void menuSendGcode(void) {
 
 char terminalBuf[TERMINAL_MAX_CHAR];
 void sendGcodeTerminalCache(char *serial_text, TERMINAL_SRC src) {
+  if (strstr(serial_text, (const char *)"wait") && src) return;
   const char *const terminalSign[] = {"Sent: ", "Rcv: "};
   // if (infoMenu.menu[infoMenu.cur] != menuSendGcode && infoMenu.menu[infoMenu.cur] != menuTerminal) return;
   if (strlen(terminalBuf) + strlen(serial_text) + strlen(terminalSign[src]) >= TERMINAL_MAX_CHAR) {
@@ -219,9 +220,6 @@ void sendGcodeTerminalCache(char *serial_text, TERMINAL_SRC src) {
   }
   strlcat(terminalBuf, terminalSign[src], TERMINAL_MAX_CHAR);
   strlcat(terminalBuf, serial_text, TERMINAL_MAX_CHAR);
-  // int term_termsrc = (int)strlen(terminalSign[src]);
-  // int term_termlen = (int)strlen(terminalBuf);
-  // char *term_substr = substr(terminalBuf, (int)strlen(terminalSign[src]), (int)strlen(terminalBuf));
 }
 
 #define CURSOR_START_X 0
@@ -280,103 +278,87 @@ void menuTerminal(void) {
   GUI_RestoreColorDefault();
 }
 
+static char *last_rcv_text;
+static char *last_sent_text;
+/**
+ * showGcodeStatus.
+ *
+ * @version	v1.0.0	Sunday, February 23rd, 2020.
+ * @version	v1.0.1	Monday, February 24th, 2020.
+ * @global
+ * @param	char        	*serial_text
+ * @param	terminal_src	src
+ * @return	void
+ */
 void showGcodeStatus(char *serial_text, TERMINAL_SRC src) {
-  // char tmp_trial_1[1024] = *serial_text;
-  // char tmp_trial_2[1024] = serial_text;
-  // const char const *tmp_trial3[] = *serial_text;
-  if (!src) {                                                                 // *If outgoing (sent) gcode
+  // *Disable on pages that need the extra space
+  if (infoMenu.menu[infoMenu.cur] == menuSettings ||
+      infoMenu.menu[infoMenu.cur] == menuFeatureSettings ||
+      infoMenu.menu[infoMenu.cur] == menuPrint ||
+      infoMenu.menu[infoMenu.cur] == menuPrintFromSource ||
+      infoMenu.menu[infoMenu.cur] == menuSendGcode ||
+      infoMenu.menu[infoMenu.cur] == menuBeforePrinting ||
+      infoMenu.menu[infoMenu.cur] == menuMachineSettings ||
+      infoMenu.menu[infoMenu.cur] == parametersetting ||
+      infoMenu.menu[infoMenu.cur] == menuTerminal ||
+      !infoHost.connected) {
+    return;
+  }
+  // *If outgoing (sent) gcode, filter status commands from display
+  if (!src) {
     const char *const ignored_commands[] = {"M105", "M118", "M114", "M117"};  // *G-code commands which won't be displayed
     for (u8 i = 0; i < COUNT(ignored_commands); i++) {
       if (strstr(serial_text, ignored_commands[i])) {
-        return;
+        return;  // *abort if filtered string found
       }
     }
   }
-  const char *const prefix[] = {"Cmd: ", "Rsp: "};
-  // int max_string_length;
-  // GUI_RECT rect_gcode_status[1];
+  const char *const prefix[] = {"Cmd:", "Rsp:"};
   int begin_x;
+  int end_x;
   int width_x;
-  if (src) {  // *If incoming (Rcv), then display text in the Rcv section of the gcode status
-    // rect_gcode_status[0] = (GUI_RECT){(LCD_WIDTH / 3) * 2 + BYTE_WIDTH, BYTE_HEIGHT, LCD_WIDTH - BYTE_WIDTH, BYTE_HEIGHT * 2};
-    // max_string_length = (LCD_WIDTH / 3 - BYTE_WIDTH) / BYTE_WIDTH;
-    begin_x = LCD_WIDTH / 2 + BYTE_WIDTH;
-    width_x = LCD_WIDTH / 2 - BYTE_WIDTH;
-  } else {  // *else display text in the Sent section
-    // rect_gcode_status[0] = (GUI_RECT){BYTE_WIDTH, BYTE_HEIGHT, (LCD_WIDTH / 3) * 2, BYTE_HEIGHT * 2};
-    // max_string_length = ((LCD_WIDTH / 3) * 2 - BYTE_WIDTH) / BYTE_WIDTH;
-    begin_x = BYTE_WIDTH;
-    width_x = LCD_WIDTH / 2 - BYTE_WIDTH;
+  char *final_text = serial_text;
+  // *Strip out any leftover responses
+  const char ch[5] = "\n";
+  char *token;
+  // *get the first token
+  token = strtok(serial_text, ch);
+  // *walk through other tokens
+  while (token != NULL) {
+    if (strlen(token) > 1) {
+      final_text = token;
+    }
+    token = strtok(NULL, ch);
   }
-  GUI_ClearRect(begin_x, BYTE_HEIGHT, width_x, BYTE_HEIGHT * 2);  // *clear the previous status
+
+  if (src) {  // *If incoming (Rcv), then display text in the Rcv section of the gcode status
+    if (last_rcv_text == final_text) {
+      return;  // *Don't update if the message hasn't changed since (prevents flickering)
+    } else {
+      last_rcv_text = final_text;
+    }
+    begin_x = LCD_WIDTH / 2;
+    end_x = LCD_WIDTH;
+    width_x = LCD_WIDTH / 2 - BYTE_WIDTH - BYTE_WIDTH * strlen(prefix[src]);
+
+  } else {  // *else display text in the Sent section
+    if (last_sent_text == final_text) {
+      return;  // *Don't update if the message hasn't changed since (prevents flickering)
+    } else {
+      last_sent_text = final_text;
+    }
+    begin_x = 0;
+    end_x = LCD_WIDTH / 2;
+    width_x = LCD_WIDTH / 2 - BYTE_WIDTH - BYTE_WIDTH * strlen(prefix[src]);
+  }
+  GUI_ClearRect(begin_x, BYTE_HEIGHT, end_x, BYTE_HEIGHT * 2);  // *clear the previous status
   GUI_SetColor(GRAY);
-  GUI_DispString(begin_x, BYTE_HEIGHT, (u8 *)prefix[src]);
+  GUI_DispString(begin_x, BYTE_HEIGHT, (u8 *)prefix[src]);  // Display the Sent/Rcv text
   GUI_RestoreColorDefault();
 
   if (infoMenu.menu[infoMenu.cur] == menuTerminal) {
     GUI_ClearRect(0, BYTE_HEIGHT, LCD_WIDTH, BYTE_HEIGHT * 2);  // *remove the gcode status line to avoid confusion
   } else {
-    // char gcode_text[max_string_length];
-    // strlcat(gcode_text, prefix[src], max_string_length);
-    char *display_text;
-
-    // strcpy(display_text, prefix[src]);
-    // *Fetch last command in serial_text
-    // char *last_cmd;
-    // int last_n_pos;
-    // last_cmd = strrchr(&display_text, '\n');
-
-    int last_n;
-    char *last_cmd;
-    last_cmd = serial_text;
-    // *Remove ending newlines
-    char *buffer;
-    while (strlen(last_cmd + (strrchr(last_cmd, '\n') - last_cmd)) == 1) {
-      buffer = last_cmd;
-      snprintf(last_cmd, strlen(last_cmd), "%s", buffer);
-    }
-    last_n = (int)strlen(last_cmd + (strrchr(last_cmd, '\n') - last_cmd));
-    display_text = last_cmd + (strlen(last_cmd) - last_n);
-
-    /*    for (u8 i = 0; i < (u8)strlen(serial_text); i++) {
-      if (serial_text[i] == '\n') {
-        if (display_text == prefix[src]) {
-          continue;
-        } else if ((i + 3) > strlen(serial_text)) {
-          break;
-        } else {
-          strcpy(display_text, prefix[src]);
-        }
-      } else {
-        strcat(display_text, substr(serial_text, i, i + 1));
-      }
-    }
-*/
-    // strlcat(gcode_text, display_text, max_string_length);
-
-    // GUI_ClearPrect((const GUI_RECT *)rect_gcode_status);
-    // GUI_DispStringInPrect((const GUI_RECT *)rect_gcode_status, (u8 *)display_text);  // Display sent g-code in status
-    GUI_DispLenString(begin_x + BYTE_WIDTH * strlen(prefix[src]), BYTE_HEIGHT, (u8 *)display_text, width_x);
+    GUI_DispLenString(begin_x + BYTE_WIDTH * strlen(prefix[src]), BYTE_HEIGHT, (u8 *)final_text, width_x);
   }
 }
-/*   // Show sent g-code on the status line
-  char sent_gcode[60] = "Sent: ";
-  setCurrentAckSrc(infoCmd.queue[infoCmd.index_r].src);
-  Serial_Puts(SERIAL_PORT, infoCmd.queue[infoCmd.index_r].gcode);  //
-  strcat(sent_gcode, (const char *)infoCmd.queue[infoCmd.index_r].gcode);
-
-  char ignored_commands[] = {"M105", "M118", "M114", "M117"};  // G-code commands which won't be displayed on the 'Sent:' screen
-  bool show_gcode = true;
-  for (u8 i = 0; i < COUNT(ignored_commands); i++) {
-    if (strstr(infoCmd.queue[infoCmd.index_r].gcode, ignored_commands[i])) {
-      show_gcode = false;
-      break;
-    }
-  }
-
-  if (show_gcode && strlen(infoCmd.queue[infoCmd.index_r].gcode) > 1) {
-    GUI_ClearRect(0, BYTE_HEIGHT * 2, (LCD_WIDTH / 3) * 2, BYTE_HEIGHT * 3);
-    GUI_DispLenString(0, BYTE_HEIGHT * 2, (u8 *)sent_gcode, (LCD_WIDTH / 3) * 2);  // Display sent g-code in status
-  }
-  //  end show gcode
- */

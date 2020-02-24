@@ -144,9 +144,9 @@ void GUI_FillRectArry(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, uint8_
   }
 }
 
-//����
-//x1,y1:�������?
-//x2,y2:�յ�����
+//Copy
+//x1,y1:Do you want to copy?
+//x2,y2:Copy
 void GUI_DrawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
   uint16_t t;
   int xerr = 0, yerr = 0, delta_x, delta_y, distance;
@@ -156,9 +156,9 @@ void GUI_DrawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
   uRow = x1;
   uCol = y1;
   if (delta_x > 0)
-    incx = 1;  //���õ�������
+    incx = 1;  //Should be copied
   else if (delta_x == 0)
-    incx = 0;  //��ֱ��
+    incx = 0;  //Span
   else {
     incx = -1;
     delta_x = -delta_x;
@@ -167,7 +167,7 @@ void GUI_DrawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
   if (delta_y > 0)
     incy = 1;
   else if (delta_y == 0)
-    incy = 0;  //ˮƽ��
+    incy = 0;  //Horizontal copy
   else {
     incy = -1;
     delta_y = -delta_y;
@@ -180,7 +180,7 @@ void GUI_DrawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
 
   for (t = 0; t <= distance + 1; t++)  //�������?
   {
-    GUI_DrawPoint(uRow, uCol);  //����
+    GUI_DrawPoint(uRow, uCol);  //Copy
     xerr += delta_x;
     yerr += delta_y;
     if (xerr > distance) {
@@ -219,7 +219,7 @@ void GUI_VLine(uint16_t x, uint16_t y1, uint16_t y2) {
   }
 }
 
-//������
+//Copy
 //(x1,y1),(x2,y2):���εĶԽ�����
 void GUI_DrawRect(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
   GUI_HLine(x1, y1, x2);
@@ -232,13 +232,13 @@ void GUI_DrawPrect(const GUI_RECT *rect) {
   GUI_DrawRect(rect->x0, rect->y0, rect->x1, rect->y1);
 }
 
-//��ָ��λ�û�һ��ָ����С��Բ
-//(x,y):���ĵ�
-//r    :�뾶
+//� �
+//(x, y): copy
+//r: The commandment path
 void GUI_DrawCircle(uint16_t x0, uint16_t y0, uint16_t r) {
   int16_t a = 0,
           b = r,
-          di = 3 - (r << 1);  //�ж��¸���λ�õı�־
+          di = 3 - (r << 1);  //Howling
 
   while (a <= b) {
     GUI_DrawPoint(x0 + a, y0 - b);  //5
@@ -250,7 +250,7 @@ void GUI_DrawCircle(uint16_t x0, uint16_t y0, uint16_t r) {
     GUI_DrawPoint(x0 - a, y0 - b);  //2
     GUI_DrawPoint(x0 - b, y0 - a);  //7
     a++;
-    //ʹ��Bresenham�㷨��Բ
+    //Make a copy of Bresenham's sister-in-law
     if (di < 0)
       di += (a << 2) + 6;
     else {
@@ -272,7 +272,7 @@ void GUI_FillCircle(uint16_t x0, uint16_t y0, uint16_t r) {
   int16_t fill_x1;
   int16_t xx, yy;  // ��Բ���Ʊ���
 
-  int16_t di;  // ���߱���
+  int16_t di;  // Do
 
   /* �������� */
   if (0 == r) return;
@@ -281,19 +281,19 @@ void GUI_FillCircle(uint16_t x0, uint16_t y0, uint16_t r) {
   draw_x0 = draw_x1 = x0;
   draw_y0 = draw_y1 = y0 + r;
   if (draw_y0 < LCD_HEIGHT) {
-    GUI_DrawPoint(draw_x0, draw_y0);  // 90��
+    GUI_DrawPoint(draw_x0, draw_y0);  // 90 kg
   }
 
   draw_x2 = draw_x3 = x0;
   draw_y2 = draw_y3 = y0 - r;
   if (draw_y2 >= 0) {
-    GUI_DrawPoint(draw_x2, draw_y2);  // 270��
+    GUI_DrawPoint(draw_x2, draw_y2);  // 270 pounds
   }
 
   draw_x4 = draw_x6 = x0 + r;
   draw_y4 = draw_y6 = y0;
   if (draw_x4 < LCD_WIDTH) {
-    GUI_DrawPoint(draw_x4, draw_y4);  // 0��
+    GUI_DrawPoint(draw_x4, draw_y4);  // 0
     fill_x1 = draw_x4;
   } else {
     fill_x1 = LCD_WIDTH;
@@ -309,11 +309,11 @@ void GUI_FillCircle(uint16_t x0, uint16_t y0, uint16_t r) {
   draw_x5 = draw_x7 = x0 - r;
   draw_y5 = draw_y7 = y0;
   if (draw_x5 >= 0) {
-    GUI_DrawPoint(draw_x5, draw_y5);  // 180��
+    GUI_DrawPoint(draw_x5, draw_y5);  // 180 kg
   }
   if (1 == r) return;
 
-  /* ʹ��Bresenham�����л�Բ */
+  /* Bresenham */
   di = 3 - 2 * r;  // ��ʼ�����߱���
   xx = 0;
   yy = r;
@@ -376,7 +376,7 @@ void GUI_FillCircle(uint16_t x0, uint16_t y0, uint16_t r) {
       GUI_DrawPoint(draw_x3, draw_y3);
     }
 
-    /* ���ĵ㴹ֱ�����?(�ϰ�Բ�ĵ�) */
+    /* Do you want to copy the point vertically? Do you want to copy it? */
     if (draw_x3 >= 0) { /* �������������ʼ��fill_x0 */
       fill_x0 = draw_x3;
       /* �������������ʼ��fill_y0 */
@@ -399,7 +399,7 @@ void GUI_FillCircle(uint16_t x0, uint16_t y0, uint16_t r) {
       GUI_DrawPoint(draw_x5, draw_y5);
     }
 
-    /* �����㴹ֱ�����?(�ϰ�Բ�ĵ�) */
+    /* Do you copy my sister vertically? */
     if (draw_x5 >= 0) { /* �������������ʼ��fill_x0 */
       fill_x0 = draw_x5;
       /* �������������ʼ��fill_y0 */
@@ -423,7 +423,7 @@ void GUI_FillCircle(uint16_t x0, uint16_t y0, uint16_t r) {
       GUI_DrawPoint(draw_x7, draw_y7);
     }
 
-    /* �ڰ˵㴹ֱ�����?(�ϰ�Բ�ĵ�) */
+    /* � section eight o'clock vertical copy? */
     if (draw_x7 >= 0) { /* �������������ʼ��fill_x0 */
       fill_x0 = draw_x7;
       /* �������������ʼ��fill_y0 */

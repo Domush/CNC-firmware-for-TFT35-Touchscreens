@@ -11,19 +11,13 @@
 
 #define TITLE_SY (ICON_START_Y - BYTE_HEIGHT) / 2
 
-#define ICON_SPINDLE_X 2 * ICON_WIDTH + ICON_WIDTH / 2
-#define VALUE_SPINDLE_X ICON_SPINDLE_X + BYTE_WIDTH
-
-#define ICON_BED_X 3 * ICON_WIDTH + 2 * BYTE_WIDTH + ICON_WIDTH / 2
-#define VALUE_BED_X ICON_BED_X + BYTE_WIDTH
-
 #define SET_BACKGROUND_COLOR GRAY
 
 #define KEY_NUM 14
-#define PARANMETER_NUM 12
+#define PARANMETER_NUM 10
 #define BUFLONG 6
 #define CDM_NUM 2
-#define VALUE_NUM 8
+#define VALUE_NUM 6
 
 typedef enum {
   SKEY_0 = 0,
@@ -36,8 +30,8 @@ typedef enum {
   SKEY_7,
   SKEY_8,
   SKEY_9,
-  SKEY_10,
-  SKEY_11,
+  // SKEY_10,
+  // SKEY_11,
   SKEY_IDLE = IDLE_TOUCH,
 } SKEY_VALUES;
 
@@ -61,9 +55,6 @@ typedef enum {
 } NUM_KEY_VALUES;
 
 void parametersetting(void);
-void show_GlobalInfo(void);
-void temp_Change(void);
-void drawGlobalInfo(void);
 extern bool getsetparameter;
 extern int cmd_getparameter_num;
 extern float Get_parameter_value[VALUE_NUM];
