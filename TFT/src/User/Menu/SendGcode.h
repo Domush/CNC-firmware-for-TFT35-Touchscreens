@@ -40,6 +40,7 @@ typedef enum {
 
 void menuSendGcode(void);
 void menuTerminal(void);
-void sendGcodeTerminalCache(char *stream, TERMINAL_SRC src);
+void sendGcodeTerminalCache(char *serial_text, TERMINAL_SRC src);
+void showGcodeStatus(char *serial_text, TERMINAL_SRC src);
 
 #endif

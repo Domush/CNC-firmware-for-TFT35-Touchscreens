@@ -212,21 +212,16 @@ void update_gantry(void) {
   }
 }
 void drawXYZ(void) {
-  char tempstr[8];
-  //GUI_SetColor(GANTRYLBL_BKCOLOR);
+  char tempstr[10];
+  GUI_SetColor(YELLOW);
   //GUI_FillPrect(&RecXYZ);
-  // GUI_SetTextMode(GUI_TEXTMODE_TRANS);
   my_sprintf(tempstr, "X:%.1f", getAxisLocation(0));
-  GUI_DispString(LCD_WIDTH - BYTE_WIDTH * 26, BYTE_HEIGHT + 5, (u8 *)tempstr);
-  // GUI_DispString(START_X + 1 * SPACE_X + 1 * ICON_WIDTH, (ICON_START_Y - BYTE_HEIGHT) / 2, (u8 *)tempstr);
+  GUI_DispLenString((LCD_WIDTH / 3) * 0 + BYTE_WIDTH, BYTE_HEIGHT * 2, (u8 *)tempstr, LCD_WIDTH / 3);
   my_sprintf(tempstr, "Y:%.1f", getAxisLocation(1));
-  GUI_DispString(LCD_WIDTH - BYTE_WIDTH * 17, BYTE_HEIGHT + 5, (u8 *)tempstr);
-  //  GUI_DispString(START_X + 2 * SPACE_X + 2 * ICON_WIDTH, (ICON_START_Y - BYTE_HEIGHT) / 2, (u8 *)tempstr);
+  GUI_DispLenString((LCD_WIDTH / 3) * 1 + BYTE_WIDTH, BYTE_HEIGHT * 2, (u8 *)tempstr, LCD_WIDTH / 3);
   my_sprintf(tempstr, "Z:%.1f", getAxisLocation(2));
-  GUI_DispString(LCD_WIDTH - BYTE_WIDTH * 8, BYTE_HEIGHT + 5, (u8 *)tempstr);
-  // GUI_DispString(START_X + 3 * SPACE_X + 3 * ICON_WIDTH, (ICON_START_Y - BYTE_HEIGHT) / 2, (u8 *)tempstr);
-  // GUI_SetTextMode(GUI_TEXTMODE_NORMAL);
+  GUI_DispLenString((LCD_WIDTH / 3) * 2 + BYTE_WIDTH, BYTE_HEIGHT * 2, (u8 *)tempstr, LCD_WIDTH / 3);
 
   //GUI_SetBkColor(BACKGROUND_COLOR);
-  //GUI_SetColor(FONT_COLOR);
+  GUI_SetColor(FONT_COLOR);
 }

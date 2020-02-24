@@ -53,7 +53,7 @@ void routerControl(u8 speed) {
   }
   switch (infoSettings.router_power) {
     case 1:
-      if (!speed) {
+      if (!speed || speed < 1) {
         storeCmd("M5\n");
       } else {
         storeCmd("M3 S%d\n", speed);
@@ -61,7 +61,7 @@ void routerControl(u8 speed) {
       break;
 
     case 2:
-      if (!speed) {
+      if (!speed || speed < 1) {
         storeCmd("M107\n");
       } else {
         storeCmd("M106 S%d\n", speed);

@@ -119,3 +119,4 @@ cmake-build-*
 .pydevproject
 .settings
 .classpath
+.vs

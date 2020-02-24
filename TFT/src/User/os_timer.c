@@ -3,7 +3,7 @@
 
 u32 os_counter = 0;
 
-//用于产生系统时钟，本工程设置10ms中断一次
+//Used to generate the system clock, this project sets a 10ms interrupt once
 void OS_TimerInit(u16 psc, u16 arr) {
   NVIC_InitTypeDef NVIC_InitStructure;
 
@@ -13,45 +13,45 @@ void OS_TimerInit(u16 psc, u16 arr) {
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 
-  RCC->APB1ENR |= 1 << 2;           //TIM4时钟使能
-  TIM4->ARR = arr;                  //设定自动重装值
-  TIM4->PSC = psc;                  //预分频器
-  TIM4->SR = (uint16_t) ~(1 << 0);  //清除更新中断
-  TIM4->DIER |= 1 << 0;             //允许更新中断
-  TIM4->CR1 |= 0x01;                //使能定时器3
+  RCC->APB1ENR |= 1 << 2;           //TIM4 clock enable
+  TIM4->ARR = arr;                  //Set auto reload value
+  TIM4->PSC = psc;                  //Prescaler
+  TIM4->SR = (uint16_t) ~(1 << 0);  //Clear update interrupt
+  TIM4->DIER |= 1 << 0;             //Allow update interrupts
+  TIM4->CR1 |= 0x01;                //Enable timer 3
 }
 
-void TIM4_IRQHandler(void)  //TIM4中断
+void TIM4_IRQHandler(void)  //TIM4 interrupt
 {
-  if ((TIM4->SR & 0x01) != 0)  //检查指定的TIM中断发生与否:TIM 中断源
+  if ((TIM4->SR & 0x01) != 0)  //Check if the specified TIM interrupt occurs: TIM interrupt source
   {
     os_counter++;
-    //打印过程中统计打印耗时
+    //Statistics printing takes time during printing
     setPrintingTime(os_counter);
 
     loopTouchScreen();
 
-    //计时溢出
+    //Timing overflow
     if (os_counter == (1 << 30)) {
       os_counter = 0;
     }
 
-    TIM4->SR = (uint16_t) ~(1 << 0);  //清除TIMx的中断待处理位:TIM 中断源
+    TIM4->SR = (uint16_t) ~(1 << 0);  //Clear TIMx interrupt pending bit: TIM interrupt source
   }
 }
 
-/* 系统时间 单位是 10ms */
+/* System time unit is 10ms */
 u32 OS_GetTime(void) {
   return os_counter;
 }
 
 /*
-功能:任务结构体初始化
-参数:
-task_t:待填充的任务结构体
-time:任务多久执行一次
-task:待执行的任务
-para:待执行任务的参数
+Function: Task structure initialization
+parameter:
+task_t: task structure to be filled
+time: how often the task is executed
+task: the task to be executed
+para: parameters of the task to be executed
 */
 void OS_TaskInit(OS_TASK *task, u32 time, FP_TASK function, void *para) {
   task->time = time;
@@ -59,8 +59,8 @@ void OS_TaskInit(OS_TASK *task, u32 time, FP_TASK function, void *para) {
   task->para = para;
 }
 /*
-功能:在主循环中调用,检测是否需要执行任务
-参数:待执行任务对应的任务结构体
+Function: Called in the main loop to detect whether the task needs to be executed
+Parameters: the task structure corresponding to the task to be executed
 */
 void OS_TaskCheck(OS_TASK *task_t) {
   if (task_t->is_exist == 0) return;
@@ -74,11 +74,11 @@ void OS_TaskCheck(OS_TASK *task_t) {
 }
 
 /*
-功能:使能 task_t 对应的任务
-参数:
-task_t:待执行任务对应的任务结构体
-is_exec:此任务是否立即执行
-is_repeat：此任务是否重复执行
+Function: Enable the task corresponding to task_t
+parameter:
+task_t: the task structure corresponding to the task to be executed
+is_exec: Whether this task is executed immediately
+is_repeat: Whether this task is repeated
 */
 void OS_TaskEnable(OS_TASK *task_t, u8 is_exec, u8 is_repeat) {
   task_t->is_exist = 1;
@@ -89,8 +89,8 @@ void OS_TaskEnable(OS_TASK *task_t, u8 is_exec, u8 is_repeat) {
 }
 
 /*
-功能:失能 task_t 对应的任务
-参数:待执行任务对应的任务结构体
+Function: Task corresponding to disabled task_t
+Parameters: the task structure corresponding to the task to be executed
 */
 void OS_TaskDisable(OS_TASK *task_t) {
   task_t->is_exist = 0;

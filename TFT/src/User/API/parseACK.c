@@ -33,6 +33,7 @@ static char ack_seen(const char *str) {
   }
   return false;
 }
+
 static char ack_cmp(const char *str) {
   u16 i;
   for (i = 0; i < ACK_MAX_SIZE && str[i] != 0 && dmaL2Cache[i] != 0; i++) {
@@ -130,12 +131,12 @@ void parseACK(void) {
     }
     if (ack_seen("X:")) {
       storegantry(0, ack_value());
-      storeCmd("M118 %d\n", ack_value());  //update X position
+      // storeCmd("M118 %d\n", ack_value());  //update X position
       if (ack_seen("Y:")) {
         storegantry(1, ack_value());
-        storeCmd("M118 %d\n", ack_value());  //update Y position
+        // storeCmd("M118 %d\n", ack_value());  //update Y position
         if (ack_seen("Z:")) {
-          storeCmd("M118 %d\n", ack_value());  //update Z position
+          // storeCmd("M118 %d\n", ack_value());  //update Z position
           storegantry(2, ack_value());
         }
       }
@@ -177,8 +178,8 @@ void parseACK(void) {
       if (ack_seen("Z driver current: "))
         Get_parameter_value[2] = ack_value();
 
-      if (ack_seen("E driver current: "))
-        Get_parameter_value[3] = ack_value();
+      // if (ack_seen("E driver current: "))
+      //   Get_parameter_value[3] = ack_value();
     } else if (ack_seen("M92 X")) {
       Get_parameter_value[4] = ack_value();
 
@@ -188,8 +189,8 @@ void parseACK(void) {
       if (ack_seen("Z"))
         Get_parameter_value[6] = ack_value();
 
-      if (ack_seen("E"))
-        Get_parameter_value[7] = ack_value();
+      // if (ack_seen("E"))
+      //   Get_parameter_value[7] = ack_value();
     }
 #ifdef ONBOARD_SD_SUPPORT
     else if (ack_seen(replySDNotPrinting) && infoMenu.menu[infoMenu.cur] == menuPrinting) {

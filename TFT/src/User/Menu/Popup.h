@@ -2,6 +2,7 @@
 #define _POPUP_H_
 
 #include "GUI.h"
+#include "my_misc.h"
 #include "variants.h"
 
 //TODO:fix here for more resolution

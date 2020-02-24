@@ -148,3 +148,29 @@ void my_sprintf(char *buf, const char *fmt, ...) {
   my_vsprintf(buf, fmt, ap);
   my_va_end(ap);
 }
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+/**
+ * substr.
+ * extracts characters present in src
+ * @param	char	*src    	
+ * @param	int 	m, int n	
+ * @return	substring between m and n (excluding n)
+ */
+char* substr(const char *src, int m, int n)
+{
+	// get length of the destination string
+	int len = n - m;
+
+	// allocate (len + 1) chars for destination (+1 for extra null character)
+	char *dest = (char*)malloc(sizeof(char) * (len + 1));
+
+	// start with m'th char and copy 'len' chars into destination
+	strncpy(dest, (src + m), len);
+
+	// return the destination string
+	return dest;
+}

@@ -17,7 +17,7 @@ void infoSettingsReset(void) {
   infoSettings.terminalACK = 0;
   infoSettings.invert_yaxis = 0;
   infoSettings.move_speed = 0;
-  infoSettings.router_power = 0;
+  infoSettings.router_power = 1;
   infoSettings.led_color = LED_OFF;
   infoSettings.invert_zaxis = 0;
   infoSettings.send_start_gcode = 1;

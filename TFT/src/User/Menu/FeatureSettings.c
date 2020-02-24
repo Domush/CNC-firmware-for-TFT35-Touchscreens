@@ -193,6 +193,8 @@ void updateFeatureSettings(uint8_t key_val) {
       infoSettings.router_power = (infoSettings.router_power + 1) % ITEM_ROUTER_CONTROL;
       settingPage[item_index].valueLabel = itemRouterControl[infoSettings.router_power];
       featureSettingsItems.items[key_val] = settingPage[item_index];
+
+      menuDrawListItem(&featureSettingsItems.items[key_val], key_val);
       break;
 
     case SKEY_STARTGCODE:
@@ -285,7 +287,7 @@ void loadFeatureSettings() {
         break;
 
       case SKEY_ROUTER_POWER:
-        settingPage[item_index].valueLabel = itemMoveSpeed[infoSettings.router_power];
+        settingPage[item_index].valueLabel = itemRouterControl[infoSettings.router_power];
         featureSettingsItems.items[i] = settingPage[item_index];
         break;
 

@@ -201,7 +201,6 @@
 #endif
 
 //LCD resolution, font and icon size
-#if defined(TFT35_V1_0) || defined(TFT35_V1_1) || defined(TFT35_V1_2) || defined(TFT35_V2_0) || defined(TFT35_V3_0)
 #define LCD_WIDTH 480
 #define LCD_HEIGHT 320
 
@@ -210,8 +209,9 @@
 
 #define ICON_WIDTH 95
 #define ICON_HEIGHT 95
-#define TITLE_END_Y 40
-#define ICON_START_Y (TITLE_END_Y + 10)
+#define TITLE_END_Y (BYTE_HEIGHT)
+// #define ICON_START_Y (TITLE_END_Y + 10)
+#define ICON_START_Y (BYTE_HEIGHT * 3)
 
 #define LIST_ICON_WIDTH 85
 #define LIST_ICON_HEIGHT 70
@@ -223,30 +223,6 @@
 #define SMALLICON_HEIGHT 24
 
 #define selecticonw 95
-
-#elif defined(TFT28_V1_0) || defined(TFT24_V1_1) || defined(TFT28_V3_0)
-#define LCD_WIDTH 320
-#define LCD_HEIGHT 240
-
-#define BYTE_HEIGHT 16
-#define BYTE_WIDTH (BYTE_HEIGHT / 2)
-
-#define ICON_WIDTH 70
-#define ICON_HEIGHT 70
-#define TITLE_END_Y 30
-#define ICON_START_Y (TITLE_END_Y + 10)
-
-#define LIST_ICON_WIDTH 55
-#define LIST_ICON_HEIGHT 50
-
-#define INFOBOX_WIDTH 150
-#define INFOBOX_HEIGHT 70
-
-#define SMALLICON_WIDTH 16
-#define SMALLICON_HEIGHT 16
-
-#define selecticonw 70
-#endif
 
 #if defined(TFT28_V3_0) || defined(TFT35_V3_0)
 #define LED_color_PIN PC7

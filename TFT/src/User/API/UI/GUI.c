@@ -516,7 +516,8 @@ void GUI_DispStringInRect(int16_t sx, int16_t sy, int16_t ex, int16_t ey, const 
   uint8_t nline = (stringlen + width - 1) / width;
 
   if (nline > height / BYTE_HEIGHT)
-    nline = height / BYTE_HEIGHT;
+    // nline = height / BYTE_HEIGHT;
+    height = BYTE_HEIGHT;
 
   uint16_t x_offset = stringlen >= width ? 0 : (width - stringlen) >> 1;
   uint16_t y_offset = (nline * BYTE_HEIGHT) >= height ? 0 : ((height - (nline * BYTE_HEIGHT)) >> 1);
@@ -840,7 +841,7 @@ void GUI_DrawWindow(const WINDOW *window, const uint8_t *title, const uint8_t *i
   GUI_SetTextMode(GUI_TEXTMODE_TRANS);
   GUI_SetColor(window->title.fontColor);
   //    GUI_DispStringInRect(rect.x0, rect.y0, rect.x1, rect.y0+titleHeight,title,0);
-  GUI_DispString(sx + radius, sy + 8, title);
+  GUI_DispString(sx + radius, sy, title);
   GUI_SetColor(window->info.fontColor);
   GUI_DispStringInRect(sx + lineWidth + BYTE_WIDTH, sy + titleHeight, ex - lineWidth - BYTE_WIDTH, sy + titleHeight + infoHeight, inf);
 

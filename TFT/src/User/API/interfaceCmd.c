@@ -138,50 +138,58 @@ void sendQueueCmd(void) {
     case 'M':
       cmd = strtol(&infoCmd.queue[infoCmd.index_r].gcode[1], NULL, 10);
       switch (cmd) {
-        case 0:  // unconditional pause
+        case 0:  // M0/1 Stop and wait for user.
         case 1:
           if (isPrinting()) {
             setPrintPause(true, true);
           }
           break;
-        case 18:  //M18/M84 disable steppers
+
+        case 3:  //M3 Set the spindle CW speed or laser power
+          if (cmd_seen('S')) {
+            routerSetSpeed(0, cmd_value());
+          } else {
+            char buf[12];
+            sprintf(buf, "S%d\n", routerGetSpeed(0));
+            strcat(infoCmd.queue[infoCmd.index_r].gcode, (const char *)buf);
+            routerSetSendWaiting(0, false);
+          }
+          break;
+
+        case 5:  //M5 Turn off spindle or laser
+          routerSetSpeed(0, 0);
+          break;
+
+        case 18:  //M18 Disable steppers (same as M84).
         case 84:
           coordinateSetClear(false);
           break;
 
-        case 27:  //M27
+        case 27:  //M27 - Report SD print status
           printSetUpdateWaiting(false);
           break;
 
-        case 80:  //M80
+        case 80:  //M80 Turn on the power supply
 #ifdef PS_ON_PIN
           PS_ON_On();
 #endif
           break;
 
-        case 81:  //M81
+        case 81:  //M81 Turn off the power supply.
 #ifdef PS_ON_PIN
           PS_ON_Off();
 #endif
           break;
 
-        case 82:  //M82
+        case 82:  //M82 Set E to absolute positioning.
           eSetRelative(false);
           break;
 
-        case 83:  //M83
+        case 83:  //M83 Set E to relative positioning.
           eSetRelative(true);
           break;
 
-        case 109:  //M109
-        {
-          TOOL i = heatGetCurrentToolSpindle();
-          if (cmd_seen('T')) i = (TOOL)(cmd_value() + SPINDLE0);
-          infoCmd.queue[infoCmd.index_r].gcode[3] = '4';
-          heatSetIsWaiting(i, true);
-        }
-        case 104:  //M104
-        {
+        case 104:  //M104 Set a new target hot end temperature.
           TOOL i = heatGetCurrentToolSpindle();
           if (cmd_seen('T')) i = (TOOL)(cmd_value() + SPINDLE0);
           if (cmd_seen('S')) {
@@ -193,18 +201,14 @@ void sendQueueCmd(void) {
             heatSetSendWaiting(i, false);
           }
           break;
-        }
 
-        case 105:  //M105
+        case 105:  //M105 Send a temperature report to the host.
+          break;   // *disabled for CNC
           heatSetUpdateWaiting(false);
-
           avoid_terminal = infoSettings.terminalACK;
-
           break;
 
-        case 3:    //M3 spindle speed
-        case 106:  //M106
-        {
+        case 106:  //M106 Turn on the fan/router and set its speed
           u8 i = 0;
           if (cmd_seen('P')) i = cmd_value();
           if (cmd_seen('S')) {
@@ -216,30 +220,31 @@ void sendQueueCmd(void) {
             routerSetSendWaiting(i, false);
           }
           break;
-        }
 
-        case 5:    //M5 spindle off
-        case 107:  //M107 fan/router off
-        {
+        case 107:  //M107 Turn off a fan/router
           u8 i = 0;
           if (cmd_seen('P')) i = cmd_value();
           routerSetSpeed(i, 0);
           break;
-        }
 
-        case 114:  //M114
+        case 109:  //M109 Wait for the hot end to reach its target.
+          TOOL i = heatGetCurrentToolSpindle();
+          if (cmd_seen('T')) i = (TOOL)(cmd_value() + SPINDLE0);
+          infoCmd.queue[infoCmd.index_r].gcode[3] = '4';
+          heatSetIsWaiting(i, true);
+          break;
+
+        case 114:  //M114 Report the current tool position to the host.
 #ifdef FIL_RUNOUT_PIN
           positionSetUpdateWaiting(false);
 #endif
           break;
 
-        case 117:  //M117
+        case 117:  //M117 Set the message line on the LCD.
           popupReminder((u8 *)"M117", (u8 *)&infoCmd.queue[infoCmd.index_r].gcode[5]);
           break;
-        case 190:  //M190
-          infoCmd.queue[infoCmd.index_r].gcode[2] = '4';
-          heatSetIsWaiting(BED, true);
-        case 140:  //M140
+
+        case 140:  //M140 Set a new target bed temperature.
           if (cmd_seen('S')) {
             heatSyncTargetTemp(BED, cmd_value());
           } else {
@@ -250,7 +255,12 @@ void sendQueueCmd(void) {
           }
           break;
 
-        case 220:  //M220
+        case 190:  //M190 Wait for the bed to reach target temperature.
+          infoCmd.queue[infoCmd.index_r].gcode[2] = '4';
+          heatSetIsWaiting(BED, true);
+          break;
+
+        case 220:  //M220 Set the global feedrate percentage.
           if (cmd_seen('S')) {
             speedSetPercent(0, cmd_value());
           } else {
@@ -260,7 +270,8 @@ void sendQueueCmd(void) {
             speedSetSendWaiting(0, false);
           }
           break;
-        case 221:  //M221
+
+        case 221:  //M221 Set the flow percentage, which applies to all E moves.
           if (cmd_seen('S')) {
             speedSetPercent(1, cmd_value());
           } else {
@@ -276,9 +287,8 @@ void sendQueueCmd(void) {
     case 'G':
       cmd = strtol(&infoCmd.queue[infoCmd.index_r].gcode[1], NULL, 10);
       switch (cmd) {
-        case 0:  //G0
-        case 1:  //G1
-        {
+        case 0:  //G0 Fast move
+        case 1:  //G1 Cut move
           AXIS i;
           for (i = X_AXIS; i < TOTAL_AXIS; i++) {
             if (cmd_seen(axis_id[i])) {
@@ -289,22 +299,20 @@ void sendQueueCmd(void) {
             coordinateSetFeedRate(cmd_value());
           }
           break;
-        }
 
-        case 28:  //G28
+        case 28:  //G28 Auto home one or more axes.
           coordinateSetClear(true);
           break;
 
-        case 90:  //G90
+        case 90:  //G90 Absolute Positioning
           coorSetRelative(false);
           break;
 
-        case 91:  //G91
+        case 91:  //G91 Relative Positioning
           coorSetRelative(true);
           break;
 
-        case 92:  //G92
-        {
+        case 92:  //G92 Set the current position of one or more axes.
           AXIS i;
           bool coorRelative = coorGetRelative();
           bool eRelative = eGetRelative();
@@ -320,7 +328,6 @@ void sendQueueCmd(void) {
           coorSetRelative(coorRelative);
           eSetRelative(eRelative);
           break;
-        }
       }
       break;
 
@@ -330,9 +337,30 @@ void sendQueueCmd(void) {
       break;
   }
 
+  // Show sent g-code on the status line
+  // char sent_gcode[60] = "Sent: ";
   setCurrentAckSrc(infoCmd.queue[infoCmd.index_r].src);
   Serial_Puts(SERIAL_PORT, infoCmd.queue[infoCmd.index_r].gcode);  //
+  // strcat(sent_gcode, (const char *)infoCmd.queue[infoCmd.index_r].gcode);
+
+  /*
+  char ignored_commands[] = {"M105", "M118", "M114", "M117"};  // G-code commands which won't be displayed on the 'Sent:' screen
+  bool show_gcode = true;
+  for (u8 i = 0; i < COUNT(ignored_commands); i++) {
+    if (strstr(infoCmd.queue[infoCmd.index_r].gcode, ignored_commands[i])) {
+      show_gcode = false;
+      break;
+    }
+  }
+
+  if (show_gcode && strlen(infoCmd.queue[infoCmd.index_r].gcode) > 1) {
+    GUI_ClearRect(0, BYTE_HEIGHT * 2, (LCD_WIDTH / 3) * 2, BYTE_HEIGHT * 3);
+    GUI_DispLenString(0, BYTE_HEIGHT * 2, (u8 *)sent_gcode, (LCD_WIDTH / 3) * 2);  // Display sent g-code in status
+  }
+  //  end show gcode
+ */
   if (avoid_terminal != true) {
+    // showGcodeStatus(infoCmd.queue[infoCmd.index_r].gcode, TERMINAL_GCODE);
     sendGcodeTerminalCache(infoCmd.queue[infoCmd.index_r].gcode, TERMINAL_GCODE);
   }
   infoCmd.count--;

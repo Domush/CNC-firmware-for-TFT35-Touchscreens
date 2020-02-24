@@ -5,9 +5,51 @@
 // exhibitRect is 2 ICON Space in the Upper Row and 2 Center Coloum.
 const GUI_RECT exhibitRect = {
     1 * ICON_WIDTH + 1 * SPACE_X + START_X, 0 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y, 3 * ICON_WIDTH + 2 * SPACE_X + START_X, 1 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y};
-
+/**
+ * *First row icons
+ * {
+ * {x0 = 12, y0 = 50, x1 = 107, y1 = 145},
+ * {x0 = 132, y0 = 50, x1 = 227, y1 = 145},
+ * {x0 = 252, y0 = 50, x1 = 347, y1 = 145},
+ * {x0 = 372, y0 = 50, x1 = 467, y1 = 145},
+ *  *second row icons
+ * {x0 = 12, y0 = 175, x1 = 107, y1 = 280},
+ * {x0 = 132, y0 = 175, x1 = 227, y1 = 280},
+ * {x0 = 252, y0 = 175, x1 = 347, y1 = 280},
+ * {x0 = 372, y0 = 175, x1 = 467, y1 = 280},
+ *  *first row labels
+ * {x0 = 0, y0 = 135, x1 = 120, y1 = 185},
+ * {x0 = 120, y0 = 135, x1 = 240, y1 = 185},
+ * {x0 = 240, y0 = 135, x1 = 360, y1 = 185},
+ * {x0 = 360, y0 = 135, x1 = 480, y1 = 185},
+ *  *second row labels
+ * {x0 = 0, y0 = 257, x1 = 120, y1 = 280},
+ * {x0 = 120, y0 = 255, x1 = 240, y1 = 320},
+ * {x0 = 240, y0 = 255, x1 = 360, y1 = 320},
+ * {x0 = 360, y0 = 255, x1 = 480, y1 = 320}}
+ */
 const GUI_RECT rect_of_key[ITEM_PER_PAGE * 2] = {
     //8 icons area
+    // {0 * ICON_WIDTH + 0 * SPACE_X + START_X, 0 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y, 1 * ICON_WIDTH + 0 * SPACE_X + START_X, 1 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y},
+    // {1 * ICON_WIDTH + 1 * SPACE_X + START_X, 0 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y, 2 * ICON_WIDTH + 1 * SPACE_X + START_X, 1 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y},
+    // {2 * ICON_WIDTH + 2 * SPACE_X + START_X, 0 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y, 3 * ICON_WIDTH + 2 * SPACE_X + START_X, 1 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y},
+    // {3 * ICON_WIDTH + 3 * SPACE_X + START_X, 0 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y, 4 * ICON_WIDTH + 3 * SPACE_X + START_X, 1 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y},
+    // {0 * ICON_WIDTH + 0 * SPACE_X + START_X, 1 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y, 1 * ICON_WIDTH + 0 * SPACE_X + START_X, 2 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y},
+    // {1 * ICON_WIDTH + 1 * SPACE_X + START_X, 1 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y, 2 * ICON_WIDTH + 1 * SPACE_X + START_X, 2 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y},
+    // {2 * ICON_WIDTH + 2 * SPACE_X + START_X, 1 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y, 3 * ICON_WIDTH + 2 * SPACE_X + START_X, 2 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y},
+    // {3 * ICON_WIDTH + 3 * SPACE_X + START_X, 1 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y, 4 * ICON_WIDTH + 3 * SPACE_X + START_X, 2 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y},
+
+    //8 labels area
+    // {0 * SPACE_X_PER_ICON, 1 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y, 1 * SPACE_X_PER_ICON, 1 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y},
+    // {1 * SPACE_X_PER_ICON, 1 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y, 2 * SPACE_X_PER_ICON, 1 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y},
+    // {2 * SPACE_X_PER_ICON, 1 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y, 3 * SPACE_X_PER_ICON, 1 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y},
+    // {3 * SPACE_X_PER_ICON, 1 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y, 4 * SPACE_X_PER_ICON, 1 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y},
+    // {0 * SPACE_X_PER_ICON, 2 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y, 1 * SPACE_X_PER_ICON, 2 * ICON_HEIGHT + 2 * SPACE_Y + ICON_START_Y},
+    // {1 * SPACE_X_PER_ICON, 2 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y, 2 * SPACE_X_PER_ICON, 2 * ICON_HEIGHT + 2 * SPACE_Y + ICON_START_Y},
+    // {2 * SPACE_X_PER_ICON, 2 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y, 3 * SPACE_X_PER_ICON, 2 * ICON_HEIGHT + 2 * SPACE_Y + ICON_START_Y},
+    // {3 * SPACE_X_PER_ICON, 2 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y, 4 * SPACE_X_PER_ICON, 2 * ICON_HEIGHT + 2 * SPACE_Y + ICON_START_Y},
+
+    // 8 icons area
     {0 * ICON_WIDTH + 0 * SPACE_X + START_X, 0 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y, 1 * ICON_WIDTH + 0 * SPACE_X + START_X, 1 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y},
     {1 * ICON_WIDTH + 1 * SPACE_X + START_X, 0 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y, 2 * ICON_WIDTH + 1 * SPACE_X + START_X, 1 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y},
     {2 * ICON_WIDTH + 2 * SPACE_X + START_X, 0 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y, 3 * ICON_WIDTH + 2 * SPACE_X + START_X, 1 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y},
@@ -17,7 +59,7 @@ const GUI_RECT rect_of_key[ITEM_PER_PAGE * 2] = {
     {2 * ICON_WIDTH + 2 * SPACE_X + START_X, 1 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y, 3 * ICON_WIDTH + 2 * SPACE_X + START_X, 2 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y},
     {3 * ICON_WIDTH + 3 * SPACE_X + START_X, 1 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y, 4 * ICON_WIDTH + 3 * SPACE_X + START_X, 2 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y},
 
-    //8 labels area
+    // 8 labels area
     {0 * SPACE_X_PER_ICON, 1 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y, 1 * SPACE_X_PER_ICON, 1 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y},
     {1 * SPACE_X_PER_ICON, 1 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y, 2 * SPACE_X_PER_ICON, 1 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y},
     {2 * SPACE_X_PER_ICON, 1 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y, 3 * SPACE_X_PER_ICON, 1 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y},
@@ -43,6 +85,7 @@ const GUI_RECT rect_of_keyListView[ITEM_PER_PAGE] = {
 
 //Clean up the gaps outside icons
 void menuClearGaps(void) {
+  return;
   const GUI_RECT gaps[] = {
       {0, 0, LCD_WIDTH, TITLE_END_Y},
       {0, TITLE_END_Y, LCD_WIDTH, ICON_START_Y},

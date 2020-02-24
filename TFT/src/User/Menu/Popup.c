@@ -1,4 +1,5 @@
 #include "Popup.h"
+#include "my_misc.h"
 #include "includes.h"
 
 #define BUTTON_NUM 1
@@ -72,19 +73,21 @@ void menuPopup(void) {
   }
 }
 
-void popupReminder(u8 *info, u8 *context) {
-  popupDrawPage(&bottomSingleBtn, info, context, textSelect(LABEL_CONFIRM), NULL);
+void popupReminder(u8 *info, u8 *message) {
+  if (strstr((char *)message, "//action:prompt_end")) {
+    /** Example message:
+     * <dmaL2Cache+530> "Load V-Bit -  0.5\" Dia., then Pos@ 0:0:1mm\r\n//action:prompt_end\n//action:prompt_begin M0/1 Break Called\n//action:prompt_button Continue\n//action:prompt_show\n"
+     */
+    // char message[] = "Load V-Bit -  0.5\" Dia., then Pos@ 0:0:1mm\r\n//action:prompt_end\n//action:prompt_begin M0/1 Break Called\n//action:prompt_button Continue\n//action:prompt_show\n";
+    char *text = substr((char *)message, 0, (int)(strstr((char *)message, "//action:prompt_end") - 2));
+    char *title = substr((char *)message, (int)(strstr((char *)message, "//action:prompt_begin") + 21), (int)(strstr((char *)message, "//action:prompt_button") - 2));
+    char *button = substr((char *)message, (int)(strstr((char *)message, "//action:prompt_button") + 22), (int)(strstr((char *)message, "//action:prompt_show") - 2));
+    popupDrawPage(&bottomSingleBtn, (u8 *)title, (u8 *)text, (u8 *)button, NULL);
+  } else {
+    popupDrawPage(&bottomSingleBtn, info, message, textSelect(LABEL_CONFIRM), NULL);
+  }
+
   if (infoMenu.menu[infoMenu.cur] != menuPopup) {
     infoMenu.menu[++infoMenu.cur] = menuPopup;
   }
 }
-/* Example context:
-<dmaL2Cache+530> "Load V-Bit -  0.5\" Dia., then Pos@ 0:0:1mm\r\n//action:prompt_end\n//action:prompt_begin M0/1 Break Called\n//action:prompt_button Continue\n//action:prompt_show\n"
-*/
-// const char *message = "Load V-Bit -  0.5\" Dia., then Pos@ 0:0:1mm\r\n//action:prompt_end\n//action:prompt_begin M0/1 Break Called\n//action:prompt_button Continue\n//action:prompt_show\n";
-// static char *title;
-// static char *text;
-// static char *button;
-// static char *ptr;
-// u32 position = strtol(strstr(message, "//action:prompt_end") + 5, &ptr, 10);
-// setPrintCur(position);
