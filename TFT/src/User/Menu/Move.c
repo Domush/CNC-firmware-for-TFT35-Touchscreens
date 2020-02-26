@@ -47,7 +47,7 @@ const ITEM itemMoveLen[ITEM_MOVE_LEN_NUM] = {
 };
 
 const float item_move_len[ITEM_MOVE_LEN_NUM] = {100, 10, 1};
-static u8 item_move_len_i = 0;
+static u8 item_move_len_i = 1;
 
 static u32 nowTime = 0;
 static u32 update_time = 50;  // 1 seconds is 100
@@ -59,7 +59,6 @@ void menuMove(void) {
   char *z_axis_up;
   char *z_axis_down;
 
-#ifdef ALTERNATIVE_MOVE_MENU
   if (infoSettings.invert_yaxis == 1) {
     moveItems.items[1].label.index = LABEL_Y_DEC;
     moveItems.items[5].label.index = LABEL_Y_INC;
@@ -83,22 +82,6 @@ void menuMove(void) {
     z_axis_up = ZGCODE_DEC;
     z_axis_down = ZGCODE_INC;
   }
-#else
-  if (infoSettings.invert_yaxis == 1) {
-    moveItems.items[1].label.index = LABEL_Y_DEC;
-    moveItems.items[5].label.index = LABEL_Y_INC;
-  } else {
-    moveItems.items[1].label.index = LABEL_Y_INC;
-    moveItems.items[5].label.index = LABEL_Y_DEC;
-  }
-  if (infoSettings.invert_zaxis == 1) {
-    moveItems.items[2].label.index = LABEL_Z_DEC;
-    moveItems.items[6].label.index = LABEL_Z_INC;
-  } else {
-    moveItems.items[2].label.index = LABEL_Z_INC;
-    moveItems.items[6].label.index = LABEL_Z_DEC;
-  }
-#endif
 
   menuDrawPage(&moveItems);
   mustStoreCmd("G91\n");
@@ -120,8 +103,6 @@ void menuMove(void) {
   while (infoMenu.menu[infoMenu.cur] == menuMove) {
     key_num = menuKeyGetValue();
     switch (key_num) {
-#ifdef ALTERNATIVE_MOVE_MENU
-
       case KEY_ICON_0:
         storeCmd(z_axis_up, item_move_len[item_move_len_i]);
         break;
@@ -156,48 +137,8 @@ void menuMove(void) {
         break;
       default:
         break;
-
-#else
-
-      case KEY_ICON_0:
-        storeCmd("G1 X%.1f\n", item_move_len[item_move_len_i]);
-        break;
-
-      case KEY_ICON_1:
-        storeCmd(y_axis_up, item_move_len[item_move_len_i]);
-        break;
-
-      case KEY_ICON_2:
-        storeCmd(z_axis_up, item_move_len[item_move_len_i]);
-        break;
-
-      case KEY_ICON_3:
-        item_move_len_i = (item_move_len_i + 1) % ITEM_MOVE_LEN_NUM;
-        moveItems.items[key_num] = itemMoveLen[item_move_len_i];
-        menuDrawItem(&moveItems.items[key_num], key_num);
-        break;
-
-      case KEY_ICON_4:
-        storeCmd("G1 X-%.1f\n", item_move_len[item_move_len_i]);
-        break;
-
-      case KEY_ICON_5:
-        storeCmd(y_axis_down, item_move_len[item_move_len_i]);
-        break;
-
-      case KEY_ICON_6:
-        storeCmd(z_axis_down, item_move_len[item_move_len_i]);
-        break;
-
-      case KEY_ICON_7:
-        infoMenu.cur--;
-        break;
-      default:
-        break;
-#endif
     }
     loopProcess();
-    // update_gantry();
   }
   mustStoreCmd("G90\n");
 }

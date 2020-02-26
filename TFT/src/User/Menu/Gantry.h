@@ -1,6 +1,7 @@
 #ifndef _STATUSSCREEN_H_
 #define _STATUSSCREEN_H_
-// #include "GUI.h"
+#include "stdbool.h"
+#include "stdint.h"
 
 void storegantry(int n, float val);
 float getAxisLocation(uint8_t n);

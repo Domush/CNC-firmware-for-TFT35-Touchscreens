@@ -24,6 +24,12 @@ const ITEM itemIsPause[2] = {
     {ICON_RESUME, LABEL_RESUME},
 };
 
+const ITEM itemM0Pause[2] = {
+    // icon                       label
+    {ICON_PAUSE, LABEL_PAUSE},
+    {ICON_RESUME, LABEL_RESUME},
+};
+
 const ITEM itemIsFinished[2] = {
     // icon                       label
     {ICON_STOP, LABEL_STOP},
@@ -501,7 +507,6 @@ void menuStopPrinting(void) {
 // Shut down menu, when the hotend temperature is higher than "AUTO_SHUT_DOWN_MAXTEMP"
 // wait for cool down, in the meantime, you can shut down by force
 void menuShutDown(void) {
-  bool tempIsLower;
   u16 key_num = IDLE_TOUCH;
 
   popupDrawPage(bottomDoubleBtn, textSelect(LABEL_SHUT_DOWN), textSelect(LABEL_WAIT_TEMP_SHUT_DOWN), textSelect(LABEL_FORCE_SHUT_DOWN), textSelect(LABEL_CANCEL));

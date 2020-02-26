@@ -1,10 +1,9 @@
 #include "Gantry.h"
-// #include "GUI.h"
 #include "includes.h"
 //1 title, ITEM_PER_PAGE items (icon + label)
 
-static u32 nowTime = 0;
-static u32 update_time = 200;  // 1 seconds is 100
+// static u32 nowTime = 0;
+// static u32 update_time = 200;  // 1 seconds is 100
 SCROLL msgScroll;
 
 static float xaxis;

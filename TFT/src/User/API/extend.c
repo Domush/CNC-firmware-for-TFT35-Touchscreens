@@ -56,17 +56,14 @@ bool FIL_RunoutPinFilteredLevel(void) {
   return rst;
 }
 
-static u32 update_time = 200;
+// static u32 update_time = 200;
 // Use an encoder disc to toggles the runout
 // Suitable for BigTreeTech Smart filament detecter
 bool FIL_SmartRunoutDetect(void) {
-  static float lastGantryPosition = 0.0f;
   static uint8_t lastRunoutPinLevel = 0;
   static uint8_t isAlive = false;
-  static u32 nowTime = 0;
 
   bool pinLevel = FIL_RunoutPinFilteredLevel();
-  float actualGantry = coordinateGetAxisActual(E_AXIS);
 
   if (isAlive == false) {
     if (lastRunoutPinLevel != pinLevel) {

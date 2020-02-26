@@ -13,7 +13,7 @@ typedef struct
   float axis[TOTAL_AXIS];
   u32 gantryspeed;
   u16 speed;
-  router[ROUTER_NUM];
+  u16 router[ROUTER_NUM];
   u32 offset;
   bool relative;
 } BREAK_POINT;
