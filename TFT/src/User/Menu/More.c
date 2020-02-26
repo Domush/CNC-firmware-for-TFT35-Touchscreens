@@ -11,7 +11,7 @@ void menuIsPause(void) {
     switch (key_num) {
       case KEY_POPUP_CONFIRM:
         if (setPrintPause(true, false))
-          infoMenu.menu[infoMenu.cur] = menuExtrude;
+          infoMenu.menu[infoMenu.cur] = menuMove;
         break;
 
       case KEY_POPUP_CANCEL:
@@ -29,8 +29,8 @@ MENUITEMS moreItems = {
     {
         {ICON_ROUTER, LABEL_ROUTER},
         {ICON_RGB_SETTINGS, LABEL_RGB_SETTINGS},
-        {ICON_EXTRUDE, LABEL_EXTRUDE},
         {ICON_FEATURE_SETTINGS, LABEL_FEATURE_SETTINGS},
+        {ICON_BACKGROUND, LABEL_BACKGROUND},
         {ICON_BACKGROUND, LABEL_BACKGROUND},
         {ICON_BACKGROUND, LABEL_BACKGROUND},
         {ICON_BACKGROUND, LABEL_BACKGROUND},
@@ -53,13 +53,6 @@ void menuMore(void) {
         break;
 
       case KEY_ICON_2:
-        if (isPrinting() && !isPause())  // need paused before extrude
-          infoMenu.menu[++infoMenu.cur] = menuIsPause;
-        else
-          infoMenu.menu[++infoMenu.cur] = menuExtrude;
-        break;
-
-      case KEY_ICON_3:
         infoMenu.menu[++infoMenu.cur] = menuFeatureSettings;
         break;
 

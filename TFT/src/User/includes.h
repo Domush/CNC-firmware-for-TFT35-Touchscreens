@@ -58,8 +58,6 @@
 //menu
 #include "menu.h"
 #include "MainPage.h"
-#include "PreheatMenu.h"
-#include "Heat.h"
 #include "Move.h"
 #include "Home.h"
 #include "Print.h"
@@ -69,8 +67,7 @@
 #include "BabyStep.h"
 #include "ledcolor.h"
 
-#include "Extrude.h"
-#include "Fan.h"
+#include "Router.h"
 #include "Settings.h"
 #include "ScreenSettings.h"
 #include "MachineSettings.h"
@@ -84,8 +81,7 @@
 #include "Mode.h"
 
 // #include "UnifiedMove.h"
-// #include "UnifiedHeat.h"
-#include "StatusScreen.h"
+#include "Gantry.h"
 #include "list_item.h"
 
 #define MAX_MENU_DEPTH 10  // max sub menu depth

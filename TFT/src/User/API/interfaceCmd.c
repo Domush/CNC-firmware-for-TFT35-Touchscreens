@@ -124,12 +124,11 @@ bool moveCacheToCmd(void) {
 void clearCmdQueue(void) {
   infoCmd.count = infoCmd.index_w = infoCmd.index_r = 0;
   infoCacheCmd.count = infoCacheCmd.index_w = infoCacheCmd.index_r = 0;
-  heatSetUpdateWaiting(false);
 }
 
 // Parse and send gcode cmd in infoCmd.
 void sendQueueCmd(void) {
-  if (infoHost.wait == true) return;
+  //if (infoHost.wait == true) return;
   if (infoCmd.count == 0) return;
 
   bool avoid_terminal = false;
@@ -141,9 +140,9 @@ void sendQueueCmd(void) {
       switch (cmd) {
         case 0:  // M0/1 Stop and wait for user.
         case 1:
-          if (isPrinting()) {
-            setPrintPause(true, true);
-          }
+          // if (isPrinting()) {
+          setPrintPause(true, true);
+          // }
           break;
 
         case 3:  //M3 Set the spindle CW speed or laser power
@@ -211,7 +210,7 @@ void sendQueueCmd(void) {
           popupReminder((u8 *)"M117", (u8 *)&infoCmd.queue[infoCmd.index_r].gcode[5]);
           break;
 
-        case 220:  //M220 Set the global feedrate percentage.
+        case 220:  //M220 Set the global gantryspeed percentage.
           if (cmd_seen('S')) {
             speedSetPercent(0, cmd_value());
           } else {
@@ -237,7 +236,7 @@ void sendQueueCmd(void) {
             }
           }
           if (cmd_seen('F')) {
-            coordinateSetFeedRate(cmd_value());
+            coordinateSetGantrySpeed(cmd_value());
           }
           break;
         }
@@ -277,7 +276,6 @@ void sendQueueCmd(void) {
 
     case 'T':
       cmd = strtol(&infoCmd.queue[infoCmd.index_r].gcode[1], NULL, 10);
-      heatSetCurrentToolSpindle((TOOL)(cmd + SPINDLE0));
       break;
   }
 
@@ -294,4 +292,46 @@ void sendQueueCmd(void) {
   infoHost.wait = infoHost.connected;  //
 
   powerFailedEnable(true);
+}
+
+void menuM0Pause(const char *m0_title, const char *m0_message) {
+  u16 key_num = IDLE_TOUCH;
+
+  popupDrawPage(bottomDoubleBtn, textSelect(LABEL_WARNING), textSelect(LABEL_IS_PAUSE), textSelect(LABEL_CONFIRM), textSelect(LABEL_CANCEL));
+
+  while (infoMenu.menu[infoMenu.cur] == menuM0Pause) {
+    key_num = KEY_GetValue(2, doubleBtnRect);
+    switch (key_num) {
+      case KEY_POPUP_CONFIRM:
+        if (setPrintPause(true, false))
+          infoMenu.menu[infoMenu.cur] = menuMove;
+        break;
+
+      case KEY_POPUP_CANCEL:
+        infoMenu.cur--;
+        break;
+    }
+    loopProcess();
+  }
+}
+
+void menuChangeBit() {
+  u16 key_num = IDLE_TOUCH;
+
+  popupDrawPage(bottomDoubleBtn, textSelect(LABEL_WARNING), textSelect(LABEL_IS_PAUSE), textSelect(LABEL_CONFIRM), textSelect(LABEL_CANCEL));
+
+  while (infoMenu.menu[infoMenu.cur] == menuChangeBit) {
+    key_num = KEY_GetValue(2, doubleBtnRect);
+    switch (key_num) {
+      case KEY_POPUP_CONFIRM:
+        if (setPrintPause(true, false))
+          infoMenu.menu[infoMenu.cur] = menuMove;
+        break;
+
+      case KEY_POPUP_CANCEL:
+        infoMenu.cur--;
+        break;
+    }
+    loopProcess();
+  }
 }

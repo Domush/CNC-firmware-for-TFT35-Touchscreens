@@ -1,5 +1,5 @@
 #include "Printing.h"
-#include "Fan.h"
+#include "Router.h"
 #include "includes.h"
 
 //1title, ITEM_PER_PAGE item(icon + label)
@@ -149,7 +149,6 @@ void menuBeforePrinting(void) {
 #endif
 
       infoHost.printing = true;  // Global lock info on printer is busy in printing.
-
       break;
 
     case TFT_UDISK:
@@ -188,7 +187,7 @@ void setM0Pause(bool m0_pause) {
 bool setPrintPause(bool is_pause, bool is_m0pause) {
   static bool pauseLock = false;
   if (pauseLock) return false;
-  if (!isPrinting()) return false;
+  //if (!isPrinting()) return false;
   if (infoPrinting.pause == is_pause) return false;
 
   pauseLock = true;
@@ -215,13 +214,23 @@ bool setPrintPause(bool is_pause, bool is_m0pause) {
       }
 
       bool isCoorRelative = coorGetRelative();
-      // bool isExtrudeRelative = eGetRelative();
       static COORDINATE tmp;
 
       if (infoPrinting.pause) {
-        //restore status before pause
-        //if pause was triggered through M0/M1 then break
+        // *Restore status before pause
+        // *if pause was triggered through M0/M1 then break
         if (is_m0pause == true) {
+          u8 curRouterSpeed = routerGetSpeed(routerGetCurIndex(0));
+          if (curRouterSpeed > 0) {
+            routerControl(0);
+          }
+          mustStoreCmd("G53 G0 X20 Y200 Z100 F%d\n", SPEED_MOVE_FAST);
+          mustStoreCmd("M0 Replace the bit and press Confirm when finished\n");
+          storeCmd("G0 X0 Y0\n");
+          if (curRouterSpeed > 0) {
+            routerControl(curRouterSpeed);
+          }
+
           setM0Pause(is_m0pause);
           popupReminder(textSelect(LABEL_PAUSE), textSelect(LABEL_M0_PAUSE));
           break;
@@ -229,19 +238,14 @@ bool setPrintPause(bool is_pause, bool is_m0pause) {
 
         coordinateGetAll(&tmp);
         if (isCoorRelative == true) mustStoreCmd("G90\n");
-        // if (isExtrudeRelative == true)  mustStoreCmd("M82\n");
-
-        // if (heatGetCurrentTemp(heatGetCurrentToolSpindle()) > PREVENT_COLD_EXTRUSION_MINTEMP)
-        //   mustStoreCmd("G1 E%.5f F%d\n", tmp.axis[E_AXIS] - SPINDLE_PAUSE_RETRACT_LENGTH, SPINDLE_PAUSE_E_FEEDRATE);
         if (coordinateIsClear()) {
-          mustStoreCmd("G1 Z%.3f F%d\n", tmp.axis[Z_AXIS] + SPINDLE_PAUSE_Z_RAISE, SPINDLE_PAUSE_Z_FEEDRATE);
-          mustStoreCmd("G1 X%d Y%d F%d\n", SPINDLE_PAUSE_X_POSITION, SPINDLE_PAUSE_Y_POSITION, SPINDLE_PAUSE_XY_FEEDRATE);
+          mustStoreCmd("G1 Z%.3f F%d\n", tmp.axis[Z_AXIS] + SPINDLE_PAUSE_Z_RAISE, SPINDLE_PAUSE_Z_GANTRYSPEED);
+          mustStoreCmd("G1 X%d Y%d F%d\n", SPINDLE_PAUSE_X_POSITION, SPINDLE_PAUSE_Y_POSITION, SPINDLE_PAUSE_XY_GANTRYSPEED);
         }
         infoPrinting.routerSpeed = routerGetSpeed(curIndex);
         routerControl(infoPrinting.routerSpeed);
 
         if (isCoorRelative == true) mustStoreCmd("G91\n");
-        // if (isExtrudeRelative == true)  mustStoreCmd("M83\n");
       } else {
         if (isM0_Pause() == true) {
           setM0Pause(is_m0pause);
@@ -249,20 +253,15 @@ bool setPrintPause(bool is_pause, bool is_m0pause) {
           break;
         }
         if (isCoorRelative == true) mustStoreCmd("G90\n");
-        // if (isExtrudeRelative == true)  mustStoreCmd("M82\n");
 
         if (coordinateIsClear()) {
-          mustStoreCmd("G1 X%.3f Y%.3f F%d\n", tmp.axis[X_AXIS], tmp.axis[Y_AXIS], SPINDLE_PAUSE_XY_FEEDRATE);
-          mustStoreCmd("G1 Z%.3f F%d\n", tmp.axis[Z_AXIS], SPINDLE_PAUSE_Z_FEEDRATE);
+          mustStoreCmd("G1 X%.3f Y%.3f F%d\n", tmp.axis[X_AXIS], tmp.axis[Y_AXIS], SPINDLE_PAUSE_XY_GANTRYSPEED);
+          mustStoreCmd("G1 Z%.3f F%d\n", tmp.axis[Z_AXIS], SPINDLE_PAUSE_Z_GANTRYSPEED);
         }
         routerControl(infoPrinting.routerSpeed);
-        // if(heatGetCurrentTemp(heatGetCurrentToolSpindle()) > PREVENT_COLD_EXTRUSION_MINTEMP)
-        //   mustStoreCmd("G1 E%.5f F%d\n", tmp.axis[E_AXIS] - SPINDLE_PAUSE_RETRACT_LENGTH + SPINDLE_RESUME_PURGE_LENGTH, SPINDLE_PAUSE_E_FEEDRATE);
-        // mustStoreCmd("G92 E%.5f\n", tmp.axis[E_AXIS]);
-        mustStoreCmd("G1 F%d\n", tmp.feedrate);
+        mustStoreCmd("G1 F%d\n", tmp.gantryspeed);
 
         if (isCoorRelative == true) mustStoreCmd("G91\n");
-        // if (isExtrudeRelative == true)  mustStoreCmd("M83\n");
       }
       break;
   }
@@ -274,32 +273,22 @@ bool setPrintPause(bool is_pause, bool is_m0pause) {
 const GUI_RECT progressRect = {1 * SPACE_X_PER_ICON, 0 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y + ICON_HEIGHT / 4,
                                3 * SPACE_X_PER_ICON, 0 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y + ICON_HEIGHT * 3 / 4};
 
-#define BED_X (progressRect.x1 - 10 * BYTE_WIDTH)
-#define TEMP_Y (progressRect.y1 + 3)
-#define TIME_Y (TEMP_Y + 1 * BYTE_HEIGHT + 3)
-void reValueSpindle(void) {
-  // GUI_DispString(BED_X, TEMP_Y - 2 * BYTE_HEIGHT, (u8* )heatDisplayID[heatGetCurrentToolSpindle()]);
-  // GUI_DispDec(BED_X + 3 * BYTE_WIDTH, TEMP_Y - 2 * BYTE_HEIGHT , heatGetCurrentTemp(heatGetCurrentToolSpindle()), 3, RIGHT);
-  // GUI_DispDec(BED_X + 7 * BYTE_WIDTH, TEMP_Y - 2 * BYTE_HEIGHT, heatGetTargetTemp(heatGetCurrentToolSpindle()),  3, LEFT);
-}
+#define PRINT_STATUS_ROUTER_X (progressRect.x1 - 10 * BYTE_WIDTH)
+#define PRINT_STATUS_SPEED_Y (progressRect.y1 + 3)
+#define PRINT_STATUS_TIME_Y (PRINT_STATUS_SPEED_Y + 1 * BYTE_HEIGHT + 3)
 
-void reValueBed(void) {
-  // GUI_DispDec(BED_X + 3 * BYTE_WIDTH, TEMP_Y - BYTE_HEIGHT, heatGetCurrentTemp(BED), 3, RIGHT);
-  // GUI_DispDec(BED_X + 7 * BYTE_WIDTH, TEMP_Y - BYTE_HEIGHT, heatGetTargetTemp(BED),  3, LEFT);
-}
-
-void reDrawTime(void) {
+void showPrintTime(void) {
   u8 hour = infoPrinting.time / 3600,
      min = infoPrinting.time % 3600 / 60,
      sec = infoPrinting.time % 60;
   GUI_SetNumMode(GUI_NUMMODE_ZERO);
-  GUI_DispDec(progressRect.x0 + 2 * BYTE_WIDTH, TIME_Y, hour, 2, RIGHT);
-  GUI_DispDec(progressRect.x0 + 5 * BYTE_WIDTH, TIME_Y, min, 2, RIGHT);
-  GUI_DispDec(progressRect.x0 + 8 * BYTE_WIDTH, TIME_Y, sec, 2, RIGHT);
+  GUI_DispDec(progressRect.x0 + 2 * BYTE_WIDTH, PRINT_STATUS_TIME_Y, hour, 2, RIGHT);
+  GUI_DispDec(progressRect.x0 + 5 * BYTE_WIDTH, PRINT_STATUS_TIME_Y, min, 2, RIGHT);
+  GUI_DispDec(progressRect.x0 + 8 * BYTE_WIDTH, PRINT_STATUS_TIME_Y, sec, 2, RIGHT);
   GUI_SetNumMode(GUI_NUMMODE_SPACE);
 }
 
-void reDrawRouter(void) {
+void showRouterSpeed(void) {
   //ROUTER - now only F0
   u8 fs;
 #ifdef SHOW_ROUTER_PERCENTAGE
@@ -309,16 +298,16 @@ void reDrawRouter(void) {
 #endif
 #ifdef SHOW_ROUTER_PERCENTAGE
   char router_s[15];
-  sprintf(router_s, "Bit Spd:\r\n%d%%", fs);
-  GUI_DispString(BED_X + 3 * BYTE_WIDTH, TEMP_Y, (u8*)router_s);
+  sprintf(router_s, "Bit:%d%%", fs);
+  GUI_DispString(PRINT_STATUS_ROUTER_X + 3 * BYTE_WIDTH, PRINT_STATUS_SPEED_Y, (u8*)router_s);
 #else
-  GUI_DispDec(BED_X + BYTE_WIDTH, TEMP_Y, fs, 3, LEFT);
+  GUI_DispDec(PRINT_STATUS_ROUTER_X + BYTE_WIDTH, PRINT_STATUS_SPEED_Y, fs, 3, LEFT);
 #endif
 }
 
-void reDrawProgress(u8 progress) {
+void showPrintProgress(u8 progress) {
   char buf[5];
-  const GUI_RECT percentageRect = {BED_X, TEMP_Y - 3 * BYTE_HEIGHT, BED_X + 10 * BYTE_WIDTH, TEMP_Y - 2 * BYTE_HEIGHT};
+  const GUI_RECT percentageRect = {PRINT_STATUS_ROUTER_X, PRINT_STATUS_SPEED_Y - 3 * BYTE_HEIGHT, PRINT_STATUS_ROUTER_X + 10 * BYTE_WIDTH, PRINT_STATUS_SPEED_Y - 2 * BYTE_HEIGHT};
   u16 progressX = map(progress, 0, 100, percentageRect.x0, percentageRect.x1);
   GUI_FillRectColor(percentageRect.x0, percentageRect.y0, progressX, percentageRect.y1, BLUE);
   GUI_FillRectColor(progressX, percentageRect.y0, percentageRect.x1, percentageRect.y1, GRAY);
@@ -334,25 +323,17 @@ extern GUI_RECT titleRect;
 void printingDrawPage(void) {
   // int16_t i;
   //	Scroll_CreatePara(&titleScroll, infoFile.title,&titleRect);  //
-  // printed time
-  GUI_DispString(progressRect.x0, TIME_Y, (u8*)"T:");
-  GUI_DispString(progressRect.x0 + 4 * BYTE_WIDTH, TIME_Y, (u8*)":");
-  GUI_DispString(progressRect.x0 + 7 * BYTE_WIDTH, TIME_Y, (u8*)":");
-  // spindle temperature
-  // GUI_DispString(BED_X + 2 * BYTE_WIDTH, TEMP_Y - 2 * BYTE_HEIGHT , (u8* )":");
-  // GUI_DispString(BED_X + 6 * BYTE_WIDTH, TEMP_Y - 2 * BYTE_HEIGHT, (u8* )"/");
-  // hotbed temperature
-  // GUI_DispString(BED_X + BYTE_WIDTH, TEMP_Y - BYTE_HEIGHT, (u8* )"B:");
-  // GUI_DispString(BED_X + 6 * BYTE_WIDTH, TEMP_Y - BYTE_HEIGHT, (u8* )"/");
-  // router speed
-  GUI_DispString(BED_X + BYTE_WIDTH, TEMP_Y, (u8*)"F:");
-  reDrawProgress(infoPrinting.progress);
-  // reValueSpindle();
-  // reValueBed();
-  reDrawRouter();
-  reDrawTime();
+  // *Display print timer framework
+  GUI_DispString(progressRect.x0, PRINT_STATUS_TIME_Y, (u8*)"T:");
+  GUI_DispString(progressRect.x0 + 4 * BYTE_WIDTH, PRINT_STATUS_TIME_Y, (u8*)":");
+  GUI_DispString(progressRect.x0 + 7 * BYTE_WIDTH, PRINT_STATUS_TIME_Y, (u8*)":");
+  // *Display router speed
+  // GUI_DispString(PRINT_STATUS_ROUTER_X + BYTE_WIDTH, PRINT_STATUS_SPEED_Y, (u8*)"Rtr:");
+  showPrintProgress(infoPrinting.progress);
+  showRouterSpeed();
+  showPrintTime();
   // z_axis coordinate
-  GUI_DispString(BED_X + BYTE_WIDTH, TIME_Y, (u8*)"Z:");
+  // GUI_DispString(PRINT_STATUS_ROUTER_X + BYTE_WIDTH, PRINT_STATUS_TIME_Y, (u8*)"Z:");
 
   if (get_Pre_Icon() == true) {
     //printingItems.items[key_pause - 1] = itemBlank;
@@ -372,8 +353,6 @@ void printingDrawPage(void) {
 void menuPrinting(void) {
   KEY_VALUES key_num = KEY_IDLE;
   u32 time = 0;
-  HEATER nowHeat;
-  memset(&nowHeat, 0, sizeof(HEATER));
 
   printingItems.items[KEY_ICON_0] = itemIsPause[infoPrinting.pause];
   if (isPrinting())
@@ -390,35 +369,20 @@ void menuPrinting(void) {
     if (infoPrinting.size != 0) {
       if (infoPrinting.progress != limitValue(0, (uint64_t)infoPrinting.cur * 100 / infoPrinting.size, 100)) {
         infoPrinting.progress = limitValue(0, (uint64_t)infoPrinting.cur * 100 / infoPrinting.size, 100);
-        reDrawProgress(infoPrinting.progress);
+        showPrintProgress(infoPrinting.progress);
       }
     } else {
       if (infoPrinting.progress != 100) {
         infoPrinting.progress = 100;
-        reDrawProgress(infoPrinting.progress);
+        showPrintProgress(infoPrinting.progress);
       }
     }
 
-    // if (nowHeat.T[heatGetCurrentToolSpindle()].current != heatGetCurrentTemp(heatGetCurrentToolSpindle()) || nowHeat.T[heatGetCurrentToolSpindle()].target != heatGetTargetTemp(heatGetCurrentToolSpindle())) {
-    //   nowHeat.T[heatGetCurrentToolSpindle()].current = heatGetCurrentTemp(heatGetCurrentToolSpindle());
-    //   nowHeat.T[heatGetCurrentToolSpindle()].target = heatGetTargetTemp(heatGetCurrentToolSpindle());
-    //   reValueSpindle();
-    // }
-    // if (nowHeat.T[BED].current != heatGetCurrentTemp(BED) || nowHeat.T[BED].target != heatGetTargetTemp(BED)) {
-    //   nowHeat.T[BED].current = heatGetCurrentTemp(BED);
-    //   nowHeat.T[BED].target = heatGetTargetTemp(BED);
-    //   reValueBed();
-    // }
-
     if (time != infoPrinting.time) {
       time = infoPrinting.time;
-      reDrawTime();  // job timer
+      showPrintTime();  // job timer
     }
-    //Z_AXIS coordinate
-    static COORDINATE tmp;
-    coordinateGetAll(&tmp);
-    GUI_DispFloat(BED_X + 3 * BYTE_WIDTH, TIME_Y, tmp.axis[Z_AXIS], 3, 3, LEFT);  // z-axis location
-    reDrawRouter();                                                               // router speed
+    showRouterSpeed();  // router speed
 
     key_num = menuKeyGetValue();
     switch (key_num) {
@@ -505,8 +469,6 @@ void abortPrinting(void) {
       break;
   }
 
-  heatClearIsWaiting();
-
   mustStoreCmd("G0 Z%d F3000\n", limitValue(0, (int)coordinateGetAxisTarget(Z_AXIS) + 10, Z_MAX_POS));
   if (strlen(CANCEL_CNC_GCODE) > 0)
     mustStoreCmd(CANCEL_CNC_GCODE);
@@ -557,20 +519,13 @@ void menuShutDown(void) {
         infoMenu.cur--;
         break;
     }
-    tempIsLower = true;
-    for (TOOL i = SPINDLE0; i < HEATER_NUM; i++) {
-      if (heatGetCurrentTemp(SPINDLE0) >= AUTO_SHUT_DOWN_MAXTEMP)
-        tempIsLower = false;
+  shutdown:
+    for (u8 i = 0; i < ROUTER_NUM; i++) {
+      mustStoreCmd("%s S0\n", routerCmd[i]);
     }
-    if (tempIsLower) {
-    shutdown:
-      for (u8 i = 0; i < ROUTER_NUM; i++) {
-        mustStoreCmd("%s S0\n", routerCmd[i]);
-      }
-      mustStoreCmd("M81\n");
-      infoMenu.cur--;
-      popupReminder(textSelect(LABEL_SHUT_DOWN), textSelect(LABEL_SHUTTING_DOWN));
-    }
+    mustStoreCmd("M81\n");
+    infoMenu.cur--;
+    popupReminder(textSelect(LABEL_SHUT_DOWN), textSelect(LABEL_SHUTTING_DOWN));
     loopProcess();
   }
 }
@@ -587,7 +542,7 @@ void getGcodeFromFile(void) {
 
   powerFailedCache(infoPrinting.file.fptr);
 
-  if (heatHasWaiting() || infoCmd.count || infoPrinting.pause) return;
+  if (infoCmd.count || infoPrinting.pause) return;
 
   if (moveCacheToCmd() == true) return;
 

@@ -15,7 +15,7 @@ typedef enum {
 typedef struct
 {
   float axis[TOTAL_AXIS];
-  u32 feedrate;
+  u32 gantryspeed;
 } COORDINATE;
 
 extern const char axis_id[TOTAL_AXIS];
@@ -28,8 +28,8 @@ bool coordinateIsClear(void);
 void coordinateSetClear(bool clear);
 float coordinateGetAxisTarget(AXIS axis);
 void coordinateSetAxisTarget(AXIS axis, float position);
-u32 coordinateGetFeedRate(void);
-void coordinateSetFeedRate(u32 feedrate);
+u32 coordinateGetGantrySpeed(void);
+void coordinateSetGantrySpeed(u32 gantryspeed);
 void coordinateGetAll(COORDINATE *tmp);
 float coordinateGetAxisActual(AXIS axis);
 void coordinateSetAxisActualSteps(AXIS axis, int steps);

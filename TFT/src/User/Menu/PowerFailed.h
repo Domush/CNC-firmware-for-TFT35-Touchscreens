@@ -2,7 +2,6 @@
 #define _POWERFAILED_H_
 
 #include "variants.h"
-#include "Heat.h"
 #include "coordinate.h"
 #include "ff.h"
 #include "Configuration.h"
@@ -12,14 +11,11 @@
 typedef struct
 {
   float axis[TOTAL_AXIS];
-  u32 feedrate;
-  u16 speed, flow;
-  u16 target[HEATER_NUM],
-      router[ROUTER_NUM];
-  TOOL spindle;
+  u32 gantryspeed;
+  u16 speed;
+  router[ROUTER_NUM];
   u32 offset;
-  bool relative,
-      relative_e;
+  bool relative;
 } BREAK_POINT;
 
 void menuPowerOff(void);

@@ -5,50 +5,7 @@
 // exhibitRect is 2 ICON Space in the Upper Row and 2 Center Coloum.
 const GUI_RECT exhibitRect = {
     1 * ICON_WIDTH + 1 * SPACE_X + START_X, 0 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y, 3 * ICON_WIDTH + 2 * SPACE_X + START_X, 1 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y};
-/**
- * *First row icons
- * {
- * {x0 = 12, y0 = 50, x1 = 107, y1 = 145},
- * {x0 = 132, y0 = 50, x1 = 227, y1 = 145},
- * {x0 = 252, y0 = 50, x1 = 347, y1 = 145},
- * {x0 = 372, y0 = 50, x1 = 467, y1 = 145},
- *  *second row icons
- * {x0 = 12, y0 = 175, x1 = 107, y1 = 280},
- * {x0 = 132, y0 = 175, x1 = 227, y1 = 280},
- * {x0 = 252, y0 = 175, x1 = 347, y1 = 280},
- * {x0 = 372, y0 = 175, x1 = 467, y1 = 280},
- *  *first row labels
- * {x0 = 0, y0 = 135, x1 = 120, y1 = 185},
- * {x0 = 120, y0 = 135, x1 = 240, y1 = 185},
- * {x0 = 240, y0 = 135, x1 = 360, y1 = 185},
- * {x0 = 360, y0 = 135, x1 = 480, y1 = 185},
- *  *second row labels
- * {x0 = 0, y0 = 257, x1 = 120, y1 = 280},
- * {x0 = 120, y0 = 255, x1 = 240, y1 = 320},
- * {x0 = 240, y0 = 255, x1 = 360, y1 = 320},
- * {x0 = 360, y0 = 255, x1 = 480, y1 = 320}}
- */
 const GUI_RECT rect_of_key[ITEM_PER_PAGE * 2] = {
-    //8 icons area
-    // {0 * ICON_WIDTH + 0 * SPACE_X + START_X, 0 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y, 1 * ICON_WIDTH + 0 * SPACE_X + START_X, 1 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y},
-    // {1 * ICON_WIDTH + 1 * SPACE_X + START_X, 0 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y, 2 * ICON_WIDTH + 1 * SPACE_X + START_X, 1 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y},
-    // {2 * ICON_WIDTH + 2 * SPACE_X + START_X, 0 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y, 3 * ICON_WIDTH + 2 * SPACE_X + START_X, 1 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y},
-    // {3 * ICON_WIDTH + 3 * SPACE_X + START_X, 0 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y, 4 * ICON_WIDTH + 3 * SPACE_X + START_X, 1 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y},
-    // {0 * ICON_WIDTH + 0 * SPACE_X + START_X, 1 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y, 1 * ICON_WIDTH + 0 * SPACE_X + START_X, 2 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y},
-    // {1 * ICON_WIDTH + 1 * SPACE_X + START_X, 1 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y, 2 * ICON_WIDTH + 1 * SPACE_X + START_X, 2 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y},
-    // {2 * ICON_WIDTH + 2 * SPACE_X + START_X, 1 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y, 3 * ICON_WIDTH + 2 * SPACE_X + START_X, 2 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y},
-    // {3 * ICON_WIDTH + 3 * SPACE_X + START_X, 1 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y, 4 * ICON_WIDTH + 3 * SPACE_X + START_X, 2 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y},
-
-    //8 labels area
-    // {0 * SPACE_X_PER_ICON, 1 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y, 1 * SPACE_X_PER_ICON, 1 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y},
-    // {1 * SPACE_X_PER_ICON, 1 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y, 2 * SPACE_X_PER_ICON, 1 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y},
-    // {2 * SPACE_X_PER_ICON, 1 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y, 3 * SPACE_X_PER_ICON, 1 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y},
-    // {3 * SPACE_X_PER_ICON, 1 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y, 4 * SPACE_X_PER_ICON, 1 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y},
-    // {0 * SPACE_X_PER_ICON, 2 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y, 1 * SPACE_X_PER_ICON, 2 * ICON_HEIGHT + 2 * SPACE_Y + ICON_START_Y},
-    // {1 * SPACE_X_PER_ICON, 2 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y, 2 * SPACE_X_PER_ICON, 2 * ICON_HEIGHT + 2 * SPACE_Y + ICON_START_Y},
-    // {2 * SPACE_X_PER_ICON, 2 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y, 3 * SPACE_X_PER_ICON, 2 * ICON_HEIGHT + 2 * SPACE_Y + ICON_START_Y},
-    // {3 * SPACE_X_PER_ICON, 2 * ICON_HEIGHT + 1 * SPACE_Y + ICON_START_Y, 4 * SPACE_X_PER_ICON, 2 * ICON_HEIGHT + 2 * SPACE_Y + ICON_START_Y},
-
     // 8 icons area
     {0 * ICON_WIDTH + 0 * SPACE_X + START_X, 0 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y, 1 * ICON_WIDTH + 0 * SPACE_X + START_X, 1 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y},
     {1 * ICON_WIDTH + 1 * SPACE_X + START_X, 0 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y, 2 * ICON_WIDTH + 1 * SPACE_X + START_X, 1 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y},
@@ -71,7 +28,7 @@ const GUI_RECT rect_of_key[ITEM_PER_PAGE * 2] = {
 };
 
 const GUI_RECT rect_of_keyListView[ITEM_PER_PAGE] = {
-    //8 icons area
+    //6 icons area
     {START_X, 0 * LISTITEM_HEIGHT + ICON_START_Y, LISTITEM_WIDTH + START_X, 1 * LISTITEM_HEIGHT + ICON_START_Y},
     {START_X, 1 * LISTITEM_HEIGHT + ICON_START_Y, LISTITEM_WIDTH + START_X, 2 * LISTITEM_HEIGHT + ICON_START_Y},
     {START_X, 2 * LISTITEM_HEIGHT + ICON_START_Y, LISTITEM_WIDTH + START_X, 3 * LISTITEM_HEIGHT + ICON_START_Y},
@@ -281,7 +238,7 @@ void menuDrawPage(const MENUITEMS *menuItems) {
   TSC_ReDrawIcon = itemDrawIconPress;
 
   GUI_Clear(BLACK);
-  menuClearGaps();  //Use this function instead of GUI_Clear to eliminate the splash screen when clearing the screen.
+  // menuClearGaps();  //Use this function instead of GUI_Clear to eliminate the splash screen when clearing the screen.
   menuDrawTitle(labelGetAddress(&menuItems->title));
   for (i = 0; i < ITEM_PER_PAGE; i++) {
     menuDrawItem(&menuItems->items[i], i);
@@ -300,7 +257,7 @@ void menuDrawListPage(const LISTITEMS *listItems) {
   GUI_SetBkColor(BACKGROUND_COLOR);
   GUI_ClearRect(0, TITLE_END_Y, LCD_WIDTH, LCD_HEIGHT);
 
-  //menuClearGaps(); //Use this function instead of GUI_Clear to eliminate the splash screen when clearing the screen.
+  // menuClearGaps();  //Use this function instead of GUI_Clear to eliminate the splash screen when clearing the screen.
   menuDrawTitle(labelGetAddress(&listItems->title));
 
   for (i = 0; i < ITEM_PER_PAGE; i++) {
@@ -367,23 +324,21 @@ void loopBackEnd(void) {
 
   parseRcvGcode();  //Parse the received Gcode from other UART, such as: ESP3D, etc...
 
-  // loopCheckHeater();  //Temperature related settings
-
 #if defined ONBOARD_SD_SUPPORT && !defined M27_AUTOREPORT
   loopCheckPrinting();  //Check if there is a SD or USB print running.
 #endif
 
-#ifdef U_DISK_SUPPROT
-  USBH_Process(&USB_OTG_Core, &USB_Host);
-#endif
+  // #ifdef U_DISK_SUPPROT
+  //   USBH_Process(&USB_OTG_Core, &USB_Host);
+  // #endif
 
-#if LCD_ENCODER_SUPPORT
-  loopCheckMode();
-#endif
+  // #if LCD_ENCODER_SUPPORT
+  //   loopCheckMode();
+  // #endif
 
-#ifdef FIL_RUNOUT_PIN
-  loopFILRunoutDetect();
-#endif
+  // #ifdef FIL_RUNOUT_PIN
+  //   loopFILRunoutDetect();
+  // #endif
 }
 
 void loopFrontEnd(void) {

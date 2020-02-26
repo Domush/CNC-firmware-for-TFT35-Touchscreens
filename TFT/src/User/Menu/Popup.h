@@ -23,14 +23,17 @@
 #elif LCD_WIDTH == 480 && LCD_HEIGHT == 320
 // #define POPUP_RECT_WINDOW         {80, 50, 400, 270} // Original config
 #define POPUP_RECT_WINDOW \
-  { 40, 30, 440, 270 }
+  { 40, BYTE_HEIGHT * 4, 440, LCD_HEIGHT - BYTE_HEIGHT }
 
 #define POPUP_RECT_SINGLE_CONFIRM \
-  { 180, 210, 300, 260 }
+  { 40, BYTE_HEIGHT * 4, 440, LCD_HEIGHT - BYTE_HEIGHT }
+// { 180, 210, 300, 260 }
 #define POPUP_RECT_DOUBLE_CONFIRM \
-  { 90, 210, 210, 260 }
+  { 40, BYTE_HEIGHT * 4, 440, LCD_HEIGHT - BYTE_HEIGHT }
+// { 90, 210, 210, 260 }
 #define POPUP_RECT_DOUBLE_CANCEL \
-  { 270, 210, 390, 260 }
+  { 40, BYTE_HEIGHT * 4, 440, LCD_HEIGHT - BYTE_HEIGHT }
+// { 270, 210, 390, 260 }
 
 #define POPUP_TITLE_HEIGHT 40
 #define POPUP_TEXT_HEIGHT 110
@@ -49,7 +52,7 @@ extern WINDOW window;
 
 void windowSetButton(const BUTTON *btn);
 void windowReDrawButton(uint8_t positon, uint8_t is_press);
-void popupDrawPage(BUTTON *btn, const uint8_t *title, const uint8_t *context, const uint8_t *yes, const uint8_t *no);
+void popupDrawPage(BUTTON *btn, const uint8_t *title, const uint8_t *context, const uint8_t *choice1, const uint8_t *choice2);
 void popupReminder(u8 *info, u8 *context);
 
 #endif

@@ -60,40 +60,17 @@ static u32 update_time = 200;
 // Use an encoder disc to toggles the runout
 // Suitable for BigTreeTech Smart filament detecter
 bool FIL_SmartRunoutDetect(void) {
-  static float lastExtrudePosition = 0.0f;
+  static float lastGantryPosition = 0.0f;
   static uint8_t lastRunoutPinLevel = 0;
   static uint8_t isAlive = false;
   static u32 nowTime = 0;
 
   bool pinLevel = FIL_RunoutPinFilteredLevel();
-  float actualExtrude = coordinateGetAxisActual(E_AXIS);
-
-  do { /* Send M114 E query extrude position continuously	*/
-    if (update_waiting == true) {
-      nowTime = OS_GetTime();
-      break;
-    }
-    if (OS_GetTime() < nowTime + update_time) break;
-    if (RequestCommandInfoIsRunning()) break;  //to avoid colision in Gcode response processing
-    if (storeCmd("M114 E\n") == false) break;
-
-    nowTime = OS_GetTime();
-    update_waiting = true;
-  } while (0);
+  float actualGantry = coordinateGetAxisActual(E_AXIS);
 
   if (isAlive == false) {
     if (lastRunoutPinLevel != pinLevel) {
       isAlive = true;
-    }
-  }
-
-  if (ABS(actualExtrude - lastExtrudePosition) >= FILAMENT_RUNOUT_DISTANCE_MM) {
-    lastExtrudePosition = actualExtrude;
-    if (isAlive) {
-      isAlive = false;
-      lastRunoutPinLevel = pinLevel;
-    } else {
-      return true;
     }
   }
   return false;

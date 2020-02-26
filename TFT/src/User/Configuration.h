@@ -38,38 +38,18 @@
 #define REMINDER_FONT_COLOR RED           // Reminder font color, such as: "No print attached", "Busy process", etc...
 #define VOLUME_REMINDER_FONT_COLOR GBLUE  // Volume reminder font color,such as: "Card inserted", "Card removed"
 
-#define TOOL_NUM 1      // set in 1~6
-#define EXTRUDER_NUM 1  // set in 1~6
-#define ROUTER_NUM 1    // set in 1~6
-
-//                       PLA      PETG       ABS
-#define PREHEAT_BED {60, 70, 100};
-#define PREHEAT_HOTEND {200, 250, 230};
-#define PREHEAT_TEXT {"PLA", "PETG", "ABS"};
-
-#define HEAT_MAX_TEMP {150, 275};  //max temperature can be set
-#define HEAT_SIGN_ID {"B:", "T0:"};
-#define HEAT_DISPLAY_ID {"Bed", "T0"};
-#define HEAT_CMD {"M140", "M104 T0"};
-#define HEAT_WAIT_CMD {"M190", "M109 T0"};
-
-#define TOOL_CHANGE {"T0"};
-#define EXTRUDER_ID {"E0"};
+#define ROUTER_NUM 1  // set in 1~6
 
 #define ROUTER_MAX_PWM {255};
 #define ROUTER_ID {"Router Power"};
 #define ROUTER_CMD {"M106 P0"};
 
-#define SPEED_ID {"Sp.", "Fr."};
+#define SPEED_ID {"Speed", "Gantry Speed"};
 
 // Default move speed mm/min
 #define DEFAULT_SPEED_MOVE 3000
 #define SPEED_MOVE_SLOW 1000
 #define SPEED_MOVE_FAST 5000
-// Extrude speed mm/min
-#define EXTRUDE_SLOW_SPEED 60
-#define EXTRUDE_NORMAL_SPEED 600
-#define EXTRUDE_FAST_SPEED 1200
 
 // Size of machine
 #define X_MIN_POS 0
@@ -80,14 +60,11 @@
 #define Z_MAX_POS 200
 
 // Specify a pause position as { X, Y, Z_raise }
-#define SPINDLE_PAUSE_RETRACT_LENGTH 0             // (mm)
-#define SPINDLE_RESUME_PURGE_LENGTH 0              // (mm)
 #define SPINDLE_PAUSE_X_POSITION (X_MIN_POS + 10)  // (mm) Must be an integer
 #define SPINDLE_PAUSE_Y_POSITION (Y_MIN_POS + 10)  // (mm) Must be an integer
 #define SPINDLE_PAUSE_Z_RAISE 40                   // (mm)
-#define SPINDLE_PAUSE_E_FEEDRATE 3000              // (mm/min) retract & purge feedrate
-#define SPINDLE_PAUSE_XY_FEEDRATE 3000             // (mm/min) X and Y axes feedrate
-#define SPINDLE_PAUSE_Z_FEEDRATE 600               // (mm/min) Z axis feedrate
+#define SPINDLE_PAUSE_XY_GANTRYSPEED 3000          // (mm/min) X and Y axes gantryspeed
+#define SPINDLE_PAUSE_Z_GANTRYSPEED 600            // (mm/min) Z axis gantryspeed
 
 // Send G29 for auto bed leveling
 // #define AUTO_BED_LEVELING
@@ -106,10 +83,10 @@
 #define LEVELING_POINT_3_Y (Y_MAX_POS - 20)
 #define LEVELING_POINT_4_X (X_MIN_POS + 20)
 #define LEVELING_POINT_4_Y (Y_MAX_POS - 20)
-#define LEVELING_POINT_Z 0.2f            // Z-axis position when spindle stays for leveling
-#define LEVELING_POINT_MOVE_Z 10.0f      // Z-axis position when spindle move to next point
-#define LEVELING_POINT_XY_FEEDRATE 5000  // (mm/min) X and Y axes move feedrate
-#define LEVELING_POINT_Z_FEEDRATE 600    // (mm/min) Z axis move feedrate
+#define LEVELING_POINT_Z 0.2f               // Z-axis position when spindle stays for leveling
+#define LEVELING_POINT_MOVE_Z 10.0f         // Z-axis position when spindle move to next point
+#define LEVELING_POINT_XY_GANTRYSPEED 5000  // (mm/min) X and Y axes move gantryspeed
+#define LEVELING_POINT_Z_GANTRYSPEED 600    // (mm/min) Z axis move gantryspeed
 
 // Power Supply
 #define PS_ON_ACTIVE_HIGH true  // Set 'false' for ATX (1), 'true' for X-Box (2)
@@ -118,17 +95,9 @@
 #define FIL_RUNOUT_INVERTING true  // Set to false to invert the logic of the sensor.
 #define FIL_NOISE_THRESHOLD 10     // 10*10 = 100ms,  Pause print when filament runout is detected for 100ms.
 
-// Smart filament runout detection
-// For use with an encoder disc that toggles runout pin as filament moves
-#define FILAMENT_RUNOUT_DISTANCE_MM 7
-
 // Enable alternative Move Menu Buttons Layout matching the direction of actual printer axis.
 // update the icons from alternate icon folder
 #define ALTERNATIVE_MOVE_MENU
-
-// Enable Unified Move Menu
-// Move, Home, Extrude, ABL at one Place and bring Gcode Menu on Home Menu
-//#define UNIFIED_MENU
 
 //-------RESET SETTINGS & TOUCH SCREEN CALIBRATION------||
 // To reset the touch screen create a text file with name 'reset.txt' in root folder of the sd card and press reset button.
@@ -136,9 +105,9 @@
 // SD support
 #define ONBOARD_SD_SUPPORT
 #ifdef ONBOARD_SD_SUPPORT
-#define M27_AUTOREPORT                // Disable M27 polling if you enable enable AUTO_REPORT_SD_STATUS in Marlin
-#define M27_REFRESH 3                 // Time in sec for M27 command
-#define M27_WATCH_OTHER_SOURCES true  // if true the polling on M27 report is always active. Case: SD print started not from TFT35
+#define M27_AUTOREPORT                 // Disable M27 polling if you enable enable AUTO_REPORT_SD_STATUS in Marlin
+#define M27_REFRESH 3                  // Time in sec for M27 command
+#define M27_WATCH_OTHER_SOURCES false  // if true the polling on M27 report is always active. Case: SD print started not from TFT35
 #endif
 
 /**
@@ -150,18 +119,11 @@
 //#define BTT_MINI_UPS // Backup power / UPS to move the Z axis steppers on power loss
 #define POWER_LOSS_ZRAISE 10  // (mm) Z axis raise on resume (on power loss with UPS)
 
-// Prevent extrusion if the temperature is below set temperature
-#define PREVENT_COLD_EXTRUSION_MINTEMP 170
-
 /**
   * Maximum hotend temperature of automatic shut down after printing.
   * When enable automatic shutdown(Auto Power), when the hotend temperature is higher than this value
   * turn on the router to cool down, wait for the hotend temperature to be lower than this value, then turn off the power automatically
   */
-#define AUTO_SHUT_DOWN_MAXTEMP 50
-
-#define EXTRUDE_STEPS 100.0f
-
 #define SHOW_ROUTER_PERCENTAGE  // enable to show router speed as a percentage instead of a value
 
 /*
@@ -189,20 +151,20 @@
  * The format of the custom icon is as follows
  * Bit depth: 24 / 32 bit, Pixel size: 95*95(for TFT35), 70*70(for TFT28/TFT24)
  */
-#define CUSTOM_0_LABEL "Restore EEPROM"
+#define CUSTOM_0_LABEL "Load ROM"
 #define CUSTOM_0_GCODE "M501\n"
-#define CUSTOM_1_LABEL "Disable Steppers"
+#define CUSTOM_1_LABEL "Save ROM"
 #define CUSTOM_1_GCODE "M84\n"
-#define CUSTOM_2_LABEL "init SD Card"
+#define CUSTOM_2_LABEL "Load SD"
 #define CUSTOM_2_GCODE "M21\n"
-#define CUSTOM_3_LABEL "Release Sd Card"
+#define CUSTOM_3_LABEL "Eject SD"
 #define CUSTOM_3_GCODE "M22\n"
-//#define CUSTOM_4_LABEL "Custom4"
-//#define CUSTOM_4_GCODE "M105\n"
-//#define CUSTOM_5_LABEL "Custom5"
-//#define CUSTOM_5_GCODE "M105\n"
-//#define CUSTOM_6_LABEL "Custom6"
-//#define CUSTOM_6_GCODE "M105\n"
+#define CUSTOM_4_LABEL "Test M0"
+#define CUSTOM_4_GCODE "M0 Testing M0 command. Is it working?\n"
+#define CUSTOM_5_LABEL "Coord 54"
+#define CUSTOM_5_GCODE "G54\n"
+#define CUSTOM_6_LABEL "Coord 0"
+#define CUSTOM_6_GCODE "G53\n"
 
 /*
 custom gcode below are compatible only if CUSTOM_GCODE_LIST_MODE is active

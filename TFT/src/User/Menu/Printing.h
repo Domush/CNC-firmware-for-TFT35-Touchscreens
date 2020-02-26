@@ -8,13 +8,13 @@ typedef struct
 {
   FIL file;
 
-  u32 time;  // Printed time in sec
-  u32 size;  // Gcode file total size
-  u32 cur;   // Gcode has printed file size
-  u8 progress;
-  bool printing;   // 1 means printing, 0 means idle
-  bool pause;      //1 means paused
-  bool m0_pause;   //pause triggered through M0/M1 gcode
+  u32 time;        // Printed time in sec
+  u32 size;        // Gcode file total size
+  u32 cur;         // Current Gcode line
+  u8 progress;     // Print progress (0-100)
+  bool printing;   // true = printing, false = idle
+  bool pause;      // true = paused
+  bool m0_pause;   // true = M0/M1 gcode triggered pause
   u8 routerSpeed;  // Current router speed
 } PRINTING;
 
@@ -50,11 +50,9 @@ void menuStopPrinting(void);
 void menuShutDown(void);
 
 void printingDrawPage(void);
-void reDrawProgress(u8 progress);
-void reValueSpindle(void);
-void reValueBed(void);
-void reDrawTime(void);
-void reDrawRouter(void);
+void showPrintProgress(u8 progress);
+void showPrintTime(void);
+void showRouterSpeed(void);
 
 void loopCheckPrinting(void);
 

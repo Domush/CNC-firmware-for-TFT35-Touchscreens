@@ -57,20 +57,13 @@ void powerFailedCache(u32 offset) {
   for (AXIS i = X_AXIS; i < TOTAL_AXIS; i++) {
     infoBreakPoint.axis[i] = coordinateGetAxisTarget(i);
   }
-  infoBreakPoint.feedrate = coordinateGetFeedRate();
+  infoBreakPoint.gantryspeed = coordinateGetGantrySpeed();
   infoBreakPoint.speed = speedGetPercent(0);
-  infoBreakPoint.flow = speedGetPercent(1);
-
-  for (TOOL i = BED; i < HEATER_NUM; i++) {
-    infoBreakPoint.target[i] = heatGetTargetTemp(i);
-  }
-  infoBreakPoint.spindle = heatGetCurrentToolSpindle();
 
   for (u8 i = 0; i < ROUTER_NUM; i++) {
     infoBreakPoint.router[i] = routerGetSpeed(i);
   }
   infoBreakPoint.relative = coorGetRelative();
-  infoBreakPoint.relative_e = eGetRelative();
 
   f_lseek(&fpPowerFailed, MAX_PATH_LEN);
   f_write(&fpPowerFailed, &infoBreakPoint, sizeof(BREAK_POINT), &br);
@@ -115,18 +108,12 @@ bool powerOffGetData(void) {
   if (f_lseek(&fp, MAX_PATH_LEN) != FR_OK) return false;
   if (f_read(&fp, &infoBreakPoint, sizeof(infoBreakPoint), &br) != FR_OK) return false;
 
-  for (TOOL i = BED; i < HEATER_NUM; i++) {
-    if (infoBreakPoint.target[i] != 0)
-      mustStoreCacheCmd("%s S%d\n", heatWaitCmd[i], infoBreakPoint.target[i]);
-  }
-
   for (u8 i = 0; i < ROUTER_NUM; i++) {
     if (infoBreakPoint.router[i] != 0)
       mustStoreCacheCmd("%s S%d\n", routerCmd[i], infoBreakPoint.router[i]);
   }
 
-  mustStoreCacheCmd("%s\n", tool_change[infoBreakPoint.spindle - SPINDLE0]);
-  if (infoBreakPoint.feedrate != 0) {
+  if (infoBreakPoint.gantryspeed != 0) {
     mustStoreCacheCmd("G92 Z%.3f\n", infoBreakPoint.axis[Z_AXIS]
 #ifdef BTT_MINI_UPS
                                          + POWER_LOSS_ZRAISE
@@ -139,20 +126,12 @@ bool powerOffGetData(void) {
 #else
     mustStoreCacheCmd("G28 R0 XY\n");
 #endif
-    mustStoreCacheCmd("M83\n");
-    mustStoreCacheCmd("G1 E30 F300\n");
-    mustStoreCacheCmd("G1 E-%d F4800\n", SPINDLE_PAUSE_RETRACT_LENGTH);
     mustStoreCacheCmd("G1 X%.3f Y%.3f Z%.3f F3000\n",
                       infoBreakPoint.axis[X_AXIS],
                       infoBreakPoint.axis[Y_AXIS],
                       infoBreakPoint.axis[Z_AXIS]);
-    mustStoreCacheCmd("G1 E%d F4800\n", SPINDLE_RESUME_PURGE_LENGTH);
-    mustStoreCacheCmd("G92 E%.5f\n", infoBreakPoint.axis[E_AXIS]);
-    mustStoreCacheCmd("G1 F%d\n", infoBreakPoint.feedrate);
+    mustStoreCacheCmd("G1 F%d\n", infoBreakPoint.gantryspeed);
 
-    if (infoBreakPoint.relative_e == false) {
-      mustStoreCacheCmd("M82\n");
-    }
     if (infoBreakPoint.relative == true) {
       mustStoreCacheCmd("G91\n");
     }

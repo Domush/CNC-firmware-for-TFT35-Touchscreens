@@ -21,10 +21,9 @@ MENUITEMS percentageItems = {
 const ITEM itemPercentage[ITEM_PERCENTAGE_NUM] = {
     // icon                       label
     {ICON_MOVE, LABEL_PERCENTAGE_SPEED},
-    {ICON_EXTRUDE, LABEL_PERCENTAGE_FLOW},
 };
 static int16_t itemPercentageTitle[ITEM_PERCENTAGE_NUM] = {
-    LABEL_PERCENTAGE_SPEED, LABEL_PERCENTAGE_FLOW};
+    LABEL_PERCENTAGE_SPEED};
 //Speed  Flow
 static u16 percentage[ITEM_PERCENTAGE_NUM] = {100, 100};
 static u8 item_percentage_i = 0;

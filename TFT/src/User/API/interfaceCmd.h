@@ -21,16 +21,22 @@ typedef struct
   uint8_t count;    // Count of commands in the queue
 } QUEUE;
 
-extern QUEUE infoCmd;
-extern QUEUE infoCacheCmd;
+extern QUEUE infoCmd;       // Outgoing gcode command
+extern QUEUE infoCacheCmd;  // Cache for gcode commands waiting for infoCmd to empty
 
 bool storeCmd(const char* format, ...);
 void mustStoreCmd(const char* format, ...);
+
 bool storeCmdFromUART(uint8_t port, const char* gcode);
 void mustStoreCacheCmd(const char* format, ...);
+
 bool moveCacheToCmd(void);
 void clearCmdQueue(void);
+
 void parseQueueCmd(void);
 void sendQueueCmd(void);
+
+void menuM0Pause(const char* m0_title, const char* m0_message);
+void menuChangeBit();
 
 #endif

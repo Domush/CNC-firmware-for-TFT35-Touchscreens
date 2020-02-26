@@ -36,13 +36,11 @@ void infoMenuSelect(void) {
       infoMenu.menu[infoMenu.cur] = menuMain;  // Main menu as default screen on boot
 #ifdef SHOW_BTT_BOOTSCREEN
       u32 startUpTime = OS_GetTime();
-      heatSetUpdateTime(100);
       LOGO_ReadDisplay();
       while (OS_GetTime() - startUpTime < 400)  //Display 4s logo
       {
         loopProcess();
       }
-      heatSetUpdateTime(300);
 #endif
 
       reminderMessage(LABEL_UNCONNECTED, STATUS_UNCONNECT);  // reset connect status
