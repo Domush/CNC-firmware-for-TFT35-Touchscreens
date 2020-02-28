@@ -6,16 +6,16 @@ void menuIsPause(void) {
 
   popupDrawPage(bottomDoubleBtn, textSelect(LABEL_WARNING), textSelect(LABEL_IS_PAUSE), textSelect(LABEL_CONFIRM), textSelect(LABEL_CANCEL));
 
-  while (infoMenu.menu[infoMenu.cur] == menuIsPause) {
+  while (infoMenu.menu[infoMenu.active] == menuIsPause) {
     key_num = KEY_GetValue(2, doubleBtnRect);
     switch (key_num) {
       case KEY_POPUP_CONFIRM:
-        if (setPrintPause(true, false))
-          infoMenu.menu[infoMenu.cur] = menuMove;
+        if (setPrintPause(true))
+          infoMenu.menu[infoMenu.active] = menuMove;
         break;
 
       case KEY_POPUP_CANCEL:
-        infoMenu.cur--;
+        infoMenu.active--;
         break;
     }
     loopProcess();
@@ -41,23 +41,23 @@ void menuMore(void) {
   KEY_VALUES key_num = KEY_IDLE;
 
   menuDrawPage(&moreItems);
-  while (infoMenu.menu[infoMenu.cur] == menuMore) {
+  while (infoMenu.menu[infoMenu.active] == menuMore) {
     key_num = menuKeyGetValue();
     switch (key_num) {
       case KEY_ICON_0:
-        infoMenu.menu[++infoMenu.cur] = menuRouter;
+        infoMenu.menu[++infoMenu.active] = menuRouter;
         break;
 
       case KEY_ICON_1:
-        infoMenu.menu[++infoMenu.cur] = menuRGBSettings;
+        infoMenu.menu[++infoMenu.active] = menuRGBSettings;
         break;
 
       case KEY_ICON_2:
-        infoMenu.menu[++infoMenu.cur] = menuFeatureSettings;
+        infoMenu.menu[++infoMenu.active] = menuFeatureSettings;
         break;
 
       case KEY_ICON_7:
-        infoMenu.cur--;
+        infoMenu.active--;
         break;
 
       default:

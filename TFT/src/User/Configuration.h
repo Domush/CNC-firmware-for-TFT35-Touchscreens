@@ -38,11 +38,8 @@
 #define REMINDER_FONT_COLOR RED           // Reminder font color, such as: "No print attached", "Busy process", etc...
 #define VOLUME_REMINDER_FONT_COLOR GBLUE  // Volume reminder font color,such as: "Card inserted", "Card removed"
 
-#define ROUTER_NUM 1  // set in 1~6
-
-#define ROUTER_MAX_PWM {255};
-#define ROUTER_ID {"Router Power"};
-#define ROUTER_CMD {"M106 P0"};
+#define ROUTER_MAX_PWM 255
+#define ROUTER_ID "Router Power"
 
 #define SPEED_ID {"Speed", "Gantry Speed"};
 

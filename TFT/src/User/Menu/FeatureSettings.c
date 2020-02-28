@@ -351,7 +351,7 @@ void menuFeatureSettings(void) {
   loadFeatureSettings();
   menuDrawListPage(&featureSettingsItems);
 
-  while (infoMenu.menu[infoMenu.cur] == menuFeatureSettings) {
+  while (infoMenu.menu[infoMenu.active] == menuFeatureSettings) {
     key_num = menuKeyGetValue();
     switch (key_num) {
       case KEY_ICON_5:
@@ -375,7 +375,7 @@ void menuFeatureSettings(void) {
         break;
 
       case KEY_ICON_7:
-        infoMenu.cur--;
+        infoMenu.active--;
         break;
       default:
         if (key_num < LISTITEM_PER_PAGE) {

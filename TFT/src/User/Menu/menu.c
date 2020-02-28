@@ -154,7 +154,7 @@ void loopReminderClear(void) {
       return;
 
     case STATUS_BUSY:
-      if (infoCmd.count == CMD_MAX_LIST)
+      if (gcodeCommand.count == GCODE_QUEUE_MAX)
         return;
       break;
 

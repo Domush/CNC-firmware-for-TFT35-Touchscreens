@@ -47,7 +47,7 @@ void powerFailedCache(u32 offset) {
   if (powerFailedSave == false) return;
   if (isPause() == true) return;
 
-  if (infoCacheCmd.count != 0) return;
+  if (gcodeCommandQueue.count != 0) return;
 
   powerFailedSave = false;
 
@@ -58,11 +58,9 @@ void powerFailedCache(u32 offset) {
     infoBreakPoint.axis[i] = coordinateGetAxisTarget(i);
   }
   infoBreakPoint.gantryspeed = coordinateGetGantrySpeed();
-  infoBreakPoint.speed = speedGetPercent(0);
+  infoBreakPoint.speed = getCNCSpeedOverride();
 
-  for (u8 i = 0; i < ROUTER_NUM; i++) {
-    infoBreakPoint.router[i] = routerGetSpeed(i);
-  }
+  infoBreakPoint.routerSpeed = ROUTER_MAX_PWM;
   infoBreakPoint.relative = coorGetRelative();
 
   f_lseek(&fpPowerFailed, MAX_PATH_LEN);
@@ -108,9 +106,8 @@ bool powerOffGetData(void) {
   if (f_lseek(&fp, MAX_PATH_LEN) != FR_OK) return false;
   if (f_read(&fp, &infoBreakPoint, sizeof(infoBreakPoint), &br) != FR_OK) return false;
 
-  for (u8 i = 0; i < ROUTER_NUM; i++) {
-    if (infoBreakPoint.router[i] != 0)
-      mustStoreCacheCmd("%s S%d\n", routerCmd[i], infoBreakPoint.router[i]);
+  if (infoBreakPoint.routerSpeed != 0) {
+    routerControl(infoBreakPoint.routerSpeed);
   }
 
   if (infoBreakPoint.gantryspeed != 0) {
@@ -150,20 +147,20 @@ void menuPowerOff(void) {
   if (mountFS() == true && powerFailedExist()) {
     popupDrawPage(bottomDoubleBtn, textSelect(LABEL_POWER_FAILED), (u8*)infoFile.title, textSelect(LABEL_CONFIRM), textSelect(LABEL_CANCEL));
 
-    while (infoMenu.menu[infoMenu.cur] == menuPowerOff) {
+    while (infoMenu.menu[infoMenu.active] == menuPowerOff) {
       key_num = KEY_GetValue(2, doubleBtnRect);
       switch (key_num) {
         case KEY_POPUP_CONFIRM:
           powerOffGetData();
           infoMenu.menu[1] = menuPrintFromSource;
           infoMenu.menu[2] = menuBeforePrinting;
-          infoMenu.cur = 2;
+          infoMenu.active = 2;
           break;
 
         case KEY_POPUP_CANCEL:
           powerFailedDelete();
           ExitDir();
-          infoMenu.cur--;
+          infoMenu.active--;
           break;
       }
 
@@ -171,12 +168,12 @@ void menuPowerOff(void) {
       if (isVolumeExist(infoFile.source) != true) {
         resetInfoFile();
         clearPowerFailed();
-        infoMenu.cur--;
+        infoMenu.active--;
       }
 #endif
       loopProcess();
     }
   } else {
-    infoMenu.cur--;
+    infoMenu.active--;
   }
 }

@@ -15,6 +15,8 @@ static const char replySDNotPrinting[] = "Not SD printing";
 
 #define ACK_MAX_SIZE 1024
 extern int MODEselect;
+char *popup_title;
+char *popup_message;
 
 void setCurrentAckSrc(uint8_t src);
 void parseACK(void);

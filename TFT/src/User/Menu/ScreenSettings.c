@@ -100,7 +100,7 @@ void menuScreenSettings(void) {
 
   menuDrawPage(&screenSettingsItems);
 
-  while (infoMenu.menu[infoMenu.cur] == menuScreenSettings) {
+  while (infoMenu.menu[infoMenu.active] == menuScreenSettings) {
     key_num = menuKeyGetValue();
     switch (key_num) {
       case KEY_ICON_0:
@@ -146,7 +146,7 @@ void menuScreenSettings(void) {
 #endif
 
       case KEY_ICON_7:
-        infoMenu.cur--;
+        infoMenu.active--;
         break;
 
       default:

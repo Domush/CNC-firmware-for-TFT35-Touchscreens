@@ -145,12 +145,12 @@ void menuDrawSendGcode(void) {
 void menuSendGcode(void) {
   GUI_RECT gcodeRect = {rect_of_Gkey[GKEY_BACK].x1 + 10, rect_of_Gkey[GKEY_BACK].y0, rect_of_Gkey[GKEY_SEND].x0 - 10, rect_of_Gkey[GKEY_SEND].y1};
 
-  char gcodeBuf[CMD_MAX_CHAR] = {0};
+  char gcodeBuf[GCODE_MAX_CHARACTERS] = {0};
   uint8_t nowIndex = 0,
           lastIndex = 0;
   GKEY_VALUES key_num = GKEY_IDLE;
   menuDrawSendGcode();
-  while (infoMenu.menu[infoMenu.cur] == menuSendGcode) {
+  while (infoMenu.menu[infoMenu.active] == menuSendGcode) {
     key_num = GKeyGetValue();
 
     switch (key_num) {
@@ -158,7 +158,7 @@ void menuSendGcode(void) {
         break;
 
       case GKEY_BACK:
-        infoMenu.cur--;
+        infoMenu.active--;
         break;
 
       case GKEY_SEND:
@@ -168,7 +168,7 @@ void menuSendGcode(void) {
           storeCmd(gcodeBuf);
           gcodeBuf[nowIndex = 0] = 0;
         }
-        infoMenu.menu[++infoMenu.cur] = menuTerminal;
+        infoMenu.menu[++infoMenu.active] = menuTerminal;
         break;
 
       case GKEY_ABC_123:
@@ -184,14 +184,14 @@ void menuSendGcode(void) {
         break;
 
       case GKEY_SPACE:
-        if (nowIndex < CMD_MAX_CHAR - 1) {
+        if (nowIndex < GCODE_MAX_CHARACTERS - 1) {
           gcodeBuf[nowIndex++] = ' ';
           gcodeBuf[nowIndex] = 0;
         }
         break;
 
       default:
-        if (nowIndex < CMD_MAX_CHAR - 1) {
+        if (nowIndex < GCODE_MAX_CHARACTERS - 1) {
           gcodeBuf[nowIndex++] = softKeyValue[softKeyType][key_num][0];
           gcodeBuf[nowIndex] = 0;
         }
@@ -214,7 +214,7 @@ char terminalBuf[TERMINAL_MAX_CHAR];
 void sendGcodeTerminalCache(char *serial_text, TERMINAL_SRC src) {
   if (strstr(serial_text, (const char *)"wait") && src) return;
   const char *const terminalSign[] = {"Sent: ", "Rcv: "};
-  // if (infoMenu.menu[infoMenu.cur] != menuSendGcode && infoMenu.menu[infoMenu.cur] != menuTerminal) return;
+  // if (infoMenu.menu[infoMenu.active] != menuSendGcode && infoMenu.menu[infoMenu.active] != menuTerminal) return;
   if (strlen(terminalBuf) + strlen(serial_text) + strlen(terminalSign[src]) >= TERMINAL_MAX_CHAR) {
     terminalBuf[0] = 0;
   }
@@ -241,11 +241,11 @@ void menuTerminal(void) {
   GUI_ClearRect(CURSOR_START_X, CURSOR_START_Y, CURSOR_END_X, CURSOR_END_Y);
   TSC_ReDrawIcon = NULL;  // Disable icon redraw callback function
 
-  while (infoMenu.menu[infoMenu.cur] == menuTerminal) {
+  while (infoMenu.menu[infoMenu.active] == menuTerminal) {
     key_num = KEY_GetValue(1, &terminalRect);
 
     if (key_num != IDLE_TOUCH) {
-      infoMenu.cur--;
+      infoMenu.active--;
     }
 
     while (terminalBuf[lastTerminalIndex]) {
@@ -292,15 +292,15 @@ static char *last_sent_text;
  */
 void showGcodeStatus(char *serial_text, TERMINAL_SRC src) {
   // *Disable on pages that need the extra space
-  if (infoMenu.menu[infoMenu.cur] == menuSettings ||
-      infoMenu.menu[infoMenu.cur] == menuFeatureSettings ||
-      infoMenu.menu[infoMenu.cur] == menuPrint ||
-      infoMenu.menu[infoMenu.cur] == menuPrintFromSource ||
-      infoMenu.menu[infoMenu.cur] == menuSendGcode ||
-      infoMenu.menu[infoMenu.cur] == menuBeforePrinting ||
-      infoMenu.menu[infoMenu.cur] == menuMachineSettings ||
-      infoMenu.menu[infoMenu.cur] == parametersetting ||
-      infoMenu.menu[infoMenu.cur] == menuTerminal ||
+  if (infoMenu.menu[infoMenu.active] == menuSettings ||
+      infoMenu.menu[infoMenu.active] == menuFeatureSettings ||
+      infoMenu.menu[infoMenu.active] == menuPrint ||
+      infoMenu.menu[infoMenu.active] == menuPrintFromSource ||
+      infoMenu.menu[infoMenu.active] == menuSendGcode ||
+      infoMenu.menu[infoMenu.active] == menuBeforePrinting ||
+      infoMenu.menu[infoMenu.active] == menuMachineSettings ||
+      infoMenu.menu[infoMenu.active] == parametersetting ||
+      infoMenu.menu[infoMenu.active] == menuTerminal ||
       !infoHost.connected) {
     return;
   }
@@ -356,7 +356,7 @@ void showGcodeStatus(char *serial_text, TERMINAL_SRC src) {
   GUI_DispString(begin_x, BYTE_HEIGHT, (u8 *)prefix[src]);  // Display the Sent/Rcv text
   GUI_RestoreColorDefault();
 
-  if (infoMenu.menu[infoMenu.cur] == menuTerminal) {
+  if (infoMenu.menu[infoMenu.active] == menuTerminal) {
     GUI_ClearRect(0, BYTE_HEIGHT, LCD_WIDTH, BYTE_HEIGHT * 2);  // *remove the gcode status line to avoid confusion
   } else {
     GUI_DispLenString(begin_x + BYTE_WIDTH * strlen(prefix[src]), BYTE_HEIGHT, (u8 *)final_text, width_x);

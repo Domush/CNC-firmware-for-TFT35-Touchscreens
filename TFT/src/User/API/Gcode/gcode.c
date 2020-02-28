@@ -5,10 +5,10 @@ REQUEST_COMMAND_INFO requestCommandInfo;
 bool WaitingGcodeResponse = 0;
 
 static void resetRequestCommandInfo(void) {
-  requestCommandInfo.cmd_rev_buf = malloc(CMD_MAX_REV);
-  while (!requestCommandInfo.cmd_rev_buf)
+  requestCommandInfo.response = malloc(RESPONSE_MAX_CHARS);
+  while (!requestCommandInfo.response)
     ;  // malloc failed
-  memset(requestCommandInfo.cmd_rev_buf, 0, CMD_MAX_REV);
+  memset(requestCommandInfo.response, 0, RESPONSE_MAX_CHARS);
   requestCommandInfo.inWaitResponse = true;
   requestCommandInfo.inResponse = false;
   requestCommandInfo.done = false;
@@ -20,7 +20,7 @@ bool RequestCommandInfoIsRunning(void) {
 }
 
 void clearRequestCommandInfo(void) {
-  free(requestCommandInfo.cmd_rev_buf);
+  free(requestCommandInfo.response);
 }
 
 /*
@@ -79,7 +79,7 @@ char *request_M20(void) {
   }
   WaitingGcodeResponse = 0;
   //clearRequestCommandInfo(); //shall be call after copying the buffer ...
-  return requestCommandInfo.cmd_rev_buf;
+  return requestCommandInfo.response;
 }
 
 /*
@@ -102,12 +102,12 @@ char *request_M33(char *filename) {
   }
   WaitingGcodeResponse = 0;
   //clearRequestCommandInfo(); //shall be call after copying the buffer ...
-  return requestCommandInfo.cmd_rev_buf;
+  return requestCommandInfo.response;
 }
 
 /**
- * Select the file to print 
- * 
+ * Select the file to print
+ *
  * >>> m23 YEST~1/TEST2/PI3MK2~5.GCO
  * SENDING:M23 YEST~1/TEST2/PI3MK2~5.GCO
  * echo:Now fresh file: YEST~1/TEST2/PI3MK2~5.GCO
@@ -129,34 +129,34 @@ long request_M23(char *filename) {
   WaitingGcodeResponse = 0;
   // Find file size and report its.
   char *ptr;
-  long size = strtol(strstr(requestCommandInfo.cmd_rev_buf, "Size:") + 5, &ptr, 10);
+  long size = strtol(strstr(requestCommandInfo.response, "Size:") + 5, &ptr, 10);
   clearRequestCommandInfo();
   return size;
 }
 
 /**
- * Start o resume print 
+ * Start o resume print
  **/
-bool request_M24(int pos) {
-  if (pos == 0) {
+bool request_M24(int file_position) {
+  if (file_position == 0) {
     mustStoreCmd("M24\n");
   } else {
     char command[100];
-    sprintf(command, "M24 S%d\n", pos);
+    sprintf(command, "M24 S%d\n", file_position);
     mustStoreCmd(command);
   }
   return true;
 }
 
 /**
- * Abort print 
+ * Abort print
  **/
 bool request_M524(void) {
   mustStoreCmd("M524\n");
   return true;
 }
 /**
- * Pause print 
+ * Pause print
  **/
 bool request_M25(void) {
   mustStoreCmd("M25\n");
@@ -168,9 +168,9 @@ bool request_M25(void) {
  * ->  SD printing byte 123/12345
  * ->  Not SD printing
  **/
-bool request_M27(int seconds) {
+bool request_M27(int update_delay_seconds) {
   char command[10];
-  sprintf(command, "M27 S%d\n", seconds);
+  sprintf(command, "M27 S%d\n", update_delay_seconds);
   mustStoreCmd(command);
   return true;
 }

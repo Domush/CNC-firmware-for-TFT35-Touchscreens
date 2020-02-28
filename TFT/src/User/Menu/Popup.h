@@ -5,40 +5,24 @@
 #include "my_misc.h"
 #include "variants.h"
 
-//TODO:fix here for more resolution
-#if LCD_WIDTH == 320 && LCD_HEIGHT == 240
-#define POPUP_RECT_WINDOW \
-  { 30, 25, 290, 215 }
-
-#define POPUP_RECT_SINGLE_CONFIRM \
-  { 110, 165, 210, 205 }
-#define POPUP_RECT_DOUBLE_CONFIRM \
-  { 40, 165, 140, 205 }
-#define POPUP_RECT_DOUBLE_CANCEL \
-  { 180, 165, 280, 205 }
-
-#define POPUP_TITLE_HEIGHT 30
-#define POPUP_TEXT_HEIGHT 100
-#define POPUP_BOTTOM_HEIGHT 50
-#elif LCD_WIDTH == 480 && LCD_HEIGHT == 320
 // #define POPUP_RECT_WINDOW         {80, 50, 400, 270} // Original config
 #define POPUP_RECT_WINDOW \
-  { 40, BYTE_HEIGHT * 4, 440, LCD_HEIGHT - BYTE_HEIGHT }
+  { 40, BYTE_HEIGHT * 3 + 4, 440, LCD_HEIGHT - BYTE_HEIGHT }
+// { 80, 50, 400, 270 }
 
 #define POPUP_RECT_SINGLE_CONFIRM \
-  { 40, BYTE_HEIGHT * 4, 440, LCD_HEIGHT - BYTE_HEIGHT }
+  { BYTE_WIDTH * 10, 300 - BYTE_HEIGHT * 2, LCD_WIDTH - BYTE_WIDTH * 10, 300 - 14 }
 // { 180, 210, 300, 260 }
 #define POPUP_RECT_DOUBLE_CONFIRM \
-  { 40, BYTE_HEIGHT * 4, 440, LCD_HEIGHT - BYTE_HEIGHT }
+  { BYTE_WIDTH * 5, 300 - BYTE_HEIGHT * 2, LCD_WIDTH / 2 - BYTE_WIDTH, 300 - 14 }
 // { 90, 210, 210, 260 }
 #define POPUP_RECT_DOUBLE_CANCEL \
-  { 40, BYTE_HEIGHT * 4, 440, LCD_HEIGHT - BYTE_HEIGHT }
+  { LCD_WIDTH / 2 + BYTE_WIDTH, 300 - BYTE_HEIGHT * 2, LCD_WIDTH - BYTE_WIDTH * 5, 300 - 14 }
 // { 270, 210, 390, 260 }
 
-#define POPUP_TITLE_HEIGHT 40
-#define POPUP_TEXT_HEIGHT 110
-#define POPUP_BOTTOM_HEIGHT 70
-#endif
+#define POPUP_TITLE_HEIGHT (BYTE_HEIGHT + 10)
+#define POPUP_BOTTOM_HEIGHT (BYTE_HEIGHT * 2)
+#define POPUP_TEXT_HEIGHT (BYTE_HEIGHT * 5 + 16)
 
 enum {
   KEY_POPUP_CONFIRM = 0,
@@ -52,7 +36,7 @@ extern WINDOW window;
 
 void windowSetButton(const BUTTON *btn);
 void windowReDrawButton(uint8_t positon, uint8_t is_press);
-void popupDrawPage(BUTTON *btn, const uint8_t *title, const uint8_t *context, const uint8_t *choice1, const uint8_t *choice2);
-void popupReminder(u8 *info, u8 *context);
+void popupDrawPage(BUTTON *btn, const uint8_t *title, const uint8_t *text, const uint8_t *choice1, const uint8_t *choice2);
+void popupReminder(u8 *title, u8 *text);
 
 #endif

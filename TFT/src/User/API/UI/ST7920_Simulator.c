@@ -117,7 +117,7 @@ void menuST7920(void) {
   SPI_Slave();
   SPI_Slave_CS_Config();
 
-  while (infoMenu.menu[infoMenu.cur] == menuST7920) {
+  while (infoMenu.menu[infoMenu.active] == menuST7920) {
     while (SPISlave.rIndex != SPISlave.wIndex) {
       ST7920_ParseRecv(SPISlave.data[SPISlave.rIndex]);
 

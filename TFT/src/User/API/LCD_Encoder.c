@@ -91,7 +91,7 @@ void LCD_LoopEncoder(void) {
 void loopCheckMode(void) {
   if (isPrinting()) return;
   if (LCD_ReadBtn(LCD_CHANGE_MODE_INTERVALS) || LCD_ReadPen(LCD_CHANGE_MODE_INTERVALS)) {
-    infoMenu.menu[++infoMenu.cur] = menuMode;
+    infoMenu.menu[++infoMenu.active] = menuMode;
   }
 }
 #endif

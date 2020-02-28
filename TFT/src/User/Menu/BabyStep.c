@@ -73,7 +73,7 @@ void menuBabyStep(void) {
   encoderPosition = 0;
 #endif
 
-  while (infoMenu.menu[infoMenu.cur] == menuBabyStep) {
+  while (infoMenu.menu[infoMenu.active] == menuBabyStep) {
     key_num = menuKeyGetValue();
     switch (key_num) {
       case KEY_ICON_0:
@@ -101,7 +101,7 @@ void menuBabyStep(void) {
           baby_step_value = 0.0f;
         break;
       case KEY_ICON_7:
-        infoMenu.cur--;
+        infoMenu.active--;
         break;
       default:
 #if LCD_ENCODER_SUPPORT

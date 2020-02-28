@@ -49,7 +49,7 @@ void menuInfo(void) {
   while (!isPress()) loopProcess();
   while (isPress()) loopProcess();
 
-  infoMenu.cur--;
+  infoMenu.active--;
 }
 
 // Set uart pins to input, free uart
@@ -65,7 +65,7 @@ void menuDisconnect(void) {
     ;
   Serial_Init(infoSettings.baudrate);
 
-  infoMenu.cur--;
+  infoMenu.active--;
 }
 
 MENUITEMS settingsItems = {
@@ -105,27 +105,27 @@ void menuSettings(void) {
 
   menuDrawPage(&settingsItems);
 
-  while (infoMenu.menu[infoMenu.cur] == menuSettings) {
+  while (infoMenu.menu[infoMenu.active] == menuSettings) {
     key_num = menuKeyGetValue();
     switch (key_num) {
       case KEY_ICON_0:
-        infoMenu.menu[++infoMenu.cur] = menuScreenSettings;
+        infoMenu.menu[++infoMenu.active] = menuScreenSettings;
         break;
 
       case KEY_ICON_1:
-        infoMenu.menu[++infoMenu.cur] = menuMachineSettings;
+        infoMenu.menu[++infoMenu.active] = menuMachineSettings;
         break;
 
       case KEY_ICON_2:
-        infoMenu.menu[++infoMenu.cur] = menuFeatureSettings;
+        infoMenu.menu[++infoMenu.active] = menuFeatureSettings;
         break;
 
       case KEY_ICON_3:
-        infoMenu.menu[++infoMenu.cur] = menuInfo;
+        infoMenu.menu[++infoMenu.active] = menuInfo;
         break;
 
       case KEY_ICON_4:
-        infoMenu.menu[++infoMenu.cur] = menuDisconnect;
+        infoMenu.menu[++infoMenu.active] = menuDisconnect;
         break;
 
       case KEY_ICON_5:
@@ -138,7 +138,7 @@ void menuSettings(void) {
         break;
 
       case KEY_ICON_7:
-        infoMenu.cur--;
+        infoMenu.active--;
         break;
 
       default:

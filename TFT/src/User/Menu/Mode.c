@@ -23,7 +23,7 @@ void Serial_ReSourceInit(void) {
 }
 
 void infoMenuSelect(void) {
-  infoMenu.cur = 0;
+  infoMenu.active = 0;
   switch (infoSettings.mode) {
     case SERIAL_TSC: {
 #ifdef LED_color_PIN
@@ -33,7 +33,7 @@ void infoMenuSelect(void) {
       Serial_ReSourceInit();
       GUI_SetColor(FONT_COLOR);
       GUI_SetBkColor(BACKGROUND_COLOR);
-      infoMenu.menu[infoMenu.cur] = menuMain;  // Main menu as default screen on boot
+      infoMenu.menu[infoMenu.active] = menuMain;  // Main menu as default screen on boot
 #ifdef SHOW_BTT_BOOTSCREEN
       u32 startUpTime = OS_GetTime();
       LOGO_ReadDisplay();
@@ -54,7 +54,7 @@ void infoMenuSelect(void) {
 #endif
       GUI_SetColor(ST7920_FNCOLOR);
       GUI_SetBkColor(ST7920_BKCOLOR);
-      infoMenu.menu[infoMenu.cur] = menuST7920;
+      infoMenu.menu[infoMenu.active] = menuST7920;
       break;
 #endif
   }
@@ -99,7 +99,7 @@ void menuMode(void) {
   while (!XPT2046_Read_Pen() || LCD_ReadBtn(LCD_BUTTON_INTERVALS))
     ;  //wait for button release
 
-  while (infoMenu.menu[infoMenu.cur] == menuMode) {
+  while (infoMenu.menu[infoMenu.active] == menuMode) {
     key_num = MKeyGetValue();
 
     if (keyback) {

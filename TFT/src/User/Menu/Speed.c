@@ -2,7 +2,7 @@
 #include "includes.h"
 
 //1 title copy (copy title copy), ITEM_PER_PAGE copy title item (picture copy copy + signature copy)
-MENUITEMS percentageItems = {
+MENUITEMS speedOverrideItems = {
     //   title
     LABEL_PERCENTAGE_SPEED,
     // icon                       label
@@ -17,118 +17,125 @@ MENUITEMS percentageItems = {
         {ICON_BACK, LABEL_BACK},
     }};
 
-#define ITEM_PERCENTAGE_NUM 2
-const ITEM itemPercentage[ITEM_PERCENTAGE_NUM] = {
+#define ITEM_SPEEDOVERRIDE_NUM 2
+const ITEM itemSpeedOverrideIcons[ITEM_SPEEDOVERRIDE_NUM] = {
     // icon                       label
     {ICON_MOVE, LABEL_PERCENTAGE_SPEED},
 };
-static int16_t itemPercentageTitle[ITEM_PERCENTAGE_NUM] = {
+static int16_t itemSpeedOverrideTitle[ITEM_SPEEDOVERRIDE_NUM] = {
     LABEL_PERCENTAGE_SPEED};
-//Speed  Flow
-static u16 percentage[ITEM_PERCENTAGE_NUM] = {100, 100};
-static u8 item_percentage_i = 0;
 
-#define ITEM_PERCENT_UNIT_NUM 3
-const ITEM itemPercentUnit[ITEM_PERCENT_UNIT_NUM] = {
+static u16 percentage = 100;  // Speed
+
+#define ITEM_PERCENT_INCREMENT 3
+const ITEM itemIncrementIcons[ITEM_PERCENT_INCREMENT] = {
     // icon                       label
     {ICON_E_1_MM, LABEL_1_PERCENT},
     {ICON_E_5_MM, LABEL_5_PERCENT},
     {ICON_E_10_MM, LABEL_10_PERCENT},
 };
-const u8 item_percent_unit[ITEM_PERCENT_UNIT_NUM] = {1, 5, 10};
-static u8 item_percent_unit_i = 1;
+const u8 itemIncrementValues[ITEM_PERCENT_INCREMENT] = {1, 5, 10};
+static u8 itemIncrementIndex = 1;
 
-static bool send_waiting[ITEM_PERCENTAGE_NUM];
-
-void speedSetSendWaiting(u8 tool, bool isWaiting) {
-  send_waiting[tool] = isWaiting;
+/**
+ * Override global CNC speed
+ *
+ * @version	v1.0.0	Thursday, February 27th, 2020.
+ * @version	v1.0.1	Thursday, February 27th, 2020.
+ * @global
+ * @param	u16	percent
+ * @return	void
+ */
+void setCNCSpeedOverride(u16 percent) {
+  percentage = limitValue(10, percent, 999);
 }
 
-/* Before copying */
-void speedSetPercent(u8 tool, u16 per) {
-  percentage[tool] = limitValue(10, per, 999);
-}
-/* Do you have a copy of the horns to help you copy? */
-u16 speedGetPercent(u8 tool) {
-  return percentage[tool];
+/**
+ * Get global CNC speed override value (in percent)
+ *
+ * @version	v1.0.0	Thursday, February 27th, 2020.
+ * @global
+ * @param	u8	tool
+ * @return	mixed
+ */
+u16 getCNCSpeedOverride(void) {
+  return percentage;
 }
 
-void showPercentage(void) {
-  GUI_DispDec(CENTER_X - 3 * BYTE_WIDTH / 2, CENTER_Y, percentage[item_percentage_i], 3, LEFT);
+void showCNCSpeedOverride(void) {
+  GUI_DispDec(CENTER_X - 3 * BYTE_WIDTH / 2, CENTER_Y, percentage, 3, LEFT);
   GUI_DispString(CENTER_X - 3 * BYTE_WIDTH / 2 + 3 * BYTE_WIDTH, CENTER_Y, (u8 *)"%");
 }
-void percentageReDraw(void) {
-  GUI_DispDec(CENTER_X - 3 * BYTE_WIDTH / 2, CENTER_Y, percentage[item_percentage_i], 3, LEFT);
+void redrawCNCSpeedOverride(void) {
+  GUI_DispDec(CENTER_X - 3 * BYTE_WIDTH / 2, CENTER_Y, percentage, 3, LEFT);
 }
 
 void menuSpeed(void) {
   KEY_VALUES key_num = KEY_IDLE;
-  u16 now[ITEM_PERCENTAGE_NUM];
+  u16 nowSpeed;
+  nowSpeed = percentage;
 
-  for (u8 i = 0; i < ITEM_PERCENTAGE_NUM; i++)
-    now[i] = percentage[i];
-
-  menuDrawPage(&percentageItems);
-  showPercentage();
+  menuDrawPage(&speedOverrideItems);
+  showCNCSpeedOverride();
 
 #if LCD_ENCODER_SUPPORT
   encoderPosition = 0;
 #endif
 
-  while (infoMenu.menu[infoMenu.cur] == menuSpeed) {
+  while (infoMenu.menu[infoMenu.active] == menuSpeed) {
     key_num = menuKeyGetValue();
     switch (key_num) {
       case KEY_ICON_0:
-        if (percentage[item_percentage_i] > 10) {
-          percentage[item_percentage_i] =
+        if (percentage > 10) {
+          percentage =
               limitValue(10,
-                         percentage[item_percentage_i] - item_percent_unit[item_percent_unit_i],
+                         percentage - itemIncrementValues[itemIncrementIndex],
                          999);
         }
         break;
 
       case KEY_ICON_3:
-        if (percentage[item_percentage_i] < 999) {
-          percentage[item_percentage_i] =
+        if (percentage < 999) {
+          percentage =
               limitValue(10,
-                         percentage[item_percentage_i] + item_percent_unit[item_percent_unit_i],
+                         percentage + itemIncrementValues[itemIncrementIndex],
                          999);
         }
         break;
 
       case KEY_ICON_4:
-        item_percentage_i = (item_percentage_i + 1) % ITEM_PERCENTAGE_NUM;
-        percentageItems.items[key_num] = itemPercentage[item_percentage_i];
-        menuDrawItem(&percentageItems.items[key_num], key_num);
-        percentageItems.title.index = itemPercentageTitle[item_percentage_i];
-        menuDrawTitle(textSelect(percentageItems.title.index));
-        showPercentage();
+        itemIncrementIndex = (itemIncrementIndex + 1) % ITEM_SPEEDOVERRIDE_NUM;
+        speedOverrideItems.items[key_num] = itemSpeedOverrideIcons[itemIncrementIndex];
+        menuDrawItem(&speedOverrideItems.items[key_num], key_num);
+        speedOverrideItems.title.index = itemSpeedOverrideTitle[itemIncrementIndex];
+        menuDrawTitle(textSelect(speedOverrideItems.title.index));
+        showCNCSpeedOverride();
         break;
 
       case KEY_ICON_5:
-        item_percent_unit_i = (item_percent_unit_i + 1) % ITEM_PERCENT_UNIT_NUM;
-        percentageItems.items[key_num] = itemPercentUnit[item_percent_unit_i];
-        menuDrawItem(&percentageItems.items[key_num], key_num);
+        itemIncrementIndex = (itemIncrementIndex + 1) % ITEM_PERCENT_INCREMENT;
+        speedOverrideItems.items[key_num] = itemIncrementIcons[itemIncrementIndex];
+        menuDrawItem(&speedOverrideItems.items[key_num], key_num);
         break;
       case KEY_ICON_6:
-        percentage[item_percentage_i] = 100;
+        percentage = 100;
         break;
       case KEY_ICON_7:
-        infoMenu.cur--;
+        infoMenu.active--;
         break;
       default:
 #if LCD_ENCODER_SUPPORT
         if (encoderPosition) {
-          if (percentage[item_percentage_i] < 999 && encoderPosition > 0) {
-            percentage[item_percentage_i] =
+          if (percentage < 999 && encoderPosition > 0) {
+            percentage =
                 limitValue(10,
-                           percentage[item_percentage_i] + item_percent_unit[item_percent_unit_i],
+                           percentage + itemIncrementValues[itemIncrementIndex],
                            999);
           }
-          if (percentage[item_percentage_i] > 10 && encoderPosition < 0) {
-            percentage[item_percentage_i] =
+          if (percentage > 10 && encoderPosition < 0) {
+            percentage =
                 limitValue(10,
-                           percentage[item_percentage_i] - item_percent_unit[item_percent_unit_i],
+                           percentage - itemIncrementValues[itemIncrementIndex],
                            999);
           }
           encoderPosition = 0;
@@ -138,14 +145,10 @@ void menuSpeed(void) {
         break;
     }
 
-    char *speedCmd[ITEM_PERCENTAGE_NUM] = {"M220", "M221"};
-    if (now[item_percentage_i] != percentage[item_percentage_i]) {
-      now[item_percentage_i] = percentage[item_percentage_i];
-      percentageReDraw();
-      if (send_waiting[item_percentage_i] != true) {
-        send_waiting[item_percentage_i] = true;
-        storeCmd("%s ", speedCmd[item_percentage_i]);
-      }
+    if (nowSpeed != percentage) {
+      nowSpeed = percentage;
+      storeCmd("M220 S%d\n", percentage);
+      redrawCNCSpeedOverride();
     }
     loopProcess();
   }

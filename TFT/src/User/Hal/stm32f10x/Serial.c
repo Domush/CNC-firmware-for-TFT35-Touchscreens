@@ -120,11 +120,19 @@ void UART5_IRQHandler(void) {
   USART_IRQHandler(_UART5);
 }
 
-void Serial_Puts(uint8_t port, char *s) {
-  while (*s) {
+void Serial_Puts(uint8_t port, char *command, ...) {
+  char buffer[100];
+  char *gString;
+  my_va_list ap;
+  my_va_start(ap, command);
+  my_vsprintf(buffer, command, ap);
+  my_va_end(ap);
+  gString = &buffer[0];
+
+  while (*gString) {
     while ((Serial[port].uart->SR & USART_FLAG_TC) == (uint16_t)RESET)
       ;
-    Serial[port].uart->DR = ((u16)*s++ & (uint16_t)0x01FF);
+    Serial[port].uart->DR = ((u16)*gString++ & (uint16_t)0x01FF);
   }
 }
 

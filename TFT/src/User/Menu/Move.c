@@ -17,37 +17,26 @@ MENUITEMS moveItems = {
     LABEL_MOVE,
     // icon                       label
     {
-#ifdef ALTERNATIVE_MOVE_MENU
         {ICON_Z_DEC, LABEL_Z_DEC},
         {ICON_Y_INC, LABEL_Y_INC},
         {ICON_Z_INC, LABEL_Z_INC},
-        {ICON_1_MM, LABEL_1_MM},
+        {ICON_100_MM, LABEL_100_MM},
         {ICON_X_DEC, LABEL_X_DEC},
         {ICON_Y_DEC, LABEL_Y_DEC},
         {ICON_X_INC, LABEL_X_INC},
         {ICON_BACK, LABEL_BACK},
-#else
-        {ICON_X_INC, LABEL_X_INC},
-        {ICON_Y_INC, LABEL_Y_INC},
-        {ICON_Z_INC, LABEL_Z_INC},
-        {ICON_1_MM, LABEL_1_MM},
-        {ICON_X_DEC, LABEL_X_DEC},
-        {ICON_Y_DEC, LABEL_Y_DEC},
-        {ICON_Z_DEC, LABEL_Z_DEC},
-        {ICON_BACK, LABEL_BACK},
-#endif
     }};
 
-#define ITEM_MOVE_LEN_NUM 3
-const ITEM itemMoveLen[ITEM_MOVE_LEN_NUM] = {
+#define ITEM_MOVE_DISTANCE 3
+const ITEM itemMoveDistance[ITEM_MOVE_DISTANCE] = {
     // icon                       label
-    {ICON_100_MM, LABEL_100_MM},
     {ICON_10_MM, LABEL_10_MM},
     {ICON_1_MM, LABEL_1_MM},
+    {ICON_100_MM, LABEL_100_MM},
 };
 
-const float item_move_len[ITEM_MOVE_LEN_NUM] = {100, 10, 1};
-static u8 item_move_len_i = 1;
+const float moveDistance[ITEM_MOVE_DISTANCE] = {10, 1, 100};
+static u8 moveDistance_index = 2;
 
 static u32 nowTime = 0;
 static u32 update_time = 50;  // 1 seconds is 100
@@ -100,40 +89,40 @@ void menuMove(void) {
   mustStoreCmd("M114\n");
   drawXYZ();
 
-  while (infoMenu.menu[infoMenu.cur] == menuMove) {
+  while (infoMenu.menu[infoMenu.active] == menuMove) {
     key_num = menuKeyGetValue();
     switch (key_num) {
       case KEY_ICON_0:
-        storeCmd(z_axis_up, item_move_len[item_move_len_i]);
+        storeCmd(z_axis_up, moveDistance[moveDistance_index]);
         break;
 
       case KEY_ICON_1:
-        storeCmd(y_axis_up, item_move_len[item_move_len_i]);
+        storeCmd(y_axis_up, moveDistance[moveDistance_index]);
         break;
 
       case KEY_ICON_2:
-        storeCmd(z_axis_down, item_move_len[item_move_len_i]);
+        storeCmd(z_axis_down, moveDistance[moveDistance_index]);
         break;
 
       case KEY_ICON_3:
-        item_move_len_i = (item_move_len_i + 1) % ITEM_MOVE_LEN_NUM;
-        moveItems.items[key_num] = itemMoveLen[item_move_len_i];
+        moveDistance_index = (moveDistance_index + 1) % ITEM_MOVE_DISTANCE;
+        moveItems.items[key_num] = itemMoveDistance[moveDistance_index];
         menuDrawItem(&moveItems.items[key_num], key_num);
         break;
 
       case KEY_ICON_4:
-        storeCmd("G1 X-%.1f\n", item_move_len[item_move_len_i]);
+        storeCmd("G1 X-%.1f\n", moveDistance[moveDistance_index]);
         break;
 
       case KEY_ICON_5:
-        storeCmd(y_axis_down, item_move_len[item_move_len_i]);
+        storeCmd(y_axis_down, moveDistance[moveDistance_index]);
         break;
 
       case KEY_ICON_6:
-        storeCmd("G1 X%.1f\n", item_move_len[item_move_len_i]);
+        storeCmd("G1 X%.1f\n", moveDistance[moveDistance_index]);
         break;
       case KEY_ICON_7:
-        infoMenu.cur--;
+        infoMenu.active--;
         break;
       default:
         break;
@@ -145,7 +134,7 @@ void menuMove(void) {
 
 void update_gantry(void) {
   if (OS_GetTime() > nowTime + update_time) {
-    if (infoHost.connected == true && infoHost.wait == false) {
+    if (infoHost.connected == true && infoHost.waiting == false) {
       storeCmd("M114\n");
     }
     drawXYZ();

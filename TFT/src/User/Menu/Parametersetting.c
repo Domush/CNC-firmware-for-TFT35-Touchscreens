@@ -212,7 +212,7 @@ void Setting_parameter(void) {
   NUM_KEY_VALUES key_num = NUM_KEY_IDLE;
 
   Draw_keyboard();
-  while (infoMenu.menu[infoMenu.cur] == Setting_parameter) {
+  while (infoMenu.menu[infoMenu.active] == Setting_parameter) {
     key_num = NumKeyGetValue();
     switch (key_num) {
       case NUM_KEY_IDLE:
@@ -220,7 +220,7 @@ void Setting_parameter(void) {
 
       case NUM_KEY_12:
         Send_Settingcmd();
-        infoMenu.cur--;
+        infoMenu.active--;
         break;
 
       case NUM_KEY_13:
@@ -239,7 +239,7 @@ void Setting_parameter(void) {
           ParameterBuf[nowIndex = 0] = 0;
         }
         Send_Settingcmd();
-        infoMenu.cur--;
+        infoMenu.active--;
         break;
 
       case NUM_KEY_DEL:
@@ -271,7 +271,7 @@ void parametersetting(void) {
   Send_Settingcmd();
   SKEY_VALUES key_num = SKEY_IDLE;
 
-  while (infoMenu.menu[infoMenu.cur] == parametersetting) {
+  while (infoMenu.menu[infoMenu.active] == parametersetting) {
     key_num = SKeyGetValue();
     switch (key_num) {
       case SKEY_3:
@@ -281,10 +281,10 @@ void parametersetting(void) {
       case SKEY_7:
       case SKEY_8:
         Select_Parameter = key_num;
-        infoMenu.menu[++infoMenu.cur] = Setting_parameter;
+        infoMenu.menu[++infoMenu.active] = Setting_parameter;
         break;
       case SKEY_9:
-        infoMenu.cur--;
+        infoMenu.active--;
         break;
       // case SKEY_10:
       // case SKEY_11:

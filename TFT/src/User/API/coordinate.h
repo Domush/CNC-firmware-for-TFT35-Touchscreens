@@ -18,6 +18,8 @@ typedef struct
   u32 gantryspeed;
 } COORDINATE;
 
+COORDINATE pauseCoords;
+
 extern const char axis_id[TOTAL_AXIS];
 
 bool coorGetRelative(void);

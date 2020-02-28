@@ -8,15 +8,18 @@ typedef struct
 {
   FIL file;
 
-  u32 time;        // Printed time in sec
-  u32 size;        // Gcode file total size
-  u32 cur;         // Current Gcode line
-  u8 progress;     // Print progress (0-100)
-  bool printing;   // true = printing, false = idle
-  bool pause;      // true = paused
-  bool m0_pause;   // true = M0/M1 gcode triggered pause
-  u8 routerSpeed;  // Current router speed
+  u32 time;         // Printed time in sec
+  u32 size;         // Gcode file total size
+  u32 currentLine;  // Current Gcode line
+  u8 coordSpace;    // CNC coodinate space (53-59) [53 is the default machine coords]
+  u8 progress;      // Print progress (0-100)
+  bool printing;    // true = printing, false = idle
+  bool pause;       // true = paused
+  bool m0_pause;    // true = M0/M1 gcode triggered pause
+  u8 routerSpeed;   // Current router speed
 } PRINTING;
+
+PRINTING infoPrinting;
 
 void exitPrinting(void);
 void endPrinting(void);
@@ -24,7 +27,7 @@ void completePrinting(void);
 void abortPrinting(void);
 
 void setM0Pause(bool m0_pause);
-bool setPrintPause(bool is_pause, bool is_m0pause);
+bool setPrintPause(bool pauseCalled);
 
 bool isPrinting(void);
 bool isPause(void);
@@ -32,7 +35,7 @@ bool isM0_Pause(void);
 void setPrintingTime(u32 RTtime);
 
 void setPrintSize(u32 size);
-void setPrintCur(u32 cur);
+void setPrintCur(u32 currentLine);
 
 u8 getPrintProgress(void);
 u32 getPrintTime(void);
@@ -43,6 +46,7 @@ void startGcodeExecute(void);
 void endGcodeExecute(void);
 
 void getGcodeFromFile(void);
+u8* getGcodeFilename(char* path);
 
 void menuBeforePrinting(void);
 void menuPrinting(void);

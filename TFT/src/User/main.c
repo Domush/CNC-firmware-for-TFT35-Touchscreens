@@ -53,6 +53,6 @@ int main(void) {
   Hardware_GenericInit();
 
   for (;;) {
-    (*infoMenu.menu[infoMenu.cur])();
+    (*infoMenu.menu[infoMenu.active])();
   }
 }

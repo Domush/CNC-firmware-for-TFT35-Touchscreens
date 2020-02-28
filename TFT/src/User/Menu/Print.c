@@ -203,10 +203,10 @@ void menuPrintFromSource(void) {
   } else {
     GUI_DispStringInRect(0, 0, LCD_WIDTH, LCD_HEIGHT, textSelect(labelVolumeError[infoFile.source]));
     Delay_ms(1000);
-    infoMenu.cur--;
+    infoMenu.active--;
   }
 
-  while (infoMenu.menu[infoMenu.cur] == menuPrintFromSource) {
+  while (infoMenu.menu[infoMenu.active] == menuPrintFromSource) {
     GUI_SetBkColor(TITLE_BACKGROUND_COLOR);
     Scroll_DispString(&titleScroll, LEFT);  //
     GUI_SetBkColor(BACKGROUND_COLOR);
@@ -236,7 +236,7 @@ void menuPrintFromSource(void) {
         infoFile.cur_page = 0;
         if (IsRootDir() == true) {
           clearInfoFile();
-          infoMenu.cur--;
+          infoMenu.active--;
           break;
         } else {
           ExitDir();
@@ -277,7 +277,7 @@ void menuPrintFromSource(void) {
             }
             free(gnew);
             //-load bmp preview in flash if file exists - end
-            infoMenu.menu[++infoMenu.cur] = menuBeforePrinting;
+            infoMenu.menu[++infoMenu.active] = menuBeforePrinting;
           }
         }
 
@@ -305,7 +305,7 @@ void menuPrintFromSource(void) {
 #ifdef SD_CD_PIN
     if (isVolumeExist(infoFile.source) != true) {
       resetInfoFile();
-      infoMenu.cur--;
+      infoMenu.active--;
     }
 #endif
     loopProcess();
@@ -318,6 +318,8 @@ MENUITEMS sourceSelItems = {
     // icon                       label
     {
         {ICON_SD_SOURCE, LABEL_TFTSD},
+        {ICON_BACKGROUND, LABEL_BACKGROUND},
+        {ICON_BACKGROUND, LABEL_BACKGROUND},
 #ifdef ONBOARD_SD_SUPPORT
         {ICON_BSD_SOURCE, LABEL_ONBOARDSD},
 #endif
@@ -331,8 +333,6 @@ MENUITEMS sourceSelItems = {
 #endif
         {ICON_BACKGROUND, LABEL_BACKGROUND},
         {ICON_BACKGROUND, LABEL_BACKGROUND},
-        {ICON_BACKGROUND, LABEL_BACKGROUND},
-        {ICON_BACKGROUND, LABEL_BACKGROUND},
         {ICON_BACK, LABEL_BACK},
     }};
 
@@ -340,36 +340,36 @@ void menuPrint(void) {
   KEY_VALUES key_num = KEY_IDLE;
 
   menuDrawPage(&sourceSelItems);
-  while (infoMenu.menu[infoMenu.cur] == menuPrint) {
+  while (infoMenu.menu[infoMenu.active] == menuPrint) {
     key_num = menuKeyGetValue();
     switch (key_num) {
       case KEY_ICON_0:
         infoFile.source = TFT_SD;
-        infoMenu.menu[++infoMenu.cur] = menuPrintFromSource;
-        infoMenu.menu[++infoMenu.cur] = menuPowerOff;
+        infoMenu.menu[++infoMenu.active] = menuPrintFromSource;
+        infoMenu.menu[++infoMenu.active] = menuPowerOff;
         goto selectEnd;
 
 #ifdef ONBOARD_SD_SUPPORT
-      case KEY_ICON_1:
+      case KEY_ICON_3:
         infoFile.source = BOARD_SD;
-        infoMenu.menu[++infoMenu.cur] = menuPrintFromSource;  //TODO: fix here,  onboard sd card PLR feature
+        infoMenu.menu[++infoMenu.active] = menuPrintFromSource;  //TODO: fix here,  onboard sd card PLR feature
         goto selectEnd;
 #endif
 
 #ifdef U_DISK_SUPPROT
 #ifdef ONBOARD_SD_SUPPORT
-      case KEY_ICON_2:
+      case KEY_ICON_4:
 #else
-      case KEY_ICON_1:
+      case KEY_ICON_3:
 #endif
         infoFile.source = TFT_UDISK;
-        infoMenu.menu[++infoMenu.cur] = menuPrintFromSource;
-        infoMenu.menu[++infoMenu.cur] = menuPowerOff;
+        infoMenu.menu[++infoMenu.active] = menuPrintFromSource;
+        infoMenu.menu[++infoMenu.active] = menuPowerOff;
         goto selectEnd;
 #endif
 
       case KEY_ICON_7:
-        infoMenu.cur--;
+        infoMenu.active--;
         return;
 
       default:

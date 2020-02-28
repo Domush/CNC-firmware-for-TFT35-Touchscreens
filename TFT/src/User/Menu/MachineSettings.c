@@ -50,7 +50,7 @@ void menuCustom(void) {
 
   menuDrawPage(&customItems);
 
-  while (infoMenu.menu[infoMenu.cur] == menuCustom) {
+  while (infoMenu.menu[infoMenu.active] == menuCustom) {
     key_num = menuKeyGetValue();
     switch (key_num) {
 #ifdef CUSTOM_0_GCODE
@@ -89,7 +89,7 @@ void menuCustom(void) {
         break;
 #endif
       case KEY_ICON_7:
-        infoMenu.cur--;
+        infoMenu.active--;
         break;
 
       default:
@@ -268,7 +268,7 @@ void menuCustom(void) {
   loaditemsCustomGcode();
   menuDrawListPage(&customItems);
 
-  while (infoMenu.menu[infoMenu.cur] == menuCustom) {
+  while (infoMenu.menu[infoMenu.active] == menuCustom) {
     key_num = menuKeyGetValue();
 
     if (key_num < LISTITEM_PER_PAGE) {
@@ -294,7 +294,7 @@ void menuCustom(void) {
         }
         break;
       case KEY_ICON_7:
-        infoMenu.cur--;
+        infoMenu.active--;
         break;
       default:
         break;
@@ -325,7 +325,7 @@ void menuRGBSettings(void) {
 
   menuDrawPage(&RGBItems);
 
-  while (infoMenu.menu[infoMenu.cur] == menuRGBSettings) {
+  while (infoMenu.menu[infoMenu.active] == menuRGBSettings) {
     key_num = menuKeyGetValue();
     switch (key_num) {
       case KEY_ICON_0:  //Red
@@ -349,7 +349,7 @@ void menuRGBSettings(void) {
         break;
 
       case KEY_ICON_7:
-        infoMenu.cur--;
+        infoMenu.active--;
         break;
 
       default:
@@ -379,19 +379,19 @@ void menuMachineSettings(void) {
 
   menuDrawPage(&machineSettingsItems);
 
-  while (infoMenu.menu[infoMenu.cur] == menuMachineSettings) {
+  while (infoMenu.menu[infoMenu.active] == menuMachineSettings) {
     key_num = menuKeyGetValue();
     switch (key_num) {
       case KEY_ICON_0:
-        infoMenu.menu[++infoMenu.cur] = menuCustom;
+        infoMenu.menu[++infoMenu.active] = menuCustom;
         break;
 
       case KEY_ICON_1:
-        infoMenu.menu[++infoMenu.cur] = menuRGBSettings;
+        infoMenu.menu[++infoMenu.active] = menuRGBSettings;
         break;
 
       case KEY_ICON_2:
-        infoMenu.menu[++infoMenu.cur] = menuSendGcode;
+        infoMenu.menu[++infoMenu.active] = menuSendGcode;
         break;
 
       case KEY_ICON_3:
@@ -399,11 +399,11 @@ void menuMachineSettings(void) {
         break;
 
       case KEY_ICON_4:
-        infoMenu.menu[++infoMenu.cur] = parametersetting;
+        infoMenu.menu[++infoMenu.active] = parametersetting;
         break;
 
       case KEY_ICON_7:
-        infoMenu.cur--;
+        infoMenu.active--;
         break;
 
       default:

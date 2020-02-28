@@ -24,12 +24,6 @@ const ITEM itemIsPause[2] = {
     {ICON_RESUME, LABEL_RESUME},
 };
 
-const ITEM itemM0Pause[2] = {
-    // icon                       label
-    {ICON_PAUSE, LABEL_PAUSE},
-    {ICON_RESUME, LABEL_RESUME},
-};
-
 const ITEM itemIsFinished[2] = {
     // icon                       label
     {ICON_STOP, LABEL_STOP},
@@ -44,7 +38,7 @@ const ITEM itemIsFinished[2] = {
 #define M27_REFRESH 3
 #endif
 
-static PRINTING infoPrinting;
+PRINTING infoPrinting;
 static u16 update_delay = M27_REFRESH * 100;
 
 #ifdef ONBOARD_SD_SUPPORT
@@ -52,8 +46,6 @@ static bool update_waiting = M27_WATCH_OTHER_SOURCES;
 #else
 static bool update_waiting = false;
 #endif
-
-static u8 curIndex = 0;
 
 //
 bool isPrinting(void) {
@@ -84,8 +76,8 @@ void setPrintSize(u32 size) {
 }
 
 //
-void setPrintCur(u32 cur) {
-  infoPrinting.cur = cur;
+void setPrintCur(u32 line) {
+  infoPrinting.currentLine = line;
 }
 
 u8 getPrintProgress(void) {
@@ -100,19 +92,22 @@ void printSetUpdateWaiting(bool isWaiting) {
 }
 
 void startGcodeExecute(void) {
-  routerControl(routerMaxPWM[curIndex]);
+  if (strlen(PRINT_START_GCODE) > 0)
+    storeCmd(PRINT_START_GCODE);
+  routerControl(ROUTER_MAX_PWM);
 }
 
 void endGcodeExecute(void) {
   mustStoreCmd("G90\n");
   routerControl(0);
-  mustStoreCmd(PRINT_END_GCODE);
+  if (strlen(PRINT_END_GCODE) > 0)
+    storeCmd(PRINT_END_GCODE);
 }
 
 //only return gcode file name except path
 //for example:"SD:/test/123.gcode"
 //only return "123.gcode"
-u8* getCurGcodeName(char* path) {
+u8* getGcodeFilename(char* path) {
   int i = strlen(path);
   for (; path[i] != '/' && i > 0; i--) {
   }
@@ -132,7 +127,7 @@ void menuBeforePrinting(void) {
 
       if (size == 0) {
         ExitDir();
-        infoMenu.cur--;
+        infoMenu.active--;
         return;
       }
 
@@ -161,7 +156,7 @@ void menuBeforePrinting(void) {
     case TFT_SD:  // GCode from file on TFT SD
       if (f_open(&infoPrinting.file, infoFile.title, FA_OPEN_EXISTING | FA_READ) != FR_OK) {
         ExitDir();
-        infoMenu.cur--;
+        infoMenu.active--;
         return;
       }
       if (powerFailedCreate(infoFile.title) == false) {
@@ -169,110 +164,94 @@ void menuBeforePrinting(void) {
       powerFailedlSeek(&infoPrinting.file);
 
       infoPrinting.size = f_size(&infoPrinting.file);
-      infoPrinting.cur = infoPrinting.file.fptr;
+      infoPrinting.currentLine = infoPrinting.file.fptr;
       if (infoSettings.send_start_gcode == 1) {
         startGcodeExecute();
       }
       break;
   }
   infoPrinting.printing = true;
-  infoMenu.menu[infoMenu.cur] = menuPrinting;
-  printingItems.title.address = getCurGcodeName(infoFile.title);
+  infoMenu.menu[infoMenu.active] = menuPrinting;
+  printingItems.title.address = getGcodeFilename(infoFile.title);
 }
 
-void resumeToPause(bool is_pause) {
-  if (infoMenu.menu[infoMenu.cur] != menuPrinting) return;  // todo: make sure this runs during popups, too
-  printingItems.items[KEY_ICON_0] = itemIsPause[is_pause];
-  menuDrawItem(&itemIsPause[is_pause], 0);
+void resumeToPause(bool pauseCalled) {
+  if (infoMenu.menu[infoMenu.active] != menuPrinting) return;
+  printingItems.items[KEY_ICON_0] = itemIsPause[pauseCalled];
+  menuDrawItem(&itemIsPause[pauseCalled], 0);
 }
 
-void setM0Pause(bool m0_pause) {
-  infoPrinting.m0_pause = m0_pause;
+void setM0Pause(bool paused) {
+  infoPrinting.m0_pause = paused;
 }
 
-bool setPrintPause(bool is_pause, bool is_m0pause) {
-  static bool pauseLock = false;
-  if (pauseLock) return false;
-  //if (!isPrinting()) return false;
-  if (infoPrinting.pause == is_pause) return false;
+bool setPrintPause(bool pauseCalled) {
+  static bool pauseInProgress = false;
+  extern u8 curRouterSpeed;
+  if (pauseInProgress || infoPrinting.pause == pauseCalled) {
+    return false;
+  } else {
+    pauseInProgress = true;
+  }
 
-  pauseLock = true;
   switch (infoFile.source) {
     case BOARD_SD:
-      infoPrinting.pause = is_pause;
-      if (is_pause) {
-        infoPrinting.routerSpeed = routerGetSpeed(curIndex);
+      infoPrinting.pause = pauseCalled;
+      if (pauseCalled) {
+        curRouterSpeed = infoPrinting.routerSpeed;
         routerControl(0);
         request_M25();
       } else {
-        routerControl(infoPrinting.routerSpeed);
+        routerControl(curRouterSpeed);
         request_M24(0);
       }
       break;
 
     case TFT_UDISK:
     case TFT_SD:
-      infoPrinting.pause = is_pause;
-      if (infoPrinting.pause == true && is_m0pause == false) {
-        while (infoCmd.count != 0) {
+      infoPrinting.pause = pauseCalled;
+      if (pauseCalled) {
+        while (gcodeCommand.count != 0) {
           loopProcess();
         }
       }
 
       bool isCoorRelative = coorGetRelative();
-      static COORDINATE tmp;
+      COORDINATE pauseCoords;
 
-      if (infoPrinting.pause) {
+      if (pauseCalled) {
         // *Restore status before pause
         // *if pause was triggered through M0/M1 then break
-        if (is_m0pause == true) {
-          u8 curRouterSpeed = routerGetSpeed(routerGetCurIndex(0));
-          if (curRouterSpeed > 0) {
-            routerControl(0);
-          }
-          mustStoreCmd("G53 G0 X20 Y200 Z100 F%d\n", SPEED_MOVE_FAST);
-          mustStoreCmd("M0 Replace the bit and press Confirm when finished\n");
-          storeCmd("G0 X0 Y0\n");
-          if (curRouterSpeed > 0) {
-            routerControl(curRouterSpeed);
-          }
-
-          setM0Pause(is_m0pause);
-          popupReminder(textSelect(LABEL_PAUSE), textSelect(LABEL_M0_PAUSE));
-          break;
-        }
-
-        coordinateGetAll(&tmp);
+        curRouterSpeed = infoPrinting.routerSpeed;
+        routerControl(0);
+        coordinateGetAll(&pauseCoords);
         if (isCoorRelative == true) mustStoreCmd("G90\n");
         if (coordinateIsClear()) {
-          mustStoreCmd("G1 Z%.3f F%d\n", tmp.axis[Z_AXIS] + SPINDLE_PAUSE_Z_RAISE, SPINDLE_PAUSE_Z_GANTRYSPEED);
+          mustStoreCmd("G1 Z%.3f F%d\n", pauseCoords.axis[Z_AXIS] + SPINDLE_PAUSE_Z_RAISE, SPINDLE_PAUSE_Z_GANTRYSPEED);
           mustStoreCmd("G1 X%d Y%d F%d\n", SPINDLE_PAUSE_X_POSITION, SPINDLE_PAUSE_Y_POSITION, SPINDLE_PAUSE_XY_GANTRYSPEED);
         }
-        infoPrinting.routerSpeed = routerGetSpeed(curIndex);
-        routerControl(infoPrinting.routerSpeed);
 
         if (isCoorRelative == true) mustStoreCmd("G91\n");
       } else {
-        if (isM0_Pause() == true) {
-          setM0Pause(is_m0pause);
+        if (infoPrinting.m0_pause == true) {
           Serial_Puts(SERIAL_PORT, "M108\n");
-          break;
+          infoPrinting.m0_pause = false;
         }
         if (isCoorRelative == true) mustStoreCmd("G90\n");
 
+        routerControl(curRouterSpeed);
         if (coordinateIsClear()) {
-          mustStoreCmd("G1 X%.3f Y%.3f F%d\n", tmp.axis[X_AXIS], tmp.axis[Y_AXIS], SPINDLE_PAUSE_XY_GANTRYSPEED);
-          mustStoreCmd("G1 Z%.3f F%d\n", tmp.axis[Z_AXIS], SPINDLE_PAUSE_Z_GANTRYSPEED);
+          mustStoreCmd("G1 X%.3f Y%.3f F%d\n", pauseCoords.axis[X_AXIS], pauseCoords.axis[Y_AXIS], SPINDLE_PAUSE_XY_GANTRYSPEED);
+          mustStoreCmd("G1 Z%.3f F%d\n", pauseCoords.axis[Z_AXIS], SPINDLE_PAUSE_Z_GANTRYSPEED);
         }
-        routerControl(infoPrinting.routerSpeed);
-        mustStoreCmd("G1 F%d\n", tmp.gantryspeed);
+        mustStoreCmd("G1 F%d\n", pauseCoords.gantryspeed);
 
         if (isCoorRelative == true) mustStoreCmd("G91\n");
       }
       break;
   }
-  resumeToPause(is_pause);
-  pauseLock = false;
+  resumeToPause(pauseCalled);
+  pauseInProgress = false;
   return true;
 }
 
@@ -296,22 +275,30 @@ void showPrintTime(void) {
 
 void showRouterSpeed(void) {
   //ROUTER - now only F0
-  u8 fs;
+  u8 Router_speed;
 #ifdef SHOW_ROUTER_PERCENTAGE
-  fs = (routerGetSpeed(0) * 100) / 255;
+  Router_speed = (infoPrinting.routerSpeed * 100) / 255;
 #else
-  fs = routerGetSpeed(0);
+  Router_speed = infoPrinting.routerSpeed;
 #endif
 #ifdef SHOW_ROUTER_PERCENTAGE
-  char router_s[15];
-  sprintf(router_s, "Bit:%d%%", fs);
-  GUI_DispString(PRINT_STATUS_ROUTER_X + 3 * BYTE_WIDTH, PRINT_STATUS_SPEED_Y, (u8*)router_s);
+  char text[15];
+  sprintf(text, "Bit:%d%%", Router_speed);
+  GUI_DispString(PRINT_STATUS_ROUTER_X, PRINT_STATUS_SPEED_Y, (u8*)text);
 #else
-  GUI_DispDec(PRINT_STATUS_ROUTER_X + BYTE_WIDTH, PRINT_STATUS_SPEED_Y, fs, 3, LEFT);
+  GUI_DispDec(PRINT_STATUS_ROUTER_X + BYTE_WIDTH, PRINT_STATUS_SPEED_Y, Router_speed, 3, LEFT);
 #endif
 }
 
+void showCNCSpeed(void) {
+  u8 CNC_speed = getCNCSpeedOverride();
+  char text[15];
+  sprintf(text, "CNC:%d%%", CNC_speed);
+  GUI_DispString(PRINT_STATUS_ROUTER_X, PRINT_STATUS_SPEED_Y - BYTE_HEIGHT, (u8*)text);
+}
+
 void showPrintProgress(u8 progress) {
+  // *Show graphical percent complete
   char buf[5];
   const GUI_RECT percentageRect = {PRINT_STATUS_ROUTER_X, PRINT_STATUS_SPEED_Y - 3 * BYTE_HEIGHT, PRINT_STATUS_ROUTER_X + 10 * BYTE_WIDTH, PRINT_STATUS_SPEED_Y - 2 * BYTE_HEIGHT};
   u16 progressX = map(progress, 0, 100, percentageRect.x0, percentageRect.x1);
@@ -321,6 +308,11 @@ void showPrintProgress(u8 progress) {
   // GUI_SetTextMode(GUI_TEXTMODE_TRANS);
   GUI_DispStringInPrect(&percentageRect, (u8*)buf);
   // GUI_SetTextMode(GUI_TEXTMODE_NORMAL);
+
+  // *Show numeric percent complete
+  char text[15];
+  sprintf(text, "Job:%d%%", progress);
+  GUI_DispString(PRINT_STATUS_ROUTER_X, PRINT_STATUS_SPEED_Y - 2 * BYTE_HEIGHT, (u8*)text);
 }
 
 extern SCROLL titleScroll;
@@ -351,7 +343,7 @@ void printingDrawPage(void) {
   // }
   menuDrawPage(&printingItems);
 
-  // i = get_Pre_Icon((char *)getCurGcodeName(infoFile.title));
+  // i = get_Pre_Icon((char *)getGcodeFilename(infoFile.title));
   // if(i != ICON_BACKGROUND)
   //   lcd_frame_display(1*ICON_WIDTH + 1 * SPACE_X + START_X, 0 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y, ICON_WIDTH, ICON_HEIGHT, ICON_ADDR(i));
 }
@@ -369,12 +361,12 @@ void menuPrinting(void) {
   printingDrawPage();
   // printingItems.items[key_pause] = itemIsPause[infoPrinting.pause];
 
-  while (infoMenu.menu[infoMenu.cur] == menuPrinting) {
+  while (infoMenu.menu[infoMenu.active] == menuPrinting) {
     //    Scroll_DispString(&titleScroll, LEFT); //Scroll display file name will take too many CPU cycles
 
     if (infoPrinting.size != 0) {
-      if (infoPrinting.progress != limitValue(0, (uint64_t)infoPrinting.cur * 100 / infoPrinting.size, 100)) {
-        infoPrinting.progress = limitValue(0, (uint64_t)infoPrinting.cur * 100 / infoPrinting.size, 100);
+      if (infoPrinting.progress != limitValue(0, (uint64_t)infoPrinting.currentLine * 100 / infoPrinting.size, 100)) {
+        infoPrinting.progress = limitValue(0, (uint64_t)infoPrinting.currentLine * 100 / infoPrinting.size, 100);
         showPrintProgress(infoPrinting.progress);
       }
     } else {
@@ -393,32 +385,32 @@ void menuPrinting(void) {
     key_num = menuKeyGetValue();
     switch (key_num) {
       case KEY_ICON_0:
-        setPrintPause(!isPause(), false);
+        setPrintPause(!isPause());
         break;
 
       case KEY_ICON_3:
         if (isPrinting())
-          infoMenu.menu[++infoMenu.cur] = menuStopPrinting;
+          infoMenu.menu[++infoMenu.active] = menuStopPrinting;
         else {
           exitPrinting();
-          infoMenu.cur--;
+          infoMenu.active--;
         }
         break;
 
       case KEY_ICON_4:
-        infoMenu.menu[++infoMenu.cur] = menuRouter;
+        infoMenu.menu[++infoMenu.active] = menuRouter;
         break;
 
       case KEY_ICON_5:
-        infoMenu.menu[++infoMenu.cur] = menuSpeed;
+        infoMenu.menu[++infoMenu.active] = menuSpeed;
         break;
 
       case KEY_ICON_6:
-        infoMenu.menu[++infoMenu.cur] = menuBabyStep;
+        infoMenu.menu[++infoMenu.active] = menuBabyStep;
         break;
 
       case KEY_ICON_7:
-        infoMenu.menu[++infoMenu.cur] = menuMove;
+        infoMenu.menu[++infoMenu.active] = menuMove;
         break;
 
       default:
@@ -459,7 +451,7 @@ void completePrinting(void) {
   printingDrawPage();
   if (infoSettings.auto_off)  // Auto shut down after printing
   {
-    infoMenu.menu[++infoMenu.cur] = menuShutDown;
+    infoMenu.menu[++infoMenu.active] = menuShutDown;
   }
 }
 
@@ -488,16 +480,16 @@ void menuStopPrinting(void) {
 
   popupDrawPage(bottomDoubleBtn, textSelect(LABEL_WARNING), textSelect(LABEL_STOP_CNC), textSelect(LABEL_CONFIRM), textSelect(LABEL_CANCEL));
 
-  while (infoMenu.menu[infoMenu.cur] == menuStopPrinting) {
+  while (infoMenu.menu[infoMenu.active] == menuStopPrinting) {
     key_num = KEY_GetValue(2, doubleBtnRect);
     switch (key_num) {
       case KEY_POPUP_CONFIRM:
         abortPrinting();
-        infoMenu.cur -= 2;
+        infoMenu.active -= 2;
         break;
 
       case KEY_POPUP_CANCEL:
-        infoMenu.cur--;
+        infoMenu.active--;
         break;
     }
     loopProcess();
@@ -511,25 +503,20 @@ void menuShutDown(void) {
 
   popupDrawPage(bottomDoubleBtn, textSelect(LABEL_SHUT_DOWN), textSelect(LABEL_WAIT_TEMP_SHUT_DOWN), textSelect(LABEL_FORCE_SHUT_DOWN), textSelect(LABEL_CANCEL));
 
-  for (u8 i = 0; i < ROUTER_NUM; i++) {
-    mustStoreCmd("%s S255\n", routerCmd[i]);
-  }
-  while (infoMenu.menu[infoMenu.cur] == menuShutDown) {
+  while (infoMenu.menu[infoMenu.active] == menuShutDown) {
     key_num = KEY_GetValue(2, doubleBtnRect);
     switch (key_num) {
       case KEY_POPUP_CONFIRM:
         goto shutdown;
 
       case KEY_POPUP_CANCEL:
-        infoMenu.cur--;
+        infoMenu.active--;
         break;
     }
   shutdown:
-    for (u8 i = 0; i < ROUTER_NUM; i++) {
-      mustStoreCmd("%s S0\n", routerCmd[i]);
-    }
+    routerControl(0);
     mustStoreCmd("M81\n");
-    infoMenu.cur--;
+    infoMenu.active--;
     popupReminder(textSelect(LABEL_SHUT_DOWN), textSelect(LABEL_SHUTTING_DOWN));
     loopProcess();
   }
@@ -547,14 +534,14 @@ void getGcodeFromFile(void) {
 
   powerFailedCache(infoPrinting.file.fptr);
 
-  if (infoCmd.count || infoPrinting.pause) return;
+  if (gcodeCommand.count || infoPrinting.pause) return;
 
   if (moveCacheToCmd() == true) return;
 
-  for (; infoPrinting.cur < infoPrinting.size;) {
+  for (; infoPrinting.currentLine < infoPrinting.size;) {
     if (f_read(&infoPrinting.file, &sd_char, 1, &br) != FR_OK) break;
 
-    infoPrinting.cur++;
+    infoPrinting.currentLine++;
 
     //Gcode
     if (sd_char == '\n')  //'\n' is end flag for per command
@@ -562,15 +549,15 @@ void getGcodeFromFile(void) {
       sd_comment_mode = false;  //for new command
       sd_comment_space = true;
       if (sd_count != 0) {
-        infoCmd.queue[infoCmd.index_w].gcode[sd_count++] = '\n';
-        infoCmd.queue[infoCmd.index_w].gcode[sd_count] = 0;  //terminate string
-        infoCmd.queue[infoCmd.index_w].src = SERIAL_PORT;
+        gcodeCommand.queue[gcodeCommand.index_w].gcode[sd_count++] = '\n';
+        gcodeCommand.queue[gcodeCommand.index_w].gcode[sd_count] = 0;  //terminate string
+        gcodeCommand.queue[gcodeCommand.index_w].src = SERIAL_PORT;
         sd_count = 0;  //clear buffer
-        infoCmd.index_w = (infoCmd.index_w + 1) % CMD_MAX_LIST;
-        infoCmd.count++;
+        gcodeCommand.index_w = (gcodeCommand.index_w + 1) % GCODE_QUEUE_MAX;
+        gcodeCommand.count++;
         break;
       }
-    } else if (sd_count >= CMD_MAX_CHAR - 2) {
+    } else if (sd_count >= GCODE_MAX_CHARACTERS - 2) {
     }  //when the command length beyond the maximum, ignore the following bytes
     else {
       if (sd_char == ';')  //';' is comment out flag
@@ -579,12 +566,12 @@ void getGcodeFromFile(void) {
         if (sd_comment_space && (sd_char == 'G' || sd_char == 'M' || sd_char == 'T'))  //ignore ' ' space bytes
           sd_comment_space = false;
         if (!sd_comment_mode && !sd_comment_space && sd_char != '\r')  //normal gcode
-          infoCmd.queue[infoCmd.index_w].gcode[sd_count++] = sd_char;
+          gcodeCommand.queue[gcodeCommand.index_w].gcode[sd_count++] = sd_char;
       }
     }
   }
 
-  if ((infoPrinting.cur >= infoPrinting.size) && isPrinting())  // end of .gcode file
+  if ((infoPrinting.currentLine >= infoPrinting.size) && isPrinting())  // end of .gcode file
   {
     completePrinting();
   }

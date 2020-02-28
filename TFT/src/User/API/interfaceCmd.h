@@ -4,25 +4,26 @@
 #include "stdint.h"
 #include "stdbool.h"
 
-#define CMD_MAX_LIST 20
-#define CMD_MAX_CHAR 100
+#define GCODE_QUEUE_MAX 20
+#define GCODE_MAX_CHARACTERS 100
 
 typedef struct
 {
-  char gcode[CMD_MAX_CHAR];
+  char gcode[GCODE_MAX_CHARACTERS];
   uint8_t src;  // 0: TouchScreen Cmd, 1: Serial Port 2 rx Cmd, 2: Serial Port 3 rx Cmd
 } GCODE;
 
 typedef struct
 {
-  GCODE queue[CMD_MAX_LIST];
+  GCODE queue[GCODE_QUEUE_MAX];
   uint8_t index_r;  // Ring buffer read position
   uint8_t index_w;  // Ring buffer write position
   uint8_t count;    // Count of commands in the queue
 } QUEUE;
 
-extern QUEUE infoCmd;       // Outgoing gcode command
-extern QUEUE infoCacheCmd;  // Cache for gcode commands waiting for infoCmd to empty
+extern QUEUE gcodeCommand;       // Outgoing gcode command
+extern QUEUE gcodeCommandQueue;  // Cache for gcode commands waiting for gcodeCommand to empty
+uint8_t curRouterSpeed;
 
 bool storeCmd(const char* format, ...);
 void mustStoreCmd(const char* format, ...);
@@ -36,7 +37,7 @@ void clearCmdQueue(void);
 void parseQueueCmd(void);
 void sendQueueCmd(void);
 
-void menuM0Pause(const char* m0_title, const char* m0_message);
-void menuChangeBit();
+void menuM0Pause(void);
+void menuChangeBit(void);
 
 #endif

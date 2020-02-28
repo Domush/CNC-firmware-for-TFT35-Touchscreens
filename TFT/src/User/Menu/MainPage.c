@@ -23,23 +23,27 @@ void menuMain(void) {
   GUI_SetBkColor(ST7920_BKCOLOR);
   menuDrawPage(&mainPageItems);
 
-  while (infoMenu.menu[infoMenu.cur] == menuMain) {
+  while (infoMenu.menu[infoMenu.active] == menuMain) {
     key_num = menuKeyGetValue();
     switch (key_num) {
       case KEY_ICON_0:
-        infoMenu.menu[++infoMenu.cur] = menuHome;
+        infoMenu.menu[++infoMenu.active] = menuHome;
         break;
       case KEY_ICON_1:
-        infoMenu.menu[++infoMenu.cur] = menuMove;
+        infoMenu.menu[++infoMenu.active] = menuMove;
         break;
       case KEY_ICON_2:
-        infoMenu.menu[++infoMenu.cur] = menuHoming;
+        infoMenu.menu[++infoMenu.active] = menuJobSetup;
         break;
       case KEY_ICON_3:
-        infoMenu.menu[++infoMenu.cur] = menuPrint;
+        if (infoPrinting.printing) {
+          infoMenu.menu[++infoMenu.active] = menuPrinting;
+        } else {
+          infoMenu.menu[++infoMenu.active] = menuPrint;
+        }
         break;
       case KEY_ICON_4:
-        infoMenu.menu[++infoMenu.cur] = menuRouter;
+        infoMenu.menu[++infoMenu.active] = menuRouter;
         break;
       case KEY_ICON_5: {
         storeCmd("M18 X Y\n");  //disable X and Y motors
@@ -48,7 +52,7 @@ void menuMain(void) {
         storeCmd("M18 Z\n");  //disable Z motors
       } break;
       case KEY_ICON_7:
-        infoMenu.menu[++infoMenu.cur] = menuSettings;
+        infoMenu.menu[++infoMenu.active] = menuSettings;
         break;
       default:
         break;

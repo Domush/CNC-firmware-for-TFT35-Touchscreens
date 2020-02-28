@@ -7,21 +7,18 @@ static u8 ack_cur_src = SERIAL_PORT;
 static u16 connectionRetryDelay = 2;  // # of seconds to wait before retrying to connect
 static u16 connectionRetryTime = 0;   // stored timestamp for reconnect attempt
 int MODEselect;
-// Ignore reply "echo:" message (don't display in popup menu)
+
+// Ignore reply "echo:" message (Don't display as a popup)
 const char *const ignoreEcho[] = {
     "Now fresh file:",
     "Probe Z Offset:",
-    // "//Action:",
-    // "//action:",
-    // "action:",
-    // "M0/1 Break"
 };
 
 void setCurrentAckSrc(uint8_t src) {
   ack_cur_src = src;
 }
 
-static char ack_seen(const char *str) {
+static char responseMatch(const char *str) {
   u16 i;
   for (ack_index = 0; ack_index < ACK_MAX_SIZE && dmaL2Cache[ack_index] != 0; ack_index++) {
     for (i = 0; str[i] != 0 && dmaL2Cache[ack_index + i] != 0 && dmaL2Cache[ack_index + i] == str[i]; i++) {
@@ -34,7 +31,7 @@ static char ack_seen(const char *str) {
   return false;
 }
 
-static char ack_cmp(const char *str) {
+static char responseCompare(const char *str) {
   u16 i;
   for (i = 0; i < ACK_MAX_SIZE && str[i] != 0 && dmaL2Cache[i] != 0; i++) {
     if (str[i] != dmaL2Cache[i])
@@ -44,7 +41,7 @@ static char ack_cmp(const char *str) {
   return true;
 }
 
-static float ack_value() {
+static float responseValue() {
   return (strtod(&dmaL2Cache[ack_index], NULL));
 }
 /*
@@ -59,10 +56,20 @@ static float ack_second_value() {
 }
  */
 void ackPopupInfo(const char *info) {
-  if (infoMenu.menu[infoMenu.cur] == parametersetting) return;
-  if (infoMenu.menu[infoMenu.cur] == menuTerminal) return;
-
-  popupReminder((u8 *)info, (u8 *)dmaL2Cache + ack_index);
+  char *popup_title;
+  char *popup_message;
+  if (infoMenu.menu[infoMenu.active] == parametersetting) return;
+  if (infoMenu.menu[infoMenu.active] == menuTerminal) return;
+  if (strstr((char *)dmaL2Cache + ack_index, "//action:prompt_end")) {
+    strcpy(popup_title, info);
+    strcpy(popup_message, (const char *)dmaL2Cache + ack_index);
+    if (infoMenu.menu[infoMenu.active] != menuM0Pause) {
+      infoMenu.menu[++infoMenu.active] = menuM0Pause;
+    }
+    // menuM0Pause((char *)info, (char *)dmaL2Cache + ack_index);
+  } else {
+    popupReminder((u8 *)info, (u8 *)dmaL2Cache + ack_index);
+  }
 }
 
 void syncL2CacheFromL1(uint8_t port) {
@@ -83,7 +90,7 @@ void parseACK(void) {
 
   if (infoHost.connected == false)  //not connected to Marlin
   {
-    if ((!ack_seen("T:") && !ack_seen("T0:")) || !ack_seen("ok")) {
+    if ((!responseMatch("T:") && !responseMatch("T0:")) || !responseMatch("ok")) {
       if (OS_GetTime() - connectionRetryDelay > connectionRetryTime) {
         connectionRetryTime = OS_GetTime();
         mustStoreCmd("M105\n");  // Attempts to get a "wake up" response to trigger a connection
@@ -97,19 +104,19 @@ void parseACK(void) {
   }
 
   // GCode command response
-  if (requestCommandInfo.inWaitResponse && ack_seen(requestCommandInfo.startMagic)) {
+  if (requestCommandInfo.inWaitResponse && responseMatch(requestCommandInfo.startMagic)) {
     requestCommandInfo.inResponse = true;
     requestCommandInfo.inWaitResponse = false;
   }
   if (requestCommandInfo.inResponse) {
-    if (strlen(requestCommandInfo.cmd_rev_buf) + strlen(dmaL2Cache) < CMD_MAX_REV) {
-      strcat(requestCommandInfo.cmd_rev_buf, dmaL2Cache);
+    if (strlen(requestCommandInfo.response) + strlen(dmaL2Cache) < RESPONSE_MAX_CHARS) {
+      strcat(requestCommandInfo.response, dmaL2Cache);
 
-      if (ack_seen(requestCommandInfo.replyError)) {
+      if (responseMatch(requestCommandInfo.replyError)) {
         requestCommandInfo.done = true;
         requestCommandInfo.inResponse = false;
         requestCommandInfo.inError = true;
-      } else if (ack_seen(requestCommandInfo.stopMagic)) {
+      } else if (responseMatch(requestCommandInfo.stopMagic)) {
         requestCommandInfo.done = true;
         requestCommandInfo.inResponse = false;
       }
@@ -118,65 +125,65 @@ void parseACK(void) {
       requestCommandInfo.inResponse = false;
       ackPopupInfo(replyError);
     }
-    infoHost.wait = false;
+    infoHost.waiting = false;
     goto parse_end;
   }
   // end
 
-  if (ack_cmp("ok\n")) {
-    infoHost.wait = false;
+  if (responseCompare("ok\n")) {
+    infoHost.waiting = false;
   } else {
-    if (ack_seen("ok")) {
-      infoHost.wait = false;
+    if (responseMatch("ok")) {
+      infoHost.waiting = false;
     }
-    if (ack_seen("X:")) {
-      storegantry(0, ack_value());
-      // storeCmd("M118 %d\n", ack_value());  //update X position
-      if (ack_seen("Y:")) {
-        storegantry(1, ack_value());
-        // storeCmd("M118 %d\n", ack_value());  //update Y position
-        if (ack_seen("Z:")) {
-          // storeCmd("M118 %d\n", ack_value());  //update Z position
-          storegantry(2, ack_value());
+    if (responseMatch("X:")) {
+      storegantry(0, responseValue());
+      // storeCmd("M118 %d\n", responseValue());  //update X position
+      if (responseMatch("Y:")) {
+        storegantry(1, responseValue());
+        // storeCmd("M118 %d\n", responseValue());  //update Y position
+        if (responseMatch("Z:")) {
+          // storeCmd("M118 %d\n", responseValue());  //update Z position
+          storegantry(2, responseValue());
         }
       }
-    } else if (ack_seen("Mean:")) {
+    } else if (responseMatch("Mean:")) {
       popupReminder((u8 *)"Repeatability Test", (u8 *)dmaL2Cache + ack_index - 5);
-      //popupReminder((u8* )"Standard Deviation", (u8 *)&infoCmd.queue[infoCmd.index_r].gcode[5]);
-    } else if (ack_seen("Probe Offset")) {
-      if (ack_seen("Z")) {
-        setCurrentOffset(ack_value());
+      //popupReminder((u8* )"Standard Deviation", (u8 *)&gcodeCommand.queue[gcodeCommand.index_r].gcode[5]);
+    } else if (responseMatch("Probe Offset")) {
+      if (responseMatch("Z")) {
+        setCurrentOffset(responseValue());
       }
-    } else if (ack_seen(replyEcho) && ack_seen(replyBusy) && ack_seen("processing")) {
+    } else if (responseMatch(replyEcho) && responseMatch(replyBusy) && responseMatch("processing")) {
       busyIndicator(STATUS_BUSY);
-    } else if (ack_seen(replyEcho) && ack_seen(replyBusy) && ack_seen("paused for user")) {
+    } else if (responseMatch(replyEcho) && responseMatch(replyBusy) && responseMatch("paused for user")) {
       goto parse_end;
-    } else if (ack_seen("X driver current: ")) {
-      Get_parameter_value[0] = ack_value();
+    } else if (responseMatch("X driver current: ")) {
+      Get_parameter_value[0] = responseValue();
 
-      if (ack_seen("Y driver current: "))
-        Get_parameter_value[1] = ack_value();
+      if (responseMatch("Y driver current: "))
+        Get_parameter_value[1] = responseValue();
 
-      if (ack_seen("Z driver current: "))
-        Get_parameter_value[2] = ack_value();
+      if (responseMatch("Z driver current: "))
+        Get_parameter_value[2] = responseValue();
 
-    } else if (ack_seen("M92 X")) {
-      Get_parameter_value[3] = ack_value();
+    } else if (responseMatch("M92 X")) {
+      Get_parameter_value[3] = responseValue();
 
-      if (ack_seen("Y"))
-        Get_parameter_value[4] = ack_value();
+      if (responseMatch("Y"))
+        Get_parameter_value[4] = responseValue();
 
-      if (ack_seen("Z"))
-        Get_parameter_value[5] = ack_value();
+      if (responseMatch("Z"))
+        Get_parameter_value[5] = responseValue();
 
     }
 #ifdef ONBOARD_SD_SUPPORT
-    else if (ack_seen(replySDNotPrinting) && infoMenu.menu[infoMenu.cur] == menuPrinting) {
+    else if (responseMatch(replySDNotPrinting) && infoMenu.menu[infoMenu.active] == menuPrinting) {
       infoHost.printing = false;
       completePrinting();
-    } else if (ack_seen(replySDPrinting)) {
-      if (infoMenu.menu[infoMenu.cur] != menuPrinting && !infoHost.printing) {
-        infoMenu.menu[++infoMenu.cur] = menuPrinting;
+    } else if (responseMatch(replySDPrinting)) {
+      if (infoMenu.menu[infoMenu.active] != menuPrinting && !infoHost.printing) {
+        infoMenu.menu[++infoMenu.active] = menuPrinting;
         infoHost.printing = true;
       }
       // Parsing printing data
@@ -187,24 +194,19 @@ void parseACK(void) {
       //      powerFailedCache(position);
     }
 #endif
-    else if (ack_seen(replyError)) {
+    else if (responseMatch(replyError)) {
       ackPopupInfo(replyError);
-    } else if (ack_seen(replyEcho)) {
-      // storeCmd("M118 E1 Full Message:%d\n", dmaL2Cache);  //debug pause message
+    } else if (responseMatch(replyEcho)) {
       for (u8 i = 0; i < COUNT(ignoreEcho); i++) {
         if (strstr(dmaL2Cache, ignoreEcho[i])) {
-          // storeCmd("M118 E1 Ignore triggered:%d\n", ignoreEcho[i]);  //debug pause message
-          /* Example response message:
-          wait\necho:Load V-Bit -  0.5\" Dia., then Pos@ 0:0:1mm\r\n//action:prompt_end\n//action:prompt_begin M0/1 Break Called\n//action:prompt_button Continue\n//action:prompt_show\n\000t\nwait\n
-          */
           goto parse_end;
         }
       }
       ackPopupInfo(replyEcho);
     }
   }
-  if (ack_seen(" F0:")) {
-    routerSetSpeed(0, ack_value());
+  if (responseMatch(" F0:")) {
+    routerControl(responseValue());
   }
 
 parse_end:

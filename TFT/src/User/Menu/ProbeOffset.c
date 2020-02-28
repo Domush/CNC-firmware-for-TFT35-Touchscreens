@@ -78,7 +78,7 @@ void menuZeroAxis(void) {
   encoderPosition = 0;
 #endif
 
-  while (infoMenu.menu[infoMenu.cur] == menuZeroAxis) {
+  while (infoMenu.menu[infoMenu.active] == menuZeroAxis) {
     key_num = menuKeyGetValue();
     switch (key_num) {
       case KEY_ICON_0:
@@ -106,7 +106,7 @@ void menuZeroAxis(void) {
           zero_all_value = 0.0f;
         break;
       case KEY_ICON_7:
-        infoMenu.cur--;
+        infoMenu.active--;
         break;
       default:
 #if LCD_ENCODER_SUPPORT

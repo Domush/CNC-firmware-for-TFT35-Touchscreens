@@ -11,9 +11,9 @@
 typedef struct
 {
   float axis[TOTAL_AXIS];
-  u32 gantryspeed;
-  u16 speed;
-  u16 router[ROUTER_NUM];
+  u8 gantryspeed;
+  u8 speed;
+  u8 routerSpeed;
   u32 offset;
   bool relative;
 } BREAK_POINT;
