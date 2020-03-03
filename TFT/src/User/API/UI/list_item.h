@@ -139,9 +139,9 @@ extern char* dynamic_label[LISTITEM_PER_PAGE];
 #define MAT_GREEN 0x1DC4
 #define MAT_BLUE 0x24BD
 #define MAT_ORANGE 0xF3A0
-#define MATT_DARKGRAY 0x52AA
+#define MAT_DARKGRAY 0x52AA
 #define MAT_LOWWHITE 0xCE79
-#define MATT_PURPLE 0x9135
+#define MAT_PURPLE 0x9135
 
 //#define LABEL_DYNAMIC 12345 //just random number for reference
 

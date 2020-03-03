@@ -87,13 +87,13 @@ uint8_t LCD_ReadTouch(void) {
 #endif
 
 #if LCD_ENCODER_SUPPORT
-void Touch_Sw(uint8_t num) {
-  if (num == 1 || num == 2 || num == 3) {
+void Touch_Sw(uint8_t value) {
+  if (value == 1 || value == 2 || value == 3) {
     GPIO_InitSet(LCD_BTN_PIN, MGPIO_MODE_OUT_PP, 0);
     GPIO_InitSet(LCD_ENCA_PIN, MGPIO_MODE_OUT_PP, 0);
     GPIO_InitSet(LCD_ENCB_PIN, MGPIO_MODE_OUT_PP, 0);
   }
-  switch (num) {
+  switch (value) {
     case 0:
       break;
     case 1:

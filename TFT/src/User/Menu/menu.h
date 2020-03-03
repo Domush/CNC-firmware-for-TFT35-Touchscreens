@@ -34,27 +34,25 @@ typedef union {
   uint8_t *address;
 } LABEL;
 
-typedef struct
-{
+typedef struct {
   uint16_t icon;
   LABEL label;
 } ITEM;
 
-typedef struct
-{
+typedef struct {
   LABEL title;
   ITEM items[ITEM_PER_PAGE];
 } MENUITEMS;
 
 typedef enum {
-  STATUS_IDLE = 0,
-  STATUS_BUSY,
-  STATUS_UNCONNECT,
-  STATUS_NORMAL
-} SYS_STATUS;
+  TIMED_STATUS = 0,
+  TIMED_INFO,
+  TIMED_WARNNG,
+  TIMED_ERROR,
+  TIMED_CRITICAL
+} MESSAGE_TYPE;
 
-typedef struct
-{
+typedef struct {
   GUI_RECT rect;
   uint32_t time;
   uint8_t status;
@@ -69,32 +67,31 @@ typedef enum {
   LIST_CUSTOMVALUE,
 } LISTITEM_TYPE;
 
-typedef struct
-{
+typedef struct {
   uint16_t icon;
   LISTITEM_TYPE itemType;
   LABEL titlelabel;
   LABEL valueLabel;
 } LISTITEM;
 
-typedef struct
-{
+typedef struct {
   LABEL title;
-  //uint16_t titleIconChar;
   LISTITEM items[ITEM_PER_PAGE];
 } LISTITEMS;
 
+typedef struct {
+  char *message;
+  uint16_t timeout;
+  MESSAGE_TYPE type;
+} TIMEDMESSAGE;
+
 extern const GUI_RECT exhibitRect;
+
 #define CENTER_Y ((exhibitRect.y1 - exhibitRect.y0) / 2 + exhibitRect.y0)
 #define CENTER_X ((exhibitRect.x1 - exhibitRect.x0 - BYTE_WIDTH) / 2 + exhibitRect.x0)
 #define LISTITEM_WIDTH (LCD_WIDTH - (3 * START_X) - LIST_ICON_WIDTH)
 #define LISTITEM_HEIGHT ((LCD_HEIGHT - ICON_START_Y - START_X) / 5)
 #define LISTICON_SPACE_Y ((LCD_HEIGHT - ICON_START_Y - START_X - (3 * LIST_ICON_HEIGHT)) / 2)
-
-void reminderMessage(int16_t inf, SYS_STATUS status);
-void volumeReminderMessage(int16_t inf, SYS_STATUS status);
-
-void busyIndicator(SYS_STATUS status);
 
 void GUI_RestoreColorDefault(void);
 void menuDrawItem(const ITEM *menuItem, uint8_t positon);
@@ -108,8 +105,16 @@ void itemDrawIconPress(uint8_t positon, uint8_t is_press);
 KEY_VALUES menuKeyGetValue(void);
 GUI_POINT getIconStartPoint(int index);
 
-void loopBackEnd(void);
-void loopFrontEnd(void);
-void loopProcess(void);
+void timedMessage(uint8_t delay_secs, MESSAGE_TYPE type, char *string, ...);
+void timedMessageExpire(void);
+
+void processGcode(void);
+
+void gcodeQueueStatus(void);
+
+void drawXYZ(void);
+
+void updateScreen(void);
+void runUpdateLoop(void);
 
 #endif

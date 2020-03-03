@@ -4,8 +4,8 @@
 #include "stdint.h"
 #include "stdbool.h"
 
-#define GCODE_QUEUE_MAX 20
-#define GCODE_MAX_CHARACTERS 100
+#define GCODE_QUEUE_MAX 2
+#define GCODE_MAX_CHARACTERS 150
 
 typedef struct
 {
@@ -16,9 +16,9 @@ typedef struct
 typedef struct
 {
   GCODE queue[GCODE_QUEUE_MAX];
-  uint8_t index_r;  // Ring buffer read position
-  uint8_t index_w;  // Ring buffer write position
-  uint8_t count;    // Count of commands in the queue
+  uint8_t readIndex;   // Ring buffer read position
+  uint8_t writeIndex;  // Ring buffer write position
+  uint8_t count;       // Count of commands in the queue
 } QUEUE;
 
 extern QUEUE gcodeCommand;       // Outgoing gcode command
@@ -35,7 +35,7 @@ bool moveCacheToCmd(void);
 void clearCmdQueue(void);
 
 void parseQueueCmd(void);
-void sendQueueCmd(void);
+void sendGcodeCommands(void);
 
 void menuM0Pause(void);
 void menuChangeBit(void);

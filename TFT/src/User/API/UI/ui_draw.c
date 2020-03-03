@@ -42,6 +42,7 @@ void ICON_ReadDisplay(u16 sx, u16 sy, u8 icon) {
 
 //directly draw BMP file to lcd (pos - GUI_POINT(top left corner of image location on lcd), bmp: path of bmp file)
 bool bmp_DirectDisplay(GUI_POINT pos, char *bmp) {
+  infoPrinting.m0_pause = true;
   FIL bmpFile;
   char magic[2];
   int w, h, bytePerLine;
@@ -74,24 +75,29 @@ bool bmp_DirectDisplay(GUI_POINT pos, char *bmp) {
     f_close(&bmpFile);
     return false;
   }
+  int adjSizeX;
+  int adjSizeY;
+  adjSizeX = w / 100;  // * h / w;
+  adjSizeY = h / 100;
   bpp >>= 3;
   bytePerLine = w * bpp;
   if (bytePerLine % 4 != 0)  //bmp
     bytePerLine = (bytePerLine / 4 + 1) * 4;
 
-  for (int j = 0; j < h; j++) {
+  for (int j = 0; j < h; j += adjSizeY) {
     f_lseek(&bmpFile, offset + (h - j - 1) * bytePerLine);
-    for (int i = 0; i < w; i++) {
+    for (int i = 0; i < w; i += adjSizeX) {
       f_read(&bmpFile, (char *)&lcdcolor, bpp, &mybr);
 
       pix.RGB.r = lcdcolor[2] >> 3;
       pix.RGB.g = lcdcolor[1] >> 2;
       pix.RGB.b = lcdcolor[0] >> 3;
 
-      GUI_DrawPixel((pos.x + i), (pos.y + j), pix.color);
+      GUI_DrawPixel((pos.x - 5 + i / adjSizeX), (pos.y - 5 + j / adjSizeY), pix.color);
     }
   }
   f_close(&bmpFile);
+  infoPrinting.m0_pause = false;
   return true;
 }
 

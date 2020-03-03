@@ -2,7 +2,7 @@
 #include "includes.h"
 
 // dma rx buffer
-DMA_CIRCULAR_BUFFER dmaL1Data[_USART_CNT];
+DMA_CIRCULAR_BUFFER cncIncoming[_USART_CNT];
 
 // Config for USART Channel
 //USART1 RX DMA2 Channel4 Steam2/5
@@ -40,7 +40,7 @@ void Serial_DMA_Config(uint8_t port) {
   cfg->uart->CR3 |= 1 << 6;  // DMA enable receiver
 
   cfg->dma_stream->PAR = (u32)(&cfg->uart->DR);
-  cfg->dma_stream->M0AR = (u32)(dmaL1Data[port].cache);
+  cfg->dma_stream->M0AR = (u32)(cncIncoming[port].cache);
   cfg->dma_stream->NDTR = DMA_TRANS_LEN;
 
   cfg->dma_stream->CR = cfg->dma_channel << 25;
@@ -55,17 +55,17 @@ void Serial_DMA_Config(uint8_t port) {
 }
 
 void Serial_Config(uint8_t port, u32 baud) {
-  dmaL1Data[port].rIndex = dmaL1Data[port].wIndex = 0;
-  dmaL1Data[port].cache = malloc(DMA_TRANS_LEN);
-  while (!dmaL1Data[port].cache)
+  cncIncoming[port].rIndex = cncIncoming[port].wIndex = 0;
+  cncIncoming[port].cache = malloc(DMA_TRANS_LEN);
+  while (!cncIncoming[port].cache)
     ;                                       // malloc failed
   USART_Config(port, baud, USART_IT_IDLE);  // IDLE interrupt
   Serial_DMA_Config(port);
 }
 
 void Serial_DeConfig(uint8_t port) {
-  free(dmaL1Data[port].cache);
-  dmaL1Data[port].cache = NULL;
+  free(cncIncoming[port].cache);
+  cncIncoming[port].cache = NULL;
   Serial[port].dma_stream->CR &= ~(1 << 0);  // Disable DMA
   Serial_DMAClearFlag(port);
   USART_DeConfig(port);
@@ -131,9 +131,9 @@ void USART_IRQHandler(uint8_t port) {
     Serial[port].uart->SR;
     Serial[port].uart->DR;
 
-    dmaL1Data[port].wIndex = DMA_TRANS_LEN - Serial[port].dma_stream->NDTR;
-    uint16_t wIndex = (dmaL1Data[port].wIndex == 0) ? DMA_TRANS_LEN : dmaL1Data[port].wIndex;
-    if (dmaL1Data[port].cache[wIndex - 1] == '\n')  // Receive completed
+    cncIncoming[port].wIndex = DMA_TRANS_LEN - Serial[port].dma_stream->NDTR;
+    uint16_t wIndex = (cncIncoming[port].wIndex == 0) ? DMA_TRANS_LEN : cncIncoming[port].wIndex;
+    if (cncIncoming[port].cache[wIndex - 1] == '\n')  // Receive completed
     {
       infoHost.rx_ok[port] = true;
     }

@@ -171,7 +171,7 @@ void menuPowerOff(void) {
         infoMenu.active--;
       }
 #endif
-      loopProcess();
+      runUpdateLoop();
     }
   } else {
     infoMenu.active--;

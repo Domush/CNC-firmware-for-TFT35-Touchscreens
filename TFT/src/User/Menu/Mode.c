@@ -34,16 +34,12 @@ void infoMenuSelect(void) {
       GUI_SetColor(FONT_COLOR);
       GUI_SetBkColor(BACKGROUND_COLOR);
       infoMenu.menu[infoMenu.active] = menuMain;  // Main menu as default screen on boot
-#ifdef SHOW_BTT_BOOTSCREEN
       u32 startUpTime = OS_GetTime();
+      // *Display logo for 4 seconds
       LOGO_ReadDisplay();
-      while (OS_GetTime() - startUpTime < 400)  //Display 4s logo
-      {
-        loopProcess();
+      while (OS_GetTime() - startUpTime < 400) {
+        runUpdateLoop();
       }
-#endif
-
-      reminderMessage(LABEL_UNCONNECTED, STATUS_UNCONNECT);  // reset connect status
       break;
     }
 
@@ -113,7 +109,7 @@ void menuMode(void) {
       break;
     }
     if (encoderPosition) {
-      nowMode = limitValue(0, nowMode + encoderPosition, modeRadio.num - 1);
+      nowMode = limitValue(0, nowMode + encoderPosition, modeRadio.value - 1);
       selectmode(nowMode);
       encoderPosition = 0;
     }

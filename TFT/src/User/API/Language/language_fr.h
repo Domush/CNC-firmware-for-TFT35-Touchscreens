@@ -17,7 +17,7 @@
 #define FR_RGB_OFF "LED Off"
 #define FR_GCODE "Gcode"
 #define FR_CUSTOM "Custom"
-#define FR_LEVELING "Niveaux"
+#define FR_JOBSETUP "Job Setup"
 #define FR_DISABLE_XY "Point 1"
 #define FR_DISABLE_Z "Point 2"
 #define FR_POINT_3 "Point 3"
@@ -80,7 +80,7 @@
 #define FR_Z_HOME "Home Z"
 #define FR_COORD_1 "Coord 1"
 #define FR_COORD_2 "Coord 2"
-#define FR_COORD_3 "Coord 3"
+#define FR_X0Y0 "G0 X0,Y0"
 #define FR_001_MM "0.01mm"
 #define FR_01_MM "0.1mm"
 #define FR_1_MM "1mm"
@@ -124,7 +124,7 @@
 #define FR_EMERGENCYSTOP "Arrêt d'urgence"
 #define FR_TOUCH_TO_EXIT "Toucher n'importe où pour sortir"
 #define FR_MAINMENU "Menu"
-#define FR_WAIT_TEMP_SHUT_DOWN "Veuillez, patientez que la température de la buse soit inférieure à" STRINGIFY(AUTO_SHUT_DOWN_MAXTEMP) "�?"  // Wait for the temperature of hotend to be lower than 50�?
+#define FR_WAIT_TEMP_SHUT_DOWN "Veuillez, patientez que la température de la buse soit inférieure à" STRINGIFY(AUTO_SHUT_DOWN_MAXTEMP) "�?"  // Wait for the temperature of hotend to be lower than 50�?
 #define FR_FORCE_SHUT_DOWN "Forcer Extinction"
 #define FR_SHUTTING_DOWN "Extinction en cours..."
 #define FR_ON "ON"

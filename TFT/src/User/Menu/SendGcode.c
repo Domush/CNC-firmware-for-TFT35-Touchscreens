@@ -203,7 +203,7 @@ void menuSendGcode(void) {
       GUI_DispStringInPrect(&gcodeRect, (u8 *)gcodeBuf);
     }
 
-    loopBackEnd();
+    processGcode();
   }
   GUI_RestoreColorDefault();
 }
@@ -211,7 +211,7 @@ void menuSendGcode(void) {
 #define TERMINAL_MAX_CHAR (LCD_WIDTH / BYTE_WIDTH * (LCD_HEIGHT - BYTE_HEIGHT) / BYTE_HEIGHT)
 
 char terminalBuf[TERMINAL_MAX_CHAR];
-void sendGcodeTerminalCache(char *serial_text, TERMINAL_SRC src) {
+void sendGcodeTerminalCache(char *serial_text, COMMAND_SOURCE src) {
   if (strstr(serial_text, (const char *)"wait") && src) return;
   const char *const terminalSign[] = {"Sent: ", "Rcv: "};
   // if (infoMenu.menu[infoMenu.active] != menuSendGcode && infoMenu.menu[infoMenu.active] != menuTerminal) return;
@@ -273,7 +273,7 @@ void menuTerminal(void) {
       lastTerminalIndex += info.bytes;
     }
 
-    loopBackEnd();
+    processGcode();
   }
   GUI_RestoreColorDefault();
 }
@@ -290,7 +290,7 @@ static char *last_sent_text;
  * @param	terminal_src	src
  * @return	void
  */
-void showGcodeStatus(char *serial_text, TERMINAL_SRC src) {
+void showGcodeStatus(char *serial_text, COMMAND_SOURCE src) {
   // *Disable on pages that need the extra space
   if (infoMenu.menu[infoMenu.active] == menuSettings ||
       infoMenu.menu[infoMenu.active] == menuFeatureSettings ||
@@ -337,9 +337,9 @@ void showGcodeStatus(char *serial_text, TERMINAL_SRC src) {
     } else {
       last_rcv_text = final_text;
     }
-    begin_x = LCD_WIDTH / 2;
+    begin_x = (LCD_WIDTH / 3) * 2;
     end_x = LCD_WIDTH;
-    width_x = LCD_WIDTH / 2 - BYTE_WIDTH - BYTE_WIDTH * strlen(prefix[src]);
+    width_x = (LCD_WIDTH / 3) - BYTE_WIDTH - BYTE_WIDTH * strlen(prefix[src]);
 
   } else {  // *else display text in the Sent section
     if (last_sent_text == final_text) {
@@ -348,8 +348,8 @@ void showGcodeStatus(char *serial_text, TERMINAL_SRC src) {
       last_sent_text = final_text;
     }
     begin_x = 0;
-    end_x = LCD_WIDTH / 2;
-    width_x = LCD_WIDTH / 2 - BYTE_WIDTH - BYTE_WIDTH * strlen(prefix[src]);
+    end_x = (LCD_WIDTH / 3) * 2;
+    width_x = (LCD_WIDTH / 3) * 2 - BYTE_WIDTH - BYTE_WIDTH * strlen(prefix[src]);
   }
   GUI_ClearRect(begin_x, BYTE_HEIGHT, end_x, BYTE_HEIGHT * 2);  // *clear the previous status
   GUI_SetColor(GRAY);

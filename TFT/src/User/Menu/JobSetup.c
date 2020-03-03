@@ -13,7 +13,7 @@ const MENUITEMS jobSetupItems = {
         {ICON_ZERO_ALL, LABEL_ZERO_ALL},
         {ICON_HOME, LABEL_COORD_1},
         {ICON_HOME, LABEL_COORD_2},
-        {ICON_HOME, LABEL_COORD_3},
+        {ICON_HOME, LABEL_X0Y0},
         {ICON_BACK, LABEL_BACK},
     }};
 
@@ -26,32 +26,43 @@ void menuJobSetup(void) {
   while (infoMenu.menu[infoMenu.active] == menuJobSetup) {
     key_num = menuKeyGetValue();
     switch (key_num) {
-      case KEY_ICON_0:  // Home X
+      case KEY_ICON_0:  // Zero X
+        infoPrinting.coordSpace = 54;
+        storeCmd("G%d\n", infoPrinting.coordSpace);
+        timedMessage(2, TIMED_INFO, "Zeroing X axis");
         storeCmd("G92 X0\n");
         break;
-      case KEY_ICON_1:  // Home Y
+      case KEY_ICON_1:  // Zero Y
+        infoPrinting.coordSpace = 54;
+        storeCmd("G%d\n", infoPrinting.coordSpace);
+        timedMessage(2, TIMED_INFO, "Zeroing Y axis");
         storeCmd("G92 Y0\n");
         break;
-      case KEY_ICON_2:  // Home Z
+      case KEY_ICON_2:  // Zero Z
+        infoPrinting.coordSpace = 54;
+        storeCmd("G%d\n", infoPrinting.coordSpace);
+        timedMessage(2, TIMED_INFO, "Zeroing Z axis");
         storeCmd("G92 Z0\n");
         break;
-      case KEY_ICON_3:  // Home all
+      case KEY_ICON_3:  // Zero all
+        infoPrinting.coordSpace = 54;
+        storeCmd("G%d\n", infoPrinting.coordSpace);
+        timedMessage(2, TIMED_INFO, "Zeroing all axes");
         storeCmd("G92 X0 Y0 Z0\n");
         break;
       case KEY_ICON_4:  // Change to Machine Coord Space (G53)
         infoPrinting.coordSpace = 53;
+        timedMessage(2, TIMED_INFO, "Coord set 1");
         storeCmd("G%d\n", infoPrinting.coordSpace);
-        // routerControl(0);
         break;
       case KEY_ICON_5:  // Change to Coord Space 2 (G54)
+        timedMessage(2, TIMED_INFO, "Coord set 2");
         infoPrinting.coordSpace = 54;
         storeCmd("G%d\n", infoPrinting.coordSpace);
-        // routerChangeBit();
         break;
-      case KEY_ICON_6:  // Change to Coord Space 3 (G55)
-        infoPrinting.coordSpace = 55;
-        storeCmd("G%d\n", infoPrinting.coordSpace);
-        // routerControl(255);
+      case KEY_ICON_6:  // Move to X0,Y0
+        timedMessage(2, TIMED_INFO, "Moving to X0,Y0");
+        storeCmd("G0 X0 Y0\n");
         break;
       case KEY_ICON_7:  // Back
         infoMenu.active--;
@@ -59,13 +70,13 @@ void menuJobSetup(void) {
       default:
         break;
     }
-    loopProcess();
+    runUpdateLoop();
   }
 }
 
 const MENUITEMS manualLevelingItems = {
     // title
-    LABEL_LEVELING,
+    LABEL_JOBSETUP,
     // icon                        label
     {
         {ICON_DISABLE_XY, LABEL_DISABLE_XY},
@@ -117,6 +128,6 @@ void menuManualLeveling(void) {
       default:
         break;
     }
-    loopProcess();
+    runUpdateLoop();
   }
 }

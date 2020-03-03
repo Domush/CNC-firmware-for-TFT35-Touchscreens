@@ -40,6 +40,6 @@ void ExitDir(void);
 bool IsRootDir(void);
 
 bool isVolumeExist(uint8_t src);
-void loopVolumeSource(void);
+void detectSDInsertion(void);
 
 #endif

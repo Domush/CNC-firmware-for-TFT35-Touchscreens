@@ -18,7 +18,7 @@ bool mountFS(void) {
   return false;
 }
 
-/* 
+/*
 */
 void clearInfoFile(void) {
   uint8_t i = 0;
@@ -48,7 +48,7 @@ TCHAR* getCurFileSource(void) {
   return NULL;
 }
 
-/* 
+/*
 infoFile
 */
 void resetInfoFile(void) {
@@ -60,7 +60,7 @@ void resetInfoFile(void) {
   strcpy(infoFile.title, getCurFileSource());
 }
 
-/* 
+/*
 */
 bool scanPrintFiles(void) {
   clearInfoFile();
@@ -84,7 +84,7 @@ bool EnterDir(char* nextdir) {
   return 1;
 }
 
-/* 
+/*
 */
 void ExitDir(void) {
   int i = strlen(infoFile.title);
@@ -93,7 +93,7 @@ void ExitDir(void) {
   infoFile.title[i] = 0;
 }
 
-/* 
+/*
 */
 bool IsRootDir(void) {
   return !strchr(infoFile.title, '/');
@@ -109,13 +109,13 @@ bool isVolumeExist(u8 src) {
 
 uint8_t (*volumeInserted[FF_VOLUMES])(void) = {SD_CD_Inserted, USBH_USR_Inserted};
 
-void loopVolumeSource(void) {
+void detectSDInsertion(void) {
   for (u8 i = 0; i < FF_VOLUMES; i++) {
     if (volumeSrcStatus[i] != (*volumeInserted[i])()) {
       const int16_t labelSDStates[FF_VOLUMES][2] = {{LABEL_TFTSD_REMOVED, LABEL_TFTSD_INSERTED},
                                                     {LABEL_U_DISK_REMOVED, LABEL_U_DISK_INSERTED}};
       volumeSrcStatus[i] = (*volumeInserted[i])();
-      volumeReminderMessage(labelSDStates[i][volumeSrcStatus[i]], STATUS_NORMAL);
+      timedMessage(2, TIMED_STATUS, (char*)textSelect(labelSDStates[i][volumeSrcStatus[i]]));
     }
   }
 }

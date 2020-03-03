@@ -152,7 +152,7 @@ void menuScreenSettings(void) {
       default:
         break;
     }
-    loopProcess();
+    runUpdateLoop();
   }
 
   if (memcmp(&now, &infoSettings, sizeof(SETTINGS))) {

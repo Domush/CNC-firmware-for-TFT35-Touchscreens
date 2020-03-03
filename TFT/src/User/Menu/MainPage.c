@@ -2,6 +2,8 @@
 #include "includes.h"
 #include "Move.h"
 
+extern SETTINGS infoSettings;
+
 //1 title, ITEM_PER_PAGE items(icon+label)
 const MENUITEMS mainPageItems = {
     // title
@@ -10,7 +12,7 @@ const MENUITEMS mainPageItems = {
     {
         {ICON_HOME, LABEL_HOME},
         {ICON_MOVE, LABEL_MOVE},
-        {ICON_LEVELING, LABEL_LEVELING},
+        {ICON_JOBSETUP, LABEL_JOBSETUP},
         {ICON_CNC, LABEL_CNC},
         {ICON_ROUTER, LABEL_ROUTER},
         {ICON_DISABLE_XY, LABEL_DISABLE_XY},
@@ -46,9 +48,11 @@ void menuMain(void) {
         infoMenu.menu[++infoMenu.active] = menuRouter;
         break;
       case KEY_ICON_5: {
+        timedMessage(2, TIMED_INFO, "X,Y steppers disabled");
         storeCmd("M18 X Y\n");  //disable X and Y motors
       } break;
       case KEY_ICON_6: {
+        timedMessage(2, TIMED_INFO, "Z stepper disabled");
         storeCmd("M18 Z\n");  //disable Z motors
       } break;
       case KEY_ICON_7:
@@ -57,6 +61,6 @@ void menuMain(void) {
       default:
         break;
     }
-    loopProcess();
+    runUpdateLoop();
   }
 }

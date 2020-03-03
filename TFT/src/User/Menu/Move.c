@@ -93,32 +93,39 @@ void menuMove(void) {
     key_num = menuKeyGetValue();
     switch (key_num) {
       case KEY_ICON_0:
+        timedMessage(2, TIMED_INFO, "Moving Z up %d%s", moveDistance[moveDistance_index], "mm");
         storeCmd(z_axis_up, moveDistance[moveDistance_index]);
         break;
 
       case KEY_ICON_1:
+        timedMessage(2, TIMED_INFO, "Moving Y up %d%s", moveDistance[moveDistance_index], "mm");
         storeCmd(y_axis_up, moveDistance[moveDistance_index]);
         break;
 
       case KEY_ICON_2:
+        timedMessage(2, TIMED_INFO, "Moving Z down %d%s", moveDistance[moveDistance_index], "mm");
         storeCmd(z_axis_down, moveDistance[moveDistance_index]);
         break;
 
       case KEY_ICON_3:
         moveDistance_index = (moveDistance_index + 1) % ITEM_MOVE_DISTANCE;
         moveItems.items[key_num] = itemMoveDistance[moveDistance_index];
+        timedMessage(2, TIMED_INFO, "Using %d%s steps", moveDistance[moveDistance_index], "mm");
         menuDrawItem(&moveItems.items[key_num], key_num);
         break;
 
       case KEY_ICON_4:
+        timedMessage(2, TIMED_INFO, "Moving X down %d%s", moveDistance[moveDistance_index], "mm");
         storeCmd("G1 X-%.1f\n", moveDistance[moveDistance_index]);
         break;
 
       case KEY_ICON_5:
+        timedMessage(2, TIMED_INFO, "Moving Y down %d%s", moveDistance[moveDistance_index], "mm");
         storeCmd(y_axis_down, moveDistance[moveDistance_index]);
         break;
 
       case KEY_ICON_6:
+        timedMessage(2, TIMED_INFO, "Moving X up %d%s", moveDistance[moveDistance_index], "mm");
         storeCmd("G1 X%.1f\n", moveDistance[moveDistance_index]);
         break;
       case KEY_ICON_7:
@@ -127,33 +134,17 @@ void menuMove(void) {
       default:
         break;
     }
-    loopProcess();
+    runUpdateLoop();
   }
   mustStoreCmd("G90\n");
 }
 
-void update_gantry(void) {
+void updateGantryLocation(void) {
   if (OS_GetTime() > nowTime + update_time) {
     if (infoHost.connected == true && infoHost.waiting == false) {
       storeCmd("M114\n");
     }
     drawXYZ();
     nowTime = OS_GetTime();
-  }
-}
-void drawXYZ(void) {
-  if (infoHost.connected) {
-    char tempstr[10];
-    GUI_SetColor(YELLOW);
-    //GUI_FillPrect(&RecXYZ);
-    my_sprintf(tempstr, "X:%.1f", getAxisLocation(0));
-    GUI_DispLenString((LCD_WIDTH / 3) * 0 + 3 * BYTE_WIDTH, BYTE_HEIGHT * 2, (u8 *)tempstr, LCD_WIDTH / 3);
-    my_sprintf(tempstr, "Y:%.1f", getAxisLocation(1));
-    GUI_DispLenString((LCD_WIDTH / 3) * 1 + 3 * BYTE_WIDTH, BYTE_HEIGHT * 2, (u8 *)tempstr, LCD_WIDTH / 3);
-    my_sprintf(tempstr, "Z:%.1f", getAxisLocation(2));
-    GUI_DispLenString((LCD_WIDTH / 3) * 2 + 3 * BYTE_WIDTH, BYTE_HEIGHT * 2, (u8 *)tempstr, LCD_WIDTH / 3);
-
-    //GUI_SetBkColor(BACKGROUND_COLOR);
-    GUI_SetColor(FONT_COLOR);
   }
 }

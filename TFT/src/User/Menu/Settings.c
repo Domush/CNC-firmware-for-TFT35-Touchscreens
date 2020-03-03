@@ -46,8 +46,8 @@ void menuInfo(void) {
   GUI_DispString(startX, centerY + (BYTE_HEIGHT * 2), (u8 *)build_date);
   GUI_DispStringInRect(20, LCD_HEIGHT - (BYTE_HEIGHT * 2), LCD_WIDTH - 20, LCD_HEIGHT, textSelect(LABEL_TOUCH_TO_EXIT));
 
-  while (!isPress()) loopProcess();
-  while (isPress()) loopProcess();
+  while (!isPress()) runUpdateLoop();
+  while (isPress()) runUpdateLoop();
 
   infoMenu.active--;
 }
@@ -135,6 +135,7 @@ void menuSettings(void) {
         infoSettings.baudrate = item_baudrate[item_baudrate_i];
         Serial_DeInit();  // Serial_Init() will malloc a dynamic memory, so Serial_DeInit() first to free, then malloc again.
         Serial_Init(infoSettings.baudrate);
+        timedMessage(2, TIMED_INFO, "Updating CNC baud rate");
         break;
 
       case KEY_ICON_7:
@@ -144,7 +145,7 @@ void menuSettings(void) {
       default:
         break;
     }
-    loopProcess();
+    runUpdateLoop();
   }
 
   if (memcmp(&now, &infoSettings, sizeof(SETTINGS))) {

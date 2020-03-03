@@ -25,12 +25,12 @@ QUEUE gcodeCommandQueue;  // Pending gcode commands
 
 static u8 gcodeIndex = 0;
 u8 curRouterSpeed;
+extern PRINTING infoPrinting;
 
-// Is there a code character in the current gcode command.
-static bool
-cmd_seen(char code) {
-  for (gcodeIndex = 0; gcodeCommand.queue[gcodeCommand.index_r].gcode[gcodeIndex] != 0 && gcodeIndex < GCODE_MAX_CHARACTERS; gcodeIndex++) {
-    if (gcodeCommand.queue[gcodeCommand.index_r].gcode[gcodeIndex] == code) {
+// *Is there a code character in the current gcode command.
+static bool isGcodeCommand(char code) {
+  for (gcodeIndex = 0; gcodeCommand.queue[gcodeCommand.readIndex].gcode[gcodeIndex] != 0 && gcodeIndex < GCODE_MAX_CHARACTERS; gcodeIndex++) {
+    if (gcodeCommand.queue[gcodeCommand.readIndex].gcode[gcodeIndex] == code) {
       gcodeIndex += 1;
       return true;
     }
@@ -38,73 +38,70 @@ cmd_seen(char code) {
   return false;
 }
 
-// Get the int after 'code', Call after cmd_seen('code').
-static u32 cmd_value(void) {
-  return (strtol(&gcodeCommand.queue[gcodeCommand.index_r].gcode[gcodeIndex], NULL, 10));
+// *Get the int after M or G code, Call after isGcodeCommand('code').
+static u32 getGcodeValue(void) {
+  return (strtol(&gcodeCommand.queue[gcodeCommand.readIndex].gcode[gcodeIndex], NULL, 10));
 }
 
-// Get the float after 'code', Call after cmd_seen('code').
-static float cmd_float(void) {
-  return (strtod(&gcodeCommand.queue[gcodeCommand.index_r].gcode[gcodeIndex], NULL));
+// *Get the float after M or G code, Call after isGcodeCommand('code').
+static float getGcodeValueFloat(void) {
+  return (strtod(&gcodeCommand.queue[gcodeCommand.readIndex].gcode[gcodeIndex], NULL));
 }
 
-// Store gcode cmd to gcodeCommand queue, this cmd will be sent by UART in sendQueueCmd(),
-// If the gcodeCommand queue is full, reminde in title bar.
+// *Add a Gcode command to the gcodeCommand queue.
+// *Will be sent to UART in sendGcodeCommands()
+// If the gcodeCommand queue is full, display a "waiting" banner.
 bool storeCmd(const char *format, ...) {
   QUEUE *pQueue = &gcodeCommand;
 
   if (pQueue->count >= GCODE_QUEUE_MAX) {
-    reminderMessage(LABEL_BUSY, STATUS_BUSY);
     return false;
   }
 
   my_va_list ap;
   my_va_start(ap, format);
-  my_vsprintf(pQueue->queue[pQueue->index_w].gcode, format, ap);
+  my_vsprintf(pQueue->queue[pQueue->writeIndex].gcode, format, ap);
   my_va_end(ap);
-  pQueue->queue[pQueue->index_w].src = SERIAL_PORT;
+  pQueue->queue[pQueue->writeIndex].src = SERIAL_PORT;
 
-  pQueue->index_w = (pQueue->index_w + 1) % GCODE_QUEUE_MAX;
+  pQueue->writeIndex = (pQueue->writeIndex + 1) % GCODE_QUEUE_MAX;
   pQueue->count++;
 
   return true;
 }
 
-// Store gcode cmd to gcodeCommand queue, this cmd will be sent by UART in sendQueueCmd(),
-// If the gcodeCommand queue is full, display alert in title bar: Waiting for available queue and store the command.
+// *Store gcode cmd to gcodeCommand queue, this cmd will be sent by UART in sendGcodeCommands()
+// *If the gcodeCommand queue is full, display alert in title bar.
 void mustStoreCmd(const char *format, ...) {
   QUEUE *pQueue = &gcodeCommand;
 
-  if (pQueue->count >= GCODE_QUEUE_MAX) reminderMessage(LABEL_BUSY, STATUS_BUSY);
-
   while (pQueue->count >= GCODE_QUEUE_MAX) {
-    loopProcess();
+    runUpdateLoop();
   }
 
   my_va_list ap;
   my_va_start(ap, format);
-  my_vsprintf(pQueue->queue[pQueue->index_w].gcode, format, ap);
+  my_vsprintf(pQueue->queue[pQueue->writeIndex].gcode, format, ap);
   my_va_end(ap);
-  pQueue->queue[pQueue->index_w].src = SERIAL_PORT;
+  pQueue->queue[pQueue->writeIndex].src = SERIAL_PORT;
 
-  pQueue->index_w = (pQueue->index_w + 1) % GCODE_QUEUE_MAX;
+  pQueue->writeIndex = (pQueue->writeIndex + 1) % GCODE_QUEUE_MAX;
   pQueue->count++;
 }
 
-// Store from UART cmd(such as: ESP3D, OctoPrint, else TouchScreen) to gcodeCommand queue, this cmd will be sent by UART in sendQueueCmd(),
+// Store from UART cmd(such as: ESP3D, OctoPrint, else TouchScreen) to gcodeCommand queue, this cmd will be sent by UART in sendGcodeCommands(),
 // If the gcodeCommand queue is full, reminde in title bar.
 bool storeCmdFromUART(uint8_t port, const char *gcode) {
   QUEUE *pQueue = &gcodeCommand;
 
   if (pQueue->count >= GCODE_QUEUE_MAX) {
-    reminderMessage(LABEL_BUSY, STATUS_BUSY);
     return false;
   }
 
-  strcpy(pQueue->queue[pQueue->index_w].gcode, gcode);
+  strcpy(pQueue->queue[pQueue->writeIndex].gcode, gcode);
 
-  pQueue->queue[pQueue->index_w].src = port;
-  pQueue->index_w = (pQueue->index_w + 1) % GCODE_QUEUE_MAX;
+  pQueue->queue[pQueue->writeIndex].src = port;
+  pQueue->writeIndex = (pQueue->writeIndex + 1) % GCODE_QUEUE_MAX;
   pQueue->count++;
 
   return true;
@@ -115,18 +112,16 @@ bool storeCmdFromUART(uint8_t port, const char *gcode) {
 void mustStoreCacheCmd(const char *format, ...) {
   QUEUE *pQueue = &gcodeCommandQueue;
 
-  if (pQueue->count == GCODE_QUEUE_MAX) reminderMessage(LABEL_BUSY, STATUS_BUSY);
-
   while (pQueue->count >= GCODE_QUEUE_MAX) {
-    loopProcess();
+    runUpdateLoop();
   }
 
   my_va_list ap;
   my_va_start(ap, format);
-  my_vsprintf(pQueue->queue[pQueue->index_w].gcode, format, ap);
+  my_vsprintf(pQueue->queue[pQueue->writeIndex].gcode, format, ap);
   my_va_end(ap);
 
-  pQueue->index_w = (pQueue->index_w + 1) % GCODE_QUEUE_MAX;
+  pQueue->writeIndex = (pQueue->writeIndex + 1) % GCODE_QUEUE_MAX;
   pQueue->count++;
 }
 
@@ -135,16 +130,16 @@ bool moveCacheToCmd(void) {
   if (gcodeCommand.count >= GCODE_QUEUE_MAX) return false;
   if (gcodeCommandQueue.count == 0) return false;
 
-  storeCmd("%s", gcodeCommandQueue.queue[gcodeCommandQueue.index_r].gcode);
+  storeCmd("%s", gcodeCommandQueue.queue[gcodeCommandQueue.readIndex].gcode);
   gcodeCommandQueue.count--;
-  gcodeCommandQueue.index_r = (gcodeCommandQueue.index_r + 1) % GCODE_QUEUE_MAX;
+  gcodeCommandQueue.readIndex = (gcodeCommandQueue.readIndex + 1) % GCODE_QUEUE_MAX;
   return true;
 }
 
 // Clear all gcode cmd in gcodeCommand queue for abort printing.
 void clearCmdQueue(void) {
-  gcodeCommand.count = gcodeCommand.index_w = gcodeCommand.index_r = 0;
-  gcodeCommandQueue.count = gcodeCommandQueue.index_w = gcodeCommandQueue.index_r = 0;
+  gcodeCommand.count = gcodeCommand.writeIndex = gcodeCommand.readIndex = 0;
+  gcodeCommandQueue.count = gcodeCommandQueue.writeIndex = gcodeCommandQueue.readIndex = 0;
 }
 
 /**
@@ -155,20 +150,22 @@ void clearCmdQueue(void) {
  * @param	mixed	void
  * @return	void
  */
-void sendQueueCmd(void) {
+void sendGcodeCommands(void) {
   if (infoPrinting.m0_pause == true) return;
   //if (infoHost.waiting == true) return;
   if (gcodeCommand.count == 0) return;
 
+  bool haltQueueProcessing = false;
   bool avoid_terminal = false;
   u16 cmd = 0;
   // u8 curRouterSpeed;
-  switch (gcodeCommand.queue[gcodeCommand.index_r].gcode[0]) {
+  switch (gcodeCommand.queue[gcodeCommand.readIndex].gcode[0]) {
     case 'M':
-      cmd = strtol(&gcodeCommand.queue[gcodeCommand.index_r].gcode[1], NULL, 10);
+      cmd = strtol(&gcodeCommand.queue[gcodeCommand.readIndex].gcode[1], NULL, 10);
       switch (cmd) {
         case 0:  // M0/1 Stop and wait for user.
         case 1:
+          haltQueueProcessing = true;
           break;  // *No need to do anything special - All functions are handled by the CNC
 
         case 3:   //M3 Set the spindle CW speed or laser power
@@ -185,7 +182,8 @@ void sendQueueCmd(void) {
           break;
 
         case 25:  //M25 - Pause SD print
-          setPrintPause(true);
+          haltQueueProcessing = true;
+          // setPrintPause(true);
           break;
 
         case 27:  //M27 - Report SD print status
@@ -206,20 +204,20 @@ void sendQueueCmd(void) {
 
         case 106:  //M106 Turn on a fan/router and set its speed
           // // u8 i = 0;
-          // if (cmd_seen('P')) i = cmd_value();
-          // if (cmd_seen('S')) {
-          //   routerSetSpeed(i, cmd_value());
+          // if (isGcodeCommand('P')) i = getGcodeValue();
+          // if (isGcodeCommand('S')) {
+          //   routerSetSpeed(i, getGcodeValue());
           // } else {
           //   char buf[12];
           //   sprintf(buf, "S%d\n", routerGetSpeed(i));
-          //   strcat(gcodeCommand.queue[gcodeCommand.index_r].gcode, (const char *)buf);
+          //   strcat(gcodeCommand.queue[gcodeCommand.readIndex].gcode, (const char *)buf);
           //   routerSetSendWaiting(i, false);
           // }
           break;  // *No need to do anything special - All functions are handled by the CNC
 
         case 107:  //M107 Turn off a fan/router
           // // u8 i = 0;
-          // if (cmd_seen('P')) i = cmd_value();
+          // if (isGcodeCommand('P')) i = getGcodeValue();
           // routerSetSpeed(i, 0);
           break;  // *No need to do anything special - All functions are handled by the CNC
 
@@ -230,41 +228,51 @@ void sendQueueCmd(void) {
           break;
 
         case 117:  //M117 Set the message line on the LCD.
-          popupReminder((u8 *)"M117 Notice", (u8 *)&gcodeCommand.queue[gcodeCommand.index_r].gcode[5]);
+          popupReminder((u8 *)"M117 Notice", (u8 *)&gcodeCommand.queue[gcodeCommand.readIndex].gcode[5]);
           break;
 
         case 220:  //M220 Set the global CNC speed percentage.
-          if (cmd_seen('S')) {
-            setCNCSpeedOverride(cmd_value());
+          if (isGcodeCommand('S')) {
+            setCNCSpeedOverride(getGcodeValue());
           } else {
             char buf[12];
             sprintf(buf, "S%d\n", getCNCSpeedOverride());
-            strcat(gcodeCommand.queue[gcodeCommand.index_r].gcode, (const char *)buf);
+            strcat(gcodeCommand.queue[gcodeCommand.readIndex].gcode, (const char *)buf);
           }
           break;
       }
       break;
 
     case 'G':
-      cmd = strtol(&gcodeCommand.queue[gcodeCommand.index_r].gcode[1], NULL, 10);
+      cmd = strtol(&gcodeCommand.queue[gcodeCommand.readIndex].gcode[1], NULL, 10);
       switch (cmd) {
         case 0:  //G0 Fast move
         case 1:  //G1 Cut move
         {
           AXIS axis;
           for (axis = X_AXIS; axis < TOTAL_AXIS; axis++) {
-            if (cmd_seen(axis_id[axis])) {
-              coordinateSetAxisTarget(axis, cmd_float());
+            if (isGcodeCommand(axis_id[axis])) {
+              coordinateSetAxisTarget(axis, getGcodeValueFloat());
             }
           }
-          if (cmd_seen('F')) {
-            coordinateSetGantrySpeed(cmd_value());
+          if (isGcodeCommand('F')) {
+            coordinateSetGantrySpeed(getGcodeValue());
           }
           break;
         }
 
         case 28:  //G28 Auto home one or more axes.
           coordinateSetClear(true);
+          break;
+
+        case 53:  //G53-59 Switch to CNC coordinate set.
+        case 54:
+        case 55:
+        case 56:
+        case 57:
+        case 58:
+        case 59:
+          infoPrinting.coordSpace = (u8)cmd;
           break;
 
         case 90:  //G90 Absolute Positioning
@@ -279,52 +287,49 @@ void sendQueueCmd(void) {
         {
           AXIS axis;
           bool coorRelative = coorGetRelative();
-          bool eRelative = eGetRelative();
           // Set to absolute mode
           coorSetRelative(false);
-          eSetRelative(false);
           for (axis = X_AXIS; axis < TOTAL_AXIS; axis++) {
-            if (cmd_seen(axis_id[axis])) {
-              coordinateSetAxisTarget(axis, cmd_float());
+            if (isGcodeCommand(axis_id[axis])) {
+              coordinateSetAxisTarget(axis, getGcodeValueFloat());
             }
           }
           // Restore mode
           coorSetRelative(coorRelative);
-          eSetRelative(eRelative);
           break;
         }
       }
       break;
 
     case 'T':
-      cmd = strtol(&gcodeCommand.queue[gcodeCommand.index_r].gcode[1], NULL, 10);
+      cmd = strtol(&gcodeCommand.queue[gcodeCommand.readIndex].gcode[1], NULL, 10);
       break;
   }
 
-  setCurrentAckSrc(gcodeCommand.queue[gcodeCommand.index_r].src);
-  Serial_Puts(SERIAL_PORT, gcodeCommand.queue[gcodeCommand.index_r].gcode);  // send the command to the CNC
+  setGcodeCommandSource(gcodeCommand.queue[gcodeCommand.readIndex].src);
+  Serial_Puts(SERIAL_PORT, gcodeCommand.queue[gcodeCommand.readIndex].gcode);  // send the command to the CNC
 
-  showGcodeStatus(gcodeCommand.queue[gcodeCommand.index_r].gcode, TERMINAL_GCODE);  // display sent gcode in the status line
+  showGcodeStatus(gcodeCommand.queue[gcodeCommand.readIndex].gcode, TFT_SOURCE);  // display sent gcode in the status line
   if (avoid_terminal != true) {
-    sendGcodeTerminalCache(gcodeCommand.queue[gcodeCommand.index_r].gcode, TERMINAL_GCODE);
+    sendGcodeTerminalCache(gcodeCommand.queue[gcodeCommand.readIndex].gcode, TFT_SOURCE);
   }
   gcodeCommand.count--;
-  gcodeCommand.index_r = (gcodeCommand.index_r + 1) % GCODE_QUEUE_MAX;
+  gcodeCommand.readIndex = (gcodeCommand.readIndex + 1) % GCODE_QUEUE_MAX;
 
   infoHost.waiting = infoHost.connected;  //
-
+  if (haltQueueProcessing == true) {
+    setPrintPause(true);
+  }
   powerFailedEnable(true);
 }
 
 void menuM0Pause(void) {
-  extern PRINTING infoPrinting;
-  if (infoPrinting.coordSpace < 53) infoPrinting.coordSpace = 53;
   // extern char *popup_title;
   extern char *popup_message;
-  // void menuM0Pause(void) {
   u16 key_num = IDLE_TOUCH;
   Serial_Puts(SERIAL_PORT, "M108\n");  // Remove the M0 freeze from the CNC
   setPrintPause(true);
+  drawXYZ();
   infoPrinting.m0_pause = true;
   // curRouterSpeed = infoPrinting.routerSpeed;
   // if (curRouterSpeed > 0) {
@@ -338,6 +343,9 @@ void menuM0Pause(void) {
   char *prompt_title;
   char *prompt_text;
   char *prompt_button;
+  prompt_title = "Pause requested";
+  prompt_text = "No pause reason was given.";
+  prompt_button = "Resume";
   // *get the first token
   token = strtok(popup_message, ch);
   // *walk through other tokens
@@ -376,26 +384,38 @@ void menuM0Pause(void) {
         infoMenu.active--;
         break;
     }
-    loopProcess();
+    runUpdateLoop();
   }
 }
 
 void menuChangeBit(void) {
   extern PRINTING infoPrinting;
-  if (infoPrinting.coordSpace < 53) infoPrinting.coordSpace = 53;
+  char *confirmText;
+  char *cancelText;
+  confirmText = "Change bit";
+  cancelText = "Nevermind";
+  if (infoPrinting.printing) {
+    confirmText = "Change bit";
+    cancelText = "Keep going";
+  }
   // extern char *popup_title;
   extern char *popup_message;
-  if (strlen(popup_message) < 5) {
-    popup_message = "Change the bit; continue when finished. -- All actions are disabled until complete.";
+  if (strlen(popup_message) < 10) {
+    if (infoPrinting.printing) {
+      popup_message = "Do you want to change the bit?";
+    } else {
+      popup_message = "Go change the bit; I'll return to X0,Y0 when you're finished.";
+    }
   }
   u16 key_num = IDLE_TOUCH;
   setPrintPause(true);
-  Serial_Puts(SERIAL_PORT, "G59\n");
-  Serial_Puts(SERIAL_PORT, "G0 X20 Y200 Z160 F%d\n", SPEED_MOVE_FAST);
+  Serial_Puts(SERIAL_PORT, "G53\n");
+  Serial_Puts(SERIAL_PORT, "G0 X40 Y200 Z120 F%d\n", SPEED_MOVE_FAST);
+  drawXYZ();
   // mustStoreCmd("G53 G0 X20 Y200 Z100 F%d\n", SPEED_MOVE_FAST);
   // mustStoreCmd("M0 Replace the bit and press Confirm when finished\n");
 
-  popupDrawPage(bottomDoubleBtn, (u8 *)"Bit Change", (u8 *)popup_message, (u8 *)"Move Gantry", (u8 *)"Resume");
+  popupDrawPage(bottomDoubleBtn, (u8 *)"Bit Change", (u8 *)popup_message, (u8 *)confirmText, (u8 *)cancelText);
   // popupDrawPage(bottomDoubleBtn, textSelect(LABEL_WARNING), textSelect(LABEL_IS_PAUSE), textSelect(LABEL_CONFIRM), textSelect(LABEL_CANCEL));
 
   while (infoMenu.menu[infoMenu.active] == menuChangeBit) {
@@ -405,7 +425,9 @@ void menuChangeBit(void) {
         infoPrinting.m0_pause = false;
         mustStoreCmd("G%d\n", infoPrinting.coordSpace);
         mustStoreCmd("G0 X0 Y0\n");
-        infoMenu.menu[infoMenu.active] = menuMove;
+        drawXYZ();
+        infoMenu.active--;
+        // infoMenu.menu[infoMenu.active] = menuMove;
         // menuMove();
         break;
 
@@ -414,10 +436,11 @@ void menuChangeBit(void) {
         infoPrinting.m0_pause = false;
         mustStoreCmd("G%d\n", infoPrinting.coordSpace);
         setPrintPause(false);
+        drawXYZ();
         // mustStoreCmd("G0 X0 Y0\n");
         infoMenu.active--;
         break;
     }
-    loopProcess();
+    runUpdateLoop();
   }
 }

@@ -12,7 +12,7 @@ const char iconBmpName[][32] = {
     "Cut",
     "Router",
     "Settings",
-    "Leveling",
+    "JobSetup",
     "Inc",
     "Dec",
     "Spindle",

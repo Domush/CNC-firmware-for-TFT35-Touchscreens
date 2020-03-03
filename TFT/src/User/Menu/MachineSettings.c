@@ -95,7 +95,7 @@ void menuCustom(void) {
       default:
         break;
     }
-    loopProcess();
+    runUpdateLoop();
   }
 }
 #else
@@ -299,7 +299,7 @@ void menuCustom(void) {
       default:
         break;
     }
-    loopProcess();
+    runUpdateLoop();
   }
 }
 
@@ -329,22 +329,27 @@ void menuRGBSettings(void) {
     key_num = menuKeyGetValue();
     switch (key_num) {
       case KEY_ICON_0:  //Red
+        timedMessage(2, TIMED_INFO, "Red LEDs enabled");
         storeCmd("M150 R255 U0 B0 P255\n");
         break;
 
       case KEY_ICON_1:  //Green
+        timedMessage(2, TIMED_INFO, "Green LEDs enabled");
         storeCmd("M150 R0 U255 B0 P255\n");
         break;
 
       case KEY_ICON_2:  //Blue
+        timedMessage(2, TIMED_INFO, "Blue LEDs enabled");
         storeCmd("M150 R0 U0 B255 P255\n");
         break;
 
       case KEY_ICON_3:  //White
+        timedMessage(2, TIMED_INFO, "White LEDs enabled");
         storeCmd("M150 R255 U255 B255 P255\n");
         break;
 
       case KEY_ICON_4:  //Turn Off
+        timedMessage(2, TIMED_INFO, "LEDs disabled");
         storeCmd("M150 R0 U0 B0 P0\n");
         break;
 
@@ -355,7 +360,7 @@ void menuRGBSettings(void) {
       default:
         break;
     }
-    loopProcess();
+    runUpdateLoop();
   }
 }
 
@@ -395,6 +400,7 @@ void menuMachineSettings(void) {
         break;
 
       case KEY_ICON_3:
+        timedMessage(2, TIMED_CRITICAL, "Powering off CNC");
         storeCmd("M81\n");
         break;
 
@@ -410,6 +416,6 @@ void menuMachineSettings(void) {
         break;
     }
 
-    loopProcess();
+    runUpdateLoop();
   }
 }

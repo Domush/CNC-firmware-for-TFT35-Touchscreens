@@ -34,13 +34,13 @@ typedef enum {
 } GKEY_VALUES;
 
 typedef enum {
-  TERMINAL_GCODE,
-  TERMINAL_ACK,
-} TERMINAL_SRC;
+  TFT_SOURCE,
+  CNC_SOURCE,
+} COMMAND_SOURCE;
 
 void menuSendGcode(void);
 void menuTerminal(void);
-void sendGcodeTerminalCache(char *serial_text, TERMINAL_SRC src);
-void showGcodeStatus(char *serial_text, TERMINAL_SRC src);
+void sendGcodeTerminalCache(char *serial_text, COMMAND_SOURCE src);
+void showGcodeStatus(char *serial_text, COMMAND_SOURCE src);
 
 #endif

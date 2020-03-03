@@ -385,7 +385,7 @@ void menuFeatureSettings(void) {
         break;
     }
 
-    loopProcess();
+    runUpdateLoop();
   }
 
   if (memcmp(&now, &infoSettings, sizeof(SETTINGS))) {

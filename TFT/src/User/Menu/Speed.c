@@ -11,7 +11,7 @@ MENUITEMS speedOverrideItems = {
         {ICON_BACKGROUND, LABEL_BACKGROUND},
         {ICON_BACKGROUND, LABEL_BACKGROUND},
         {ICON_INC, LABEL_INC},
-        {ICON_MOVE, LABEL_PERCENTAGE_SPEED},
+        {ICON_JOBSETUP, LABEL_JOBSETUP},
         {ICON_E_5_MM, LABEL_5_PERCENT},
         {ICON_NORMAL_SPEED, LABEL_NORMAL_SPEED},
         {ICON_BACK, LABEL_BACK},
@@ -22,8 +22,6 @@ const ITEM itemSpeedOverrideIcons[ITEM_SPEEDOVERRIDE_NUM] = {
     // icon                       label
     {ICON_MOVE, LABEL_PERCENTAGE_SPEED},
 };
-static int16_t itemSpeedOverrideTitle[ITEM_SPEEDOVERRIDE_NUM] = {
-    LABEL_PERCENTAGE_SPEED};
 
 static u16 percentage = 100;  // Speed
 
@@ -92,6 +90,7 @@ void menuSpeed(void) {
                          percentage - itemIncrementValues[itemIncrementIndex],
                          999);
         }
+        timedMessage(2, TIMED_INFO, "Slowing down CNC");
         break;
 
       case KEY_ICON_3:
@@ -101,15 +100,11 @@ void menuSpeed(void) {
                          percentage + itemIncrementValues[itemIncrementIndex],
                          999);
         }
+        timedMessage(2, TIMED_INFO, "Speeding up CNC");
         break;
 
       case KEY_ICON_4:
-        itemIncrementIndex = (itemIncrementIndex + 1) % ITEM_SPEEDOVERRIDE_NUM;
-        speedOverrideItems.items[key_num] = itemSpeedOverrideIcons[itemIncrementIndex];
-        menuDrawItem(&speedOverrideItems.items[key_num], key_num);
-        speedOverrideItems.title.index = itemSpeedOverrideTitle[itemIncrementIndex];
-        menuDrawTitle(textSelect(speedOverrideItems.title.index));
-        showCNCSpeedOverride();
+        infoMenu.menu[++infoMenu.active] = menuJobSetup;
         break;
 
       case KEY_ICON_5:
@@ -119,6 +114,7 @@ void menuSpeed(void) {
         break;
       case KEY_ICON_6:
         percentage = 100;
+        timedMessage(2, TIMED_INFO, "Resetting CNC speed");
         break;
       case KEY_ICON_7:
         infoMenu.active--;
@@ -150,6 +146,6 @@ void menuSpeed(void) {
       storeCmd("M220 S%d\n", percentage);
       redrawCNCSpeedOverride();
     }
-    loopProcess();
+    runUpdateLoop();
   }
 }

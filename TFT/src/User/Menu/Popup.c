@@ -6,23 +6,23 @@
 
 BUTTON bottomSingleBtn = {
     //button location                       color before pressed   color after pressed
-    POPUP_RECT_SINGLE_CONFIRM, NULL, 5, 1, COLOR_BLUE, BLACK, WHITE, COLOR_BLUE, WHITE, COLOR_DARKBLUE};
+    POPUP_RECT_SINGLE_CONFIRM, NULL, 5, 1, COLOR_BLUE, BLACK, WHITE, COLOR_BLUE, WHITE, COLOR_NAVY};
 
 BUTTON bottomDoubleBtn[] = {
-    {POPUP_RECT_DOUBLE_CONFIRM, NULL, 5, 1, COLOR_BLUE, BLACK, WHITE, COLOR_BLUE, WHITE, COLOR_DARKBLUE},
+    {POPUP_RECT_DOUBLE_CONFIRM, NULL, 5, 1, COLOR_BLUE, BLACK, WHITE, COLOR_BLUE, WHITE, COLOR_NAVY},
     {POPUP_RECT_DOUBLE_CANCEL, NULL, 5, 1, RED, BLACK, WHITE, RED, WHITE, RED},
 };
 
 GUI_RECT doubleBtnRect[] = {POPUP_RECT_DOUBLE_CONFIRM, POPUP_RECT_DOUBLE_CANCEL};
 
 WINDOW window = {
-    POPUP_RECT_WINDOW,                            //Area of ??popup
-    13,                                           //Four-corner arc radius
-    5,                                            //Outer line width
-    COLOR_DARKBLUE,                               //Outer and title bar background color
-    {WHITE, COLOR_DARKBLUE, POPUP_TITLE_HEIGHT},  //Title bar font color /background color /height
-    {BLACK, WHITE, POPUP_TEXT_HEIGHT},            //Text bar font color /background color /height
-    {WHITE, GRAY, POPUP_BOTTOM_HEIGHT},           //Bottom (font color) /background color /(height)
+    POPUP_RECT_WINDOW,                        //Area of ??popup
+    13,                                       //Four-corner arc radius
+    5,                                        //Outer line width
+    COLOR_NAVY,                               //Outer and title bar background color
+    {WHITE, COLOR_NAVY, POPUP_TITLE_HEIGHT},  //Title bar font color /background color /height
+    {BLACK, WHITE, POPUP_TEXT_HEIGHT},        //Text bar font color /background color /height
+    {WHITE, GRAY, POPUP_BOTTOM_HEIGHT},       //Bottom (font color) /background color /(height)
 };
 
 static BUTTON *windowButton = NULL;
@@ -69,7 +69,7 @@ void menuPopup(void) {
       default:
         break;
     }
-    loopProcess();
+    runUpdateLoop();
   }
 }
 

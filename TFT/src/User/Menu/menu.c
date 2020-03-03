@@ -71,6 +71,7 @@ static const MENUITEMS *curMenuItems = NULL;  //current menu
 static const LISTITEMS *curListItems = NULL;  //current listmenu
 
 static bool isListview;
+static u16 queueTextColor = MAT_LOWWHITE;
 
 uint8_t *labelGetAddress(const LABEL *label) {
   if (label->index == LABEL_BACKGROUND) return NULL;  // No content in label
@@ -116,105 +117,7 @@ void menuRefreshListPage(void) {
   }
 }
 
-static REMINDER reminder = {{0, 0, LCD_WIDTH, TITLE_END_Y}, 0, STATUS_UNCONNECT, LABEL_UNCONNECTED};
-static REMINDER volumeReminder = {{0, 0, LCD_WIDTH, TITLE_END_Y}, 0, STATUS_IDLE, LABEL_BACKGROUND};
-static REMINDER busySign = {{LCD_WIDTH - 5, 0, LCD_WIDTH, 5}, 0, STATUS_BUSY, LABEL_BUSY};
-
-void reminderMessage(int16_t inf, SYS_STATUS status) {
-  reminder.inf = inf;
-  GUI_SetColor(REMINDER_FONT_COLOR);
-  GUI_DispStringInPrect(&reminder.rect, textSelect(reminder.inf));
-  GUI_SetColor(FONT_COLOR);
-  reminder.status = status;
-  reminder.time = OS_GetTime();
-}
-
-void volumeReminderMessage(int16_t inf, SYS_STATUS status) {
-  volumeReminder.inf = inf;
-  GUI_SetColor(VOLUME_REMINDER_FONT_COLOR);
-  GUI_DispStringInPrect(&volumeReminder.rect, textSelect(volumeReminder.inf));
-  GUI_SetColor(FONT_COLOR);
-  volumeReminder.status = status;
-  volumeReminder.time = OS_GetTime();
-}
-
-void busyIndicator(SYS_STATUS status) {
-  if (status == STATUS_BUSY) {
-    GUI_SetColor(YELLOW);
-    GUI_FillCircle(busySign.rect.x0, (busySign.rect.y1 - busySign.rect.y0) / 2, (busySign.rect.x1 - busySign.rect.x0) / 2);
-    GUI_SetColor(FONT_COLOR);
-  }
-  busySign.status = status;
-  busySign.time = OS_GetTime();
-}
-
-void loopReminderClear(void) {
-  switch (reminder.status) {
-    case STATUS_IDLE:
-      return;
-
-    case STATUS_BUSY:
-      if (gcodeCommand.count == GCODE_QUEUE_MAX)
-        return;
-      break;
-
-    case STATUS_UNCONNECT:
-      if (infoHost.connected == false)
-        return;
-      break;
-
-    case STATUS_NORMAL:
-      if (OS_GetTime() < reminder.time + 200)
-        return;
-      break;
-    default:
-      return;
-  }
-
-  /* Clear warning message */
-  reminder.status = STATUS_IDLE;
-  if (curMenuItems == NULL)
-    return;
-  menuDrawTitle(labelGetAddress(&curMenuItems->title));
-}
-
-void loopVolumeReminderClear(void) {
-  switch (volumeReminder.status) {
-    case STATUS_NORMAL:
-      if (OS_GetTime() < volumeReminder.time + 200)
-        return;
-      break;
-    default:
-      return;
-  }
-
-  /* Clear warning message */
-  volumeReminder.status = STATUS_IDLE;
-  if (curMenuItems == NULL)
-    return;
-  menuDrawTitle(labelGetAddress(&curMenuItems->title));
-}
-
-void loopBusySignClear(void) {
-  switch (busySign.status) {
-    case STATUS_IDLE:
-      return;
-
-    case STATUS_BUSY:
-      if (OS_GetTime() < busySign.time + 200)
-        return;
-      break;
-  }
-
-  /* End Busy display sing */
-  busySign.status = STATUS_IDLE;
-  GUI_SetColor(BACKGROUND_COLOR);
-  GUI_FillCircle(busySign.rect.x0, (busySign.rect.y1 - busySign.rect.y0) / 2, (busySign.rect.x1 - busySign.rect.x0) / 2);
-  GUI_SetColor(FONT_COLOR);
-}
-
-void menuDrawTitle(const uint8_t *content)  //(const MENUITEMS * menuItems)
-{
+void menuDrawTitle(const uint8_t *content) {
   uint16_t start_y = (TITLE_END_Y - BYTE_HEIGHT) / 2;
   GUI_FillRectColor(10, start_y, LCD_WIDTH - 10, start_y + BYTE_HEIGHT, TITLE_BACKGROUND_COLOR);
 
@@ -223,14 +126,9 @@ void menuDrawTitle(const uint8_t *content)  //(const MENUITEMS * menuItems)
     GUI_DispLenString(10, start_y, content, LCD_WIDTH - 20);
     GUI_SetTextMode(GUI_TEXTMODE_NORMAL);
   }
-
-  if (reminder.status == STATUS_IDLE) return;
-  GUI_SetColor(RED);
-  GUI_DispStringInPrect(&reminder.rect, textSelect(reminder.inf));
-  GUI_SetColor(FONT_COLOR);
 }
 
-//Draw the entire interface
+//Draw the icon-based interface
 void menuDrawPage(const MENUITEMS *menuItems) {
   u8 i = 0;
   isListview = false;
@@ -245,7 +143,7 @@ void menuDrawPage(const MENUITEMS *menuItems) {
   }
 }
 
-//Draw the entire interface
+//Draw the listing-based interface
 void menuDrawListPage(const LISTITEMS *listItems) {
   u8 i = 0;
   isListview = true;
@@ -258,17 +156,16 @@ void menuDrawListPage(const LISTITEMS *listItems) {
   GUI_ClearRect(0, TITLE_END_Y, LCD_WIDTH, LCD_HEIGHT);
 
   // menuClearGaps();  //Use this function instead of GUI_Clear to eliminate the splash screen when clearing the screen.
-  menuDrawTitle(labelGetAddress(&listItems->title));
+  // menuDrawTitle(labelGetAddress(&listItems->title));
 
   for (i = 0; i < ITEM_PER_PAGE; i++) {
     //const GUI_RECT *rect = rect_of_keyListView + i;
     if (curListItems->items[i].icon != ICONCHAR_BACKGROUND)
       menuDrawListItem(&curListItems->items[i], i);
   }
-  //  show_globalinfo();
 }
 
-//When there is a button value, the icon changes color and redraws
+// When there is a button value, the icon changes color and redraws
 void itemDrawIconPress(u8 position, u8 is_press) {
   if (position > KEY_ICON_7) return;
 
@@ -309,23 +206,140 @@ KEY_VALUES menuKeyGetValue(void) {
   }
 }
 
-//Get the top left point of the corresponding icon position)
+// Get the top-left point of the corresponding icon position)
 GUI_POINT getIconStartPoint(int index) {
   GUI_POINT p = {rect_of_key[index].x0, rect_of_key[index].y0};
   return p;
 }
 
-void loopBackEnd(void) {
-  getGcodeFromFile();  //Get Gcode command from the file to be printed
+void gcodeQueueStatus(void) {
+  extern QUEUE gcodeCommand;
+  if (gcodeCommand.count >= GCODE_QUEUE_MAX) {
+    timedMessage(3, TIMED_CRITICAL, "gCode queue is full!");
+    queueTextColor = MAT_RED;
+  } else if (gcodeCommand.count > GCODE_QUEUE_MAX * .9) {
+    timedMessage(2, TIMED_ERROR, "gCode queue almost full");
+    queueTextColor = COLOR_MAROON;
+  } else if (gcodeCommand.count > GCODE_QUEUE_MAX * .7) {
+    queueTextColor = MAT_ORANGE;
+  } else if (gcodeCommand.count > GCODE_QUEUE_MAX * .5) {
+    queueTextColor = MAT_YELLOW;
+  } else if (gcodeCommand.count > 1) {
+    queueTextColor = MAT_GREEN;
+  } else {
+    queueTextColor = MAT_DARKGRAY;
+  }
+  GUI_SetColor(queueTextColor);
+  GUI_FillCircle(BYTE_HEIGHT / 2, BYTE_HEIGHT / 2, BYTE_HEIGHT / 3);
+  GUI_RestoreColorDefault();
+}
 
-  sendQueueCmd();  //Parse and send Gcode commands in the queue
+static TIMEDMESSAGE lastMessage;
 
-  parseACK();  //Parse the received slave response information
+void timedMessageExpire(void) {
+  if (OS_GetTime() > lastMessage.timeout) {
+    if (curMenuItems == NULL && strcmp(lastMessage.message, "Ready") != 0) {
+      GUI_FillRectColor(BYTE_WIDTH * ((infoHost.connected) ? 2 : 0), 0, LCD_WIDTH - BYTE_WIDTH * ((infoPrinting.printing) ? 9 : 0), BYTE_HEIGHT, TITLE_BACKGROUND_COLOR);
+      GUI_DispStringInRect(BYTE_WIDTH * 2, 0, LCD_WIDTH - BYTE_WIDTH * ((infoPrinting.printing) ? 9 : 2), BYTE_HEIGHT, (u8 *)"Ready");
+      lastMessage.message = "Ready";
+    } else if (curMenuItems != NULL && lastMessage.message != (char *)textSelect(curMenuItems->title.index)) {
+      GUI_FillRectColor(BYTE_WIDTH * ((infoHost.connected) ? 2 : 0), 0, LCD_WIDTH - BYTE_WIDTH * ((infoPrinting.printing) ? 9 : 0), BYTE_HEIGHT, TITLE_BACKGROUND_COLOR);
+      GUI_DispStringInRect(BYTE_WIDTH * 2, 0, LCD_WIDTH - BYTE_WIDTH * ((infoPrinting.printing) ? 9 : 2), BYTE_HEIGHT, (u8 *)textSelect(curMenuItems->title.index));
+      lastMessage.message = (char *)textSelect(curMenuItems->title.index);
+    }
+    lastMessage.type = 0;
+  }
+}
 
-  parseRcvGcode();  //Parse the received Gcode from other UART, such as: ESP3D, etc...
+void timedMessage(u8 delay_secs, MESSAGE_TYPE type, char *string, ...) {
+  if (lastMessage.type > type) {
+    return;
+  }
+  switch (type) {
+    case TIMED_STATUS:
+      GUI_SetColor(MAT_BLUE);
+      break;
+    case TIMED_INFO:
+      GUI_SetColor(MAT_LOWWHITE);
+      break;
+    case TIMED_WARNNG:
+      GUI_SetColor(MAT_YELLOW);
+      break;
+    case TIMED_ERROR:
+      GUI_SetColor(MAT_ORANGE);
+      break;
+    case TIMED_CRITICAL:
+      GUI_SetColor(MAT_RED);
+      break;
 
+    default:
+      GUI_SetColor(MAT_LOWWHITE);
+      break;
+  }
+  lastMessage.timeout = OS_GetTime() + delay_secs * 100;
+
+  if (strlen(string) > 1) {
+    char buffer[500] = "";
+    my_va_list ap;
+    my_va_start(ap, string);
+    my_vsprintf(buffer, string, ap);
+    my_va_end(ap);
+    char displayText[LCD_WIDTH / BYTE_WIDTH - 10] = "";
+    strncpy(displayText, buffer, LCD_WIDTH / BYTE_WIDTH - 11);
+    if (lastMessage.message == &displayText[0] && lastMessage.type == type) {
+      return;
+    }
+    lastMessage.type = type;
+    GUI_FillRectColor(BYTE_WIDTH * ((infoHost.connected) ? 2 : 0), 0, LCD_WIDTH - BYTE_WIDTH * ((infoPrinting.printing) ? 9 : 0), BYTE_HEIGHT, TITLE_BACKGROUND_COLOR);
+    GUI_DispStringInRect(BYTE_WIDTH * 2, 0, LCD_WIDTH - BYTE_WIDTH * ((infoPrinting.printing) ? 9 : 2), BYTE_HEIGHT, (u8 *)displayText);
+    GUI_RestoreColorDefault();
+    lastMessage.message = &displayText[0];
+  }
+}
+
+void drawXYZ(void) {
+  if (infoHost.connected) {
+    COORDINATE curGantryCoords;
+    coordinateGetAll(&curGantryCoords);
+
+    // *gCode queue size
+    GUI_SetColor(MAT_LOWWHITE);
+    GUI_DispString(0, BYTE_HEIGHT * 2, (u8 *)"Q:");
+    GUI_SetColor(queueTextColor);
+    GUI_DispDec(2 * BYTE_WIDTH, BYTE_HEIGHT * 2, gcodeCommand.count, 3, LEFT);
+    // *X location [X_MIN_POS - X_MAX_POS] (set in Configuration.c)
+    GUI_SetColor(MAT_RED);
+    GUI_DispString((LCD_WIDTH / 3) * 0 + 6 * BYTE_WIDTH, BYTE_HEIGHT * 2, (u8 *)"X:");
+    GUI_SetColor(MAT_YELLOW);
+    GUI_DispFloat((LCD_WIDTH / 3) * 0 + 8 * BYTE_WIDTH, BYTE_HEIGHT * 2, curGantryCoords.axis[X_AXIS], 4, 1, RIGHT);
+    // *Y location [Y_MIN_POS - Y_MAX_POS] (set in Configuration.c)
+    GUI_SetColor(MAT_BLUE);
+    GUI_DispString((LCD_WIDTH / 3) * 1 + 3 * BYTE_WIDTH, BYTE_HEIGHT * 2, (u8 *)"Y:");
+    GUI_SetColor(MAT_YELLOW);
+    GUI_DispFloat((LCD_WIDTH / 3) * 1 + 5 * BYTE_WIDTH, BYTE_HEIGHT * 2, curGantryCoords.axis[Y_AXIS], 4, 1, RIGHT);
+    // *Z location [Z_MIN_POS - Z_MAX_POS] (set in Configuration.c)
+    GUI_SetColor(MAT_GREEN);
+    GUI_DispString((LCD_WIDTH / 3) * 2 + 0 * BYTE_WIDTH, BYTE_HEIGHT * 2, (u8 *)"Z:");
+    GUI_SetColor(MAT_YELLOW);
+    GUI_DispFloat((LCD_WIDTH / 3) * 2 + 2 * BYTE_WIDTH, BYTE_HEIGHT * 2, curGantryCoords.axis[Z_AXIS], 3, 1, RIGHT);
+    // *CNC Coordinate space [53-59] (Defaults to G53 - Machine space)
+    if (infoPrinting.coordSpace < 53) infoPrinting.coordSpace = 53;
+    GUI_SetColor(WHITE);
+    GUI_DispString(LCD_WIDTH - 4 * BYTE_WIDTH, BYTE_HEIGHT * 2, (u8 *)"C:");
+    GUI_SetColor(MAT_YELLOW);
+    GUI_DispDec(LCD_WIDTH - 2 * BYTE_WIDTH, BYTE_HEIGHT * 2, infoPrinting.coordSpace - 52, 1, RIGHT);
+
+    GUI_RestoreColorDefault();
+  }
+}
+
+void processGcode(void) {
+  getGcodeFromFile();    //Get Gcode command from the file to be printed
+  sendGcodeCommands();   //Parse and send Gcode commands in the queue
+  parseGcodeResponse();  //Parse the received slave response information
+  parseSerialGcode();    //Parse the received Gcode from other UART, such as: ESP3D, etc...
 #if defined ONBOARD_SD_SUPPORT && !defined M27_AUTOREPORT
-  loopCheckPrinting();  //Check if there is a SD or USB print running.
+  checkJobStatus();  //Check if there is a SD or USB print running.
 #endif
 
   // #ifdef U_DISK_SUPPROT
@@ -341,18 +355,14 @@ void loopBackEnd(void) {
   // #endif
 }
 
-void loopFrontEnd(void) {
-  loopVolumeSource();  //Check if volume source(SD/U disk) insert
-
-  loopReminderClear();  //If there is a message in the status bar, timed clear
-
-  loopVolumeReminderClear();
-
-  loopBusySignClear();  //Busy Indicator clear
+void updateScreen(void) {
+  detectSDInsertion();   //Check if volume source(SD/U disk) insert
+  gcodeQueueStatus();    //Busy Indicator clear
+  timedMessageExpire();  //If there is a message in the status bar, timed clear
+  updateGantryLocation();
 }
 
-void loopProcess(void) {
-  loopBackEnd();
-  loopFrontEnd();
-  update_gantry();
+void runUpdateLoop(void) {
+  processGcode();
+  updateScreen();
 }

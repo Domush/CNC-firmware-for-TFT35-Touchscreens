@@ -6,18 +6,18 @@
 #define RESPONSE_MAX_CHARS 5000
 
 typedef struct {
-  char command[GCODE_MAX_CHARACTERS];     // The command sent to printer
-  char startMagic[GCODE_MAX_CHARACTERS];  // The magic to identify the start
-  char stopMagic[GCODE_MAX_CHARACTERS];   // The magic to identify the stop
-  char replyError[GCODE_MAX_CHARACTERS];  // The magic to identify the error response
-  bool inResponse;                        // true if between start and stop magic
-  bool inWaitResponse;                    // true if waiting for start magic
-  bool done;                              // true if command is executed and response is received
-  bool inError;                           // true if error response
-  char *response;                         // buffer where store the command response
+  char command[GCODE_MAX_CHARACTERS];        // The command sent to printer
+  char responseBegin[GCODE_MAX_CHARACTERS];  // The magic to identify the start
+  char responseEnd[GCODE_MAX_CHARACTERS];    // The magic to identify the stop
+  char responseError[GCODE_MAX_CHARACTERS];  // The magic to identify the error response
+  bool responseInProgress;                   // true if between start and stop magic
+  bool waitingForResponse;                   // true if waiting for start magic
+  bool commandComplete;                      // true if command is executed and response is received
+  bool responseErrorTriggered;               // true if error response
+  char *commandResponse;                     // buffer where store the CNC response
 } REQUEST_COMMAND_INFO;
 
-extern REQUEST_COMMAND_INFO requestCommandInfo;
+REQUEST_COMMAND_INFO requestCommandInfo;
 
 void clearRequestCommandInfo(void);
 bool RequestCommandInfoIsRunning(void);

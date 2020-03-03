@@ -2,25 +2,25 @@
 #include "includes.h"
 
 REQUEST_COMMAND_INFO requestCommandInfo;
-bool WaitingGcodeResponse = 0;
+bool WaitingGcodeResponse = false;
 
 static void resetRequestCommandInfo(void) {
-  requestCommandInfo.response = malloc(RESPONSE_MAX_CHARS);
-  while (!requestCommandInfo.response)
+  requestCommandInfo.commandResponse = malloc(RESPONSE_MAX_CHARS);
+  while (!requestCommandInfo.commandResponse)
     ;  // malloc failed
-  memset(requestCommandInfo.response, 0, RESPONSE_MAX_CHARS);
-  requestCommandInfo.inWaitResponse = true;
-  requestCommandInfo.inResponse = false;
-  requestCommandInfo.done = false;
-  requestCommandInfo.inError = false;
+  memset(requestCommandInfo.commandResponse, 0, RESPONSE_MAX_CHARS);
+  requestCommandInfo.waitingForResponse = true;
+  requestCommandInfo.responseInProgress = false;
+  requestCommandInfo.commandComplete = false;
+  requestCommandInfo.responseErrorTriggered = false;
 }
 
 bool RequestCommandInfoIsRunning(void) {
-  return WaitingGcodeResponse;  //i try to use requestCommandInfo.done but does not work as expected ...
+  return WaitingGcodeResponse;  //i try to use requestCommandInfo.commandComplete but does not work as expected ...
 }
 
 void clearRequestCommandInfo(void) {
-  free(requestCommandInfo.response);
+  free(requestCommandInfo.commandResponse);
 }
 
 /*
@@ -34,21 +34,21 @@ void clearRequestCommandInfo(void) {
 */
 bool request_M21(void) {
   strcpy(requestCommandInfo.command, "M21\n");
-  strcpy(requestCommandInfo.startMagic, "SD");
-  strcpy(requestCommandInfo.stopMagic, "card ok");
-  strcpy(requestCommandInfo.replyError, "init fail");
+  strcpy(requestCommandInfo.responseBegin, "SD");
+  strcpy(requestCommandInfo.responseEnd, "card ok");
+  strcpy(requestCommandInfo.responseError, "init fail");
 
   resetRequestCommandInfo();
   mustStoreCmd(requestCommandInfo.command);
   // Wait for response
-  WaitingGcodeResponse = 1;
-  while (!requestCommandInfo.done) {
-    loopProcess();
+  WaitingGcodeResponse = true;
+  while (!requestCommandInfo.commandComplete) {
+    runUpdateLoop();
   }
-  WaitingGcodeResponse = 0;
+  WaitingGcodeResponse = false;
   clearRequestCommandInfo();
   // Check reponse
-  return !requestCommandInfo.inError;
+  return !requestCommandInfo.responseErrorTriggered;
 }
 
 /*
@@ -67,19 +67,19 @@ End file list
 */
 char *request_M20(void) {
   strcpy(requestCommandInfo.command, "M20\n");
-  strcpy(requestCommandInfo.startMagic, "Begin file list");
-  strcpy(requestCommandInfo.stopMagic, "End file list");
-  strcpy(requestCommandInfo.replyError, "Error");
+  strcpy(requestCommandInfo.responseBegin, "Begin file list");
+  strcpy(requestCommandInfo.responseEnd, "End file list");
+  strcpy(requestCommandInfo.responseError, "Error");
   resetRequestCommandInfo();
   mustStoreCmd(requestCommandInfo.command);
   // Wait for response
-  WaitingGcodeResponse = 1;
-  while (!requestCommandInfo.done) {
-    loopProcess();
+  WaitingGcodeResponse = true;
+  while (!requestCommandInfo.commandComplete) {
+    runUpdateLoop();
   }
-  WaitingGcodeResponse = 0;
+  WaitingGcodeResponse = false;
   //clearRequestCommandInfo(); //shall be call after copying the buffer ...
-  return requestCommandInfo.response;
+  return requestCommandInfo.commandResponse;
 }
 
 /*
@@ -90,19 +90,19 @@ char *request_M20(void) {
 */
 char *request_M33(char *filename) {
   sprintf(requestCommandInfo.command, "M33 %s\n", filename);
-  strcpy(requestCommandInfo.startMagic, "/");  //un caractere qui est dans la ligne a traiter
-  strcpy(requestCommandInfo.stopMagic, "ok");
-  strcpy(requestCommandInfo.replyError, "Cannot open subdir");
+  strcpy(requestCommandInfo.responseBegin, "/");  //un caractere qui est dans la ligne a traiter
+  strcpy(requestCommandInfo.responseEnd, "ok");
+  strcpy(requestCommandInfo.responseError, "Cannot open subdir");
   resetRequestCommandInfo();
   mustStoreCmd(requestCommandInfo.command);
   // Wait for response
-  WaitingGcodeResponse = 1;
-  while (!requestCommandInfo.done) {
-    loopProcess();
+  WaitingGcodeResponse = true;
+  while (!requestCommandInfo.commandComplete) {
+    runUpdateLoop();
   }
-  WaitingGcodeResponse = 0;
+  WaitingGcodeResponse = false;
   //clearRequestCommandInfo(); //shall be call after copying the buffer ...
-  return requestCommandInfo.response;
+  return requestCommandInfo.commandResponse;
 }
 
 /**
@@ -116,26 +116,26 @@ char *request_M33(char *filename) {
  **/
 long request_M23(char *filename) {
   sprintf(requestCommandInfo.command, "M23 %s\n", filename);
-  strcpy(requestCommandInfo.startMagic, "File opened");
-  strcpy(requestCommandInfo.stopMagic, "File selected");
-  strcpy(requestCommandInfo.replyError, "open failed");
+  strcpy(requestCommandInfo.responseBegin, "File opened");
+  strcpy(requestCommandInfo.responseEnd, "File selected");
+  strcpy(requestCommandInfo.responseError, "open failed");
   resetRequestCommandInfo();
   mustStoreCmd(requestCommandInfo.command);
   // Wait for response
-  WaitingGcodeResponse = 1;
-  while (!requestCommandInfo.done) {
-    loopProcess();
+  WaitingGcodeResponse = true;
+  while (!requestCommandInfo.commandComplete) {
+    runUpdateLoop();
   }
-  WaitingGcodeResponse = 0;
+  WaitingGcodeResponse = false;
   // Find file size and report its.
   char *ptr;
-  long size = strtol(strstr(requestCommandInfo.response, "Size:") + 5, &ptr, 10);
+  long size = strtol(strstr(requestCommandInfo.commandResponse, "Size:") + 5, &ptr, 10);
   clearRequestCommandInfo();
   return size;
 }
 
 /**
- * Start o resume print
+ * Start or resume print
  **/
 bool request_M24(int file_position) {
   if (file_position == 0) {

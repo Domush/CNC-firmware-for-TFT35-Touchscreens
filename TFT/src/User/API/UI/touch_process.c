@@ -190,10 +190,10 @@ typedef enum {
   LONG_PRESS,
 } KEY_STATUS;
 
-#define KEY_DOUOBLE_SPACE 15      //�೤ʱ���ڵ�������ж��?˫��
-#define KEY_LONG_PRESS_START 200  //��������ÿ�ʼ�ж��? ���� ��ֵ
+#define KEY_DOUOBLE_SPACE 15      //�೤ʱ���ڵ�������ж��?˫��
+#define KEY_LONG_PRESS_START 200  //��������ÿ�ʼ�ж��? ���� ��ֵ
 
-#define KEY_LONG_PRESS_SPACE_MAX 10  //����ʱ ���÷���һ�μ��?
+#define KEY_LONG_PRESS_SPACE_MAX 10  //����ʱ ���÷���һ�μ��?
 #define KEY_LONG_PRESS_SPACE_MIN 2   //����ʱ ��̶�÷���һ�μ�ֵ
 
 //u16 KEY_GetValue(u8 total_rect,const GUI_RECT* menuRect)
@@ -369,7 +369,7 @@ void Buzzer_DeConfig(void) {
 typedef struct {
   u16 h_us,
       l_us,
-      num;
+      value;
 } BUZZER;
 
 static BUZZER buzzer;
@@ -381,21 +381,21 @@ void openBuzzer(u16 h_us, u16 l_us) {
   buzzer.h_us = h_us;
   buzzer.l_us = l_us;
   if (h_us == 80)
-    buzzer.num = 1000;
+    buzzer.value = 1000;
   else
-    buzzer.num = 500;
+    buzzer.value = 500;
 
   TIM3->CR1 |= 0x01;  //ʹ�ܶ�ʱ��3
 }
 void closeBuzzer(void) {
-  buzzer.num = 0;
+  buzzer.value = 0;
   TIM3->CR1 &= ~(0x01);
 }
 
 void TIM3_IRQHandler(void)  //TIM3�ж�
 {
   static bool flag = false;
-  if ((TIM3->SR & 0x01) != 0)  //���ָ����TIM�жϷ������?:TIM �ж�Դ
+  if ((TIM3->SR & 0x01) != 0)  //���ָ����TIM�жϷ������?:TIM �ж�Դ
   {
     flag = !flag;
     if (flag) {
@@ -405,8 +405,8 @@ void TIM3_IRQHandler(void)  //TIM3�ж�
     }
 
     GPIO_SetLevel(BUZZER_PIN, flag);
-    buzzer.num--;
-    if (buzzer.num == 0) {
+    buzzer.value--;
+    if (buzzer.value == 0) {
       TIM3->CR1 &= ~(0x01);
     }
 

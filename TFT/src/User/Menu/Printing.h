@@ -17,6 +17,7 @@ typedef struct
   bool pause;       // true = paused
   bool m0_pause;    // true = M0/M1 gcode triggered pause
   u8 routerSpeed;   // Current router speed
+  float babyStep;   // Current Z-height adjustment
 } PRINTING;
 
 PRINTING infoPrinting;
@@ -26,7 +27,6 @@ void endPrinting(void);
 void completePrinting(void);
 void abortPrinting(void);
 
-void setM0Pause(bool m0_pause);
 bool setPrintPause(bool pauseCalled);
 
 bool isPrinting(void);
@@ -54,10 +54,13 @@ void menuStopPrinting(void);
 void menuShutDown(void);
 
 void printingDrawPage(void);
+void fetchPreviewIcon(bool showPreviewBMP);
 void showPrintProgress(u8 progress);
 void showPrintTime(void);
+void showPrintTimeUpper(void);
+void showBabyStepValue(void);
 void showRouterSpeed(void);
 
-void loopCheckPrinting(void);
+void checkJobStatus(void);
 
 #endif

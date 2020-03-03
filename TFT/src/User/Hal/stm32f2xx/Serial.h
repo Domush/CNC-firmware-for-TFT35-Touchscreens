@@ -13,7 +13,7 @@ typedef struct
 
 #define DMA_TRANS_LEN ACK_MAX_SIZE
 
-extern DMA_CIRCULAR_BUFFER dmaL1Data[_USART_CNT];
+extern DMA_CIRCULAR_BUFFER cncIncoming[_USART_CNT];
 
 void Serial_DMAClearFlag(uint8_t port);
 void Serial_Init(u32 baud);

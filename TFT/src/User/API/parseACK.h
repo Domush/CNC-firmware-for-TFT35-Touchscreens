@@ -7,19 +7,21 @@
 static const char replyError[] = "Error:";
 static const char replyEcho[] = "echo:";
 static const char replyBusy[] = "busy:";
-static const char unknowmagic[] = "Unknown command:";
+static const char replyUnknownCommand[] = "Unknown command:";
 #ifdef ONBOARD_SD_SUPPORT
 static const char replySDPrinting[] = "SD printing byte";
 static const char replySDNotPrinting[] = "Not SD printing";
 #endif
 
-#define ACK_MAX_SIZE 1024
+#define MAX_RESPONSE_SIZE 512
 extern int MODEselect;
 char *popup_title;
 char *popup_message;
 
-void setCurrentAckSrc(uint8_t src);
-void parseACK(void);
-void parseRcvGcode(void);
+void setGcodeCommandSource(uint8_t src);
+void parseGcodeResponse(void);
+void parseSerialGcode(void);
+void showPopupMessage(char *info);
+void copyIncomingToResponse(uint8_t port);
 
 #endif

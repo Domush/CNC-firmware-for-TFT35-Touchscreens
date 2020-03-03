@@ -17,7 +17,7 @@
 #define ES_RGB_OFF "Apagar LED"
 #define ES_GCODE "Gcode"
 #define ES_CUSTOM "Personalizar"
-#define ES_LEVELING "Nivelar"
+#define ES_JOBSETUP "Job Setup"
 #define ES_DISABLE_XY "Punto 1"
 #define ES_DISABLE_Z "Punto 2"
 #define ES_POINT_3 "Punto 3"
@@ -80,7 +80,7 @@
 #define ES_Z_HOME "Home Z"
 #define ES_COORD_1 "Coord 1"
 #define ES_COORD_2 "Coord 2"
-#define ES_COORD_3 "Coord 3"
+#define ES_X0Y0 "G0 X0,Y0"
 #define ES_001_MM "0.01mm"
 #define ES_01_MM "0.1mm"
 #define ES_1_MM "1mm"
@@ -124,7 +124,7 @@
 #define ES_EMERGENCYSTOP "PARADA EMERGENCIA"
 #define ES_TOUCH_TO_EXIT "Toca cualquier lugar para salir"
 #define ES_MAINMENU "Menu"
-#define ES_WAIT_TEMP_SHUT_DOWN "Espere a que la temperatura del hotend sea inferior a " STRINGIFY(AUTO_SHUT_DOWN_MAXTEMP) "â„?"  // Wait for the temperature of hotend to be lower than 50â„?
+#define ES_WAIT_TEMP_SHUT_DOWN "Espere a que la temperatura del hotend sea inferior a " STRINGIFY(AUTO_SHUT_DOWN_MAXTEMP) "ï¿½?"  // Wait for the temperature of hotend to be lower than 50ï¿½?
 #define ES_FORCE_SHUT_DOWN "Forzar Apagado"
 #define ES_SHUTTING_DOWN "Apagando..."
 #define ES_ON "ON"

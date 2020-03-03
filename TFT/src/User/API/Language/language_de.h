@@ -17,7 +17,7 @@
 #define DE_RGB_OFF "LED Aus"
 #define DE_GCODE "Gcode"
 #define DE_CUSTOM "Custom"
-#define DE_LEVELING "Leveling"
+#define DE_JOBSETUP "Job Setup"
 #define DE_DISABLE_XY "Punkt 1"
 #define DE_DISABLE_Z "Punkt 2"
 #define DE_POINT_3 "Punkt 3"
@@ -80,7 +80,7 @@
 #define DE_Z_HOME "Home Z"
 #define DE_COORD_1 "Coord 1"
 #define DE_COORD_2 "Coord 2"
-#define DE_COORD_3 "Coord 3"
+#define DE_X0Y0 "G0 X0,Y0"
 #define DE_001_MM "0.01mm"
 #define DE_01_MM "0.1mm"
 #define DE_1_MM "1mm"
@@ -124,7 +124,7 @@
 #define DE_EMERGENCYSTOP "EM. STOP"
 #define DE_TOUCH_TO_EXIT "Touch anywhere to exit"
 #define DE_MAINMENU "Menu"
-#define DE_WAIT_TEMP_SHUT_DOWN "Wait for the temperature of hotend to be lower than " STRINGIFY(AUTO_SHUT_DOWN_MAXTEMP) "â„?"  // Wait for the temperature of hotend to be lower than 50â„?
+#define DE_WAIT_TEMP_SHUT_DOWN "Wait for the temperature of hotend to be lower than " STRINGIFY(AUTO_SHUT_DOWN_MAXTEMP) "ï¿½?"  // Wait for the temperature of hotend to be lower than 50ï¿½?
 #define DE_FORCE_SHUT_DOWN "Force"
 #define DE_SHUTTING_DOWN "Shutting down..."
 #define DE_ON "ON"

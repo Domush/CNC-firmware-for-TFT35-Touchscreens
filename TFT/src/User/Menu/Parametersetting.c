@@ -293,7 +293,7 @@ void parametersetting(void) {
     }
 
     show_value();
-    loopBackEnd();
+    processGcode();
   }
   return;
 }

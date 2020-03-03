@@ -115,7 +115,13 @@ void gcodeIconDraw(void) {
     strcpy(gnew, getCurFileSource());
     strncat(gnew, infoFile.file[i + infoFile.cur_page * NUM_PER_PAGE - infoFile.F_num], gn);
 
-    if (bmp_DirectDisplay(getIconStartPoint(i), strcat(gnew, "_" STRINGIFY(ICON_WIDTH) ".bmp")) != true) {
+    // if (bmp_DirectDisplay(getIconStartPoint(i), strcat(gnew, "_" STRINGIFY(ICON_WIDTH) ".bmp")) != true) {
+    // *If sample.bmp exists, display it as a preview icon
+    if (bmp_DirectDisplay(getIconStartPoint(i), strcat(gnew, ".bmp")) == true) {
+      // Exact name bmp image will be displayed instead of generic icon
+    } else if (bmp_DirectDisplay(getIconStartPoint(i), "sample.bmp") == true) {
+      // Exact name bmp image will be displayed instead of generic icon
+    } else {
       menuDrawItem(&curItem, i);
     }
     free(gnew);
@@ -270,8 +276,13 @@ void menuPrintFromSource(void) {
             strcpy(gnew, getCurFileSource());
             strncat(gnew, infoFile.file[key_num + start - infoFile.F_num], gn);
 
-            if (bmpDecode(strcat(gnew, "_" STRINGIFY(ICON_WIDTH) ".bmp"), ICON_ADDR(ICON_PREVIEW)) == true) {
+            // *If <gcodeFilename>.bmp exists, display it as a preview icon
+            if (bmpDecode(strcat(gnew, ".bmp"), ICON_ADDR(ICON_PREVIEW)) == true) {
               icon_pre = true;
+              // *ElseIf sample.bmp exists, display it as a preview icon
+            } else if (bmpDecode("sample.bmp", ICON_ADDR(ICON_PREVIEW)) == true) {
+              icon_pre = true;
+              // *Else display nothing
             } else {
               icon_pre = false;
             }
@@ -284,7 +295,7 @@ void menuPrintFromSource(void) {
         else if (key_num >= KEY_LABEL_0 && key_num <= KEY_LABEL_4) {
           if (infoSettings.file_listmode != true) {
             if (key_num - KEY_LABEL_0 + infoFile.cur_page * NUM_PER_PAGE < infoFile.F_num + infoFile.f_num) {
-              normalNameDisp(gcodeScroll.rect, gcodeScroll.text);
+              normalNameDisp(gcodeScroll.dimensions, gcodeScroll.text);
               scrollFileNameCreate(key_num - KEY_LABEL_0);
             }
           }
@@ -308,7 +319,7 @@ void menuPrintFromSource(void) {
       infoMenu.active--;
     }
 #endif
-    loopProcess();
+    runUpdateLoop();
   }
 }
 
@@ -346,7 +357,7 @@ void menuPrint(void) {
       case KEY_ICON_0:
         infoFile.source = TFT_SD;
         infoMenu.menu[++infoMenu.active] = menuPrintFromSource;
-        infoMenu.menu[++infoMenu.active] = menuPowerOff;
+        // infoMenu.menu[++infoMenu.active] = menuPowerOff; // *Disabling resume after power loss (for now)
         goto selectEnd;
 
 #ifdef ONBOARD_SD_SUPPORT
@@ -375,7 +386,7 @@ void menuPrint(void) {
       default:
         break;
     }
-    loopProcess();
+    runUpdateLoop();
   }
 
 selectEnd:

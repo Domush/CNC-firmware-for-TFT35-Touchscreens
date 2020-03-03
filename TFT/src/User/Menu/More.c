@@ -18,7 +18,7 @@ void menuIsPause(void) {
         infoMenu.active--;
         break;
     }
-    loopProcess();
+    runUpdateLoop();
   }
 }
 
@@ -63,6 +63,6 @@ void menuMore(void) {
       default:
         break;
     }
-    loopProcess();
+    runUpdateLoop();
   }
 }
