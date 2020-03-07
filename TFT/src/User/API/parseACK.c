@@ -57,13 +57,13 @@ static float ack_second_value() {
 }
  */
 void showPopupMessage(char *info) {
-  popup_title = "Notice:";
+  popup_title   = "Notice:";
   popup_message = "No reason given. Continue when ready.";
   if (infoMenu.menu[infoMenu.active] == parametersetting) return;
   if (infoMenu.menu[infoMenu.active] == menuTerminal) return;
   if (strstr((const char *)cncResponse + responseIndex, "//action:prompt_end")) {
     setPrintPause(true);
-    popup_title = &info[0];
+    popup_title   = &info[0];
     popup_message = &cncResponse[responseIndex];
     if (infoMenu.menu[infoMenu.active] != menuM0Pause) {
       infoMenu.menu[++infoMenu.active] = menuM0Pause;
@@ -76,30 +76,30 @@ void showPopupMessage(char *info) {
 void copyIncomingToResponse(uint8_t port) {
   uint16_t i = 0;
   for (i = 0; cncIncoming[port].parsedIndex != cncIncoming[port].pendingIndex; i++) {
-    cncResponse[i] = cncIncoming[port].cache[cncIncoming[port].parsedIndex];
+    cncResponse[i]                = cncIncoming[port].cache[cncIncoming[port].parsedIndex];
     cncIncoming[port].parsedIndex = (cncIncoming[port].parsedIndex + 1) % MAX_RESPONSE_SIZE;
   }
-  cncResponse[i] = 0;  // End character
+  cncResponse[i] = 0;   // End character
 }
 
 void parseGcodeResponse(void) {
   bool hideResponsesInTerminal = false;
-  if (infoHost.rx_ok[SERIAL_PORT] != true) return;  // *Only process response data from the correct serial port
+  if (infoHost.rx_ok[SERIAL_PORT] != true) return;   // *Only process response data from the correct serial port
 
   copyIncomingToResponse(SERIAL_PORT);
-  infoHost.rx_ok[SERIAL_PORT] = false;  // *All response data has been moved to cncResponse
+  infoHost.rx_ok[SERIAL_PORT] = false;   // *All response data has been moved to cncResponse
 
   // *Look for Marlin and wake it up if sleeping
   if (infoHost.connected == false) {
     timedMessage(1, TIMED_CRITICAL, (char *)textSelect(LABEL_UNCONNECTED));
-    static u8 connectionRetryDelay = 2;  // # of seconds to wait before retrying to connect
-    static u16 connectionRetryTime = 0;  // stored timestamp for reconnect attempt
+    static u8 connectionRetryDelay = 2;   // # of seconds to wait before retrying to connect
+    static u16 connectionRetryTime = 0;   // stored timestamp for reconnect attempt
     if ((!responseMatch("T:") && !responseMatch("T0:")) || !responseMatch("ok")) {
       if (OS_GetTime() - connectionRetryDelay > connectionRetryTime) {
         connectionRetryTime = OS_GetTime();
-        mustStoreCmd("M105\n");  // *Attempts to send a "wake up" packet to trigger a connection
+        mustStoreCmd("M105\n");   // *Attempts to send a "wake up" packet to trigger a connection
       }
-      goto parse_end;  // *Initial Marlin response should be: "T:25/50 ok\n"
+      goto parse_end;   // *Initial Marlin response should be: "T:25/50 ok\n"
     }
     // *Connection established! Let the Gcode Games begin!
     infoHost.connected = true;
@@ -119,15 +119,15 @@ void parseGcodeResponse(void) {
       strcat(requestCommandInfo.commandResponse, cncResponse);
 
       if (responseMatch(requestCommandInfo.responseError)) {
-        requestCommandInfo.commandComplete = true;
-        requestCommandInfo.responseInProgress = false;
+        requestCommandInfo.commandComplete        = true;
+        requestCommandInfo.responseInProgress     = false;
         requestCommandInfo.responseErrorTriggered = true;
       } else if (responseMatch(requestCommandInfo.responseEnd)) {
-        requestCommandInfo.commandComplete = true;
+        requestCommandInfo.commandComplete    = true;
         requestCommandInfo.responseInProgress = false;
       }
     } else {
-      requestCommandInfo.commandComplete = true;
+      requestCommandInfo.commandComplete    = true;
       requestCommandInfo.responseInProgress = false;
       showPopupMessage((char *)replyError);
     }
@@ -183,7 +183,7 @@ void parseGcodeResponse(void) {
     } else if (responseMatch(replySDPrinting)) {
       if (infoMenu.menu[infoMenu.active] != menuPrinting && !infoHost.printing) {
         infoMenu.menu[++infoMenu.active] = menuPrinting;
-        infoHost.printing = true;
+        infoHost.printing                = true;
       }
       // Parsing printing data
       // Example: SD printing byte 123/12345

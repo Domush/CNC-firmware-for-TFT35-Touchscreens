@@ -7,16 +7,16 @@ bool WaitingGcodeResponse = false;
 static void resetRequestCommandInfo(void) {
   requestCommandInfo.commandResponse = malloc(RESPONSE_MAX_CHARS);
   while (!requestCommandInfo.commandResponse)
-    ;  // malloc failed
+    ;   // malloc failed
   memset(requestCommandInfo.commandResponse, 0, RESPONSE_MAX_CHARS);
-  requestCommandInfo.waitingForResponse = true;
-  requestCommandInfo.responseInProgress = false;
-  requestCommandInfo.commandComplete = false;
+  requestCommandInfo.waitingForResponse     = true;
+  requestCommandInfo.responseInProgress     = false;
+  requestCommandInfo.commandComplete        = false;
   requestCommandInfo.responseErrorTriggered = false;
 }
 
 bool RequestCommandInfoIsRunning(void) {
-  return WaitingGcodeResponse;  //i try to use requestCommandInfo.commandComplete but does not work as expected ...
+  return WaitingGcodeResponse;   //i try to use requestCommandInfo.commandComplete but does not work as expected ...
 }
 
 void clearRequestCommandInfo(void) {
@@ -90,7 +90,7 @@ char *request_M20(void) {
 */
 char *request_M33(char *filename) {
   sprintf(requestCommandInfo.command, "M33 %s\n", filename);
-  strcpy(requestCommandInfo.responseBegin, "/");  //un caractere qui est dans la ligne a traiter
+  strcpy(requestCommandInfo.responseBegin, "/");   //un caractere qui est dans la ligne a traiter
   strcpy(requestCommandInfo.responseEnd, "ok");
   strcpy(requestCommandInfo.responseError, "Cannot open subdir");
   resetRequestCommandInfo();

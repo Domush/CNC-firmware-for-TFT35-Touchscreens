@@ -1,7 +1,7 @@
 #include "boot.h"
 #include "includes.h"
 
-const GUI_RECT iconUpdateRect = {(LCD_WIDTH - ICON_WIDTH) / 2, (LCD_HEIGHT - ICON_HEIGHT) / 2,
+const GUI_RECT iconUpdateRect  = {(LCD_WIDTH - ICON_WIDTH) / 2, (LCD_HEIGHT - ICON_HEIGHT) / 2,
                                  (LCD_WIDTH - ICON_WIDTH) / 2 + ICON_WIDTH, (LCD_HEIGHT - ICON_HEIGHT) / 2 + ICON_HEIGHT};
 const GUI_RECT labelUpdateRect = {0, (LCD_HEIGHT - ICON_HEIGHT) / 2 + ICON_HEIGHT,
                                   LCD_WIDTH, (LCD_HEIGHT - ICON_HEIGHT) / 2 + ICON_HEIGHT + BYTE_HEIGHT};
@@ -149,7 +149,7 @@ bool bmpDecode(char *bmp, u32 addr) {
   }
   bpp >>= 3;
   bytePerLine = w * bpp;
-  if (bytePerLine % 4 != 0)  //bmp
+  if (bytePerLine % 4 != 0)   //bmp
     bytePerLine = (bytePerLine / 4 + 1) * 4;
 
   for (bnum = 0; bnum < (w * h * 2 + W25QXX_SECTOR_SIZE - 1) / W25QXX_SECTOR_SIZE; bnum++) {
@@ -211,8 +211,8 @@ void updateIcon(void) {
 
 void updateFont(char *font, u32 addr) {
   u8 progress = 0;
-  UINT rnum = 0;
-  u32 offset = 0;
+  UINT rnum   = 0;
+  u32 offset  = 0;
   char buffer[128];
   FIL myfp;
   u8 *tempbuf = NULL;
@@ -258,14 +258,14 @@ void scanResetDir(void) {
 }
 
 void scanUpdates(void) {
-  volatile u8 result = 0;  //must volatileï¼
+  volatile u8 result = 0;
   if (mountSDCard()) {
     result = scanUpdateFile();
     if (result & FONT) {
       updateFont(FONT_ROOT_DIR "/byte_ascii.fon", BYTE_ASCII_ADDR);
       updateFont(FONT_ROOT_DIR "/word_unicode.fon", WORD_UNICODE);
     }
-    if (result & BMP)  //bmp
+    if (result & BMP)   //bmp
     {
       updateIcon();
     }

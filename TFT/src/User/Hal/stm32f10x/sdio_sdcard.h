@@ -32,49 +32,49 @@
 //SDIO clock calculation formula: SDIO_CK clock = SDIOCLK /[clkdiv + 2]; Among them, SDIOCLK is generally 72Mhz
 //When using DMA mode, the transmission rate can reach 24Mhz, but if your card is not a high-speed card, it may cause errors.
 //Please reduce the clock if you make a mistake. If you use the query mode, it is recommended that SDIO_TRANSFER_CLK_DIV be set to 3 or greater.
-#define SDIO_INIT_CLK_DIV 0xB2      //SDIO initialization frequency, maximum 400Kh
-#define SDIO_TRANSFER_CLK_DIV 0x04  //SDIO transmission frequency, this value is too small may cause errors in reading and writing files
+#define SDIO_INIT_CLK_DIV 0xB2       //SDIO initialization frequency, maximum 400Kh
+#define SDIO_TRANSFER_CLK_DIV 0x04   //SDIO transmission frequency, this value is too small may cause errors in reading and writing files
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //SDIO working mode definition, set by SD_SetDeviceMode function.
-#define SD_POLLING_MODE 0  //Query mode. In this mode, if there is a problem with reading and writing, it is recommended to increase the setting of SDIO_TRANSFER_CLK_DIV.
-#define SD_DMA_MODE 1      //DMA mode. In this mode, if there is a problem with reading and writing, it is recommended to increase the setting of SDIO_TRANSFER_CLK_DIV.
+#define SD_POLLING_MODE 0   //Query mode. In this mode, if there is a problem with reading and writing, it is recommended to increase the setting of SDIO_TRANSFER_CLK_DIV.
+#define SD_DMA_MODE 1       //DMA mode. In this mode, if there is a problem with reading and writing, it is recommended to increase the setting of SDIO_TRANSFER_CLK_DIV.
 
 //SDIO various error enumeration definitions
 typedef enum {
   //Special error definition
-  SD_CMD_CRC_FAIL = (1),           /*!< Command response received (but CRC check failed) */
-  SD_DATA_CRC_FAIL = (2),          /*!< Data bock sent/received (CRC check Failed) */
-  SD_CMD_RSP_TIMEOUT = (3),        /*!< Command response timeout */
-  SD_DATA_TIMEOUT = (4),           /*!< Data time out */
-  SD_TX_UNDERRUN = (5),            /*!< Transmit FIFO under-run */
-  SD_RX_OVERRUN = (6),             /*!< Receive FIFO over-run */
-  SD_START_BIT_ERR = (7),          /*!< Start bit not detected on all data signals in widE bus mode */
-  SD_CMD_OUT_OF_RANGE = (8),       /*!< CMD's argument was out of range.*/
-  SD_ADDR_MISALIGNED = (9),        /*!< Misaligned address */
-  SD_BLOCK_LEN_ERR = (10),         /*!< Transferred block length is not allowed for the card or the number of transferred bytes does not match the block length */
-  SD_ERASE_SEQ_ERR = (11),         /*!< An error in the sequence of erase command occurs.*/
-  SD_BAD_ERASE_PARAM = (12),       /*!< An Invalid selection for erase groups */
-  SD_WRITE_PROT_VIOLATION = (13),  /*!< Attempt to program a write protect block */
-  SD_LOCK_UNLOCK_FAILED = (14),    /*!< Sequence or password error has been detected in unlock command or if there was an attempt to access a locked card */
-  SD_COM_CRC_FAILED = (15),        /*!< CRC check of the previous command failed */
-  SD_ILLEGAL_CMD = (16),           /*!< Command is not legal for the card state */
-  SD_CARD_ECC_FAILED = (17),       /*!< Card internal ECC was applied but failed to correct the data */
-  SD_CC_ERROR = (18),              /*!< Internal card controller error */
+  SD_CMD_CRC_FAIL          = (1),  /*!< Command response received (but CRC check failed) */
+  SD_DATA_CRC_FAIL         = (2),  /*!< Data bock sent/received (CRC check Failed) */
+  SD_CMD_RSP_TIMEOUT       = (3),  /*!< Command response timeout */
+  SD_DATA_TIMEOUT          = (4),  /*!< Data time out */
+  SD_TX_UNDERRUN           = (5),  /*!< Transmit FIFO under-run */
+  SD_RX_OVERRUN            = (6),  /*!< Receive FIFO over-run */
+  SD_START_BIT_ERR         = (7),  /*!< Start bit not detected on all data signals in widE bus mode */
+  SD_CMD_OUT_OF_RANGE      = (8),  /*!< CMD's argument was out of range.*/
+  SD_ADDR_MISALIGNED       = (9),  /*!< Misaligned address */
+  SD_BLOCK_LEN_ERR         = (10), /*!< Transferred block length is not allowed for the card or the number of transferred bytes does not match the block length */
+  SD_ERASE_SEQ_ERR         = (11), /*!< An error in the sequence of erase command occurs.*/
+  SD_BAD_ERASE_PARAM       = (12), /*!< An Invalid selection for erase groups */
+  SD_WRITE_PROT_VIOLATION  = (13), /*!< Attempt to program a write protect block */
+  SD_LOCK_UNLOCK_FAILED    = (14), /*!< Sequence or password error has been detected in unlock command or if there was an attempt to access a locked card */
+  SD_COM_CRC_FAILED        = (15), /*!< CRC check of the previous command failed */
+  SD_ILLEGAL_CMD           = (16), /*!< Command is not legal for the card state */
+  SD_CARD_ECC_FAILED       = (17), /*!< Card internal ECC was applied but failed to correct the data */
+  SD_CC_ERROR              = (18), /*!< Internal card controller error */
   SD_GENERAL_UNKNOWN_ERROR = (19), /*!< General or Unknown error */
-  SD_STREAM_READ_UNDERRUN = (20),  /*!< The card could not sustain data transfer in stream read operation. */
-  SD_STREAM_WRITE_OVERRUN = (21),  /*!< The card could not sustain data programming in stream mode */
-  SD_CID_CSD_OVERWRITE = (22),     /*!< CID/CSD overwrite error */
-  SD_WP_ERASE_SKIP = (23),         /*!< only partial address space was erased */
-  SD_CARD_ECC_DISABLED = (24),     /*!< Command has been executed without using internal ECC */
-  SD_ERASE_RESET = (25),           /*!< Erase sequence was cleared before executing because an out of erase sequence command was received */
-  SD_AKE_SEQ_ERROR = (26),         /*!< Error in sequence of authentication. */
-  SD_INVALID_VOLTRANGE = (27),
-  SD_ADDR_OUT_OF_RANGE = (28),
-  SD_SWITCH_ERROR = (29),
-  SD_SDIO_DISABLED = (30),
-  SD_SDIO_FUNCTION_BUSY = (31),
-  SD_SDIO_FUNCTION_FAILED = (32),
+  SD_STREAM_READ_UNDERRUN  = (20), /*!< The card could not sustain data transfer in stream read operation. */
+  SD_STREAM_WRITE_OVERRUN  = (21), /*!< The card could not sustain data programming in stream mode */
+  SD_CID_CSD_OVERWRITE     = (22), /*!< CID/CSD overwrite error */
+  SD_WP_ERASE_SKIP         = (23), /*!< only partial address space was erased */
+  SD_CARD_ECC_DISABLED     = (24), /*!< Command has been executed without using internal ECC */
+  SD_ERASE_RESET           = (25), /*!< Erase sequence was cleared before executing because an out of erase sequence command was received */
+  SD_AKE_SEQ_ERROR         = (26), /*!< Error in sequence of authentication. */
+  SD_INVALID_VOLTRANGE     = (27),
+  SD_ADDR_OUT_OF_RANGE     = (28),
+  SD_SWITCH_ERROR          = (29),
+  SD_SDIO_DISABLED         = (30),
+  SD_SDIO_FUNCTION_BUSY    = (31),
+  SD_SDIO_FUNCTION_FAILED  = (32),
   SD_SDIO_UNKNOWN_FUNCTION = (33),
   //Standard error definition
   SD_INTERNAL_ERROR,
@@ -146,15 +146,15 @@ typedef struct
 } SD_CID;
 //SD card status
 typedef enum {
-  SD_CARD_READY = ((uint32_t)0x00000001),
+  SD_CARD_READY          = ((uint32_t)0x00000001),
   SD_CARD_IDENTIFICATION = ((uint32_t)0x00000002),
-  SD_CARD_STANDBY = ((uint32_t)0x00000003),
-  SD_CARD_TRANSFER = ((uint32_t)0x00000004),
-  SD_CARD_SENDING = ((uint32_t)0x00000005),
-  SD_CARD_RECEIVING = ((uint32_t)0x00000006),
-  SD_CARD_PROGRAMMING = ((uint32_t)0x00000007),
-  SD_CARD_DISCONNECTED = ((uint32_t)0x00000008),
-  SD_CARD_ERROR = ((uint32_t)0x000000FF)
+  SD_CARD_STANDBY        = ((uint32_t)0x00000003),
+  SD_CARD_TRANSFER       = ((uint32_t)0x00000004),
+  SD_CARD_SENDING        = ((uint32_t)0x00000005),
+  SD_CARD_RECEIVING      = ((uint32_t)0x00000006),
+  SD_CARD_PROGRAMMING    = ((uint32_t)0x00000007),
+  SD_CARD_DISCONNECTED   = ((uint32_t)0x00000008),
+  SD_CARD_ERROR          = ((uint32_t)0x000000FF)
 } SDCardState;
 
 //SD card information, including CSD, CID and other data
@@ -162,12 +162,12 @@ typedef struct
 {
   SD_CSD SD_csd;
   SD_CID SD_cid;
-  long long CardCapacity;  //SD card capacity, unit: byte, supports up to 2 ^ 64 byte card.
-  u32 CardBlockSize;       //SD card block size
-  u16 RCA;                 //Card relative address
-  u8 CardType;             //card type
+  long long CardCapacity;   //SD card capacity, unit: byte, supports up to 2 ^ 64 byte card.
+  u32 CardBlockSize;        //SD card block size
+  u16 RCA;                  //Card relative address
+  u8 CardType;              //card type
 } SD_CardInfo;
-extern SD_CardInfo SDCardInfo;  //SD card information
+extern SD_CardInfo SDCardInfo;   //SD card information
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //SDIO Finger Set
 #define SD_CMD_GO_IDLE_STATE ((u8)0)
@@ -199,14 +199,14 @@ extern SD_CardInfo SDCardInfo;  //SD card information
 #define SD_CMD_SET_WRITE_PROT ((u8)28)
 #define SD_CMD_CLR_WRITE_PROT ((u8)29)
 #define SD_CMD_SEND_WRITE_PROT ((u8)30)
-#define SD_CMD_SD_ERASE_GRP_START ((u8)32) /*!< To set the address of the first write \
+#define SD_CMD_SD_ERASE_GRP_START ((u8)32) /*!< To set the address of the first write \ \ \
                                                  block to be erased. (For SD card only) */
-#define SD_CMD_SD_ERASE_GRP_END ((u8)33)   /*!< To set the address of the last write block of the \
+#define SD_CMD_SD_ERASE_GRP_END ((u8)33)   /*!< To set the address of the last write block of the \ \ \
                                                  continuous range to be erased. (For SD card only) */
-#define SD_CMD_ERASE_GRP_START ((u8)35)    /*!< To set the address of the first write block to be erased. \
+#define SD_CMD_ERASE_GRP_START ((u8)35)    /*!< To set the address of the first write block to be erased. \ \ \
                                                  (For MMC card only spec 3.31) */
 
-#define SD_CMD_ERASE_GRP_END ((u8)36) /*!< To set the address of the last write block of the \
+#define SD_CMD_ERASE_GRP_END ((u8)36) /*!< To set the address of the last write block of the \ \ \
                                             continuous range to be erased. (For MMC card only spec 3.31) */
 
 #define SD_CMD_ERASE ((u8)38)
@@ -217,9 +217,9 @@ extern SD_CardInfo SDCardInfo;  //SD card information
 #define SD_CMD_GEN_CMD ((u8)56)
 #define SD_CMD_NO_CMD ((u8)64)
 
-/** 
+/**
   * @brief Following commands are SD Card Specific commands.
-  *        SDIO_APP_CMD CMD55 should be sent before sending these commands. 
+  *        SDIO_APP_CMD CMD55 should be sent before sending these commands.
   */
 #define SD_CMD_APP_SD_SET_BUSWIDTH ((u8)6)           /*!< For SD Card only */
 #define SD_CMD_SD_APP_STAUS ((u8)13)                 /*!< For SD Card only */
@@ -230,9 +230,9 @@ extern SD_CardInfo SDCardInfo;  //SD card information
 #define SD_CMD_SDIO_RW_DIRECT ((u8)52)               /*!< For SD I/O Card only */
 #define SD_CMD_SDIO_RW_EXTENDED ((u8)53)             /*!< For SD I/O Card only */
 
-/** 
+/**
   * @brief Following commands are SD Card Specific security commands.
-  *        SDIO_APP_CMD should be sent before sending these commands. 
+  *        SDIO_APP_CMD should be sent before sending these commands.
   */
 #define SD_CMD_SD_APP_GET_MKB ((u8)43)                     /*!< For SD Card only */
 #define SD_CMD_SD_APP_GET_MID ((u8)44)                     /*!< For SD Card only */
@@ -363,7 +363,7 @@ SD_Error FindSCR(u16 rca, u32 *pscr);
 u8 convert_from_bytes_to_power_of_two(u16 NumberOfBytes);
 void SD_DMA_Config(u32 *mbuf, u32 bufsize, u8 dir);
 
-u8 SD_ReadDisk(u8 *buf, u32 sector, u8 cnt);   //SD copy SD copy, fatfs /usb copy copy
-u8 SD_WriteDisk(u8 *buf, u32 sector, u8 cnt);  //Write SD, copy, fatfs /usb, copy, copy
+u8 SD_ReadDisk(u8 *buf, u32 sector, u8 cnt);    //SD copy SD copy, fatfs /usb copy copy
+u8 SD_WriteDisk(u8 *buf, u32 sector, u8 cnt);   //Write SD, copy, fatfs /usb, copy, copy
 
 #endif

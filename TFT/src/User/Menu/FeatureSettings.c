@@ -100,7 +100,7 @@ typedef enum {
 #ifdef LED_color_PIN
   SKEY_KNOB,
 #endif
-  SKEY_COUNT  //keep this always at the end
+  SKEY_COUNT   //keep this always at the end
 } SKEY_LIST;
 
 #define FE_PAGE_COUNT (SKEY_COUNT + LISTITEM_PER_PAGE - 1) / LISTITEM_PER_PAGE
@@ -138,24 +138,24 @@ void updateFeatureSettings(uint8_t key_val) {
   uint8_t item_index = fe_cur_page * LISTITEM_PER_PAGE + key_val;
   switch (item_index) {
     case SKEY_HIDEACK:
-      infoSettings.terminalACK = (infoSettings.terminalACK + 1) % TOGGLE_NUM;
-      settingPage[item_index].icon = toggleitem[infoSettings.terminalACK];
+      infoSettings.terminalACK            = (infoSettings.terminalACK + 1) % TOGGLE_NUM;
+      settingPage[item_index].icon        = toggleitem[infoSettings.terminalACK];
       featureSettingsItems.items[key_val] = settingPage[item_index];
 
       menuDrawListItem(&featureSettingsItems.items[key_val], key_val);
       break;
 
     case SKEY_INVERT_Y:
-      infoSettings.invert_yaxis = (infoSettings.invert_yaxis + 1) % TOGGLE_NUM;
-      settingPage[item_index].icon = toggleitem[infoSettings.invert_yaxis];
+      infoSettings.invert_yaxis           = (infoSettings.invert_yaxis + 1) % TOGGLE_NUM;
+      settingPage[item_index].icon        = toggleitem[infoSettings.invert_yaxis];
       featureSettingsItems.items[key_val] = settingPage[item_index];
 
       menuDrawListItem(&featureSettingsItems.items[key_val], key_val);
       break;
 
     case SKEY_INVERT_Z:
-      infoSettings.invert_zaxis = (infoSettings.invert_zaxis + 1) % TOGGLE_NUM;
-      settingPage[item_index].icon = toggleitem[infoSettings.invert_zaxis];
+      infoSettings.invert_zaxis           = (infoSettings.invert_zaxis + 1) % TOGGLE_NUM;
+      settingPage[item_index].icon        = toggleitem[infoSettings.invert_zaxis];
       featureSettingsItems.items[key_val] = settingPage[item_index];
 
       menuDrawListItem(&featureSettingsItems.items[key_val], key_val);
@@ -163,8 +163,8 @@ void updateFeatureSettings(uint8_t key_val) {
 
 #ifdef PS_ON_PIN
     case SKEY_POWER:
-      infoSettings.auto_off = (infoSettings.auto_off + 1) % TOGGLE_NUM;
-      settingPage[item_index].icon = toggleitem[infoSettings.auto_off];
+      infoSettings.auto_off               = (infoSettings.auto_off + 1) % TOGGLE_NUM;
+      settingPage[item_index].icon        = toggleitem[infoSettings.auto_off];
       featureSettingsItems.items[key_val] = settingPage[item_index];
 
       menuDrawListItem(&featureSettingsItems.items[key_val], key_val);
@@ -173,8 +173,8 @@ void updateFeatureSettings(uint8_t key_val) {
 
 #ifdef FIL_RUNOUT_PIN
     case SKEY_RUNOUT:
-      infoSettings.runout = (infoSettings.runout + 1) % ITEM_RUNOUT_NUM;
-      settingPage[item_index].valueLabel = itemRunout[infoSettings.runout];
+      infoSettings.runout                 = (infoSettings.runout + 1) % ITEM_RUNOUT_NUM;
+      settingPage[item_index].valueLabel  = itemRunout[infoSettings.runout];
       featureSettingsItems.items[key_val] = settingPage[item_index];
 
       menuDrawListItem(&featureSettingsItems.items[key_val], key_val);
@@ -182,48 +182,48 @@ void updateFeatureSettings(uint8_t key_val) {
 #endif
 
     case SKEY_SPEED:
-      infoSettings.move_speed = (infoSettings.move_speed + 1) % ITEM_SPEED_NUM;
-      settingPage[item_index].valueLabel = itemMoveSpeed[infoSettings.move_speed];
+      infoSettings.move_speed             = (infoSettings.move_speed + 1) % ITEM_SPEED_NUM;
+      settingPage[item_index].valueLabel  = itemMoveSpeed[infoSettings.move_speed];
       featureSettingsItems.items[key_val] = settingPage[item_index];
 
       menuDrawListItem(&featureSettingsItems.items[key_val], key_val);
       break;
 
     case SKEY_ROUTER_POWER:
-      infoSettings.router_power = (infoSettings.router_power + 1) % ITEM_ROUTER_CONTROL;
-      settingPage[item_index].valueLabel = itemRouterControl[infoSettings.router_power];
+      infoSettings.router_power           = (infoSettings.router_power + 1) % ITEM_ROUTER_CONTROL;
+      settingPage[item_index].valueLabel  = itemRouterControl[infoSettings.router_power];
       featureSettingsItems.items[key_val] = settingPage[item_index];
 
       menuDrawListItem(&featureSettingsItems.items[key_val], key_val);
       break;
 
     case SKEY_STARTGCODE:
-      infoSettings.send_start_gcode = (infoSettings.send_start_gcode + 1) % TOGGLE_NUM;
-      settingPage[item_index].icon = toggleitem[infoSettings.send_start_gcode];
+      infoSettings.send_start_gcode       = (infoSettings.send_start_gcode + 1) % TOGGLE_NUM;
+      settingPage[item_index].icon        = toggleitem[infoSettings.send_start_gcode];
       featureSettingsItems.items[key_val] = settingPage[item_index];
 
       menuDrawListItem(&featureSettingsItems.items[key_val], key_val);
       break;
 
     case SKEY_ENDGCODE:
-      infoSettings.send_end_gcode = (infoSettings.send_end_gcode + 1) % TOGGLE_NUM;
-      settingPage[item_index].icon = toggleitem[infoSettings.send_end_gcode];
+      infoSettings.send_end_gcode         = (infoSettings.send_end_gcode + 1) % TOGGLE_NUM;
+      settingPage[item_index].icon        = toggleitem[infoSettings.send_end_gcode];
       featureSettingsItems.items[key_val] = settingPage[item_index];
 
       menuDrawListItem(&featureSettingsItems.items[key_val], key_val);
       break;
 
     case SKEY_PERSISTENTINFO:
-      infoSettings.persistent_info = (infoSettings.persistent_info + 1) % TOGGLE_NUM;
-      settingPage[item_index].icon = toggleitem[infoSettings.persistent_info];
+      infoSettings.persistent_info        = (infoSettings.persistent_info + 1) % TOGGLE_NUM;
+      settingPage[item_index].icon        = toggleitem[infoSettings.persistent_info];
       featureSettingsItems.items[key_val] = settingPage[item_index];
 
       menuDrawListItem(&featureSettingsItems.items[key_val], key_val);
       break;
 
     case SKEY_FILELIST:
-      infoSettings.file_listmode = (infoSettings.file_listmode + 1) % TOGGLE_NUM;
-      settingPage[item_index].icon = toggleitem[infoSettings.file_listmode];
+      infoSettings.file_listmode          = (infoSettings.file_listmode + 1) % TOGGLE_NUM;
+      settingPage[item_index].icon        = toggleitem[infoSettings.file_listmode];
       featureSettingsItems.items[key_val] = settingPage[item_index];
 
       menuDrawListItem(&featureSettingsItems.items[key_val], key_val);
@@ -231,8 +231,8 @@ void updateFeatureSettings(uint8_t key_val) {
 
 #ifdef LED_color_PIN
     case SKEY_KNOB:
-      infoSettings.led_color = (infoSettings.led_color + 1) % LED_color_NUM;
-      settingPage[item_index].valueLabel = itemLedcolor[infoSettings.led_color];
+      infoSettings.led_color              = (infoSettings.led_color + 1) % LED_color_NUM;
+      settingPage[item_index].valueLabel  = itemLedcolor[infoSettings.led_color];
       featureSettingsItems.items[key_val] = settingPage[item_index];
       ws2812_send_DAT(led_color[infoSettings.led_color]);
 
@@ -253,23 +253,23 @@ void loadFeatureSettings() {
     uint8_t item_index = fe_cur_page * LISTITEM_PER_PAGE + i;
     switch (item_index) {
       case SKEY_HIDEACK:
-        settingPage[item_index].icon = toggleitem[infoSettings.terminalACK];
+        settingPage[item_index].icon  = toggleitem[infoSettings.terminalACK];
         featureSettingsItems.items[i] = settingPage[item_index];
         break;
 
       case SKEY_INVERT_Y:
-        settingPage[item_index].icon = toggleitem[infoSettings.invert_yaxis];
+        settingPage[item_index].icon  = toggleitem[infoSettings.invert_yaxis];
         featureSettingsItems.items[i] = settingPage[item_index];
         break;
 
       case SKEY_INVERT_Z:
-        settingPage[item_index].icon = toggleitem[infoSettings.invert_zaxis];
+        settingPage[item_index].icon  = toggleitem[infoSettings.invert_zaxis];
         featureSettingsItems.items[i] = settingPage[item_index];
         break;
 
 #ifdef PS_ON_PIN
       case SKEY_POWER:
-        settingPage[item_index].icon = toggleitem[infoSettings.auto_off];
+        settingPage[item_index].icon  = toggleitem[infoSettings.auto_off];
         featureSettingsItems.items[i] = settingPage[item_index];
         break;
 #endif
@@ -277,49 +277,49 @@ void loadFeatureSettings() {
 #ifdef FIL_RUNOUT_PIN
       case SKEY_RUNOUT:
         settingPage[item_index].valueLabel = itemRunout[infoSettings.runout];
-        featureSettingsItems.items[i] = settingPage[item_index];
+        featureSettingsItems.items[i]      = settingPage[item_index];
         break;
 #endif
 
       case SKEY_SPEED:
         settingPage[item_index].valueLabel = itemMoveSpeed[infoSettings.move_speed];
-        featureSettingsItems.items[i] = settingPage[item_index];
+        featureSettingsItems.items[i]      = settingPage[item_index];
         break;
 
       case SKEY_ROUTER_POWER:
         settingPage[item_index].valueLabel = itemRouterControl[infoSettings.router_power];
-        featureSettingsItems.items[i] = settingPage[item_index];
+        featureSettingsItems.items[i]      = settingPage[item_index];
         break;
 
       case SKEY_STARTGCODE:
-        settingPage[item_index].icon = toggleitem[infoSettings.send_start_gcode];
+        settingPage[item_index].icon  = toggleitem[infoSettings.send_start_gcode];
         featureSettingsItems.items[i] = settingPage[item_index];
         break;
 
       case SKEY_ENDGCODE:
-        settingPage[item_index].icon = toggleitem[infoSettings.send_end_gcode];
+        settingPage[item_index].icon  = toggleitem[infoSettings.send_end_gcode];
         featureSettingsItems.items[i] = settingPage[item_index];
         break;
 
       case SKEY_PERSISTENTINFO:
-        settingPage[item_index].icon = toggleitem[infoSettings.persistent_info];
+        settingPage[item_index].icon  = toggleitem[infoSettings.persistent_info];
         featureSettingsItems.items[i] = settingPage[item_index];
         break;
 
       case SKEY_FILELIST:
-        settingPage[item_index].icon = toggleitem[infoSettings.file_listmode];
+        settingPage[item_index].icon  = toggleitem[infoSettings.file_listmode];
         featureSettingsItems.items[i] = settingPage[item_index];
         break;
 
 #ifdef LED_color_PIN
       case SKEY_KNOB:
         settingPage[item_index].valueLabel = itemLedcolor[infoSettings.led_color];
-        featureSettingsItems.items[i] = settingPage[item_index];
+        featureSettingsItems.items[i]      = settingPage[item_index];
         break;
 #endif
 
       default:
-        settingPage[item_index].icon = ICONCHAR_BACKGROUND;
+        settingPage[item_index].icon  = ICONCHAR_BACKGROUND;
         featureSettingsItems.items[i] = settingPage[item_index];
         break;
     }
@@ -346,8 +346,8 @@ void loadFeatureSettings() {
 
 void menuFeatureSettings(void) {
   KEY_VALUES key_num = KEY_IDLE;
-  SETTINGS now = infoSettings;
-  fe_cur_page = 0;
+  SETTINGS now       = infoSettings;
+  fe_cur_page        = 0;
   loadFeatureSettings();
   menuDrawListPage(&featureSettingsItems);
 

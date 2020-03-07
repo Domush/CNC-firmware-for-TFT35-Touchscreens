@@ -7,9 +7,9 @@
 
 typedef struct
 {
-  char *cache;            // Incoming cncResponse buffer
-  uint16_t pendingIndex;  // Index of cncResponse which is waiting to be parsed
-  uint16_t parsedIndex;   // Index of cncResponse which has been processed
+  char *cache;             // Incoming cncResponse buffer
+  uint16_t pendingIndex;   // Index of cncResponse which is waiting to be parsed
+  uint16_t parsedIndex;    // Index of cncResponse which has been processed
 } DMA_CIRCULAR_BUFFER;
 
 #define DMA_TRANS_LEN MAX_RESPONSE_SIZE

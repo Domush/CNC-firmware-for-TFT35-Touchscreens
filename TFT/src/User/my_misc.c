@@ -19,34 +19,34 @@ long map(long x, long in_min, long in_max, long out_min, long out_max) {
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 
-int intToString(char *str, int n, int radix, char isNegative)  //Express integers as words ??
+int intToString(char *str, int n, int radix, char isNegative)   //Express integers as words ??
 {
   int i = 0, j = 0, remain = 0;
-  int len = 0;
+  int len  = 0;
   char tmp = 0;
 
   if (n < 0) {
     isNegative = 1;
-    n = -n;
+    n          = -n;
   }
 
   do {
     remain = n % radix;
     if (remain > 9)
-      str[i] = remain - 10 + 'A';  //For hex, 10 will be expressed as A
+      str[i] = remain - 10 + 'A';   //For hex, 10 will be expressed as A
     else
-      str[i] = remain + '0';  //Where? + '0' = ASCII corresponding to the integer?
+      str[i] = remain + '0';   //Where? + '0' = ASCII corresponding to the integer?
     i++;
   } while (n /= radix);
 
   if (isNegative == 1)
     str[i++] = '-';
   str[i] = '\0';
-  len = i;
+  len    = i;
 
-  for (i--, j = 0; j <= i; j++, i--)  //25% 10 = 5,25 /10 = 2,2% 10 = 2,2 /10 = 0, so the result of str is inverted, and flipped over.
+  for (i--, j = 0; j <= i; j++, i--)   //25% 10 = 5,25 /10 = 2,2% 10 = 2,2 /10 = 0, so the result of str is inverted, and flipped over.
   {
-    tmp = str[j];
+    tmp    = str[j];
     str[j] = str[i];
     str[i] = tmp;
   }
@@ -61,8 +61,8 @@ const uint32_t POW_10[] = {
 int my_vsprintf(char *buf, const char *fmt, my_va_list args) {
   char *p;
   my_va_list p_next_arg = args;
-  uint8_t bit_width[2] = {0, 6};
-  uint8_t bit_sel = 0;
+  uint8_t bit_width[2]  = {0, 6};
+  uint8_t bit_sel       = 0;
 
   for (p = buf; *fmt; fmt++) {
     if (*fmt != '%') {
@@ -71,7 +71,7 @@ int my_vsprintf(char *buf, const char *fmt, my_va_list args) {
     }
     bit_width[0] = 0;
     bit_width[1] = 6;
-    bit_sel = 0;
+    bit_sel      = 0;
 
   repeat:
     fmt++;
@@ -80,27 +80,27 @@ int my_vsprintf(char *buf, const char *fmt, my_va_list args) {
       goto repeat;
     }
     switch (*fmt) {
-      case 'd':  //Decimal integer?
+      case 'd':   //Decimal integer?
       {
         int n = my_va_arg(p_next_arg, int);
         p += intToString(p, n, 10, 0);
         break;
       }
-      case 'x':  //Hexadecimal integer
+      case 'x':   //Hexadecimal integer
       {
         int n = my_va_arg(p_next_arg, int);
         p += intToString(p, n, 16, 0);
         break;
       }
-      case 'f':  //�? Points
+      case 'f':   //�? Points
       {
-        if ((unsigned long)p_next_arg & 0x7)  //Variable parameters: The default point is double. Guaranteed 8-byte memory alignment.
+        if ((unsigned long)p_next_arg & 0x7)   //Variable parameters: The default point is double. Guaranteed 8-byte memory alignment.
         {
           p_next_arg = (my_va_list)((unsigned long)p_next_arg + 0x7);
           p_next_arg = (my_va_list)((unsigned long)p_next_arg & 0xFFFFFFF8);
         }
-        double f = my_va_arg(p_next_arg, double);  //% f, output floating point number
-        int n = (int)f;
+        double f = my_va_arg(p_next_arg, double);   //% f, output floating point number
+        int n    = (int)f;
         p += intToString(p, n, 10, f < 0);
         *p++ = '.';
 
@@ -111,12 +111,12 @@ int my_vsprintf(char *buf, const char *fmt, my_va_list args) {
         }
         break;
       }
-      case 'c':  //Single ASCII word ????
+      case 'c':   //Single ASCII word ????
       {
         *p++ = my_va_arg(p_next_arg, int);
         break;
       }
-      case 's':  //words? String
+      case 's':   //words? String
       {
         char *str = my_va_arg(p_next_arg, char *);
         for (; *str != 0;) {
@@ -124,7 +124,7 @@ int my_vsprintf(char *buf, const char *fmt, my_va_list args) {
         }
         break;
       }
-      case '%':  //
+      case '%':   //
       {
         *p++ = '%';
         break;

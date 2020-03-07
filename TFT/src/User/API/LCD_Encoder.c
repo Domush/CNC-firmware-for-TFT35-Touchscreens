@@ -5,9 +5,9 @@
 #if LCD_ENCODER_SUPPORT
 
 int8_t encoderDirection = 1;
-volatile int8_t encoderDiff;  // Updated in update_buttons, added to encoderPosition every LCD update
+volatile int8_t encoderDiff;   // Updated in update_buttons, added to encoderPosition every LCD update
 int16_t encoderPosition = 0;
-uint8_t buttons = 0;
+uint8_t buttons         = 0;
 
 void LCD_EncoderInit(void) {
   uint16_t encPin[] = {LCD_ENCA_PIN, LCD_ENCB_PIN, LCD_BTN_PIN};
@@ -40,7 +40,7 @@ bool LCD_ReadBtn(uint8_t intervals) {
 
 void LCD_LoopEncoder(void) {
   static uint8_t lastEncoderBits = 0;
-  uint8_t newbutton = 0;
+  uint8_t newbutton              = 0;
 
   if (LCD_ReadEncA()) newbutton |= EN_A;
   if (LCD_ReadEncB()) newbutton |= EN_B;
@@ -80,7 +80,7 @@ void LCD_LoopEncoder(void) {
     lastEncoderBits = buttons;
   }
 
-  const float abs_diff = ABS(encoderDiff);
+  const float abs_diff            = ABS(encoderDiff);
   const bool encoderPastThreshold = (abs_diff >= (ENCODER_PULSES_PER_STEP));
   if (encoderPastThreshold) {
     encoderPosition += encoderDiff / (ENCODER_PULSES_PER_STEP);

@@ -36,10 +36,10 @@ const ITEM itemMoveDistance[ITEM_MOVE_DISTANCE] = {
 };
 
 const float moveDistance[ITEM_MOVE_DISTANCE] = {10, 1, 100};
-static u8 moveDistance_index = 2;
+static u8 moveDistance_index                 = 2;
 
-static u32 nowTime = 0;
-static u32 update_time = 50;  // 1 seconds is 100
+static u32 nowTime     = 0;
+static u32 update_time = 50;   // 1 seconds is 100
 
 void menuMove(void) {
   KEY_VALUES key_num = KEY_IDLE;
@@ -51,25 +51,25 @@ void menuMove(void) {
   if (infoSettings.invert_yaxis == 1) {
     moveItems.items[1].label.index = LABEL_Y_DEC;
     moveItems.items[5].label.index = LABEL_Y_INC;
-    y_axis_up = YGCODE_DEC;
-    y_axis_down = YGCODE_INC;
+    y_axis_up                      = YGCODE_DEC;
+    y_axis_down                    = YGCODE_INC;
   } else {
     moveItems.items[1].label.index = LABEL_Y_INC;
     moveItems.items[5].label.index = LABEL_Y_DEC;
-    y_axis_up = YGCODE_INC;
-    y_axis_down = YGCODE_DEC;
+    y_axis_up                      = YGCODE_INC;
+    y_axis_down                    = YGCODE_DEC;
   }
 
   if (infoSettings.invert_zaxis == 1) {
     moveItems.items[0].label.index = LABEL_Z_INC;
     moveItems.items[2].label.index = LABEL_Z_DEC;
-    z_axis_up = ZGCODE_INC;
-    z_axis_down = ZGCODE_DEC;
+    z_axis_up                      = ZGCODE_INC;
+    z_axis_down                    = ZGCODE_DEC;
   } else {
     moveItems.items[0].label.index = LABEL_Z_DEC;
     moveItems.items[2].label.index = LABEL_Z_INC;
-    z_axis_up = ZGCODE_DEC;
-    z_axis_down = ZGCODE_INC;
+    z_axis_up                      = ZGCODE_DEC;
+    z_axis_down                    = ZGCODE_INC;
   }
 
   menuDrawPage(&moveItems);
@@ -108,7 +108,7 @@ void menuMove(void) {
         break;
 
       case KEY_ICON_3:
-        moveDistance_index = (moveDistance_index + 1) % ITEM_MOVE_DISTANCE;
+        moveDistance_index       = (moveDistance_index + 1) % ITEM_MOVE_DISTANCE;
         moveItems.items[key_num] = itemMoveDistance[moveDistance_index];
         timedMessage(2, TIMED_INFO, "Using %d%s steps", moveDistance[moveDistance_index], "mm");
         menuDrawItem(&moveItems.items[key_num], key_num);

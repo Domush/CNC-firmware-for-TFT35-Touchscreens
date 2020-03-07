@@ -6,17 +6,17 @@ void SW_SPI_Config(_SW_SPI *sw_spi, _SPI_MODE mode, u8 dataSize,
                    uint16_t sck,
                    uint16_t miso,
                    uint16_t mosi) {
-  sw_spi->cs = cs;
-  sw_spi->sck = sck;
-  sw_spi->miso = miso;
-  sw_spi->mosi = mosi;
-  sw_spi->mode = mode;
+  sw_spi->cs       = cs;
+  sw_spi->sck      = sck;
+  sw_spi->miso     = miso;
+  sw_spi->mosi     = mosi;
+  sw_spi->mode     = mode;
   sw_spi->dataSize = dataSize;
 
-  GPIO_InitSet(sw_spi->cs, MGPIO_MODE_OUT_PP, 0);    //CS
-  GPIO_InitSet(sw_spi->sck, MGPIO_MODE_OUT_PP, 0);   //SCK
-  GPIO_InitSet(sw_spi->miso, MGPIO_MODE_IPN, 0);     //MISO
-  GPIO_InitSet(sw_spi->mosi, MGPIO_MODE_OUT_PP, 0);  //MOSI
+  GPIO_InitSet(sw_spi->cs, MGPIO_MODE_OUT_PP, 0);     //CS
+  GPIO_InitSet(sw_spi->sck, MGPIO_MODE_OUT_PP, 0);    //SCK
+  GPIO_InitSet(sw_spi->miso, MGPIO_MODE_IPN, 0);      //MISO
+  GPIO_InitSet(sw_spi->mosi, MGPIO_MODE_OUT_PP, 0);   //MOSI
 }
 
 #define SCK_HIGH() GPIO_SetLevel(sw_spi->sck, 1)
@@ -26,8 +26,8 @@ void SW_SPI_Config(_SW_SPI *sw_spi, _SPI_MODE mode, u8 dataSize,
 
 uint16_t SW_SPI_Read_Write(_SW_SPI *sw_spi, uint16_t d) {
   uint8_t data_bits = sw_spi->dataSize;
-  uint8_t i = 0;
-  uint16_t rcv = 0;
+  uint8_t i         = 0;
+  uint16_t rcv      = 0;
   switch (sw_spi->mode) {
     case _SPI_MODE0:
       for (i = 0; i < data_bits; i++) {

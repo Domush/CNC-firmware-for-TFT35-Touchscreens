@@ -13,21 +13,21 @@ const GUI_RECT rect_of_Gkey[] = {
     {2 * GKEY_WIDTH, 0 * GKEY_HEIGHT + ICON_START_Y, 3 * GKEY_WIDTH, 1 * GKEY_HEIGHT + ICON_START_Y},
     {3 * GKEY_WIDTH, 0 * GKEY_HEIGHT + ICON_START_Y, 4 * GKEY_WIDTH, 1 * GKEY_HEIGHT + ICON_START_Y},
     {4 * GKEY_WIDTH, 0 * GKEY_HEIGHT + ICON_START_Y, 5 * GKEY_WIDTH, 1 * GKEY_HEIGHT + ICON_START_Y},
-    {5 * GKEY_WIDTH, 0 * GKEY_HEIGHT + ICON_START_Y, 6 * GKEY_WIDTH, 1 * GKEY_HEIGHT + ICON_START_Y},  // Del
+    {5 * GKEY_WIDTH, 0 * GKEY_HEIGHT + ICON_START_Y, 6 * GKEY_WIDTH, 1 * GKEY_HEIGHT + ICON_START_Y},   // Del
 
     {0 * GKEY_WIDTH, 1 * GKEY_HEIGHT + ICON_START_Y, 1 * GKEY_WIDTH, 2 * GKEY_HEIGHT + ICON_START_Y},
     {1 * GKEY_WIDTH, 1 * GKEY_HEIGHT + ICON_START_Y, 2 * GKEY_WIDTH, 2 * GKEY_HEIGHT + ICON_START_Y},
     {2 * GKEY_WIDTH, 1 * GKEY_HEIGHT + ICON_START_Y, 3 * GKEY_WIDTH, 2 * GKEY_HEIGHT + ICON_START_Y},
     {3 * GKEY_WIDTH, 1 * GKEY_HEIGHT + ICON_START_Y, 4 * GKEY_WIDTH, 2 * GKEY_HEIGHT + ICON_START_Y},
     {4 * GKEY_WIDTH, 1 * GKEY_HEIGHT + ICON_START_Y, 5 * GKEY_WIDTH, 2 * GKEY_HEIGHT + ICON_START_Y},
-    {5 * GKEY_WIDTH, 1 * GKEY_HEIGHT + ICON_START_Y, 6 * GKEY_WIDTH, 2 * GKEY_HEIGHT + ICON_START_Y},  // Space
+    {5 * GKEY_WIDTH, 1 * GKEY_HEIGHT + ICON_START_Y, 6 * GKEY_WIDTH, 2 * GKEY_HEIGHT + ICON_START_Y},   // Space
 
     {0 * GKEY_WIDTH, 2 * GKEY_HEIGHT + ICON_START_Y, 1 * GKEY_WIDTH, 3 * GKEY_HEIGHT + ICON_START_Y},
     {1 * GKEY_WIDTH, 2 * GKEY_HEIGHT + ICON_START_Y, 2 * GKEY_WIDTH, 3 * GKEY_HEIGHT + ICON_START_Y},
     {2 * GKEY_WIDTH, 2 * GKEY_HEIGHT + ICON_START_Y, 3 * GKEY_WIDTH, 3 * GKEY_HEIGHT + ICON_START_Y},
     {3 * GKEY_WIDTH, 2 * GKEY_HEIGHT + ICON_START_Y, 4 * GKEY_WIDTH, 3 * GKEY_HEIGHT + ICON_START_Y},
     {4 * GKEY_WIDTH, 2 * GKEY_HEIGHT + ICON_START_Y, 5 * GKEY_WIDTH, 3 * GKEY_HEIGHT + ICON_START_Y},
-    {5 * GKEY_WIDTH, 2 * GKEY_HEIGHT + ICON_START_Y, 6 * GKEY_WIDTH, 3 * GKEY_HEIGHT + ICON_START_Y},  // ABC to 123
+    {5 * GKEY_WIDTH, 2 * GKEY_HEIGHT + ICON_START_Y, 6 * GKEY_WIDTH, 3 * GKEY_HEIGHT + ICON_START_Y},   // ABC to 123
 
     {0 * GKEY_WIDTH, 3 * GKEY_HEIGHT + ICON_START_Y, 1 * GKEY_WIDTH, 4 * GKEY_HEIGHT + ICON_START_Y},
     {1 * GKEY_WIDTH, 3 * GKEY_HEIGHT + ICON_START_Y, 2 * GKEY_WIDTH, 4 * GKEY_HEIGHT + ICON_START_Y},
@@ -130,8 +130,8 @@ void menuDrawSendGcode(void) {
   GUI_ClearRect(0, rect_of_Gkey[0].y0, LCD_WIDTH, LCD_HEIGHT);
 
   GUI_SetColor(YELLOW);
-  GUI_FillPrect(&rect_of_Gkey[GKEY_BACK]);  // Back
-  GUI_FillPrect(&rect_of_Gkey[GKEY_SEND]);  // Send
+  GUI_FillPrect(&rect_of_Gkey[GKEY_BACK]);   // Back
+  GUI_FillPrect(&rect_of_Gkey[GKEY_SEND]);   // Send
   GUI_SetColor(BLACK);
   GUI_SetTextMode(GUI_TEXTMODE_TRANS);
   for (uint8_t i = 0; i < COUNT(softKeyValue[0]); i++) {
@@ -146,9 +146,9 @@ void menuSendGcode(void) {
   GUI_RECT gcodeRect = {rect_of_Gkey[GKEY_BACK].x1 + 10, rect_of_Gkey[GKEY_BACK].y0, rect_of_Gkey[GKEY_SEND].x0 - 10, rect_of_Gkey[GKEY_SEND].y1};
 
   char gcodeBuf[GCODE_MAX_CHARACTERS] = {0};
-  uint8_t nowIndex = 0,
-          lastIndex = 0;
-  GKEY_VALUES key_num = GKEY_IDLE;
+  uint8_t nowIndex                    = 0,
+          lastIndex                   = 0;
+  GKEY_VALUES key_num                 = GKEY_IDLE;
   menuDrawSendGcode();
   while (infoMenu.menu[infoMenu.active] == menuSendGcode) {
     key_num = GKeyGetValue();
@@ -163,8 +163,8 @@ void menuSendGcode(void) {
 
       case GKEY_SEND:
         if (nowIndex) {
-          gcodeBuf[nowIndex++] = '\n';  // End char '\n' for Gcode
-          gcodeBuf[nowIndex] = 0;
+          gcodeBuf[nowIndex++] = '\n';   // End char '\n' for Gcode
+          gcodeBuf[nowIndex]   = 0;
           storeCmd(gcodeBuf);
           gcodeBuf[nowIndex = 0] = 0;
         }
@@ -186,14 +186,14 @@ void menuSendGcode(void) {
       case GKEY_SPACE:
         if (nowIndex < GCODE_MAX_CHARACTERS - 1) {
           gcodeBuf[nowIndex++] = ' ';
-          gcodeBuf[nowIndex] = 0;
+          gcodeBuf[nowIndex]   = 0;
         }
         break;
 
       default:
         if (nowIndex < GCODE_MAX_CHARACTERS - 1) {
           gcodeBuf[nowIndex++] = softKeyValue[softKeyType][key_num][0];
-          gcodeBuf[nowIndex] = 0;
+          gcodeBuf[nowIndex]   = 0;
         }
         break;
     }
@@ -229,17 +229,17 @@ void sendGcodeTerminalCache(char *serial_text, COMMAND_SOURCE src) {
 void menuTerminal(void) {
   const GUI_RECT terminalRect = {0, 0, LCD_WIDTH, LCD_HEIGHT};
   CHAR_INFO info;
-  int16_t cursorX = CURSOR_START_X,
-          cursorY = CURSOR_START_Y;
+  int16_t cursorX            = CURSOR_START_X,
+          cursorY            = CURSOR_START_Y;
   uint16_t lastTerminalIndex = 0;
-  u16 key_num = IDLE_TOUCH;
+  u16 key_num                = IDLE_TOUCH;
 
   GUI_ClearRect(0, 0, LCD_WIDTH, CURSOR_START_Y);
   GUI_DispStringInRect(0, 0, LCD_WIDTH, CURSOR_START_Y, textSelect(LABEL_TOUCH_TO_EXIT));
   GUI_SetColor(BLACK);
   GUI_SetBkColor(GRAY);
   GUI_ClearRect(CURSOR_START_X, CURSOR_START_Y, CURSOR_END_X, CURSOR_END_Y);
-  TSC_ReDrawIcon = NULL;  // Disable icon redraw callback function
+  TSC_ReDrawIcon = NULL;   // Disable icon redraw callback function
 
   while (infoMenu.menu[infoMenu.active] == menuTerminal) {
     key_num = KEY_GetValue(1, &terminalRect);
@@ -250,18 +250,18 @@ void menuTerminal(void) {
 
     while (terminalBuf[lastTerminalIndex]) {
       getCharacterInfo((u8 *)&terminalBuf[lastTerminalIndex], &info);
-      if (cursorX + info.pixelWidth > CURSOR_END_X || (terminalBuf[lastTerminalIndex] == '\n' && cursorX != CURSOR_START_X))  // Next Line
+      if (cursorX + info.pixelWidth > CURSOR_END_X || (terminalBuf[lastTerminalIndex] == '\n' && cursorX != CURSOR_START_X))   // Next Line
       {
         cursorX = CURSOR_START_X;
         cursorY += info.pixelHeight;
         if (cursorY + info.pixelHeight > CURSOR_END_Y) {
           lastTerminalIndex = 0;
-          terminalBuf[0] = 0;
+          terminalBuf[0]    = 0;
           break;
         }
       }
       if (terminalBuf[lastTerminalIndex] != '\n') {
-        if (cursorY + info.pixelHeight > CURSOR_END_Y)  // Clear window
+        if (cursorY + info.pixelHeight > CURSOR_END_Y)   // Clear window
         {
           cursorX = CURSOR_START_X;
           cursorY = CURSOR_START_Y;
@@ -306,10 +306,10 @@ void showGcodeStatus(char *serial_text, COMMAND_SOURCE src) {
   }
   // *If outgoing (sent) gcode, filter status commands from display
   if (!src) {
-    const char *const ignored_commands[] = {"M105", "M118", "M114", "M117"};  // *G-code commands which won't be displayed
+    const char *const ignored_commands[] = {"M105", "M118", "M114", "M117"};   // *G-code commands which won't be displayed
     for (u8 i = 0; i < COUNT(ignored_commands); i++) {
       if (strstr(serial_text, ignored_commands[i])) {
-        return;  // *abort if filtered string found
+        return;   // *abort if filtered string found
       }
     }
   }
@@ -331,33 +331,33 @@ void showGcodeStatus(char *serial_text, COMMAND_SOURCE src) {
     token = strtok(NULL, ch);
   }
 
-  if (src) {  // *If incoming (Rcv), then display text in the Rcv section of the gcode status
+  if (src) {   // *If incoming (Rcv), then display text in the Rcv section of the gcode status
     if (last_rcv_text == final_text) {
-      return;  // *Don't update if the message hasn't changed since (prevents flickering)
+      return;   // *Don't update if the message hasn't changed since (prevents flickering)
     } else {
       last_rcv_text = final_text;
     }
     begin_x = (LCD_WIDTH / 3) * 2;
-    end_x = LCD_WIDTH;
+    end_x   = LCD_WIDTH;
     width_x = (LCD_WIDTH / 3) - BYTE_WIDTH - BYTE_WIDTH * strlen(prefix[src]);
 
-  } else {  // *else display text in the Sent section
+  } else {   // *else display text in the Sent section
     if (last_sent_text == final_text) {
-      return;  // *Don't update if the message hasn't changed since (prevents flickering)
+      return;   // *Don't update if the message hasn't changed since (prevents flickering)
     } else {
       last_sent_text = final_text;
     }
     begin_x = 0;
-    end_x = (LCD_WIDTH / 3) * 2;
+    end_x   = (LCD_WIDTH / 3) * 2;
     width_x = (LCD_WIDTH / 3) * 2 - BYTE_WIDTH - BYTE_WIDTH * strlen(prefix[src]);
   }
-  GUI_ClearRect(begin_x, BYTE_HEIGHT, end_x, BYTE_HEIGHT * 2);  // *clear the previous status
+  GUI_ClearRect(begin_x, BYTE_HEIGHT, end_x, BYTE_HEIGHT * 2);   // *clear the previous status
   GUI_SetColor(GRAY);
-  GUI_DispString(begin_x, BYTE_HEIGHT, (u8 *)prefix[src]);  // Display the Sent/Rcv text
+  GUI_DispString(begin_x, BYTE_HEIGHT, (u8 *)prefix[src]);   // Display the Sent/Rcv text
   GUI_RestoreColorDefault();
 
   if (infoMenu.menu[infoMenu.active] == menuTerminal) {
-    GUI_ClearRect(0, BYTE_HEIGHT, LCD_WIDTH, BYTE_HEIGHT * 2);  // *remove the gcode status line to avoid confusion
+    GUI_ClearRect(0, BYTE_HEIGHT, LCD_WIDTH, BYTE_HEIGHT * 2);   // *remove the gcode status line to avoid confusion
   } else {
     GUI_DispLenString(begin_x + BYTE_WIDTH * strlen(prefix[src]), BYTE_HEIGHT, (u8 *)final_text, width_x);
   }

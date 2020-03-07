@@ -27,14 +27,14 @@ void infoMenuSelect(void) {
   switch (infoSettings.mode) {
     case SERIAL_TSC: {
 #ifdef LED_color_PIN
-      led_color_Init(6, 5);  //
+      led_color_Init(6, 5);   //
       ws2812_send_DAT(LED_OFF);
 #endif
       Serial_ReSourceInit();
       GUI_SetColor(FONT_COLOR);
       GUI_SetBkColor(BACKGROUND_COLOR);
-      infoMenu.menu[infoMenu.active] = menuMain;  // Main menu as default screen on boot
-      u32 startUpTime = OS_GetTime();
+      infoMenu.menu[infoMenu.active] = menuMain;   // Main menu as default screen on boot
+      u32 startUpTime                = OS_GetTime();
       // *Display logo for 4 seconds
       LOGO_ReadDisplay();
       while (OS_GetTime() - startUpTime < 400) {
@@ -46,7 +46,7 @@ void infoMenuSelect(void) {
 #ifdef ST7920_SPI
     case LCD12864:
 #ifdef LED_color_PIN
-      LED_color_PIN_IPN();  ////
+      LED_color_PIN_IPN();   ////
 #endif
       GUI_SetColor(ST7920_FNCOLOR);
       GUI_SetBkColor(ST7920_BKCOLOR);
@@ -77,8 +77,8 @@ void menuMode(void) {
 #endif
 
   MKEY_VALUES key_num = MKEY_IDLE;
-  MODEselect = 1;
-  bool keyback = false;
+  MODEselect          = 1;
+  bool keyback        = false;
 
   int16_t nowEncoder = encoderPosition = 0;
   int8_t nowMode = modeRadio.select = infoSettings.mode;
@@ -88,12 +88,12 @@ void menuMode(void) {
   Serial_ReSourceDeInit();
 
   show_selectICON();
-  TSC_ReDrawIcon = NULL;  // Disable icon redraw callback function
+  TSC_ReDrawIcon = NULL;   // Disable icon redraw callback function
 
   selectmode(nowMode);
 
   while (!XPT2046_Read_Pen() || LCD_ReadBtn(LCD_BUTTON_INTERVALS))
-    ;  //wait for button release
+    ;   //wait for button release
 
   while (infoMenu.menu[infoMenu.active] == menuMode) {
     key_num = MKeyGetValue();

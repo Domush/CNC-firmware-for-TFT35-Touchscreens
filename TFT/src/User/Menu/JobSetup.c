@@ -26,45 +26,45 @@ void menuJobSetup(void) {
   while (infoMenu.menu[infoMenu.active] == menuJobSetup) {
     key_num = menuKeyGetValue();
     switch (key_num) {
-      case KEY_ICON_0:  // Zero X
+      case KEY_ICON_0:   // Zero X
         infoPrinting.coordSpace = 54;
         storeCmd("G%d\n", infoPrinting.coordSpace);
         timedMessage(2, TIMED_INFO, "Zeroing X axis");
         storeCmd("G92 X0\n");
         break;
-      case KEY_ICON_1:  // Zero Y
+      case KEY_ICON_1:   // Zero Y
         infoPrinting.coordSpace = 54;
         storeCmd("G%d\n", infoPrinting.coordSpace);
         timedMessage(2, TIMED_INFO, "Zeroing Y axis");
         storeCmd("G92 Y0\n");
         break;
-      case KEY_ICON_2:  // Zero Z
+      case KEY_ICON_2:   // Zero Z
         infoPrinting.coordSpace = 54;
         storeCmd("G%d\n", infoPrinting.coordSpace);
         timedMessage(2, TIMED_INFO, "Zeroing Z axis");
         storeCmd("G92 Z0\n");
         break;
-      case KEY_ICON_3:  // Zero all
+      case KEY_ICON_3:   // Zero all
         infoPrinting.coordSpace = 54;
         storeCmd("G%d\n", infoPrinting.coordSpace);
         timedMessage(2, TIMED_INFO, "Zeroing all axes");
         storeCmd("G92 X0 Y0 Z0\n");
         break;
-      case KEY_ICON_4:  // Change to Machine Coord Space (G53)
+      case KEY_ICON_4:   // Change to Machine Coord Space (G53)
         infoPrinting.coordSpace = 53;
         timedMessage(2, TIMED_INFO, "Coord set 1");
         storeCmd("G%d\n", infoPrinting.coordSpace);
         break;
-      case KEY_ICON_5:  // Change to Coord Space 2 (G54)
+      case KEY_ICON_5:   // Change to Coord Space 2 (G54)
         timedMessage(2, TIMED_INFO, "Coord set 2");
         infoPrinting.coordSpace = 54;
         storeCmd("G%d\n", infoPrinting.coordSpace);
         break;
-      case KEY_ICON_6:  // Move to X0,Y0
+      case KEY_ICON_6:   // Move to X0,Y0
         timedMessage(2, TIMED_INFO, "Moving to X0,Y0");
         storeCmd("G0 X0 Y0\n");
         break;
-      case KEY_ICON_7:  // Back
+      case KEY_ICON_7:   // Back
         infoMenu.active--;
         break;
       default:

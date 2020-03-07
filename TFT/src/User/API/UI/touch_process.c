@@ -26,7 +26,7 @@
 #define F TSC_Para[5]
 #define K TSC_Para[6]
 
-u32 TSC_Para[7];  //У׼ϵ��
+u32 TSC_Para[7];   //У׼ϵ��
 static volatile bool touchScreenIsPress = false;
 
 void TS_Get_Coordinates(u16 *x, u16 *y) {
@@ -147,7 +147,7 @@ void loopTouchScreen(void) {
     }
   } else {
     touchScreenIsPress = false;
-    touch = 0;
+    touch              = 0;
   }
 }
 
@@ -158,14 +158,14 @@ u8 isPress(void) {
 void (*TSC_ReDrawIcon)(u8 positon, u8 is_press) = NULL;
 
 u16 KEY_GetValue(u8 total_rect, const GUI_RECT *menuRect) {
-  static u16 key_num = IDLE_TOUCH;
+  static u16 key_num     = IDLE_TOUCH;
   static bool firstPress = true;
 
   u16 key_return = IDLE_TOUCH;
 
   if (touchScreenIsPress) {
     if (firstPress) {
-      key_num = Key_value(total_rect, menuRect);
+      key_num    = Key_value(total_rect, menuRect);
       firstPress = false;
       if (TSC_ReDrawIcon)
         TSC_ReDrawIcon(key_num, 1);
@@ -175,7 +175,7 @@ u16 KEY_GetValue(u8 total_rect, const GUI_RECT *menuRect) {
       if (TSC_ReDrawIcon)
         TSC_ReDrawIcon(key_num, 0);
       key_return = key_num;
-      key_num = IDLE_TOUCH;
+      key_num    = IDLE_TOUCH;
       firstPress = true;
     }
   }
@@ -190,11 +190,11 @@ typedef enum {
   LONG_PRESS,
 } KEY_STATUS;
 
-#define KEY_DOUOBLE_SPACE 15      //�೤ʱ���ڵ�������ж��?˫��
-#define KEY_LONG_PRESS_START 200  //��������ÿ�ʼ�ж��? ���� ��ֵ
+#define KEY_DOUOBLE_SPACE 15       //�೤ʱ���ڵ�������ж��?˫��
+#define KEY_LONG_PRESS_START 200   //��������ÿ�ʼ�ж��? ���� ��ֵ
 
-#define KEY_LONG_PRESS_SPACE_MAX 10  //����ʱ ���÷���һ�μ��?
-#define KEY_LONG_PRESS_SPACE_MIN 2   //����ʱ ��̶�÷���һ�μ�ֵ
+#define KEY_LONG_PRESS_SPACE_MAX 10   //����ʱ ���÷���һ�μ��?
+#define KEY_LONG_PRESS_SPACE_MIN 2    //����ʱ ��̶�÷���һ�μ�ֵ
 
 //u16 KEY_GetValue(u8 total_rect,const GUI_RECT* menuRect)
 //{
@@ -341,16 +341,16 @@ u16 KNOB_GetRV(GUI_RECT *knob) {
 void TIM3_Config(u16 psc, u16 arr) {
   NVIC_InitTypeDef NVIC_InitStructure;
 
-  NVIC_InitStructure.NVIC_IRQChannel = TIM3_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannel                   = TIM3_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 0;
+  NVIC_InitStructure.NVIC_IRQChannelCmd                = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 
   RCC->APB1ENR |= 1 << 1;
   TIM3->ARR = arr;
   TIM3->PSC = psc;
-  TIM3->SR = (uint16_t) ~(1 << 0);
+  TIM3->SR  = (uint16_t) ~(1 << 0);
   TIM3->DIER |= 1 << 0;
   TIM3->CNT = 0;
   TIM3->CR1 &= ~(0x01);
@@ -359,7 +359,7 @@ void TIM3_Config(u16 psc, u16 arr) {
 void Buzzer_Config(void) {
   GPIO_InitSet(BUZZER_PIN, MGPIO_MODE_OUT_PP, 0);
 
-  TIM3_Config(999, F_CPUM - 1);  //1Khz
+  TIM3_Config(999, F_CPUM - 1);   //1Khz
 }
 
 void Buzzer_DeConfig(void) {
@@ -385,17 +385,17 @@ void openBuzzer(u16 h_us, u16 l_us) {
   else
     buzzer.value = 500;
 
-  TIM3->CR1 |= 0x01;  //ʹ�ܶ�ʱ��3
+  TIM3->CR1 |= 0x01;   //ʹ�ܶ�ʱ��3
 }
 void closeBuzzer(void) {
   buzzer.value = 0;
   TIM3->CR1 &= ~(0x01);
 }
 
-void TIM3_IRQHandler(void)  //TIM3�ж�
+void TIM3_IRQHandler(void)   //TIM3�ж�
 {
   static bool flag = false;
-  if ((TIM3->SR & 0x01) != 0)  //���ָ����TIM�жϷ������?:TIM �ж�Դ
+  if ((TIM3->SR & 0x01) != 0)   //���ָ����TIM�жϷ������?:TIM �ж�Դ
   {
     flag = !flag;
     if (flag) {
@@ -410,7 +410,7 @@ void TIM3_IRQHandler(void)  //TIM3�ж�
       TIM3->CR1 &= ~(0x01);
     }
 
-    TIM3->SR = (uint16_t) ~(1 << 0);  //���TIMx���жϴ�����λ:TIM �ж�Դ
+    TIM3->SR = (uint16_t) ~(1 << 0);   //���TIMx���жϴ�����λ:TIM �ж�Դ
   }
 }
 #endif

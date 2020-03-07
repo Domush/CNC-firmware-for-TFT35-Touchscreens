@@ -1,17 +1,17 @@
 #include "flashStore.h"
 #include "STM32_Flash.h"
 
-#define PARA_SIZE 256         //bytes
-#define TSC_SIGN 0x20190827   // DO NOT MODIFY
-#define PARA_SIGN 0x20200224  // If a new setting parameter is added, modify here and initialize the initial value in the "infoSettingsReset()" function
+#define PARA_SIZE 256          //bytes
+#define TSC_SIGN 0x20190827    // DO NOT MODIFY
+#define PARA_SIGN 0x20200224   // If a new setting parameter is added, modify here and initialize the initial value in the "infoSettingsReset()" function
 
-extern u32 TSC_Para[7];        //
-extern SETTINGS infoSettings;  //
+extern u32 TSC_Para[7];         //
+extern SETTINGS infoSettings;   //
 
-void wordToByte(u32 word, u8 *bytes)  //
+void wordToByte(u32 word, u8 *bytes)   //
 {
   u8 len = 4;
-  u8 i = 0;
+  u8 i   = 0;
   for (i = 0; i < len; i++) {
     bytes[i] = (word >> 24) & 0xFF;
     word <<= 8;
@@ -20,7 +20,7 @@ void wordToByte(u32 word, u8 *bytes)  //
 
 u32 byteToWord(u8 *bytes, u8 len) {
   u32 word = 0;
-  u8 i = 0;
+  u8 i     = 0;
   for (i = 0; i < len; i++) {
     word <<= 8;
     word |= bytes[i];
@@ -34,38 +34,38 @@ bool readStoredPara(void) {
   bool paraExist = true;
   u8 data[PARA_SIZE];
   u32 index = 0;
-  u32 sign = 0;
+  u32 sign  = 0;
   STM32_FlashRead(data, PARA_SIZE);
 
   sign = byteToWord(data + (index += 4), 4);
-  if (sign != TSC_SIGN) paraExist = false;  // If the touch screen calibration parameter does not exist
+  if (sign != TSC_SIGN) paraExist = false;   // If the touch screen calibration parameter does not exist
   for (int i = 0; i < sizeof(TSC_Para) / sizeof(TSC_Para[0]); i++) {
     TSC_Para[i] = byteToWord(data + (index += 4), 4);
   }
 
   sign = byteToWord(data + (index += 4), 4);
-  if (sign != PARA_SIGN)  // If the settings parameter is illegal, reset settings parameter
+  if (sign != PARA_SIGN)   // If the settings parameter is illegal, reset settings parameter
   {
     infoSettingsReset();
   } else {
-    infoSettings.baudrate = byteToWord(data + (index += 4), 4);
-    infoSettings.language = byteToWord(data + (index += 4), 4);
-    infoSettings.mode = byteToWord(data + (index += 4), 4);
-    infoSettings.runout = byteToWord(data + (index += 4), 4);
-    infoSettings.rotate_ui = byteToWord(data + (index += 4), 4);
-    infoSettings.bg_color = byteToWord(data + (index += 4), 4);
-    infoSettings.font_color = byteToWord(data + (index += 4), 4);
-    infoSettings.silent = byteToWord(data + (index += 4), 4);
-    infoSettings.auto_off = byteToWord(data + (index += 4), 4);
-    infoSettings.terminalACK = byteToWord(data + (index += 4), 4);
-    infoSettings.invert_yaxis = byteToWord(data + (index += 4), 4);
-    infoSettings.move_speed = byteToWord(data + (index += 4), 4);
-    infoSettings.router_power = byteToWord(data + (index += 4), 4);
-    infoSettings.invert_zaxis = byteToWord(data + (index += 4), 4);
+    infoSettings.baudrate         = byteToWord(data + (index += 4), 4);
+    infoSettings.language         = byteToWord(data + (index += 4), 4);
+    infoSettings.mode             = byteToWord(data + (index += 4), 4);
+    infoSettings.runout           = byteToWord(data + (index += 4), 4);
+    infoSettings.rotate_ui        = byteToWord(data + (index += 4), 4);
+    infoSettings.bg_color         = byteToWord(data + (index += 4), 4);
+    infoSettings.font_color       = byteToWord(data + (index += 4), 4);
+    infoSettings.silent           = byteToWord(data + (index += 4), 4);
+    infoSettings.auto_off         = byteToWord(data + (index += 4), 4);
+    infoSettings.terminalACK      = byteToWord(data + (index += 4), 4);
+    infoSettings.invert_yaxis     = byteToWord(data + (index += 4), 4);
+    infoSettings.move_speed       = byteToWord(data + (index += 4), 4);
+    infoSettings.router_power     = byteToWord(data + (index += 4), 4);
+    infoSettings.invert_zaxis     = byteToWord(data + (index += 4), 4);
     infoSettings.send_start_gcode = byteToWord(data + (index += 4), 4);
-    infoSettings.send_end_gcode = byteToWord(data + (index += 4), 4);
-    infoSettings.persistent_info = byteToWord(data + (index += 4), 4);
-    infoSettings.file_listmode = byteToWord(data + (index += 4), 4);
+    infoSettings.send_end_gcode   = byteToWord(data + (index += 4), 4);
+    infoSettings.persistent_info  = byteToWord(data + (index += 4), 4);
+    infoSettings.file_listmode    = byteToWord(data + (index += 4), 4);
   }
 
   return paraExist;

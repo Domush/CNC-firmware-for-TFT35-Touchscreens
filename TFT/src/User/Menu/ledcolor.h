@@ -32,7 +32,7 @@
 #define COLOR_YELLOW 0xFFE0     /* 255, 255, 0   */
 #define COLOR_WHITE 0xFFFF      /* 255, 255, 255 */
 
-void led_color_Init(uint16_t psc, uint16_t arr);  //
+void led_color_Init(uint16_t psc, uint16_t arr);   //
 void LED_color_PIN_IPN(void);
 void ws2812_send_DAT(uint32_t ws2812_dat);
 #endif

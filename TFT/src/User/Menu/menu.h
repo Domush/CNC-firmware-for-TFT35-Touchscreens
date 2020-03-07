@@ -30,7 +30,7 @@ typedef enum {
 #define LISTITEM_PER_PAGE 5
 
 typedef union {
-  uint32_t index;  // language index, address = textSelect(index);
+  uint32_t index;   // language index, address = textSelect(index);
   uint8_t *address;
 } LABEL;
 
@@ -98,7 +98,7 @@ void menuDrawItem(const ITEM *menuItem, uint8_t positon);
 void menuDrawIconOnly(const ITEM *item, uint8_t positon);
 void menuDrawListItem(const LISTITEM *item, uint8_t positon);
 void menuRefreshListPage(void);
-void menuDrawTitle(const uint8_t *content);  //(const MENUITEMS * menuItems);
+void menuDrawTitle(const uint8_t *content);   //(const MENUITEMS * menuItems);
 void menuDrawPage(const MENUITEMS *menuItems);
 void menuDrawListPage(const LISTITEMS *listItems);
 void itemDrawIconPress(uint8_t positon, uint8_t is_press);

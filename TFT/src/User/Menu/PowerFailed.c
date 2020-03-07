@@ -5,7 +5,7 @@ BREAK_POINT infoBreakPoint;
 char powerFailedFileName[256];
 
 static bool powerFailedSave = false;
-static bool create_ok = false;
+static bool create_ok       = false;
 
 void powerFailedSetDriverSource(char* src) {
   strcpy(powerFailedFileName, src);
@@ -26,7 +26,7 @@ bool powerFailedCreate(char* path) {
 
   create_ok = false;
 
-  if (infoFile.source != TFT_SD) return false;  //support SD Card only now
+  if (infoFile.source != TFT_SD) return false;   //support SD Card only now
 
   if (f_open(&fpPowerFailed, powerFailedFileName, FA_OPEN_ALWAYS | FA_WRITE) != FR_OK) return false;
 
@@ -58,10 +58,10 @@ void powerFailedCache(u32 offset) {
     infoBreakPoint.axis[i] = coordinateGetAxisTarget(i);
   }
   infoBreakPoint.gantryspeed = coordinateGetGantrySpeed();
-  infoBreakPoint.speed = getCNCSpeedOverride();
+  infoBreakPoint.speed       = getCNCSpeedOverride();
 
   infoBreakPoint.routerSpeed = ROUTER_MAX_PWM;
-  infoBreakPoint.relative = coorGetRelative();
+  infoBreakPoint.relative    = coorGetRelative();
 
   f_lseek(&fpPowerFailed, MAX_PATH_LEN);
   f_write(&fpPowerFailed, &infoBreakPoint, sizeof(BREAK_POINT), &br);
@@ -154,7 +154,7 @@ void menuPowerOff(void) {
           powerOffGetData();
           infoMenu.menu[1] = menuPrintFromSource;
           infoMenu.menu[2] = menuBeforePrinting;
-          infoMenu.active = 2;
+          infoMenu.active  = 2;
           break;
 
         case KEY_POPUP_CANCEL:

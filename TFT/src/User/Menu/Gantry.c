@@ -11,8 +11,8 @@ static float yaxis;
 static float zaxis;
 static bool gantryCmdWait = false;
 
-int current_router = 0;
-int current_speedID = 0;
+int current_router     = 0;
+int current_speedID    = 0;
 const char *SpeedID[2] = SPEED_ID;
 // text position rectangles for Live icons
 //icon 0

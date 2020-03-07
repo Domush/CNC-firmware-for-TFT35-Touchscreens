@@ -4,7 +4,7 @@
 
 FATFS fatfs[FF_VOLUMES]; /* FATFS work area*/
 
-/* 
+/*
  mount SD Card from Fatfs
  true: mount ok
  false: mount failed
@@ -13,14 +13,14 @@ bool mountSDCard(void) {
   return (f_mount(&fatfs[VOLUMES_SD_CARD], "SD:", 1) == FR_OK);
 }
 
-/* 
+/*
  mount U disk from Fatfs
 */
 bool mountUDisk(void) {
   return (f_mount(&fatfs[VOLUMES_U_DISK], "U:", 1) == FR_OK);
 }
 
-/* 
+/*
  scanf gcode file in current path
  true: scanf ok
  false: opendir failed
@@ -61,19 +61,19 @@ bool scanPrintFilesFatFs(void) {
   f_closedir(&dir);
 
   for (i = 0; i < infoFile.F_num / 2; i++) {
-    char *temp = infoFile.folder[i];
-    infoFile.folder[i] = infoFile.folder[infoFile.F_num - i - 1];
+    char *temp                              = infoFile.folder[i];
+    infoFile.folder[i]                      = infoFile.folder[infoFile.F_num - i - 1];
     infoFile.folder[infoFile.F_num - i - 1] = temp;
   }
   for (i = 0; i < infoFile.f_num / 2; i++) {
-    char *temp = infoFile.file[i];
-    infoFile.file[i] = infoFile.file[infoFile.f_num - i - 1];
+    char *temp                            = infoFile.file[i];
+    infoFile.file[i]                      = infoFile.file[infoFile.f_num - i - 1];
     infoFile.file[infoFile.f_num - i - 1] = temp;
   }
   return true;
 }
 
-/* 
+/*
 * /
 void GUI_DispDate(uint16_t date, uint16_t time)
 {
@@ -85,7 +85,7 @@ void GUI_DispDate(uint16_t date, uint16_t time)
 }
 */
 
-/* 
+/*
 */
 bool Get_NewestGcode(const TCHAR *path) {
   uint32_t date = 0;

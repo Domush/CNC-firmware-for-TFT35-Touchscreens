@@ -36,15 +36,15 @@ void FIL_Runout_Init(void) {
 }
 
 bool FIL_RunoutPinFilteredLevel(void) {
-  static bool rst = false;
-  static u32 nowTime = 0;
-  static u32 trueTimes = 0;
+  static bool rst       = false;
+  static u32 nowTime    = 0;
+  static u32 trueTimes  = 0;
   static u32 falseTimes = 0;
 
   if (OS_GetTime() > nowTime + FIL_NOISE_THRESHOLD) {
-    rst = trueTimes > falseTimes ? true : false;
-    nowTime = OS_GetTime();
-    trueTimes = 0;
+    rst        = trueTimes > falseTimes ? true : false;
+    nowTime    = OS_GetTime();
+    trueTimes  = 0;
     falseTimes = 0;
   } else {
     if (GPIO_GetLevel(FIL_RUNOUT_PIN)) {
@@ -61,7 +61,7 @@ bool FIL_RunoutPinFilteredLevel(void) {
 // Suitable for BigTreeTech Smart filament detecter
 bool FIL_SmartRunoutDetect(void) {
   static uint8_t lastRunoutPinLevel = 0;
-  static uint8_t isAlive = false;
+  static uint8_t isAlive            = false;
 
   bool pinLevel = FIL_RunoutPinFilteredLevel();
 
@@ -88,13 +88,26 @@ bool FIL_IsRunout(void) {
 }
 
 void loopFILRunoutDetect(void) {
-  if (infoSettings.runout == FILAMENT_RUNOUT_OFF) return;  // Filament runout turn off
-  if (!FIL_IsRunout()) return;                             // Filament not runout yet, need constant scanning to filter interference
-  if (!isPrinting() || isPause()) return;                  // No printing or printing paused
+  if (infoSettings.runout == FILAMENT_RUNOUT_OFF) return;   // Filament runout turn off
+  if (!FIL_IsRunout()) return;                              // Filament not runout yet, need constant scanning to filter interference
+  if (!isPrinting() || isPause()) return;                   // No printing or printing paused
 
   if (setPrintPause(true)) {
     popupReminder(textSelect(LABEL_WARNING), textSelect(LABEL_FILAMENT_RUNOUT));
   }
 }
 
+void assert_failed(uint8_t* file, uint32_t line) {
+  u16 delayTime    = OS_GetTime() + 500;
+  char buffer[512] = "";
+  my_sprintf(buffer, "CRITICAL ERROR!\n\n\nProblem in file:\n%s\n\nOn line: %d", file, line);
+  GUI_Clear(BLACK);
+  GUI_SetColor(MAT_RED);
+  GUI_DispStringInRectEOL(50, BYTE_HEIGHT * 1, LCD_WIDTH - 50, LCD_HEIGHT - BYTE_HEIGHT * 2, (u8*)buffer);
+  GUI_SetColor(MAT_LOWWHITE);
+  while (OS_GetTime() < delayTime) {
+    my_sprintf(buffer, "Continuing in: %d", (delayTime - OS_GetTime()) / 100);
+    GUI_DispStringInRect(50, LCD_HEIGHT - BYTE_HEIGHT, LCD_WIDTH - 50, LCD_HEIGHT, (u8*)buffer);
+  }
+}
 #endif

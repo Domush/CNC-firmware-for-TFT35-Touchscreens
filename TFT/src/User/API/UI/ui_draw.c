@@ -9,7 +9,7 @@ void lcd_frame_display(u16 sx, u16 sy, u16 w, u16 h, u32 addr);
 
 void lcd_frame_display(u16 sx, u16 sy, u16 w, u16 h, u32 addr) {
   u16 x, y;
-  u16 color = 0;
+  u16 color   = 0;
   u32 address = addr;
 
   LCD_SetWindow(sx, sy, sx + w - 1, sy + h - 1);
@@ -77,11 +77,11 @@ bool bmp_DirectDisplay(GUI_POINT pos, char *bmp) {
   }
   int adjSizeX;
   int adjSizeY;
-  adjSizeX = w / 100;  // * h / w;
+  adjSizeX = w / 100;   // * h / w;
   adjSizeY = h / 100;
   bpp >>= 3;
   bytePerLine = w * bpp;
-  if (bytePerLine % 4 != 0)  //bmp
+  if (bytePerLine % 4 != 0)   //bmp
     bytePerLine = (bytePerLine / 4 + 1) * 4;
 
   for (int j = 0; j < h; j += adjSizeY) {
@@ -113,7 +113,7 @@ void SMALLICON_ReadDisplay(u16 sx, u16 sy, u8 icon) {
 void ICON_PressedDisplay(u16 sx, u16 sy, u8 icon) {
   u16 mode = 0x0FF0;
   u16 x, y;
-  u16 color = 0;
+  u16 color   = 0;
   u32 address = ICON_ADDR(icon);
 
   LCD_SetWindow(sx, sy, sx + ICON_WIDTH - 1, sy + ICON_HEIGHT - 1);

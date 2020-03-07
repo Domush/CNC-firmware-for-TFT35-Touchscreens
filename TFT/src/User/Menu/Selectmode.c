@@ -64,7 +64,7 @@ uint8_t LCD_ReadTouch(void) {
     MOVE = true;
 
     if ((sy > ey) && ey != 0) {
-      if (sy - ey > LCD_HEIGHT / 9 && sy - ey < LCD_HEIGHT / 7)  //7-5
+      if (sy - ey > LCD_HEIGHT / 9 && sy - ey < LCD_HEIGHT / 7)   //7-5
       {
         sy = ey;
         return 2;
@@ -80,7 +80,7 @@ uint8_t LCD_ReadTouch(void) {
   } else {
     CTime = OS_GetTime();
     sy = ey = 0;
-    MOVE = false;
+    MOVE    = false;
     return 0;
   }
 }

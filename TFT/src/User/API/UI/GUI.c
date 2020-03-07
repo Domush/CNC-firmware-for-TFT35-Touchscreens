@@ -1,10 +1,10 @@
 #include "GUI.h"
 #include "includes.h"
 
-uint16_t foreGroundColor = WHITE;
-uint16_t backGroundColor = BLACK;
+uint16_t foreGroundColor  = WHITE;
+uint16_t backGroundColor  = BLACK;
 GUI_TEXT_MODE guiTextMode = GUI_TEXTMODE_NORMAL;
-GUI_NUM_MODE guiNumMode = GUI_NUMMODE_SPACE;
+GUI_NUM_MODE guiNumMode   = GUI_NUMMODE_SPACE;
 
 void LCD_SetWindow(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey) {
   LCD_WR_REG(0x2A);
@@ -63,7 +63,7 @@ static uint8_t pixel_limit_flag = 0;
 static GUI_RECT pixel_limit_rect;
 
 void GUI_SetRange(int16_t x0, int16_t y0, int16_t x1, int16_t y1) {
-  pixel_limit_flag = 1;
+  pixel_limit_flag    = 1;
   pixel_limit_rect.x0 = x0;
   pixel_limit_rect.x1 = x1;
   pixel_limit_rect.y0 = y0;
@@ -151,36 +151,36 @@ void GUI_DrawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
   uint16_t t;
   int xerr = 0, yerr = 0, delta_x, delta_y, distance;
   int incx, incy, uRow, uCol;
-  delta_x = x2 - x1;  //������������
+  delta_x = x2 - x1;   //������������
   delta_y = y2 - y1;
-  uRow = x1;
-  uCol = y1;
+  uRow    = x1;
+  uCol    = y1;
   if (delta_x > 0)
-    incx = 1;  //Should be copied
+    incx = 1;   //Should be copied
   else if (delta_x == 0)
-    incx = 0;  //Span
+    incx = 0;   //Span
   else {
-    incx = -1;
+    incx    = -1;
     delta_x = -delta_x;
   }
 
   if (delta_y > 0)
     incy = 1;
   else if (delta_y == 0)
-    incy = 0;  //Horizontal copy
+    incy = 0;   //Horizontal copy
   else {
-    incy = -1;
+    incy    = -1;
     delta_y = -delta_y;
   }
 
   if (delta_x > delta_y)
-    distance = delta_x;  //ѡȡ��������������
+    distance = delta_x;   //ѡȡ��������������
   else
     distance = delta_y;
 
-  for (t = 0; t <= distance + 1; t++)  //�������?
+  for (t = 0; t <= distance + 1; t++)   //�������?
   {
-    GUI_DrawPoint(uRow, uCol);  //Copy
+    GUI_DrawPoint(uRow, uCol);   //Copy
     xerr += delta_x;
     yerr += delta_y;
     if (xerr > distance) {
@@ -198,8 +198,8 @@ void GUI_DrawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
 void GUI_DrawAngleLine(uint16_t x, uint16_t y, uint16_t radius, int16_t angle) {
   uint16_t ex, ey;
   float a = angle * 3.1415926f / 180;
-  ex = x + cos(a) * radius;
-  ey = y - sin(a) * radius;
+  ex      = x + cos(a) * radius;
+  ey      = y - sin(a) * radius;
   GUI_DrawLine(x, y, ex, ey);
 }
 void GUI_HLine(uint16_t x1, uint16_t y, uint16_t x2) {
@@ -236,19 +236,19 @@ void GUI_DrawPrect(const GUI_RECT *dimensions) {
 //(x, y): copy
 //radius: The commandment path
 void GUI_DrawCircle(uint16_t x0, uint16_t y0, uint16_t radius) {
-  int16_t a = 0,
-          b = radius,
-          di = 3 - (radius << 1);  //Howling
+  int16_t a  = 0,
+          b  = radius,
+          di = 3 - (radius << 1);   //Howling
 
   while (a <= b) {
-    GUI_DrawPoint(x0 + a, y0 - b);  //5
-    GUI_DrawPoint(x0 + b, y0 - a);  //0
-    GUI_DrawPoint(x0 + b, y0 + a);  //4
-    GUI_DrawPoint(x0 + a, y0 + b);  //6
-    GUI_DrawPoint(x0 - a, y0 + b);  //1
+    GUI_DrawPoint(x0 + a, y0 - b);   //5
+    GUI_DrawPoint(x0 + b, y0 - a);   //0
+    GUI_DrawPoint(x0 + b, y0 + a);   //4
+    GUI_DrawPoint(x0 + a, y0 + b);   //6
+    GUI_DrawPoint(x0 - a, y0 + b);   //1
     GUI_DrawPoint(x0 - b, y0 + a);
-    GUI_DrawPoint(x0 - a, y0 - b);  //2
-    GUI_DrawPoint(x0 - b, y0 - a);  //7
+    GUI_DrawPoint(x0 - a, y0 - b);   //2
+    GUI_DrawPoint(x0 - b, y0 - a);   //7
     a++;
     //Make a copy of Bresenham's sister-in-law
     if (di < 0)
@@ -260,7 +260,7 @@ void GUI_DrawCircle(uint16_t x0, uint16_t y0, uint16_t radius) {
   }
 }
 void GUI_FillCircle(uint16_t x0, uint16_t y0, uint16_t radius) {
-  int16_t draw_x0, draw_y0;  // ��ͼ���������?
+  int16_t draw_x0, draw_y0;   // ��ͼ���������?
   int16_t draw_x1, draw_y1;
   int16_t draw_x2, draw_y2;
   int16_t draw_x3, draw_y3;
@@ -268,11 +268,11 @@ void GUI_FillCircle(uint16_t x0, uint16_t y0, uint16_t radius) {
   int16_t draw_x5, draw_y5;
   int16_t draw_x6, draw_y6;
   int16_t draw_x7, draw_y7;
-  int16_t fill_x0, fill_y0;  // �������ı�����ʹ�ô�ֱ�����?
+  int16_t fill_x0, fill_y0;   // �������ı�����ʹ�ô�ֱ�����?
   int16_t fill_x1;
-  int16_t xx, yy;  // ��Բ���Ʊ���
+  int16_t xx, yy;   // ��Բ���Ʊ���
 
-  int16_t di;  // Do
+  int16_t di;   // Do
 
   /* �������� */
   if (0 == radius) return;
@@ -281,26 +281,26 @@ void GUI_FillCircle(uint16_t x0, uint16_t y0, uint16_t radius) {
   draw_x0 = draw_x1 = x0;
   draw_y0 = draw_y1 = y0 + radius;
   if (draw_y0 < LCD_HEIGHT) {
-    GUI_DrawPoint(draw_x0, draw_y0);  // 90 kg
+    GUI_DrawPoint(draw_x0, draw_y0);   // 90 kg
   }
 
   draw_x2 = draw_x3 = x0;
   draw_y2 = draw_y3 = y0 - radius;
   if (draw_y2 >= 0) {
-    GUI_DrawPoint(draw_x2, draw_y2);  // 270 pounds
+    GUI_DrawPoint(draw_x2, draw_y2);   // 270 pounds
   }
 
   draw_x4 = draw_x6 = x0 + radius;
   draw_y4 = draw_y6 = y0;
   if (draw_x4 < LCD_WIDTH) {
-    GUI_DrawPoint(draw_x4, draw_y4);  // 0
+    GUI_DrawPoint(draw_x4, draw_y4);   // 0
     fill_x1 = draw_x4;
   } else {
     fill_x1 = LCD_WIDTH;
   }
 
-  fill_y0 = y0;           // �������������ʼ��fill_x0
-  fill_x0 = x0 - radius;  // �����������������fill_y1
+  fill_y0 = y0;            // �������������ʼ��fill_x0
+  fill_x0 = x0 - radius;   // �����������������fill_y1
   if (fill_x0 < 0)
     fill_x0 = 0;
 
@@ -309,12 +309,12 @@ void GUI_FillCircle(uint16_t x0, uint16_t y0, uint16_t radius) {
   draw_x5 = draw_x7 = x0 - radius;
   draw_y5 = draw_y7 = y0;
   if (draw_x5 >= 0) {
-    GUI_DrawPoint(draw_x5, draw_y5);  // 180 kg
+    GUI_DrawPoint(draw_x5, draw_y5);   // 180 kg
   }
   if (1 == radius) return;
 
   /* Bresenham */
-  di = 3 - 2 * radius;  // ��ʼ�����߱���
+  di = 3 - 2 * radius;   // ��ʼ�����߱���
   xx = 0;
   yy = radius;
   while (xx < yy) {
@@ -449,10 +449,10 @@ CHAR_INFO GUI_DispOne(int16_t sx, int16_t sy, const uint8_t *string) {
 
   getCharacterInfo(string, &info);
 
-  uint8_t x = 0,
-          y = 0,
-          j = 0,
-          i = 0;
+  uint8_t x           = 0,
+          y           = 0,
+          j           = 0,
+          i           = 0;
   uint16_t bitMapSize = (info.pixelHeight * info.pixelWidth / 8);
   uint8_t font[bitMapSize];
   uint32_t temp = 0;
@@ -511,9 +511,9 @@ void GUI_DispStringRight(int16_t x, int16_t y, const uint8_t *string) {
 
 void GUI_DispStringInRect(int16_t sx, int16_t sy, int16_t ex, int16_t ey, const uint8_t *string) {
   uint16_t stringlen = GUI_StrPixelWidth(string);
-  uint16_t width = ex - sx;
-  uint16_t height = ey - sy;
-  uint8_t nline = (stringlen + width - 1) / width;
+  uint16_t width     = ex - sx;
+  uint16_t height    = ey - sy;
+  uint8_t nline      = (stringlen + width - 1) / width;
 
   if (nline > height / BYTE_HEIGHT)
     // nline = height / BYTE_HEIGHT;
@@ -557,25 +557,25 @@ const uint32_t GUI_Pow10[10] = {
     1, 10, 100, 1000, 10000,
     100000, 1000000, 10000000, 100000000, 1000000000};
 
-void GUI_DispDec(int16_t x, int16_t y, int32_t value, uint8_t numDigits, uint8_t leftOrRight) {
+void GUI_DispDec(int16_t x, int16_t y, int32_t value, uint8_t numDigits, uint8_t LEFTorRIGHT) {
   uint8_t i;
   uint8_t bit_value;
   uint8_t blank_bit_len = 0;
-  uint8_t notZero = 0;
-  char isNegative = 0;
+  uint8_t notZero       = 0;
+  char isNegative       = 0;
   uint8_t decBuf[64];
   uint8_t bufIndex = 0;
 
   if (value < 0) {
-    value = -value;
+    value      = -value;
     isNegative = 1;
-    numDigits--;  // Negative '-' takes up a display length
+    numDigits--;   // Negative '-' takes up a display length
   }
   for (i = 0; i < numDigits; i++) {
     bit_value = (value / GUI_Pow10[numDigits - i - 1]) % 10;
     if (notZero == 0) {
       if (bit_value == 0 && i < (numDigits - 1)) {
-        if (leftOrRight == RIGHT) {
+        if (LEFTorRIGHT == RIGHT) {
           decBuf[bufIndex++] = (guiNumMode == GUI_NUMMODE_SPACE) ? ' ' : '0';
         } else {
           blank_bit_len++;
@@ -597,18 +597,18 @@ void GUI_DispDec(int16_t x, int16_t y, int32_t value, uint8_t numDigits, uint8_t
   GUI_DispString(x, y, decBuf);
 }
 
-void GUI_DispFloat(int16_t x, int16_t y, float value, uint8_t leftDigits, uint8_t rightDigits, uint8_t leftOrRight) {
-  uint8_t alen = 0;
-  uint8_t i = 0;
+void GUI_DispFloat(int16_t x, int16_t y, float value, uint8_t leftDigits, uint8_t rightDigits, uint8_t LEFTorRIGHT) {
+  uint8_t alen    = 0;
+  uint8_t i       = 0;
   uint8_t notZero = 0;
   char isNegative = 0;
   uint8_t floatBuf[64];
   uint8_t bufIndex = 0;
 
   if (value < 0) {
-    value = -value;
+    value      = -value;
     isNegative = 1;
-    leftDigits--;  // Negative '-' takes up a display length
+    leftDigits--;   // Negative '-' takes up a display length
   }
 
   value *= GUI_Pow10[(unsigned)rightDigits];
@@ -618,7 +618,7 @@ void GUI_DispFloat(int16_t x, int16_t y, float value, uint8_t leftDigits, uint8_
     uint8_t bit_value = ((uint32_t)(value / GUI_Pow10[leftDigits + rightDigits - 1 - i])) % 10;
     if (notZero == 0) {
       if (bit_value == 0 && i < (leftDigits - 1)) {
-        if (leftOrRight == RIGHT) {
+        if (LEFTorRIGHT == RIGHT) {
           floatBuf[bufIndex++] = (guiNumMode == GUI_NUMMODE_SPACE) ? ' ' : '0';
           alen++;
         }
@@ -652,7 +652,7 @@ void GUI_DispFloat(int16_t x, int16_t y, float value, uint8_t leftDigits, uint8_
 #define RADIO_IDLE_COLOR WHITE
 void RADIO_Create(RADIO *radioInfo) {
   u16 origColor = GUI_GetColor();
-  uint8_t i = 0;
+  uint8_t i     = 0;
   for (i = 0; i < radioInfo->value; i++) {
     if (i == radioInfo->select)
       GUI_SetColor(RADIO_SELECTED_COLOR);
@@ -667,7 +667,7 @@ void RADIO_Create(RADIO *radioInfo) {
 
 void RADIO_Select(RADIO *radioInfo, uint8_t select) {
   u16 origColor = GUI_GetColor();
-  uint8_t i = 0;
+  uint8_t i     = 0;
   if (radioInfo->select == select)
     return;
   for (i = 0; i < 2; i++) {
@@ -687,11 +687,11 @@ void RADIO_Select(RADIO *radioInfo, uint8_t select) {
 //
 void Scroll_CreatePara(SCROLL *scrollInfo, uint8_t *pstr, const GUI_RECT *dimensions) {
   memset(scrollInfo, 0, sizeof(SCROLL));
-  scrollInfo->text = pstr;
-  scrollInfo->maxByte = strlen((char *)pstr);
+  scrollInfo->text          = pstr;
+  scrollInfo->maxByte       = strlen((char *)pstr);
   scrollInfo->curPixelWidth = scrollInfo->totalPixelWidth = GUI_StrPixelWidth(pstr);
-  scrollInfo->maxPixelWidth = dimensions->x1 - dimensions->x0;
-  scrollInfo->dimensions = dimensions;
+  scrollInfo->maxPixelWidth                               = dimensions->x1 - dimensions->x0;
+  scrollInfo->dimensions                                  = dimensions;
 }
 
 void Scroll_DispString(SCROLL *scrollInfo, uint8_t align) {
@@ -700,7 +700,7 @@ void Scroll_DispString(SCROLL *scrollInfo, uint8_t align) {
 
   if (scrollInfo->text == NULL) return;
   if (scrollInfo->totalPixelWidth > scrollInfo->maxPixelWidth) {
-    if (OS_GetTime() - scrollInfo->time > 5)  // 50ms
+    if (OS_GetTime() - scrollInfo->time > 5)   // 50ms
     {
       scrollInfo->time = OS_GetTime();
       GUI_SetRange(scrollInfo->dimensions->x0, scrollInfo->dimensions->y0, scrollInfo->dimensions->x1, scrollInfo->dimensions->y1);
@@ -726,9 +726,9 @@ void Scroll_DispString(SCROLL *scrollInfo, uint8_t align) {
         scrollInfo->off_tail++;
         GUI_DispLenString(scrollInfo->dimensions->x1 - scrollInfo->off_tail, scrollInfo->dimensions->y0, scrollInfo->text, scrollInfo->off_tail);
         if (scrollInfo->off_tail + scrollInfo->dimensions->x0 >= scrollInfo->dimensions->x1) {
-          scrollInfo->off_head = 0;
-          scrollInfo->off_tail = 0;
-          scrollInfo->curByte = 0;
+          scrollInfo->off_head      = 0;
+          scrollInfo->off_tail      = 0;
+          scrollInfo->curByte       = 0;
           scrollInfo->curPixelWidth = scrollInfo->totalPixelWidth;
         }
       }
@@ -757,14 +757,14 @@ void Scroll_DispString(SCROLL *scrollInfo, uint8_t align) {
 
 //
 void GUI_DrawButton(const BUTTON *buttonInfo, uint8_t pressed) {
-  const uint16_t radius = buttonInfo->radius;
-  const uint16_t lineWidth = buttonInfo->lineWidth;
-  const int16_t sx = buttonInfo->dimensions.x0,
-                sy = buttonInfo->dimensions.y0,
-                ex = buttonInfo->dimensions.x1,
-                ey = buttonInfo->dimensions.y1;
-  const uint16_t nowBackColor = GUI_GetBkColor();
-  const uint16_t nowFontColor = GUI_GetColor();
+  const uint16_t radius           = buttonInfo->radius;
+  const uint16_t lineWidth        = buttonInfo->lineWidth;
+  const int16_t sx                = buttonInfo->dimensions.x0,
+                sy                = buttonInfo->dimensions.y0,
+                ex                = buttonInfo->dimensions.x1,
+                ey                = buttonInfo->dimensions.y1;
+  const uint16_t nowBackColor     = GUI_GetBkColor();
+  const uint16_t nowFontColor     = GUI_GetColor();
   const GUI_TEXT_MODE nowTextMode = GUI_GetTextMode();
 
   const uint16_t lineColor = pressed ? buttonInfo->pLineColor : buttonInfo->lineColor;
@@ -772,19 +772,19 @@ void GUI_DrawButton(const BUTTON *buttonInfo, uint8_t pressed) {
   const uint16_t fontColor = pressed ? buttonInfo->pFontColor : buttonInfo->fontColor;
 
   GUI_SetColor(lineColor);
-  GUI_FillCircle(sx + radius, sy + radius, radius);  //�ĸ��ǵ�Բ��
+  GUI_FillCircle(sx + radius, sy + radius, radius);   //�ĸ��ǵ�Բ��
   GUI_FillCircle(ex - radius - 1, sy + radius, radius);
   GUI_FillCircle(sx + radius, ey - radius - 1, radius);
   GUI_FillCircle(ex - radius - 1, ey - radius - 1, radius);
 
   for (uint16_t i = 0; i < lineWidth; i++) {
-    GUI_HLine(sx + radius, sy + i, ex - radius);  //�ĸ����?
+    GUI_HLine(sx + radius, sy + i, ex - radius);   //�ĸ����?
     GUI_HLine(sx + radius, ey - 1 - i, ex - radius);
     GUI_VLine(sx + i, sy + radius, ey - radius);
     GUI_VLine(ex - 1 - i, sy + radius, ey - radius);
   }
   GUI_SetColor(backColor);
-  GUI_FillCircle(sx + radius, sy + radius, radius - lineWidth);  //����ĸ��ǵ�Բ��?
+  GUI_FillCircle(sx + radius, sy + radius, radius - lineWidth);   //����ĸ��ǵ�Բ��?
   GUI_FillCircle(ex - radius - 1, sy + radius, radius - lineWidth);
   GUI_FillCircle(sx + radius, ey - radius - 1, radius - lineWidth);
   GUI_FillCircle(ex - radius - 1, ey - radius - 1, radius - lineWidth);
@@ -802,19 +802,19 @@ void GUI_DrawButton(const BUTTON *buttonInfo, uint8_t pressed) {
 }
 
 void GUI_DrawWindow(const WINDOW *windowInfo, const uint8_t *title, const uint8_t *content) {
-  const uint16_t titleHeight = windowInfo->title.height;
-  const uint16_t infoHeight = windowInfo->info.height;
-  const uint16_t radius = windowInfo->radius;
-  const uint16_t lineWidth = windowInfo->lineWidth;
-  const uint16_t lineColor = windowInfo->lineColor;
-  const uint16_t infoBackColor = windowInfo->info.backColor;
-  const uint16_t bottomBackColor = windowInfo->bottom.backColor;
-  const int16_t sx = windowInfo->dimensions.x0,
-                sy = windowInfo->dimensions.y0,
-                ex = windowInfo->dimensions.x1,
-                ey = windowInfo->dimensions.y1;
-  const uint16_t nowBackColor = GUI_GetBkColor();
-  const uint16_t nowFontColor = GUI_GetColor();
+  const uint16_t titleHeight      = windowInfo->title.height;
+  const uint16_t infoHeight       = windowInfo->info.height;
+  const uint16_t radius           = windowInfo->radius;
+  const uint16_t lineWidth        = windowInfo->lineWidth;
+  const uint16_t lineColor        = windowInfo->lineColor;
+  const uint16_t infoBackColor    = windowInfo->info.backColor;
+  const uint16_t bottomBackColor  = windowInfo->bottom.backColor;
+  const int16_t sx                = windowInfo->dimensions.x0,
+                sy                = windowInfo->dimensions.y0,
+                ex                = windowInfo->dimensions.x1,
+                ey                = windowInfo->dimensions.y1;
+  const uint16_t nowBackColor     = GUI_GetBkColor();
+  const uint16_t nowFontColor     = GUI_GetColor();
   const GUI_TEXT_MODE nowTextMode = GUI_GetTextMode();
 
   GUI_SetColor(lineColor);
@@ -841,7 +841,7 @@ void GUI_DrawWindow(const WINDOW *windowInfo, const uint8_t *title, const uint8_
   GUI_SetTextMode(GUI_TEXTMODE_TRANS);
   GUI_SetColor(windowInfo->title.fontColor);
   //    GUI_DispStringInRect(dimensions.x0, dimensions.y0, dimensions.x1, dimensions.y0+titleHeight,title,0);
-  GUI_DispString(sx + radius, sy, title);
+  // GUI_DispString(sx + radius, sy, title);
   GUI_SetColor(windowInfo->info.fontColor);
   GUI_DispStringInRect(sx + lineWidth + BYTE_WIDTH, sy + titleHeight, ex - lineWidth - BYTE_WIDTH, sy + titleHeight + infoHeight, content);
 

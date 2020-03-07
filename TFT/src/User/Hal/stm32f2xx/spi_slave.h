@@ -7,10 +7,10 @@
 
 typedef struct
 {
-  u8  *data;
+  u8 *data;
   u16 rIndex;
   u16 wIndex;
-}SPI_QUEUE;
+} SPI_QUEUE;
 
 extern SPI_QUEUE SPISlave;
 

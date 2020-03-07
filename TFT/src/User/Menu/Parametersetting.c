@@ -7,17 +7,17 @@ int cmd_getparameter_num = 0;
 char *Get_value[VALUE_NUM];
 
 const GUI_RECT rect_of_Skey[PARANMETER_NUM] = {
-    {BUTTON_WIDTH / 2, 0, LCD_WIDTH - BUTTON_WIDTH / 2, TITLE_SY + BYTE_HEIGHT},                                                                                                        //TITLE
-    {3 * START_X, ICON_START_Y - BYTE_HEIGHT / 2, LCD_WIDTH - BUTTON_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2},                                                                            //M906
-    {3 * START_X, ICON_START_Y - BYTE_HEIGHT / 2 + 2 * BYTE_HEIGHT + 7 * BUTTON_SPACE, LCD_WIDTH - BUTTON_WIDTH, ICON_START_Y - BYTE_HEIGHT / 2 + 3 * BYTE_HEIGHT + 7 * BUTTON_SPACE},  //M92
+    {BUTTON_WIDTH / 2, 0, LCD_WIDTH - BUTTON_WIDTH / 2, TITLE_SY + BYTE_HEIGHT},                                                                                                         //TITLE
+    {3 * START_X, ICON_START_Y - BYTE_HEIGHT / 2, LCD_WIDTH - BUTTON_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2},                                                                             //M906
+    {3 * START_X, ICON_START_Y - BYTE_HEIGHT / 2 + 2 * BYTE_HEIGHT + 7 * BUTTON_SPACE, LCD_WIDTH - BUTTON_WIDTH, ICON_START_Y - BYTE_HEIGHT / 2 + 3 * BYTE_HEIGHT + 7 * BUTTON_SPACE},   //M92
 
-    {LCD_WIDTH - 1 * BUTTON_WIDTH, ICON_START_Y - BYTE_HEIGHT / 2, LCD_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2},                                                                            //M906_X
-    {LCD_WIDTH - 1 * BUTTON_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 0 * BYTE_HEIGHT + 1 * BUTTON_SPACE, LCD_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 1 * BYTE_HEIGHT + 1 * BUTTON_SPACE},  //M906_Y
-    {LCD_WIDTH - 1 * BUTTON_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 1 * BYTE_HEIGHT + 2 * BUTTON_SPACE, LCD_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 2 * BYTE_HEIGHT + 2 * BUTTON_SPACE},  //M906_Z
+    {LCD_WIDTH - 1 * BUTTON_WIDTH, ICON_START_Y - BYTE_HEIGHT / 2, LCD_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2},                                                                             //M906_X
+    {LCD_WIDTH - 1 * BUTTON_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 0 * BYTE_HEIGHT + 1 * BUTTON_SPACE, LCD_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 1 * BYTE_HEIGHT + 1 * BUTTON_SPACE},   //M906_Y
+    {LCD_WIDTH - 1 * BUTTON_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 1 * BYTE_HEIGHT + 2 * BUTTON_SPACE, LCD_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 2 * BYTE_HEIGHT + 2 * BUTTON_SPACE},   //M906_Z
 
-    {LCD_WIDTH - 1 * BUTTON_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 3 * BYTE_HEIGHT + 7 * BUTTON_SPACE, LCD_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 4 * BYTE_HEIGHT + 7 * BUTTON_SPACE},  //M92_X
-    {LCD_WIDTH - 1 * BUTTON_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 4 * BYTE_HEIGHT + 8 * BUTTON_SPACE, LCD_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 5 * BYTE_HEIGHT + 8 * BUTTON_SPACE},  //M92_Y
-    {LCD_WIDTH - 1 * BUTTON_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 5 * BYTE_HEIGHT + 9 * BUTTON_SPACE, LCD_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 6 * BYTE_HEIGHT + 9 * BUTTON_SPACE},  //M92_Z
+    {LCD_WIDTH - 1 * BUTTON_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 3 * BYTE_HEIGHT + 7 * BUTTON_SPACE, LCD_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 4 * BYTE_HEIGHT + 7 * BUTTON_SPACE},   //M92_X
+    {LCD_WIDTH - 1 * BUTTON_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 4 * BYTE_HEIGHT + 8 * BUTTON_SPACE, LCD_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 5 * BYTE_HEIGHT + 8 * BUTTON_SPACE},   //M92_Y
+    {LCD_WIDTH - 1 * BUTTON_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 5 * BYTE_HEIGHT + 9 * BUTTON_SPACE, LCD_WIDTH, ICON_START_Y + BYTE_HEIGHT / 2 + 6 * BYTE_HEIGHT + 9 * BUTTON_SPACE},   //M92_Z
 
     // Back
     //{0, 0, BUTTON_WIDTH/2, LCD_HEIGHT/8},
@@ -26,23 +26,23 @@ const GUI_RECT rect_of_Skey[PARANMETER_NUM] = {
 };
 
 const GUI_RECT rect_of_numkey[KEY_NUM] = {
-    {0 * SkeyWIDTH, P_height + 0 * Key_height, 1 * SkeyWIDTH, P_height + 1 * Key_height},  //1
-    {1 * SkeyWIDTH, P_height + 0 * Key_height, 2 * SkeyWIDTH, P_height + 1 * Key_height},  //2
-    {2 * SkeyWIDTH, P_height + 0 * Key_height, 3 * SkeyWIDTH, P_height + 1 * Key_height},  //3
-    {3 * SkeyWIDTH, P_height + 0 * Key_height, 4 * SkeyWIDTH, P_height + 1 * Key_height},  //del
+    {0 * SkeyWIDTH, P_height + 0 * Key_height, 1 * SkeyWIDTH, P_height + 1 * Key_height},   //1
+    {1 * SkeyWIDTH, P_height + 0 * Key_height, 2 * SkeyWIDTH, P_height + 1 * Key_height},   //2
+    {2 * SkeyWIDTH, P_height + 0 * Key_height, 3 * SkeyWIDTH, P_height + 1 * Key_height},   //3
+    {3 * SkeyWIDTH, P_height + 0 * Key_height, 4 * SkeyWIDTH, P_height + 1 * Key_height},   //del
 
-    {0 * SkeyWIDTH, P_height + 1 * Key_height, 1 * SkeyWIDTH, P_height + 2 * Key_height},  //4
-    {1 * SkeyWIDTH, P_height + 1 * Key_height, 2 * SkeyWIDTH, P_height + 2 * Key_height},  //5
-    {2 * SkeyWIDTH, P_height + 1 * Key_height, 3 * SkeyWIDTH, P_height + 2 * Key_height},  //6
-    {3 * SkeyWIDTH, P_height + 1 * Key_height, 4 * SkeyWIDTH, P_height + 2 * Key_height},  //.
+    {0 * SkeyWIDTH, P_height + 1 * Key_height, 1 * SkeyWIDTH, P_height + 2 * Key_height},   //4
+    {1 * SkeyWIDTH, P_height + 1 * Key_height, 2 * SkeyWIDTH, P_height + 2 * Key_height},   //5
+    {2 * SkeyWIDTH, P_height + 1 * Key_height, 3 * SkeyWIDTH, P_height + 2 * Key_height},   //6
+    {3 * SkeyWIDTH, P_height + 1 * Key_height, 4 * SkeyWIDTH, P_height + 2 * Key_height},   //.
 
-    {0 * SkeyWIDTH, P_height + 2 * Key_height, 1 * SkeyWIDTH, P_height + 3 * Key_height},  //7
-    {1 * SkeyWIDTH, P_height + 2 * Key_height, 2 * SkeyWIDTH, P_height + 3 * Key_height},  //8
-    {2 * SkeyWIDTH, P_height + 2 * Key_height, 3 * SkeyWIDTH, P_height + 3 * Key_height},  //9
-    {3 * SkeyWIDTH, P_height + 2 * Key_height, 4 * SkeyWIDTH, P_height + 3 * Key_height},  //0
+    {0 * SkeyWIDTH, P_height + 2 * Key_height, 1 * SkeyWIDTH, P_height + 3 * Key_height},   //7
+    {1 * SkeyWIDTH, P_height + 2 * Key_height, 2 * SkeyWIDTH, P_height + 3 * Key_height},   //8
+    {2 * SkeyWIDTH, P_height + 2 * Key_height, 3 * SkeyWIDTH, P_height + 3 * Key_height},   //9
+    {3 * SkeyWIDTH, P_height + 2 * Key_height, 4 * SkeyWIDTH, P_height + 3 * Key_height},   //0
 
-    {0 * SkeyWIDTH, P_height + 3 * Key_height, 2 * SkeyWIDTH - BUTTON_SPACE, LCD_HEIGHT},  //X
-    {2 * SkeyWIDTH + BUTTON_SPACE, P_height + 3 * Key_height, 4 * SkeyWIDTH, LCD_HEIGHT},  //OK
+    {0 * SkeyWIDTH, P_height + 3 * Key_height, 2 * SkeyWIDTH - BUTTON_SPACE, LCD_HEIGHT},   //X
+    {2 * SkeyWIDTH + BUTTON_SPACE, P_height + 3 * Key_height, 4 * SkeyWIDTH, LCD_HEIGHT},   //OK
 };
 
 const char *const parameter[PARANMETER_NUM] = {
@@ -165,7 +165,7 @@ void Draw_keyboard(void) {
   // GUI_SetBkColor(BLUE);
   GUI_ClearRect(0, rect_of_numkey[0].y0, LCD_WIDTH, LCD_HEIGHT);
   for (uint8_t i = 0; i < KEY_NUM; i++) {
-    if (i >= KEY_NUM - 2)  //return & sure
+    if (i >= KEY_NUM - 2)   //return & sure
     {
       // GUI_SetColor(GRAY);
       GUI_FillPrect(&rect_of_numkey[i]);
@@ -226,7 +226,7 @@ void Setting_parameter(void) {
       case NUM_KEY_13:
         if (nowIndex) {
           ParameterBuf[nowIndex++] = '\n';
-          ParameterBuf[nowIndex] = 0;
+          ParameterBuf[nowIndex]   = 0;
 #if 1
           cmd_long = strlen(parameter_cmd[Select_Parameter]);
           cmd_buff = malloc(cmd_long + strlen(ParameterBuf));
@@ -250,7 +250,7 @@ void Setting_parameter(void) {
       default:
         if (nowIndex < BUFLONG - 1) {
           ParameterBuf[nowIndex++] = Key_Num[key_num][0];
-          ParameterBuf[nowIndex] = 0;
+          ParameterBuf[nowIndex]   = 0;
         }
         break;
     }
@@ -280,7 +280,7 @@ void parametersetting(void) {
       case SKEY_6:
       case SKEY_7:
       case SKEY_8:
-        Select_Parameter = key_num;
+        Select_Parameter                 = key_num;
         infoMenu.menu[++infoMenu.active] = Setting_parameter;
         break;
       case SKEY_9:

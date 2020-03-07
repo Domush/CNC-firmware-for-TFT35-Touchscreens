@@ -23,7 +23,7 @@ const ITEM itemSpeedOverrideIcons[ITEM_SPEEDOVERRIDE_NUM] = {
     {ICON_MOVE, LABEL_PERCENTAGE_SPEED},
 };
 
-static u16 percentage = 100;  // Speed
+static u16 percentage = 100;   // Speed
 
 #define ITEM_PERCENT_INCREMENT 3
 const ITEM itemIncrementIcons[ITEM_PERCENT_INCREMENT] = {
@@ -33,7 +33,7 @@ const ITEM itemIncrementIcons[ITEM_PERCENT_INCREMENT] = {
     {ICON_E_10_MM, LABEL_10_PERCENT},
 };
 const u8 itemIncrementValues[ITEM_PERCENT_INCREMENT] = {1, 5, 10};
-static u8 itemIncrementIndex = 1;
+static u8 itemIncrementIndex                         = 1;
 
 /**
  * Override global CNC speed
@@ -108,7 +108,7 @@ void menuSpeed(void) {
         break;
 
       case KEY_ICON_5:
-        itemIncrementIndex = (itemIncrementIndex + 1) % ITEM_PERCENT_INCREMENT;
+        itemIncrementIndex                = (itemIncrementIndex + 1) % ITEM_PERCENT_INCREMENT;
         speedOverrideItems.items[key_num] = itemIncrementIcons[itemIncrementIndex];
         menuDrawItem(&speedOverrideItems.items[key_num], key_num);
         break;

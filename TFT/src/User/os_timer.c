@@ -7,23 +7,23 @@ u32 os_counter = 0;
 void OS_TimerInit(u16 psc, u16 arr) {
   NVIC_InitTypeDef NVIC_InitStructure;
 
-  NVIC_InitStructure.NVIC_IRQChannel = TIM4_IRQn;
+  NVIC_InitStructure.NVIC_IRQChannel                   = TIM4_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 0;
+  NVIC_InitStructure.NVIC_IRQChannelCmd                = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 
-  RCC->APB1ENR |= 1 << 2;           //TIM4 clock enable
-  TIM4->ARR = arr;                  //Set auto reload value
-  TIM4->PSC = psc;                  //Prescaler
-  TIM4->SR = (uint16_t) ~(1 << 0);  //Clear update interrupt
-  TIM4->DIER |= 1 << 0;             //Allow update interrupts
-  TIM4->CR1 |= 0x01;                //Enable timer 3
+  RCC->APB1ENR |= 1 << 2;             //TIM4 clock enable
+  TIM4->ARR = arr;                    //Set auto reload value
+  TIM4->PSC = psc;                    //Prescaler
+  TIM4->SR  = (uint16_t) ~(1 << 0);   //Clear update interrupt
+  TIM4->DIER |= 1 << 0;               //Allow update interrupts
+  TIM4->CR1 |= 0x01;                  //Enable timer 3
 }
 
-void TIM4_IRQHandler(void)  //TIM4 interrupt
+void TIM4_IRQHandler(void)   //TIM4 interrupt
 {
-  if ((TIM4->SR & 0x01) != 0)  //Check if the specified TIM interrupt occurs: TIM interrupt source
+  if ((TIM4->SR & 0x01) != 0)   //Check if the specified TIM interrupt occurs: TIM interrupt source
   {
     os_counter++;
     //Statistics printing takes time during printing
@@ -36,7 +36,7 @@ void TIM4_IRQHandler(void)  //TIM4 interrupt
       os_counter = 0;
     }
 
-    TIM4->SR = (uint16_t) ~(1 << 0);  //Clear TIMx interrupt pending bit: TIM interrupt source
+    TIM4->SR = (uint16_t) ~(1 << 0);   //Clear TIMx interrupt pending bit: TIM interrupt source
   }
 }
 
@@ -81,8 +81,8 @@ is_exec: Whether this task is executed immediately
 is_repeat: Whether this task is repeated
 */
 void OS_TaskEnable(OS_TASK *task_t, u8 is_exec, u8 is_repeat) {
-  task_t->is_exist = 1;
-  task_t->is_repeat = is_repeat;
+  task_t->is_exist   = 1;
+  task_t->is_repeat  = is_repeat;
   task_t->start_time = OS_GetTime();
   if (is_exec)
     (*task_t->task)(task_t->para);

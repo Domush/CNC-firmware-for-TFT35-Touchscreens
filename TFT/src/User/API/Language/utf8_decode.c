@@ -5,9 +5,9 @@ static FONT_BITMAP font[] = {
     {
         // Visible ASCII code, from ' ' to '~'
         // start unicode code point for language
-        0x20,  // 0x20 means the first visible character ' '
+        0x20,   // 0x20 means the first visible character ' '
         // end unicode code point for language
-        0x7E,  // 0x7E means the last visible character '~'
+        0x7E,   // 0x7E means the last visible character '~'
         // font display pixel height
         BYTE_HEIGHT,
         // font display pixel width
@@ -19,7 +19,7 @@ static FONT_BITMAP font[] = {
         // dot matrix font library pixel width
         BYTE_WIDTH,
         // the first character code point in this font bitmap file
-        0x20,  // the first character in BYTE_ASCII_ADDR is 0x20(' ')
+        0x20,   // the first character in BYTE_ASCII_ADDR is 0x20(' ')
     },
     {
         // Czech(Latin 1 Supplement, Extended-A&B)
@@ -29,8 +29,8 @@ static FONT_BITMAP font[] = {
         BYTE_WIDTH,
         WORD_UNICODE,
         BYTE_HEIGHT,
-        BYTE_WIDTH * 2,  // default "word_unicode.fon" dot matrix library font size is 24*24 / 16*16
-        0x0,             // the first character in WORD_UNICODE is 0x0000
+        BYTE_WIDTH * 2,   // default "word_unicode.fon" dot matrix library font size is 24*24 / 16*16
+        0x0,              // the first character in WORD_UNICODE is 0x0000
     },
     {
         // Cyrillic(Russia)
@@ -51,7 +51,7 @@ static FONT_BITMAP font[] = {
         BYTE_WIDTH,
         WORD_UNICODE,
         BYTE_HEIGHT,
-        BYTE_WIDTH * 2,  // default word_unicode.fon dot matrix library font size is 24*24 / 16*16
+        BYTE_WIDTH * 2,   // default word_unicode.fon dot matrix library font size is 24*24 / 16*16
         0,
     },
     {
@@ -70,7 +70,7 @@ static FONT_BITMAP font[] = {
 // decode character encode info (UTF8)
 static void getUTF8EncodeInfo(const uint8_t *ch, CHAR_INFO *pInfo) {
   uint8_t i;
-  uint8_t bytes = 0;
+  uint8_t bytes  = 0;
   uint8_t utfFlg = 0x80;
 
   while ((ch[0] & utfFlg) == utfFlg) {
@@ -78,7 +78,7 @@ static void getUTF8EncodeInfo(const uint8_t *ch, CHAR_INFO *pInfo) {
     bytes++;
   }
   // bytes == 0 means 1 byte, ASCII, 0XXX XXXX
-  pInfo->bytes = bytes ? bytes : 1;
+  pInfo->bytes     = bytes ? bytes : 1;
   pInfo->codePoint = ch[0] & (~utfFlg);
   for (i = 1; i < bytes; i++) {
     pInfo->codePoint = (pInfo->codePoint << 6) | (ch[i] & 0x3F);
@@ -90,9 +90,9 @@ static void getBitMapFontInfo(CHAR_INFO *pInfo) {
   uint8_t i;
   for (i = 0; i < COUNT(font); i++) {
     if (pInfo->codePoint >= font[i].startCodePoint && pInfo->codePoint <= font[i].endCodePoint) {
-      pInfo->pixelWidth = font[i].pixelWidth;
+      pInfo->pixelWidth  = font[i].pixelWidth;
       pInfo->pixelHeight = font[i].pixelHeight;
-      pInfo->bitMapAddr = font[i].bitMapStartAddr + (pInfo->codePoint - font[i].bitMapStartCodePoint) * (font[i].bitMapHeight * font[i].bitMapWidth / 8);
+      pInfo->bitMapAddr  = font[i].bitMapStartAddr + (pInfo->codePoint - font[i].bitMapStartCodePoint) * (font[i].bitMapHeight * font[i].bitMapWidth / 8);
       return;
     }
   }

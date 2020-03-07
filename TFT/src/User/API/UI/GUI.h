@@ -37,9 +37,9 @@ void GUI_SetColor(uint16_t color);
 uint16_t GUI_GetColor(void);
 void GUI_SetBkColor(uint16_t bkcolor);
 uint16_t GUI_GetBkColor(void);
-void GUI_SetTextMode(GUI_TEXT_MODE mode);
+void GUI_SetTextMode(GUI_TEXT_MODE TRANSorNORMAL);
 GUI_TEXT_MODE GUI_GetTextMode(void);
-void GUI_SetNumMode(GUI_NUM_MODE mode);
+void GUI_SetNumMode(GUI_NUM_MODE SPACEorZERO);
 GUI_NUM_MODE GUI_GetNumMode(void);
 
 void GUI_Clear(uint16_t color);
@@ -61,16 +61,16 @@ void GUI_FillCircle(uint16_t x0, uint16_t y0, uint16_t r);
 void GUI_SetRange(int16_t x0, int16_t y0, int16_t x1, int16_t y1);
 void GUI_CancelRange(void);
 void GUI_DrawPixel(int16_t x, int16_t y, uint16_t color);
-CHAR_INFO GUI_DispOne(int16_t sx, int16_t sy, const uint8_t *p);
-void GUI_DispString(int16_t x, int16_t y, const uint8_t *p);
-const uint8_t *GUI_DispLenString(int16_t x, int16_t y, const uint8_t *p, uint16_t pixelWidth);
-void GUI_DispStringRight(int16_t x, int16_t y, const uint8_t *p);
-void GUI_DispStringInRect(int16_t sx, int16_t sy, int16_t ex, int16_t ey, const uint8_t *p);
-void GUI_DispStringInPrect(const GUI_RECT *dimensions, const uint8_t *p);
-void GUI_DispStringInRectEOL(int16_t sx, int16_t sy, int16_t ex, int16_t ey, const uint8_t *p);
+CHAR_INFO GUI_DispOne(int16_t sx, int16_t sy, const uint8_t *string);
+void GUI_DispString(int16_t x, int16_t y, const uint8_t *string);
+const uint8_t *GUI_DispLenString(int16_t x, int16_t y, const uint8_t *string, uint16_t pixelWidth);
+void GUI_DispStringRight(int16_t x, int16_t y, const uint8_t *string);
+void GUI_DispStringInRect(int16_t sx, int16_t sy, int16_t ex, int16_t ey, const uint8_t *string);
+void GUI_DispStringInPrect(const GUI_RECT *dimensions, const uint8_t *string);
+void GUI_DispStringInRectEOL(int16_t sx, int16_t sy, int16_t ex, int16_t ey, const uint8_t *string);
 
-void GUI_DispDec(int16_t x, int16_t y, int32_t value, uint8_t len, uint8_t leftOrRight);
-void GUI_DispFloat(int16_t x, int16_t y, float value, uint8_t llen, uint8_t rlen, uint8_t leftOrRight);
+void GUI_DispDec(int16_t x, int16_t y, int32_t value, uint8_t numDigits, uint8_t LEFTorRIGHT);
+void GUI_DispFloat(int16_t x, int16_t y, float value, uint8_t leftDigits, uint8_t rightDigits, uint8_t LEFTorRIGHT);
 
 /****************************************************     Widget    *******************************************************************/
 
@@ -111,10 +111,10 @@ typedef struct
   const uint8_t *context;
   const uint16_t radius;
   const uint16_t lineWidth;
-  const uint16_t lineColor;  //����״̬�µ���ɫ
+  const uint16_t lineColor;   //����״̬�µ���ɫ
   const uint16_t fontColor;
   const uint16_t backColor;
-  const uint16_t pLineColor;  //��ѹ״̬�µ���ɫ
+  const uint16_t pLineColor;   //��ѹ״̬�µ���ɫ
   const uint16_t pFontColor;
   const uint16_t pBackColor;
 } BUTTON;

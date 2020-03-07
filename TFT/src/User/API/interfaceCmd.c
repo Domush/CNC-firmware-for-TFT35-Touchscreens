@@ -20,8 +20,9 @@ const ITEM itemM0Pause[2] = {
     {ICON_RESUME, LABEL_RESUME},
 };
 
-QUEUE gcodeCommand;       // Current gcode command
-QUEUE gcodeCommandQueue;  // Pending gcode commands
+QUEUE gcodeCommand;            // Current gcode command
+QUEUE gcodeCommandQueue;       // Pending gcode commands
+GCODE_LAST gcodeLastCommand;   // Last gcode command/response
 
 static u8 gcodeIndex = 0;
 u8 curRouterSpeed;
@@ -101,7 +102,7 @@ bool storeCmdFromUART(uint8_t port, const char *gcode) {
   strcpy(pQueue->queue[pQueue->writeIndex].gcode, gcode);
 
   pQueue->queue[pQueue->writeIndex].src = port;
-  pQueue->writeIndex = (pQueue->writeIndex + 1) % GCODE_QUEUE_MAX;
+  pQueue->writeIndex                    = (pQueue->writeIndex + 1) % GCODE_QUEUE_MAX;
   pQueue->count++;
 
   return true;
@@ -156,53 +157,53 @@ void sendGcodeCommands(void) {
   if (gcodeCommand.count == 0) return;
 
   bool haltQueueProcessing = false;
-  bool avoid_terminal = false;
-  u16 cmd = 0;
+  bool avoid_terminal      = false;
+  u16 cmd                  = 0;
   // u8 curRouterSpeed;
   switch (gcodeCommand.queue[gcodeCommand.readIndex].gcode[0]) {
     case 'M':
       cmd = strtol(&gcodeCommand.queue[gcodeCommand.readIndex].gcode[1], NULL, 10);
       switch (cmd) {
-        case 0:  // M0/1 Stop and wait for user.
+        case 0:   // M0/1 Stop and wait for user.
         case 1:
           haltQueueProcessing = true;
-          break;  // *No need to do anything special - All functions are handled by the CNC
+          break;   // *No need to do anything special - All functions are handled by the CNC
 
-        case 3:   //M3 Set the spindle CW speed or laser power
-        case 5:   //M5 Turn off spindle or laser
-          break;  // *No need to do anything special - All functions are handled by the CNC
+        case 3:    //M3 Set the spindle CW speed or laser power
+        case 5:    //M5 Turn off spindle or laser
+          break;   // *No need to do anything special - All functions are handled by the CNC
 
-        case 18:  //M18 Disable steppers (same as M84).
+        case 18:   //M18 Disable steppers (same as M84).
         case 84:
           coordinateSetClear(false);
           break;
 
-        case 24:  //M24 - Resume SD print
+        case 24:   //M24 - Resume SD print
           setPrintPause(false);
           break;
 
-        case 25:  //M25 - Pause SD print
+        case 25:   //M25 - Pause SD print
           haltQueueProcessing = true;
           // setPrintPause(true);
           break;
 
-        case 27:  //M27 - Report SD print status
+        case 27:   //M27 - Report SD print status
           printSetUpdateWaiting(false);
           break;
 
-        case 80:  //M80 Turn on the power supply
+        case 80:   //M80 Turn on the power supply
 #ifdef PS_ON_PIN
           PS_ON_On();
 #endif
           break;
 
-        case 81:  //M81 Turn off the power supply.
+        case 81:   //M81 Turn off the power supply.
 #ifdef PS_ON_PIN
           PS_ON_Off();
 #endif
           break;
 
-        case 106:  //M106 Turn on a fan/router and set its speed
+        case 106:   //M106 Turn on a fan/router and set its speed
           // // u8 i = 0;
           // if (isGcodeCommand('P')) i = getGcodeValue();
           // if (isGcodeCommand('S')) {
@@ -213,25 +214,25 @@ void sendGcodeCommands(void) {
           //   strcat(gcodeCommand.queue[gcodeCommand.readIndex].gcode, (const char *)buf);
           //   routerSetSendWaiting(i, false);
           // }
-          break;  // *No need to do anything special - All functions are handled by the CNC
+          break;   // *No need to do anything special - All functions are handled by the CNC
 
-        case 107:  //M107 Turn off a fan/router
+        case 107:   //M107 Turn off a fan/router
           // // u8 i = 0;
           // if (isGcodeCommand('P')) i = getGcodeValue();
           // routerSetSpeed(i, 0);
-          break;  // *No need to do anything special - All functions are handled by the CNC
+          break;   // *No need to do anything special - All functions are handled by the CNC
 
-        case 114:  //M114 Report the current tool position to the host.
+        case 114:   //M114 Report the current tool position to the host.
 #ifdef FIL_RUNOUT_PIN
           positionSetUpdateWaiting(false);
 #endif
           break;
 
-        case 117:  //M117 Set the message line on the LCD.
+        case 117:   //M117 Set the message line on the LCD.
           popupReminder((u8 *)"M117 Notice", (u8 *)&gcodeCommand.queue[gcodeCommand.readIndex].gcode[5]);
           break;
 
-        case 220:  //M220 Set the global CNC speed percentage.
+        case 220:   //M220 Set the global CNC speed percentage.
           if (isGcodeCommand('S')) {
             setCNCSpeedOverride(getGcodeValue());
           } else {
@@ -246,8 +247,8 @@ void sendGcodeCommands(void) {
     case 'G':
       cmd = strtol(&gcodeCommand.queue[gcodeCommand.readIndex].gcode[1], NULL, 10);
       switch (cmd) {
-        case 0:  //G0 Fast move
-        case 1:  //G1 Cut move
+        case 0:   //G0 Fast move
+        case 1:   //G1 Cut move
         {
           AXIS axis;
           for (axis = X_AXIS; axis < TOTAL_AXIS; axis++) {
@@ -261,11 +262,11 @@ void sendGcodeCommands(void) {
           break;
         }
 
-        case 28:  //G28 Auto home one or more axes.
+        case 28:   //G28 Auto home one or more axes.
           coordinateSetClear(true);
           break;
 
-        case 53:  //G53-59 Switch to CNC coordinate set.
+        case 53:   //G53-59 Switch to CNC coordinate set.
         case 54:
         case 55:
         case 56:
@@ -275,15 +276,15 @@ void sendGcodeCommands(void) {
           infoPrinting.coordSpace = (u8)cmd;
           break;
 
-        case 90:  //G90 Absolute Positioning
+        case 90:   //G90 Absolute Positioning
           coorSetRelative(false);
           break;
 
-        case 91:  //G91 Relative Positioning
+        case 91:   //G91 Relative Positioning
           coorSetRelative(true);
           break;
 
-        case 92:  //G92 Set the current position of one or more axes.
+        case 92:   //G92 Set the current position of one or more axes.
         {
           AXIS axis;
           bool coorRelative = coorGetRelative();
@@ -307,16 +308,16 @@ void sendGcodeCommands(void) {
   }
 
   setGcodeCommandSource(gcodeCommand.queue[gcodeCommand.readIndex].src);
-  Serial_Puts(SERIAL_PORT, gcodeCommand.queue[gcodeCommand.readIndex].gcode);  // send the command to the CNC
+  Serial_Puts(SERIAL_PORT, gcodeCommand.queue[gcodeCommand.readIndex].gcode);   // send the command to the CNC
 
-  showGcodeStatus(gcodeCommand.queue[gcodeCommand.readIndex].gcode, TFT_SOURCE);  // display sent gcode in the status line
+  showGcodeStatus(gcodeCommand.queue[gcodeCommand.readIndex].gcode, TFT_SOURCE);   // display sent gcode in the status line
   if (avoid_terminal != true) {
     sendGcodeTerminalCache(gcodeCommand.queue[gcodeCommand.readIndex].gcode, TFT_SOURCE);
   }
   gcodeCommand.count--;
   gcodeCommand.readIndex = (gcodeCommand.readIndex + 1) % GCODE_QUEUE_MAX;
 
-  infoHost.waiting = infoHost.connected;  //
+  infoHost.waiting = infoHost.connected;   //
   if (haltQueueProcessing == true) {
     setPrintPause(true);
   }
@@ -327,7 +328,7 @@ void menuM0Pause(void) {
   // extern char *popup_title;
   extern char *popup_message;
   u16 key_num = IDLE_TOUCH;
-  Serial_Puts(SERIAL_PORT, "M108\n");  // Remove the M0 freeze from the CNC
+  Serial_Puts(SERIAL_PORT, "M108\n");   // Remove the M0 freeze from the CNC
   setPrintPause(true);
   drawXYZ();
   infoPrinting.m0_pause = true;
@@ -343,8 +344,8 @@ void menuM0Pause(void) {
   char *prompt_title;
   char *prompt_text;
   char *prompt_button;
-  prompt_title = "Pause requested";
-  prompt_text = "No pause reason was given.";
+  prompt_title  = "Pause requested";
+  prompt_text   = "No pause reason was given.";
   prompt_button = "Resume";
   // *get the first token
   token = strtok(popup_message, ch);
@@ -393,10 +394,10 @@ void menuChangeBit(void) {
   char *confirmText;
   char *cancelText;
   confirmText = "Change bit";
-  cancelText = "Nevermind";
+  cancelText  = "Nevermind";
   if (infoPrinting.printing) {
     confirmText = "Change bit";
-    cancelText = "Keep going";
+    cancelText  = "Keep going";
   }
   // extern char *popup_title;
   extern char *popup_message;

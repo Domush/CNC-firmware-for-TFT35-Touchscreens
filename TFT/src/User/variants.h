@@ -13,25 +13,25 @@
 //HSE crystal frequency
 #if defined(TFT35_V1_0) || defined(TFT35_V1_1) || defined(TFT35_V1_2) || defined(TFT28_V1_0)
 #define VECT_TAB_FLASH 0x08006000
-#define HSE_VALUE ((uint32_t)16000000)  //16Mhz
+#define HSE_VALUE ((uint32_t)16000000)   //16Mhz
 #define F_CPUM 72
 #define STM32F10X_HD
 #include "stm32f10x.h"
 #elif defined(TFT35_V2_0)
 #define VECT_TAB_FLASH 0x08003000
-#define HSE_VALUE ((uint32_t)16000000)  //16Mhz
+#define HSE_VALUE ((uint32_t)16000000)   //16Mhz
 #define F_CPUM 72
 #define STM32F10X_HD
 #include "stm32f10x.h"
 #elif defined(TFT24_V1_1)
 #define VECT_TAB_FLASH 0x08006000
-#define HSE_VALUE ((uint32_t)8000000)  //8Mhz
+#define HSE_VALUE ((uint32_t)8000000)   //8Mhz
 #define F_CPUM 72
 #define STM32F10X_CL
 #include "stm32f10x.h"
 #elif defined(TFT35_V3_0) || defined(TFT28_V3_0)
 #define VECT_TAB_FLASH 0x08008000
-#define HSE_VALUE ((uint32_t)8000000)  //8Mhz
+#define HSE_VALUE ((uint32_t)8000000)   //8Mhz
 #define F_CPUM 120
 #define STM32F2XX
 #include "stm32f2xx.h"
@@ -63,13 +63,13 @@
 #endif
 
 #if defined(TFT35_V1_0) || defined(TFT35_V1_1) || defined(TFT35_V1_2) || defined(TFT28_V1_0) || defined(TFT24_V1_1)
-#define SERIAL_PORT _USART1  //default usart port
+#define SERIAL_PORT _USART1   //default usart port
 #elif defined(TFT35_V2_0)
-#define SERIAL_PORT _USART1  //default usart port
+#define SERIAL_PORT _USART1   //default usart port
 #define SERIAL_PORT_2 _USART2
 #define SERIAL_PORT_3 _USART3
 #elif defined(TFT35_V3_0) || defined(TFT28_V3_0)
-#define SERIAL_PORT _USART2  //default usart port
+#define SERIAL_PORT _USART2   //default usart port
 #define SERIAL_PORT_2 _USART1
 #define SERIAL_PORT_3 _USART3
 #define SERIAL_PORT_4 _UART4
@@ -193,9 +193,9 @@
 
 //Debug disable, free pins for other function
 #if defined(TFT35_V1_0) || defined(TFT35_V1_1) || defined(TFT35_V1_2) || defined(TFT28_V1_0) || defined(TFT35_V2_0)
-#define DISABLE_JTAG  //free JTAG(PB3/PB4) for SPI3
+#define DISABLE_JTAG   //free JTAG(PB3/PB4) for SPI3 // !Enable after release
 #elif defined(TFT24_V1_1)
-#define DISABLE_DEBUG  //
+#define DISABLE_DEBUG   //
 #elif defined(TFT35_V3_0) || defined(TFT28_V3_0)
 //stm32f207 needn't this
 #endif

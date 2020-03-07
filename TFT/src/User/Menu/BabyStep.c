@@ -38,8 +38,8 @@ extern PRINTING infoPrinting;
 
 static void initElements(u8 position) {
   elementsUnit.totaled = ITEM_BABYSTEP_UNIT_NUM;
-  elementsUnit.list = itemBabyStepUnit;
-  elementsUnit.ele = item_babystep_unit;
+  elementsUnit.list    = itemBabyStepUnit;
+  elementsUnit.ele     = item_babystep_unit;
 
   for (u8 i = 0; i < elementsUnit.totaled; i++) {
     if (memcmp(&elementsUnit.list[i], &babyStepItems.items[position], sizeof(ITEM)) == 0) {
@@ -61,7 +61,7 @@ void babyStepReDraw(void) {
 
 void menuBabyStep(void) {
   KEY_VALUES key_num = KEY_IDLE;
-  float curBabyStep = infoPrinting.babyStep;
+  float curBabyStep  = infoPrinting.babyStep;
 
   initElements(KEY_ICON_5);
   menuDrawPage(&babyStepItems);
@@ -78,7 +78,7 @@ void menuBabyStep(void) {
         if (infoPrinting.babyStep - elementsUnit.ele[elementsUnit.cur] > BABYSTEP_MIN_VALUE) {
           if (storeCmd("M290 Z-%.2f\n", elementsUnit.ele[elementsUnit.cur])) {
             infoPrinting.babyStep -= elementsUnit.ele[elementsUnit.cur];
-            timedMessage(2, TIMED_INFO, "Decreasing Z height");
+            timedMessage(2, TIMED_INFO, "Decreasing Z height by %fmm", elementsUnit.ele[elementsUnit.cur]);
           }
         }
         break;
@@ -86,7 +86,7 @@ void menuBabyStep(void) {
         if (infoPrinting.babyStep + elementsUnit.ele[elementsUnit.cur] < BABYSTEP_MAX_VALUE) {
           if (storeCmd("M290 Z%.2f\n", elementsUnit.ele[elementsUnit.cur])) {
             infoPrinting.babyStep += elementsUnit.ele[elementsUnit.cur];
-            timedMessage(2, TIMED_INFO, "Increasing Z height");
+            timedMessage(2, TIMED_INFO, "Increasing Z height by %fmm", elementsUnit.ele[elementsUnit.cur]);
           }
         }
         break;
@@ -95,7 +95,7 @@ void menuBabyStep(void) {
         // storeCmd("M500\n");
         break;
       case KEY_ICON_5:
-        elementsUnit.cur = (elementsUnit.cur + 1) % elementsUnit.totaled;
+        elementsUnit.cur             = (elementsUnit.cur + 1) % elementsUnit.totaled;
         babyStepItems.items[key_num] = elementsUnit.list[elementsUnit.cur];
         menuDrawItem(&babyStepItems.items[key_num], key_num);
         break;

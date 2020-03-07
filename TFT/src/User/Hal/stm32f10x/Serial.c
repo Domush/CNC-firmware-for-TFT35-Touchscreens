@@ -23,34 +23,34 @@ static const SERIAL_CFG Serial[_USART_CNT] = {
 void Serial_DMA_Config(uint8_t port) {
   const SERIAL_CFG *cfg = &Serial[port];
 
-  RCC_AHBPeriphClockCmd(cfg->dma_rcc, ENABLE);  // DMA RCC EN
+  RCC_AHBPeriphClockCmd(cfg->dma_rcc, ENABLE);   // DMA RCC EN
 
-  cfg->dma_chanel->CCR &= ~(1 << 0);  // DMA disable
-  cfg->uart->CR3 |= 1 << 6;           // DMA enable receiver
+  cfg->dma_chanel->CCR &= ~(1 << 0);   // DMA disable
+  cfg->uart->CR3 |= 1 << 6;            // DMA enable receiver
 
-  cfg->dma_chanel->CPAR = (u32)(&cfg->uart->DR);
-  cfg->dma_chanel->CMAR = (u32)(cncIncoming[port].cache);
+  cfg->dma_chanel->CPAR  = (u32)(&cfg->uart->DR);
+  cfg->dma_chanel->CMAR  = (u32)(cncIncoming[port].cache);
   cfg->dma_chanel->CNDTR = DMA_TRANS_LEN;
-  cfg->dma_chanel->CCR = 0X00000000;
-  cfg->dma_chanel->CCR |= 3 << 12;  // Channel priority level
-  cfg->dma_chanel->CCR |= 1 << 7;   // Memory increment mode
-  cfg->dma_chanel->CCR |= 1 << 5;   // Circular mode enabled
-  cfg->dma_chanel->CCR |= 1 << 0;   // DMA EN
+  cfg->dma_chanel->CCR   = 0X00000000;
+  cfg->dma_chanel->CCR |= 3 << 12;   // Channel priority level
+  cfg->dma_chanel->CCR |= 1 << 7;    // Memory increment mode
+  cfg->dma_chanel->CCR |= 1 << 5;    // Circular mode enabled
+  cfg->dma_chanel->CCR |= 1 << 0;    // DMA EN
 }
 
 void Serial_Config(uint8_t port, u32 baud) {
   cncIncoming[port].parsedIndex = cncIncoming[port].pendingIndex = 0;
-  cncIncoming[port].cache = malloc(DMA_TRANS_LEN);
+  cncIncoming[port].cache                                        = malloc(DMA_TRANS_LEN);
   while (!cncIncoming[port].cache)
-    ;                                       // malloc failed
-  USART_Config(port, baud, USART_IT_IDLE);  //IDLE interrupt
+    ;                                        // malloc failed
+  USART_Config(port, baud, USART_IT_IDLE);   //IDLE interrupt
   Serial_DMA_Config(port);
 }
 
 void Serial_DeConfig(uint8_t port) {
   free(cncIncoming[port].cache);
   cncIncoming[port].cache = NULL;
-  Serial[port].dma_chanel->CCR &= ~(1 << 0);  // Disable DMA
+  Serial[port].dma_chanel->CCR &= ~(1 << 0);   // Disable DMA
   USART_DeConfig(port);
 }
 
@@ -92,8 +92,8 @@ void USART_IRQHandler(uint8_t port) {
     Serial[port].uart->DR;
 
     cncIncoming[port].pendingIndex = DMA_TRANS_LEN - Serial[port].dma_chanel->CNDTR;
-    uint16_t pendingIndex = (cncIncoming[port].pendingIndex == 0) ? DMA_TRANS_LEN : cncIncoming[port].pendingIndex;
-    if (cncIncoming[port].cache[pendingIndex - 1] == '\n')  // Receive completed
+    uint16_t pendingIndex          = (cncIncoming[port].pendingIndex == 0) ? DMA_TRANS_LEN : cncIncoming[port].pendingIndex;
+    if (cncIncoming[port].cache[pendingIndex - 1] == '\n')   // Receive completed
     {
       infoHost.rx_ok[port] = true;
     }

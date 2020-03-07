@@ -55,7 +55,7 @@ void coordinateGetAll(COORDINATE *tmp) {
 COORDINATE curPosition = {{0.0f, 0.0f, 0.0f}, 3000};
 
 void coordinateSetAxisActualSteps(AXIS axis, int steps) {
-  curPosition.axis[axis] = steps / 80;  // TODO: NEED fix, M92 auto get
+  curPosition.axis[axis] = steps / 80;   // TODO: NEED fix, M92 auto get
 }
 
 float coordinateGetAxisActual(AXIS axis) {

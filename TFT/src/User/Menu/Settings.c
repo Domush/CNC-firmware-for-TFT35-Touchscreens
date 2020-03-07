@@ -5,38 +5,38 @@ SETTINGS infoSettings;
 
 // Reset settings data
 void infoSettingsReset(void) {
-  infoSettings.baudrate = 250000;
-  infoSettings.language = ENGLISH;
-  infoSettings.mode = SERIAL_TSC;
-  infoSettings.runout = 0;
-  infoSettings.rotate_ui = 0;
-  infoSettings.bg_color = ST7920_BKCOLOR;
-  infoSettings.font_color = ST7920_FNCOLOR;
-  infoSettings.silent = 0;
-  infoSettings.auto_off = 0;
-  infoSettings.terminalACK = 0;
-  infoSettings.invert_yaxis = 0;
-  infoSettings.move_speed = 2;
-  infoSettings.router_power = 1;
-  infoSettings.led_color = LED_OFF;
-  infoSettings.invert_zaxis = 0;
+  infoSettings.baudrate         = 250000;
+  infoSettings.language         = ENGLISH;
+  infoSettings.mode             = SERIAL_TSC;
+  infoSettings.runout           = 0;
+  infoSettings.rotate_ui        = 0;
+  infoSettings.bg_color         = ST7920_BKCOLOR;
+  infoSettings.font_color       = ST7920_FNCOLOR;
+  infoSettings.silent           = 0;
+  infoSettings.auto_off         = 0;
+  infoSettings.terminalACK      = 0;
+  infoSettings.invert_yaxis     = 0;
+  infoSettings.move_speed       = 2;
+  infoSettings.router_power     = 1;
+  infoSettings.led_color        = LED_OFF;
+  infoSettings.invert_zaxis     = 0;
   infoSettings.send_start_gcode = 1;
-  infoSettings.send_end_gcode = 1;
-  infoSettings.persistent_info = 1;
-  infoSettings.file_listmode = 1;
+  infoSettings.send_end_gcode   = 1;
+  infoSettings.persistent_info  = 1;
+  infoSettings.file_listmode    = 1;
 }
 
 // Version infomation
 void menuInfo(void) {
-  const char *hardware = "Board   : BIGTREETECH_" HARDWARE_VERSION;
-  const char *firmware = "Firmware: " HARDWARE_VERSION "." STRINGIFY(SOFTWARE_VERSION);
-  const char *build_date = "Build date: " __DATE__;
+  const char *hardware     = "Board   : BIGTREETECH_" HARDWARE_VERSION;
+  const char *firmware     = "Firmware: " HARDWARE_VERSION "." STRINGIFY(SOFTWARE_VERSION);
+  const char *build_date   = "Build date: " __DATE__;
   const char *build_author = "Build author: Edward Webber";
 
-  u16 HW_X = (LCD_WIDTH - GUI_StrPixelWidth((u8 *)hardware)) / 2;
-  u16 FW_X = (LCD_WIDTH - GUI_StrPixelWidth((u8 *)firmware)) / 2;
+  u16 HW_X    = (LCD_WIDTH - GUI_StrPixelWidth((u8 *)hardware)) / 2;
+  u16 FW_X    = (LCD_WIDTH - GUI_StrPixelWidth((u8 *)firmware)) / 2;
   u16 centerY = LCD_HEIGHT / 2;
-  u16 startX = MIN(HW_X, FW_X);
+  u16 startX  = MIN(HW_X, FW_X);
 
   GUI_Clear(BACKGROUND_COLOR);
 
@@ -90,15 +90,15 @@ const ITEM itemBaudrate[ITEM_BAUDRATE_NUM] = {
     {ICON_BAUDRATE, LABEL_BAUDRATE_250000},
 };
 const u32 item_baudrate[ITEM_BAUDRATE_NUM] = {115200, 250000};
-static u8 item_baudrate_i = 0;
+static u8 item_baudrate_i                  = 0;
 
 void menuSettings(void) {
   KEY_VALUES key_num = KEY_IDLE;
-  SETTINGS now = infoSettings;
+  SETTINGS now       = infoSettings;
 
   for (u8 i = 0; i < ITEM_BAUDRATE_NUM; i++) {
     if (infoSettings.baudrate == item_baudrate[i]) {
-      item_baudrate_i = i;
+      item_baudrate_i                 = i;
       settingsItems.items[KEY_ICON_5] = itemBaudrate[item_baudrate_i];
     }
   }
@@ -129,11 +129,11 @@ void menuSettings(void) {
         break;
 
       case KEY_ICON_5:
-        item_baudrate_i = (item_baudrate_i + 1) % ITEM_BAUDRATE_NUM;
+        item_baudrate_i              = (item_baudrate_i + 1) % ITEM_BAUDRATE_NUM;
         settingsItems.items[key_num] = itemBaudrate[item_baudrate_i];
         menuDrawItem(&settingsItems.items[key_num], key_num);
         infoSettings.baudrate = item_baudrate[item_baudrate_i];
-        Serial_DeInit();  // Serial_Init() will malloc a dynamic memory, so Serial_DeInit() first to free, then malloc again.
+        Serial_DeInit();   // Serial_Init() will malloc a dynamic memory, so Serial_DeInit() first to free, then malloc again.
         Serial_Init(infoSettings.baudrate);
         timedMessage(2, TIMED_INFO, "Updating CNC baud rate");
         break;

@@ -25,33 +25,33 @@ void menuHome(void) {
   while (infoMenu.menu[infoMenu.active] == menuHome) {
     key_num = menuKeyGetValue();
     switch (key_num) {
-      case KEY_ICON_0:  // Home all
+      case KEY_ICON_0:   // Home all
         timedMessage(2, TIMED_INFO, "Homing all axes");
         storeCmd("G28\n");
         break;
-      case KEY_ICON_1:  // Home X
+      case KEY_ICON_1:   // Home X
         timedMessage(2, TIMED_INFO, "Homing X axis");
         storeCmd("G28 X\n");
         break;
-      case KEY_ICON_2:  // Home Y
+      case KEY_ICON_2:   // Home Y
         timedMessage(2, TIMED_INFO, "Homing Y axis");
         storeCmd("G28 Y\n");
         break;
-      case KEY_ICON_3:  // Home Z
+      case KEY_ICON_3:   // Home Z
         timedMessage(2, TIMED_INFO, "Homing Z axis");
         storeCmd("G28 Z\n");
         break;
-      case KEY_ICON_4:  // Change to Machine Coord Space (G53)
+      case KEY_ICON_4:   // Change to Machine Coord Space (G53)
         infoPrinting.coordSpace = 53;
         timedMessage(2, TIMED_INFO, "Coord set 1");
         storeCmd("G%d\n", infoPrinting.coordSpace);
         break;
-      case KEY_ICON_5:  // Change to Coord Space 2 (G54)
+      case KEY_ICON_5:   // Change to Coord Space 2 (G54)
         infoPrinting.coordSpace = 54;
         timedMessage(2, TIMED_INFO, "Coord set 2");
         storeCmd("G%d\n", infoPrinting.coordSpace);
         break;
-      case KEY_ICON_6:  // Move to X0,Y0
+      case KEY_ICON_6:   // Move to X0,Y0
         timedMessage(2, TIMED_INFO, "Moving to X0,Y0");
         storeCmd("G0 X0 Y0\n");
         break;

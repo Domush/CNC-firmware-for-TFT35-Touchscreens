@@ -85,7 +85,7 @@ bool get_Pre_Icon(void) {
 }
 
 void gcodeIconDraw(void) {
-  u8 i = 0;  //k = 0;
+  u8 i = 0;   //k = 0;
   int gn;
   char* gnew;
   ITEM curItem = {ICON_BACKGROUND, LABEL_BACKGROUND};
@@ -98,7 +98,7 @@ void gcodeIconDraw(void) {
   GUI_SetBkColor(BACKGROUND_COLOR);
 
   //draw folders
-  for (i = 0; (i + infoFile.cur_page * NUM_PER_PAGE < infoFile.F_num) && (i < NUM_PER_PAGE); i++)  // folder
+  for (i = 0; (i + infoFile.cur_page * NUM_PER_PAGE < infoFile.F_num) && (i < NUM_PER_PAGE); i++)   // folder
   {
     curItem.icon = ICON_FOLDER;
     menuDrawItem(&curItem, i);
@@ -106,11 +106,11 @@ void gcodeIconDraw(void) {
   }
 
   //draw files
-  for (; (i + infoFile.cur_page * NUM_PER_PAGE < infoFile.f_num + infoFile.F_num) && (i < NUM_PER_PAGE); i++)  // gcode file
+  for (; (i + infoFile.cur_page * NUM_PER_PAGE < infoFile.f_num + infoFile.F_num) && (i < NUM_PER_PAGE); i++)   // gcode file
   {
     curItem.icon = ICON_FILE;
     // if model preview bmp exists, display bmp directly without writing to flash
-    gn = strlen(infoFile.file[i + infoFile.cur_page * NUM_PER_PAGE - infoFile.F_num]) - 6;  // -6 means ".gcode"
+    gn   = strlen(infoFile.file[i + infoFile.cur_page * NUM_PER_PAGE - infoFile.F_num]) - 6;   // -6 means ".gcode"
     gnew = malloc(gn + 10);
     strcpy(gnew, getCurFileSource());
     strncat(gnew, infoFile.file[i + infoFile.cur_page * NUM_PER_PAGE - infoFile.F_num], gn);
@@ -145,14 +145,14 @@ void gcodeListDraw(void) {
   GUI_ClearRect(0, 0, LCD_WIDTH, TITLE_END_Y);
   GUI_SetBkColor(BACKGROUND_COLOR);
 
-  for (i = 0; (i + infoFile.cur_page * NUM_PER_PAGE < infoFile.F_num) && (i < NUM_PER_PAGE); i++)  // folder
+  for (i = 0; (i + infoFile.cur_page * NUM_PER_PAGE < infoFile.F_num) && (i < NUM_PER_PAGE); i++)   // folder
   {
     printListItems.items[i].icon = ICONCHAR_FOLDER;
     setDynamicLabel(i, infoFile.folder[i + infoFile.cur_page * NUM_PER_PAGE]);
     printListItems.items[i].titlelabel.index = LABEL_DYNAMIC;
     menuDrawListItem(&printListItems.items[i], i);
   }
-  for (; (i + infoFile.cur_page * NUM_PER_PAGE < infoFile.f_num + infoFile.F_num) && (i < NUM_PER_PAGE); i++)  // gcode file
+  for (; (i + infoFile.cur_page * NUM_PER_PAGE < infoFile.f_num + infoFile.F_num) && (i < NUM_PER_PAGE); i++)   // gcode file
   {
     printListItems.items[i].icon = ICONCHAR_FILE;
     setDynamicLabel(i, (infoFile.source == BOARD_SD) ? infoFile.Longfile[i + infoFile.cur_page * NUM_PER_PAGE - infoFile.F_num] : infoFile.file[i + infoFile.cur_page * NUM_PER_PAGE - infoFile.F_num]);
@@ -161,9 +161,9 @@ void gcodeListDraw(void) {
     menuDrawListItem(&printListItems.items[i], i);
   }
 
-  for (; (i < NUM_PER_PAGE); i++)  //background
+  for (; (i < NUM_PER_PAGE); i++)   //background
   {
-    printListItems.items[i].icon = ICONCHAR_BACKGROUND;
+    printListItems.items[i].icon             = ICONCHAR_BACKGROUND;
     printListItems.items[i].titlelabel.index = LABEL_BACKGROUND;
     menuDrawListItem(&printListItems.items[i], i);
   }
@@ -214,11 +214,11 @@ void menuPrintFromSource(void) {
 
   while (infoMenu.menu[infoMenu.active] == menuPrintFromSource) {
     GUI_SetBkColor(TITLE_BACKGROUND_COLOR);
-    Scroll_DispString(&titleScroll, LEFT);  //
+    Scroll_DispString(&titleScroll, LEFT);   //
     GUI_SetBkColor(BACKGROUND_COLOR);
 
     if (infoSettings.file_listmode != true) {
-      Scroll_DispString(&gcodeScroll, CENTER);  //
+      Scroll_DispString(&gcodeScroll, CENTER);   //
     }
 
     key_num = menuKeyGetValue();
@@ -257,13 +257,13 @@ void menuPrintFromSource(void) {
       default:
         if (key_num <= KEY_ICON_4) {
           u16 start = infoFile.cur_page * NUM_PER_PAGE;
-          if (key_num + start < infoFile.F_num)  //folder
+          if (key_num + start < infoFile.F_num)   //folder
           {
             if (EnterDir(infoFile.folder[key_num + start]) == false) break;
             scanPrintFiles();
-            update = 1;
+            update            = 1;
             infoFile.cur_page = 0;
-          } else if (key_num + start < infoFile.F_num + infoFile.f_num)  //gcode
+          } else if (key_num + start < infoFile.F_num + infoFile.f_num)   //gcode
           {
             if (infoHost.connected != true) break;
             if (EnterDir(infoFile.file[key_num + start - infoFile.F_num]) == false) break;
@@ -271,7 +271,7 @@ void menuPrintFromSource(void) {
             //load bmp preview in flash if file exists
             int gn;
             char* gnew;
-            gn = strlen(infoFile.file[key_num + start - infoFile.F_num]) - 6;  // -6 means ".gcode"
+            gn   = strlen(infoFile.file[key_num + start - infoFile.F_num]) - 6;   // -6 means ".gcode"
             gnew = malloc(gn + 10);
             strcpy(gnew, getCurFileSource());
             strncat(gnew, infoFile.file[key_num + start - infoFile.F_num], gn);
@@ -355,15 +355,15 @@ void menuPrint(void) {
     key_num = menuKeyGetValue();
     switch (key_num) {
       case KEY_ICON_0:
-        infoFile.source = TFT_SD;
+        infoFile.source                  = TFT_SD;
         infoMenu.menu[++infoMenu.active] = menuPrintFromSource;
         // infoMenu.menu[++infoMenu.active] = menuPowerOff; // *Disabling resume after power loss (for now)
         goto selectEnd;
 
 #ifdef ONBOARD_SD_SUPPORT
       case KEY_ICON_3:
-        infoFile.source = BOARD_SD;
-        infoMenu.menu[++infoMenu.active] = menuPrintFromSource;  //TODO: fix here,  onboard sd card PLR feature
+        infoFile.source                  = BOARD_SD;
+        infoMenu.menu[++infoMenu.active] = menuPrintFromSource;   //TODO: fix here,  onboard sd card PLR feature
         goto selectEnd;
 #endif
 
@@ -373,7 +373,7 @@ void menuPrint(void) {
 #else
       case KEY_ICON_3:
 #endif
-        infoFile.source = TFT_UDISK;
+        infoFile.source                  = TFT_UDISK;
         infoMenu.menu[++infoMenu.active] = menuPrintFromSource;
         infoMenu.menu[++infoMenu.active] = menuPowerOff;
         goto selectEnd;

@@ -5,7 +5,7 @@
 
 #ifdef ST7920_SPI
 
-ST7920_PIXEL st7920 = {ST7920_XSTART, ST7920_YSTART, 0};
+ST7920_PIXEL st7920       = {ST7920_XSTART, ST7920_YSTART, 0};
 ST7920_CTRL_STATUS status = ST7920_IDLE;
 
 void ST7920_DrawPixel(int16_t x, int16_t y, uint16_t color) {
@@ -25,8 +25,8 @@ int16_t ST7920_MapCoordinateY(void) {
 }
 
 void ST7920_SetCursor(int16_t x, int16_t y) {
-  st7920.x = x;
-  st7920.y = y;
+  st7920.x        = x;
+  st7920.y        = y;
   st7920.x_record = 0;
 }
 
@@ -46,7 +46,7 @@ void ST7920_DrawByte(u8 data) {
   st7920.x_record += 8;
   if (st7920.x_record == 16) {
     st7920.x_record = 0;
-    st7920.x = (st7920.x + 1) & 0x8F;
+    st7920.x        = (st7920.x + 1) & 0x8F;
   }
 }
 
@@ -62,12 +62,12 @@ u8 rcvIndex = 0;
 
 void ST7920_ParseRecv(u8 val) {
   if (ST7920_IsCtrlByte(val)) {
-    status = (ST7920_CTRL_STATUS)val;
+    status   = (ST7920_CTRL_STATUS)val;
     rcvIndex = 0;
   } else {
     rcvData[rcvIndex++] = val;
-    if (rcvIndex == 1) return;  //high 4 bits in first byte and
-    rcvIndex = 0;               //low 4 bits in second byte is valid
+    if (rcvIndex == 1) return;   //high 4 bits in first byte and
+    rcvIndex = 0;                //low 4 bits in second byte is valid
 
     switch (status) {
       case ST7920_WCMD:
@@ -92,7 +92,7 @@ void ST7920_ParseRecv(u8 val) {
 
 void ST7920_WriteXY(u8 xy) {
   static uint8_t i = 0;
-  if (i == 0)  //y first
+  if (i == 0)   //y first
     st7920.y = xy;
   else
     st7920.x = xy;

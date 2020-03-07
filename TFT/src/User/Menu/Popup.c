@@ -16,17 +16,17 @@ BUTTON bottomDoubleBtn[] = {
 GUI_RECT doubleBtnRect[] = {POPUP_RECT_DOUBLE_CONFIRM, POPUP_RECT_DOUBLE_CANCEL};
 
 WINDOW window = {
-    POPUP_RECT_WINDOW,                        //Area of ??popup
-    13,                                       //Four-corner arc radius
-    5,                                        //Outer line width
-    COLOR_NAVY,                               //Outer and title bar background color
-    {WHITE, COLOR_NAVY, POPUP_TITLE_HEIGHT},  //Title bar font color /background color /height
-    {BLACK, WHITE, POPUP_TEXT_HEIGHT},        //Text bar font color /background color /height
-    {WHITE, GRAY, POPUP_BOTTOM_HEIGHT},       //Bottom (font color) /background color /(height)
+    POPUP_RECT_WINDOW,                         //Area of ??popup
+    13,                                        //Four-corner arc radius
+    5,                                         //Outer line width
+    COLOR_NAVY,                                //Outer and title bar background color
+    {WHITE, COLOR_NAVY, POPUP_TITLE_HEIGHT},   //Title bar font color /background color /height
+    {BLACK, WHITE, POPUP_TEXT_HEIGHT},         //Text bar font color /background color /height
+    {WHITE, GRAY, POPUP_BOTTOM_HEIGHT},        //Bottom (font color) /background color /(height)
 };
 
 static BUTTON *windowButton = NULL;
-static u16 buttonNum = 0;
+static u16 buttonNum        = 0;
 
 void windowReDrawButton(u8 positon, u8 pressed) {
   if (positon >= buttonNum) return;
@@ -38,7 +38,7 @@ void windowReDrawButton(u8 positon, u8 pressed) {
 }
 
 void popupDrawPage(BUTTON *btn, const u8 *title, const u8 *text, const u8 *choice1, const u8 *choice2) {
-  buttonNum = 0;
+  buttonNum    = 0;
   windowButton = btn;
   if (choice1) {
     windowButton[buttonNum++].context = choice1;

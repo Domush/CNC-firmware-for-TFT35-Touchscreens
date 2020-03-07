@@ -33,40 +33,40 @@ static const SERIAL_CFG Serial[_USART_CNT] = {
 void Serial_DMA_Config(uint8_t port) {
   const SERIAL_CFG *cfg = &Serial[port];
 
-  RCC_AHB1PeriphClockCmd(cfg->dma_rcc, ENABLE);  // DMA RCC EN
+  RCC_AHB1PeriphClockCmd(cfg->dma_rcc, ENABLE);   // DMA RCC EN
 
-  cfg->dma_stream->CR &= ~(1 << 0);  // Disable DMA
+  cfg->dma_stream->CR &= ~(1 << 0);   // Disable DMA
   Serial_DMAClearFlag(port);
-  cfg->uart->CR3 |= 1 << 6;  // DMA enable receiver
+  cfg->uart->CR3 |= 1 << 6;   // DMA enable receiver
 
-  cfg->dma_stream->PAR = (u32)(&cfg->uart->DR);
+  cfg->dma_stream->PAR  = (u32)(&cfg->uart->DR);
   cfg->dma_stream->M0AR = (u32)(cncIncoming[port].cache);
   cfg->dma_stream->NDTR = DMA_TRANS_LEN;
 
   cfg->dma_stream->CR = cfg->dma_channel << 25;
-  cfg->dma_stream->CR |= 3 << 16;  // Priority level: Very high
-  cfg->dma_stream->CR |= 0 << 13;  // Memory data size: 8
-  cfg->dma_stream->CR |= 0 << 11;  // Peripheral data size: 8
-  cfg->dma_stream->CR |= 1 << 10;  // Memory increment mode
-  cfg->dma_stream->CR |= 0 << 9;   // Peripheral not increment mode
-  cfg->dma_stream->CR |= 1 << 8;   // Circular mode enabled
-  cfg->dma_stream->CR |= 0 << 6;   // Data transfer direction: Peripheral-to-memory
-  cfg->dma_stream->CR |= 1 << 0;   // Enable DMA
+  cfg->dma_stream->CR |= 3 << 16;   // Priority level: Very high
+  cfg->dma_stream->CR |= 0 << 13;   // Memory data size: 8
+  cfg->dma_stream->CR |= 0 << 11;   // Peripheral data size: 8
+  cfg->dma_stream->CR |= 1 << 10;   // Memory increment mode
+  cfg->dma_stream->CR |= 0 << 9;    // Peripheral not increment mode
+  cfg->dma_stream->CR |= 1 << 8;    // Circular mode enabled
+  cfg->dma_stream->CR |= 0 << 6;    // Data transfer direction: Peripheral-to-memory
+  cfg->dma_stream->CR |= 1 << 0;    // Enable DMA
 }
 
 void Serial_Config(uint8_t port, u32 baud) {
-  cncIncoming[port].rIndex = cncIncoming[port].wIndex = 0;
-  cncIncoming[port].cache = malloc(DMA_TRANS_LEN);
+  cncIncoming[port].parsedIndex = cncIncoming[port].pendingIndex = 0;
+  cncIncoming[port].cache                                        = malloc(DMA_TRANS_LEN);
   while (!cncIncoming[port].cache)
-    ;                                       // malloc failed
-  USART_Config(port, baud, USART_IT_IDLE);  // IDLE interrupt
+    ;                                        // malloc failed
+  USART_Config(port, baud, USART_IT_IDLE);   // IDLE interrupt
   Serial_DMA_Config(port);
 }
 
 void Serial_DeConfig(uint8_t port) {
   free(cncIncoming[port].cache);
   cncIncoming[port].cache = NULL;
-  Serial[port].dma_stream->CR &= ~(1 << 0);  // Disable DMA
+  Serial[port].dma_stream->CR &= ~(1 << 0);   // Disable DMA
   Serial_DMAClearFlag(port);
   USART_DeConfig(port);
 }
@@ -107,22 +107,22 @@ void Serial_DMAClearFlag(uint8_t port) {
   switch (port) {
     case _USART1:
       DMA2->LIFCR = (0x3F << 16);
-      break;  // DMA2_Stream2 low  bits:16-21
+      break;   // DMA2_Stream2 low  bits:16-21
     case _USART2:
       DMA1->HIFCR = (0xFC << 4);
-      break;  // DMA1_Stream5 high bits: 6-11
+      break;   // DMA1_Stream5 high bits: 6-11
     case _USART3:
       DMA1->LIFCR = (0xFC << 4);
-      break;  // DMA1_Stream1 low  bits: 6-11
+      break;   // DMA1_Stream1 low  bits: 6-11
     case _UART4:
       DMA1->LIFCR = (0x3F << 16);
-      break;  // DMA1_Stream2 low  bits:16-21
+      break;   // DMA1_Stream2 low  bits:16-21
     case _UART5:
       DMA1->LIFCR = (0x3F << 0);
-      break;  // DMA1_Stream0 low  bits: 0-5
+      break;   // DMA1_Stream0 low  bits: 0-5
     case _USART6:
       DMA2->LIFCR = (0xFC << 4);
-      break;  // DMA2_Stream1 low  bits: 6-11
+      break;   // DMA2_Stream1 low  bits: 6-11
   }
 }
 
@@ -131,9 +131,9 @@ void USART_IRQHandler(uint8_t port) {
     Serial[port].uart->SR;
     Serial[port].uart->DR;
 
-    cncIncoming[port].wIndex = DMA_TRANS_LEN - Serial[port].dma_stream->NDTR;
-    uint16_t wIndex = (cncIncoming[port].wIndex == 0) ? DMA_TRANS_LEN : cncIncoming[port].wIndex;
-    if (cncIncoming[port].cache[wIndex - 1] == '\n')  // Receive completed
+    cncIncoming[port].pendingIndex = DMA_TRANS_LEN - Serial[port].dma_stream->NDTR;
+    uint16_t pendingIndex          = (cncIncoming[port].pendingIndex == 0) ? DMA_TRANS_LEN : cncIncoming[port].pendingIndex;
+    if (cncIncoming[port].cache[pendingIndex - 1] == '\n')   // Receive completed
     {
       infoHost.rx_ok[port] = true;
     }
@@ -165,11 +165,13 @@ void USART6_IRQHandler(void) {
 }
 
 void Serial_Puts(uint8_t port, char *command, ...) {
+  char buffer[100];
   char *gString;
   my_va_list ap;
   my_va_start(ap, command);
-  my_vsprintf(gString, command, ap);
+  my_vsprintf(buffer, command, ap);
   my_va_end(ap);
+  gString = &buffer[0];
 
   while (*gString) {
     while ((Serial[port].uart->SR & USART_FLAG_TC) == (uint16_t)RESET)

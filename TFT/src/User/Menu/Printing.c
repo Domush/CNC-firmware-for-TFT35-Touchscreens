@@ -118,10 +118,13 @@ u8* getGcodeFilename(char* path) {
 // Example: "SD:/CNC/Clocks/Bird/Profile 1.gcode"
 // Will return: "Bird/Profile 1.gcode"
 u8* getGcodePathFilename(char* fullFilename) {
-  int i = strlen(fullFilename) - 6;  // -6 ignores the .gcode extension
+  int i          = strlen(fullFilename) - 6;   // -6 ignores the .gcode extension
   int pathsFound = 0;
-  for (; fullFilename[i] != '/' && i > 0 && pathsFound < 2; i--) {
-    if (fullFilename[i] == '/') pathsFound++;
+  while (i > 0 && pathsFound < 2) {
+    i--;
+    if (fullFilename[i] == '/') {
+      pathsFound++;
+    }
   }
   return (u8*)(&fullFilename[i + 1]);
 }
@@ -129,7 +132,7 @@ u8* getGcodePathFilename(char* fullFilename) {
 void menuBeforePrinting(void) {
   long size = 0;
   switch (infoFile.source) {
-    case BOARD_SD:  // GCode from file on ONBOARD SD
+    case BOARD_SD:   // GCode from file on ONBOARD SD
       size = request_M23(infoFile.title + 5);
 
       //  if( powerFailedCreate(infoFile.title)==false)
@@ -161,11 +164,11 @@ void menuBeforePrinting(void) {
       request_M27(0);
 #endif
 
-      infoHost.printing = true;  // Global lock info on printer is busy in printing.
+      infoHost.printing = true;   // Global lock info on printer is busy in printing.
       break;
 
     case TFT_UDISK:
-    case TFT_SD:  // GCode from file on TFT SD
+    case TFT_SD:   // GCode from file on TFT SD
       if (f_open(&infoPrinting.file, infoFile.title, FA_OPEN_EXISTING | FA_READ) != FR_OK) {
         ExitDir();
         infoMenu.active--;
@@ -175,16 +178,16 @@ void menuBeforePrinting(void) {
       }
       powerFailedlSeek(&infoPrinting.file);
 
-      infoPrinting.size = f_size(&infoPrinting.file);
+      infoPrinting.size        = f_size(&infoPrinting.file);
       infoPrinting.currentLine = infoPrinting.file.fptr;
       if (infoSettings.send_start_gcode == 1) {
         startGcodeExecute();
       }
       break;
   }
-  infoPrinting.printing = true;
+  infoPrinting.printing          = true;
   infoMenu.menu[infoMenu.active] = menuPrinting;
-  printingItems.title.address = getGcodePathFilename(infoFile.title);
+  printingItems.title.address    = getGcodePathFilename(infoFile.title);
 }
 
 void resumeToPause(bool pauseCalled) {
@@ -230,11 +233,11 @@ bool setPrintPause(bool pauseCalled) {
 
       if (pauseCalled) {
         timedMessage(3, TIMED_INFO, "Pausing CNC");
-        curRouterSpeed = infoPrinting.routerSpeed;  // *Save current router speed
-        routerControl(0);                           // *turn off the router
-        coordinateGetAll(&pauseCoords);             // *save the current gantry position
+        curRouterSpeed = infoPrinting.routerSpeed;   // *Save current router speed
+        routerControl(0);                            // *turn off the router
+        coordinateGetAll(&pauseCoords);              // *save the current gantry position
         if (isCoorRelative == true) mustStoreCmd("G90\n");
-        if (coordinateIsClear()) {  // *move the gantry into paused position
+        if (coordinateIsClear()) {   // *move the gantry into paused position
           mustStoreCmd("G1 Z%.3f F%d\n", pauseCoords.axis[Z_AXIS] + SPINDLE_PAUSE_Z_RAISE, SPINDLE_PAUSE_Z_GANTRYSPEED);
           mustStoreCmd("G1 X%d Y%d F%d\n", SPINDLE_PAUSE_X_POSITION, SPINDLE_PAUSE_Y_POSITION, SPINDLE_PAUSE_XY_GANTRYSPEED);
         }
@@ -248,8 +251,8 @@ bool setPrintPause(bool pauseCalled) {
         }
         if (isCoorRelative == true) mustStoreCmd("G90\n");
 
-        routerControl(curRouterSpeed);  // *resume previous router speed
-        if (coordinateIsClear()) {      // *restore previous gantry position
+        routerControl(curRouterSpeed);   // *resume previous router speed
+        if (coordinateIsClear()) {       // *restore previous gantry position
           mustStoreCmd("G1 X%.3f Y%.3f F%d\n", pauseCoords.axis[X_AXIS], pauseCoords.axis[Y_AXIS], SPINDLE_PAUSE_XY_GANTRYSPEED);
           mustStoreCmd("G1 Z%.3f F%d\n", pauseCoords.axis[Z_AXIS], SPINDLE_PAUSE_Z_GANTRYSPEED);
         }
@@ -259,7 +262,7 @@ bool setPrintPause(bool pauseCalled) {
       }
       break;
   }
-  resumeToPause(pauseCalled);  // *change the pause/resume icon
+  resumeToPause(pauseCalled);   // *change the pause/resume icon
   pauseInProgress = false;
   return true;
 }
@@ -273,8 +276,8 @@ const GUI_RECT progressRect = {1 * SPACE_X_PER_ICON, 0 * ICON_HEIGHT + 0 * SPACE
 
 void showPrintTime(void) {
   u8 hour = infoPrinting.time / 3600,
-     min = infoPrinting.time % 3600 / 60,
-     sec = infoPrinting.time % 60;
+     min  = infoPrinting.time % 3600 / 60,
+     sec  = infoPrinting.time % 60;
   if (hour > 0) {
     GUI_RestoreColorDefault();
     GUI_DispString(PRINT_STATUS_ROUTER_X + 3 * BYTE_WIDTH, PRINT_STATUS_TIME_Y, (u8*)"h");
@@ -296,8 +299,8 @@ void showPrintTime(void) {
 
 void showPrintTimeUpper(void) {
   u8 hour = infoPrinting.time / 3600,
-     min = infoPrinting.time % 3600 / 60,
-     sec = infoPrinting.time % 60;
+     min  = infoPrinting.time % 3600 / 60,
+     sec  = infoPrinting.time % 60;
   if (hour > 0) {
     GUI_RestoreColorDefault();
     GUI_DispString(LCD_WIDTH - 8 * BYTE_WIDTH, 0, (u8*)"h");
@@ -358,7 +361,7 @@ void showPrintProgress(u8 progress) {
   if (lastProgress != progress) {
     char buf[5];
     const GUI_RECT percentageRect = {PRINT_STATUS_ROUTER_X, PRINT_STATUS_SPEED_Y - 3 * BYTE_HEIGHT, PRINT_STATUS_ROUTER_X + 10 * BYTE_WIDTH, PRINT_STATUS_SPEED_Y - 2 * BYTE_HEIGHT};
-    u16 progressX = map(progress, 0, 100, percentageRect.x0, percentageRect.x1);
+    u16 progressX                 = map(progress, 0, 100, percentageRect.x0, percentageRect.x1);
     GUI_FillRectColor(percentageRect.x0, percentageRect.y0, progressX, percentageRect.y1, BLUE);
     GUI_FillRectColor(progressX, percentageRect.y0, percentageRect.x1, percentageRect.y1, GRAY);
     // *Show numeric percent complete
@@ -378,7 +381,7 @@ void showIconPrintProgress(u8 progress) {
   if (lastIconProgress != progress) {
     char buf[5];
     GUI_POINT progressIcon;
-    progressIcon = getIconStartPoint(1);
+    progressIcon                  = getIconStartPoint(1);
     const GUI_RECT percentageRect = {
         progressIcon.x,
         progressIcon.y,
@@ -411,10 +414,10 @@ void fetchPreviewIcon(bool showPreviewBMP) {
     int filenameLength;
     int locationLength;
     char filename[128] = "";
-    char sample[128] = "";
-    char preview[128] = "";
+    char sample[128]   = "";
+    char preview[128]  = "";
     // if model preview bmp exists, display bmp directly without writing to flash
-    filenameLength = strlen((const char*)infoFile.file[0]);  // -6 if you want to remove ".gcode"
+    filenameLength = strlen((const char*)infoFile.file[0]);   // -6 if you want to remove ".gcode"
     locationLength = strlen((const char*)infoFile.title);
     strncat(filename, (const char*)infoFile.title, locationLength - 6);
     strncat(sample, (const char*)infoFile.title, locationLength - filenameLength);
@@ -441,7 +444,7 @@ void fetchPreviewIcon(bool showPreviewBMP) {
 
 void menuPrinting(void) {
   KEY_VALUES key_num = KEY_IDLE;
-  u32 time = 0;
+  u32 time           = 0;
 
   printingItems.items[KEY_ICON_0] = itemIsPause[infoPrinting.pause];
   if (isPrinting())
@@ -467,7 +470,7 @@ void menuPrinting(void) {
 
     if (time != infoPrinting.time) {
       time = infoPrinting.time;
-      showPrintTimeUpper();  // job timer
+      showPrintTimeUpper();   // job timer
     }
     showBabyStepValue();
     showCNCSpeed();
@@ -618,11 +621,11 @@ void menuShutDown(void) {
 
 // get gcode command from sd card
 void getGcodeFromFile(void) {
-  bool sd_comment_mode = false;
+  bool sd_comment_mode  = false;
   bool sd_comment_space = true;
   char sd_char;
   u8 sdCharIndex = 0;
-  UINT br = 0;
+  UINT br        = 0;
 
   if (isPrinting() == false || infoFile.source == BOARD_SD) return;
 
@@ -638,28 +641,28 @@ void getGcodeFromFile(void) {
     infoPrinting.currentLine++;
 
     //Gcode
-    if (sd_char == '\n')  //'\n' is end flag for per command
+    if (sd_char == '\n')   //'\n' is end flag for per command
     {
-      sd_comment_mode = false;  //for new command
+      sd_comment_mode  = false;   //for new command
       sd_comment_space = true;
       if (sdCharIndex != 0) {
         gcodeCommand.queue[gcodeCommand.writeIndex].gcode[sdCharIndex++] = '\n';
-        gcodeCommand.queue[gcodeCommand.writeIndex].gcode[sdCharIndex] = 0;  //terminate string
-        gcodeCommand.queue[gcodeCommand.writeIndex].src = SERIAL_PORT;
-        sdCharIndex = 0;  //clear buffer
-        gcodeCommand.writeIndex = (gcodeCommand.writeIndex + 1) % GCODE_QUEUE_MAX;
+        gcodeCommand.queue[gcodeCommand.writeIndex].gcode[sdCharIndex]   = 0;   //terminate string
+        gcodeCommand.queue[gcodeCommand.writeIndex].src                  = SERIAL_PORT;
+        sdCharIndex                                                      = 0;   //clear buffer
+        gcodeCommand.writeIndex                                          = (gcodeCommand.writeIndex + 1) % GCODE_QUEUE_MAX;
         gcodeCommand.count++;
         break;
       }
     } else if (sdCharIndex >= GCODE_MAX_CHARACTERS - 2) {
-    }  //when the command length beyond the maximum, ignore the following bytes
+    }   //when the command length beyond the maximum, ignore the following bytes
     else {
-      if (sd_char == ';')  //';' is comment out flag
+      if (sd_char == ';')   //';' is comment out flag
         sd_comment_mode = true;
       else {
-        if (sd_comment_space && (sd_char == 'G' || sd_char == 'M' || sd_char == 'T'))  //ignore ' ' space bytes
+        if (sd_comment_space && (sd_char == 'G' || sd_char == 'M' || sd_char == 'T'))   //ignore ' ' space bytes
           sd_comment_space = false;
-        if (!sd_comment_mode && !sd_comment_space && sd_char != '\r')  //normal gcode
+        if (!sd_comment_mode && !sd_comment_space && sd_char != '\r')   //normal gcode
           gcodeCommand.queue[gcodeCommand.writeIndex].gcode[sdCharIndex++] = sd_char;
       }
     }
@@ -680,7 +683,7 @@ void checkJobStatus(void) {
     }
     if (OS_GetTime() < nowTime + update_delay) break;
     if (storeCmd("M27\n") == false) break;
-    nowTime = OS_GetTime();
+    nowTime        = OS_GetTime();
     update_waiting = true;
   } while (0);
 }

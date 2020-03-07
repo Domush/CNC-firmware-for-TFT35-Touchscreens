@@ -164,7 +164,7 @@ typedef enum {
   CKEY14,
 #endif
 
-  CKEY_COUNT  //keep this always at the end
+  CKEY_COUNT   //keep this always at the end
 } CKEY_LIST;
 
 #define GC_PAGE_COUNT (CKEY_COUNT + LISTITEM_PER_PAGE - 1) / LISTITEM_PER_PAGE
@@ -234,11 +234,11 @@ void loaditemsCustomGcode(void) {
   for (uint32_t i = 0; i < LISTITEM_PER_PAGE; i++) {
     uint32_t item_index = gc_cur_page * LISTITEM_PER_PAGE + i;
     if (item_index < CKEY_COUNT) {
-      customItems.items[i].icon = ICONCHAR_CODE;
+      customItems.items[i].icon             = ICONCHAR_CODE;
       customItems.items[i].titlelabel.index = LABEL_DYNAMIC;
-      dynamic_label[i] = (char *)gcodelist[item_index][0];
+      dynamic_label[i]                      = (char *)gcodelist[item_index][0];
     } else {
-      customItems.items[i].icon = ICONCHAR_BACKGROUND;
+      customItems.items[i].icon             = ICONCHAR_BACKGROUND;
       customItems.items[i].titlelabel.index = LABEL_BACKGROUND;
     }
   }
@@ -264,7 +264,7 @@ void loaditemsCustomGcode(void) {
 
 void menuCustom(void) {
   KEY_VALUES key_num = KEY_IDLE;
-  gc_cur_page = 0;
+  gc_cur_page        = 0;
   loaditemsCustomGcode();
   menuDrawListPage(&customItems);
 
@@ -328,27 +328,27 @@ void menuRGBSettings(void) {
   while (infoMenu.menu[infoMenu.active] == menuRGBSettings) {
     key_num = menuKeyGetValue();
     switch (key_num) {
-      case KEY_ICON_0:  //Red
+      case KEY_ICON_0:   //Red
         timedMessage(2, TIMED_INFO, "Red LEDs enabled");
         storeCmd("M150 R255 U0 B0 P255\n");
         break;
 
-      case KEY_ICON_1:  //Green
+      case KEY_ICON_1:   //Green
         timedMessage(2, TIMED_INFO, "Green LEDs enabled");
         storeCmd("M150 R0 U255 B0 P255\n");
         break;
 
-      case KEY_ICON_2:  //Blue
+      case KEY_ICON_2:   //Blue
         timedMessage(2, TIMED_INFO, "Blue LEDs enabled");
         storeCmd("M150 R0 U0 B255 P255\n");
         break;
 
-      case KEY_ICON_3:  //White
+      case KEY_ICON_3:   //White
         timedMessage(2, TIMED_INFO, "White LEDs enabled");
         storeCmd("M150 R255 U255 B255 P255\n");
         break;
 
-      case KEY_ICON_4:  //Turn Off
+      case KEY_ICON_4:   //Turn Off
         timedMessage(2, TIMED_INFO, "LEDs disabled");
         storeCmd("M150 R0 U0 B0 P0\n");
         break;

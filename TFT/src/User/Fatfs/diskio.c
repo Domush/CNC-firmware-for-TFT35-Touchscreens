@@ -24,7 +24,7 @@
 #define DEV_MMC 0 /* MMC/SD card to physical drive 0 */
 #define DEV_USB 1 /* USB disk to physical drive 1 */
 
-    static volatile DSTATUS diskStatus[FF_VOLUMES] = {STA_NOINIT, STA_NOINIT}; /* Disk status */
+static volatile DSTATUS diskStatus[FF_VOLUMES] = {STA_NOINIT, STA_NOINIT}; /* Disk status */
 
 /*-----------------------------------------------------------------------*/
 /* Get Drive Status                                                      */
@@ -83,9 +83,9 @@ DRESULT disk_read(
 
   switch (pdrv) {
     case DEV_MMC:
-      while (SD_ReadDisk(buff, sector, count))  // read error
+      while (SD_ReadDisk(buff, sector, count))   // read error
       {
-        SD_Init();  //init again
+        SD_Init();   //init again
       }
       return RES_OK;
 
@@ -117,9 +117,9 @@ DRESULT disk_write(
 
   switch (pdrv) {
     case DEV_MMC:
-      while (SD_WriteDisk((u8 *)buff, sector, count))  // write error
+      while (SD_WriteDisk((u8 *)buff, sector, count))   // write error
       {
-        SD_Init();  // init again
+        SD_Init();   // init again
       }
       return RES_OK;
 
@@ -157,12 +157,12 @@ DRESULT disk_ioctl(
 
         case GET_SECTOR_COUNT: /* Get number of sectors on the disk (DWORD) */
           *(DWORD *)buff = (DWORD)USBH_MSC_Param.MSCapacity;
-          res = RES_OK;
+          res            = RES_OK;
           break;
 
         case GET_SECTOR_SIZE: /* Get R/W sector size (WORD) */
           *(WORD *)buff = 512;
-          res = RES_OK;
+          res           = RES_OK;
           break;
 
         case GET_BLOCK_SIZE: /* Get erase block size in unit of sector (DWORD) */

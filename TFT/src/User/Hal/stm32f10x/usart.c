@@ -2,14 +2,14 @@
 #include "GPIO_Init.h"
 
 static USART_TypeDef *usart[_USART_CNT] = {
-    USART1,  //TX--PA9  RX--PA10
-    USART2,  //TX--PA2  RX--PA3
-    USART3,  //TX--PB10 RX--PB11
-    UART4,   //TX--PC10 RX--PC11
-    UART5};  //TX--PC12 RX--PD2
+    USART1,   //TX--PA9  RX--PA10
+    USART2,   //TX--PA2  RX--PA3
+    USART3,   //TX--PB10 RX--PB11
+    UART4,    //TX--PC10 RX--PC11
+    UART5};   //TX--PC12 RX--PD2
 
-static const uint16_t uart_tx[_USART_CNT] = {PA9, PA2, PB10, PC10, PC12};  //TX
-static const uint16_t uart_rx[_USART_CNT] = {PA10, PA3, PB11, PC11, PD2};  //RX
+static const uint16_t uart_tx[_USART_CNT] = {PA9, PA2, PB10, PC10, PC12};   //TX
+static const uint16_t uart_rx[_USART_CNT] = {PA10, PA3, PB11, PC11, PD2};   //RX
 
 void USART_GPIO_Init(uint8_t port) {
   GPIO_InitSet(uart_tx[port], MGPIO_MODE_AF_PP, 0);
@@ -41,12 +41,12 @@ void USART_Protocol_Init(uint8_t port, uint32_t baud) {
       RCC_APB1PeriphClockCmd(RCC_APB1Periph_UART5, ENABLE);
       break;
   }
-  USART_InitStructure.USART_BaudRate = baud;
+  USART_InitStructure.USART_BaudRate            = baud;
   USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-  USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
-  USART_InitStructure.USART_Parity = USART_Parity_No;
-  USART_InitStructure.USART_StopBits = USART_StopBits_1;
-  USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+  USART_InitStructure.USART_Mode                = USART_Mode_Rx | USART_Mode_Tx;
+  USART_InitStructure.USART_Parity              = USART_Parity_No;
+  USART_InitStructure.USART_StopBits            = USART_StopBits_1;
+  USART_InitStructure.USART_WordLength          = USART_WordLength_8b;
   USART_Init(usart[port], &USART_InitStructure);
 
   USART_Cmd(usart[port], ENABLE);
@@ -56,10 +56,10 @@ void USART_IRQ_Init(uint8_t port, uint16_t usart_it) {
   uint32_t IRQ_Channel[_USART_CNT] = {USART1_IRQn, USART2_IRQn, USART3_IRQn, UART4_IRQn, UART5_IRQn};
 
   NVIC_InitTypeDef NVIC_InitStructure;
-  NVIC_InitStructure.NVIC_IRQChannel = IRQ_Channel[port];
-  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+  NVIC_InitStructure.NVIC_IRQChannel                   = IRQ_Channel[port];
+  NVIC_InitStructure.NVIC_IRQChannelCmd                = ENABLE;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+  NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 0;
   NVIC_Init(&NVIC_InitStructure);
 
   USART_ITConfig(usart[port], usart_it, ENABLE);
@@ -69,7 +69,7 @@ void USART_IRQ_Init(uint8_t port, uint16_t usart_it) {
 void USART_Config(uint8_t port, uint32_t baud, uint16_t usart_it) {
   USART_Protocol_Init(port, baud);
   USART_IRQ_Init(port, usart_it);
-  USART_GPIO_Init(port);  //ËùÓÐ³õÊ¼»¯Íê³Éºó,ÔÙÊ¹ÄÜIO, ·ñÔòÉÏµçºó»á×Ô¶¯·¢ËÍÒ»¸ö 0xFF
+  USART_GPIO_Init(port);   //ï¿½ï¿½ï¿½Ð³ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Éºï¿½,ï¿½ï¿½Ê¹ï¿½ï¿½IO, ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ 0xFF
 }
 
 void USART_DeConfig(uint8_t port) {

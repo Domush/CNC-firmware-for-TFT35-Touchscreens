@@ -114,7 +114,7 @@ void detectSDInsertion(void) {
     if (volumeSrcStatus[i] != (*volumeInserted[i])()) {
       const int16_t labelSDStates[FF_VOLUMES][2] = {{LABEL_TFTSD_REMOVED, LABEL_TFTSD_INSERTED},
                                                     {LABEL_U_DISK_REMOVED, LABEL_U_DISK_INSERTED}};
-      volumeSrcStatus[i] = (*volumeInserted[i])();
+      volumeSrcStatus[i]                         = (*volumeInserted[i])();
       timedMessage(2, TIMED_STATUS, (char*)textSelect(labelSDStates[i][volumeSrcStatus[i]]));
     }
   }

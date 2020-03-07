@@ -20,11 +20,11 @@ void XPT2046_Init(void) {
   //PA15-TPEN
   GPIO_InitSet(XPT2046_TPEN, MGPIO_MODE_IPN, 0);
 
-  SW_SPI_Config(&xpt2046, _SPI_MODE3, 8,  // 8bit
-                XPT2046_CS,               //CS
-                XPT2046_SCK,              //SCK
-                XPT2046_MISO,             //MISO
-                XPT2046_MOSI              //MOSI
+  SW_SPI_Config(&xpt2046, _SPI_MODE3, 8,   // 8bit
+                XPT2046_CS,                //CS
+                XPT2046_SCK,               //SCK
+                XPT2046_MISO,              //MISO
+                XPT2046_MOSI               //MOSI
   );
   XPT2046_CS_Set(1);
 }
@@ -43,14 +43,14 @@ u16 XPT2046_Read_AD(u8 CMD) {
   XPT2046_ReadWriteByte(CMD);
   ADNum = XPT2046_ReadWriteByte(0xff);
   ADNum = ((ADNum) << 8) | XPT2046_ReadWriteByte(0xff);
-  ADNum >>= 4;  //XPT2046 data is only 12 bits, discarding the lower four bits
+  ADNum >>= 4;   //XPT2046 data is only 12 bits, discarding the lower four bits
 
   XPT2046_CS_Set(1);
   return ADNum;
 }
 
-#define READ_TIMES 5  //Read times
-#define LOST_VAL 1    //Drop value
+#define READ_TIMES 5   //Read times
+#define LOST_VAL 1     //Drop value
 u16 XPT2046_Average_AD(u8 CMD) {
   u16 i, j;
   u16 buf[READ_TIMES];
@@ -62,7 +62,7 @@ u16 XPT2046_Average_AD(u8 CMD) {
     for (j = i + 1; j < READ_TIMES; j++) {
       //Ascending
       if (buf[i] > buf[j]) {
-        temp = buf[i];
+        temp   = buf[i];
         buf[i] = buf[j];
         buf[j] = temp;
       }
@@ -74,7 +74,7 @@ u16 XPT2046_Average_AD(u8 CMD) {
   return temp;
 }
 
-#define ERR_RANGE 50  //tolerance scope
+#define ERR_RANGE 50   //tolerance scope
 u16 XPT2046_Repeated_Compare_AD(u8 CMD) {
   u16 ad1, ad2;
   ad1 = XPT2046_Average_AD(CMD);

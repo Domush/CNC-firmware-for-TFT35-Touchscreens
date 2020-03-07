@@ -10,8 +10,8 @@ extern "C" {
 #endif
 
 enum {
-  VOLUMES_SD_CARD = 0,  //SD card, volume label is 0
-  VOLUMES_U_DISK,       //U disk, volume label is 1
+  VOLUMES_SD_CARD = 0,   //SD card, volume label is 0
+  VOLUMES_U_DISK,        //U disk, volume label is 1
 };
 
 /* Status of Disk Functions */
