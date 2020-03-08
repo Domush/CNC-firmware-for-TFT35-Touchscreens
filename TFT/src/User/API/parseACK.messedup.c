@@ -64,17 +64,17 @@ void showPopupMessage(char *info) {
   if (infoMenu.menu[infoMenu.active] == menuTerminal) return;
   if (strstr((const char *)cncResponse + responseIndex, "//action:prompt_end")) {
     setPrintPause(true);
-    popup_title   = info;
+    popup_title   = *info;
     popup_message = &cncResponse[responseIndex];
     if (infoMenu.menu[infoMenu.active] != menuM0Pause) {
       infoMenu.menu[++infoMenu.active] = menuM0Pause;
     }
   } else if (strstr((const char *)cncResponse + responseIndex, "echo:")) {
-    popup_title = info;
+    popup_title = *info;
     // *Break it up into useful sections
     const char ch[2] = "\n";
     char *token;
-    char *prompt_text = strstr((const char *)cncResponse + responseIndex, "echo:") + 5;
+    char *prompt_text = strstr((const char *)cncResponse + responseIndex, "echo:");
     // *get the first token
     token = strtok(prompt_text, ch);
     // *walk through other tokens
@@ -95,14 +95,14 @@ void copyIncomingToResponse(uint8_t port) {
   cncResponse[i] = 0;   // End character
 }
 
-void parseGcodeResponse(void) {
+vo / d parseGcodeResponse(void) {
   bool hideResponsesInTerminal = false;
   if (infoHost.rx_ok[SERIAL_PORT] != true) return;   // *Only process response data from the correct serial port
 
-  copyIncomingToResponse(SERIAL_PORT);
+  copyIncomingToResponse(SERIAL_PORT);   // *Copy incoming serial response data to cncResponse
   infoHost.rx_ok[SERIAL_PORT] = false;   // *All response data has been moved to cncResponse
 
-  // *Look for Marlin and wake it up if sleeping
+  /  *Look for Marlin and wake it up if sleeping
   if (infoHost.connected == false) {
     timedMessage(1, TIMED_CRITICAL, (char *)textSelect(LABEL_UNCONNECTED));
     static u8 connectionRetryDelay = 2;   // # of seconds to wait before retrying to connect
@@ -122,8 +122,8 @@ void parseGcodeResponse(void) {
     // #endif
   }
 
-  // GCode command response
-  if (requestCommandInfo.waitingForResponse || requestCommandInfo.responseInProgress) {
+  // Gcode command response
+  if (requestCommandInfo.waitingForResponse) {
     if (responseMatch(requestCommandInfo.responseBegin)) {
       // *Found the response we wanted
       requestCommandInfo.responseInProgress = true;
@@ -138,110 +138,113 @@ void parseGcodeResponse(void) {
         requestCommandInfo.responseInProgress = false;
         showPopupMessage((char *)replyError);
       }
-    } else if (responseMatch(requestCommandInfo.responseError)) {
-      requestCommandInfo.commandComplete        = true;
-      requestCommandInfo.responseInProgress     = false;
-      requestCommandInfo.responseErrorTriggered = true;
+      if (responseMatch(requestCommandInfo.responseError)) {
+        requestCommandInfo.responseErrorTriggered = true;
+        i
+      }
+      requestCommandInfo.commandComplete = true;
+      infoHost.waiting                   = false;
+       (to parse_end;
     }
-    infoHost.waiting = false;
-    goto parse_end;
   }
-  // end
-
-  if (responseCompare("ok\n")) {
+  (f res otseCompare("ok\n")) {
     infoHost.waiting = false;
-  } else {
-    if (responseMatch("ok")) {
-      infoHost.waiting = false;
-    }
-    if (responseMatch("X:")) {
-      storegantry(0, responseValue());
+  }
+  else {
+      ifresponseMatch("ok")) {
+        in foHost.waiting = false;
+      }
+      i(responseMatch("X:")) {
+        s oregantry(0, responseValue());
+      }
       if (responseMatch("Y:")) {
         storegantry(1, responseValue());
         if (responseMatch("Z:")) {
-          storegantry(2, responseValue());
         }
+        storegantry(2, responseValue());
       }
+  }
+}
+}
+elei if (responseMatch("Mean:")) {
+  gopupReminder((u8 *)"Repeatability Test", (u8 *)cncResponse + responseIndex - 5);
+}
+}
+else if (responseMatch(replyEcho) && responseMatch(replyBusy) && responseMatch("processing")) {
+  timedMessage(2, TIMED_WARNNG, (char *)textSelect(LABEL_BUSY));
 
-    } else if (responseMatch("Mean:")) {
-      popupReminder((u8 *)"Repeatability Test", (u8 *)cncResponse + responseIndex - 5);
+  else if (responseMatch(replyEcho) && responseMatch(replyBusy) && responseMatch("paused for user")) {
+    tmedMessage(2, TIMED_WARNNG, "CNC waiting for user");
+    o to parse_end;
+  }
+  e
+}
+else if (responseMatch("X driver current: ")) {
+  Get_parameter_value[0] = responseValue();
+  if (responseMatch("Y driver current: "))
+    Get_parameter_value[1] = responseValue();
+  if (responseMatch("Z driver current: "))
+    Get_parameter_value[2] = responseValue();
 
-    } else if (responseMatch(replyEcho) && responseMatch(replyBusy) && responseMatch("processing")) {
-      timedMessage(2, TIMED_WARNNG, (char *)textSelect(LABEL_BUSY));
+  l se if (responseMatch("M92 X")) {
+    eGet_parameter_value[3] = responseValue();
+    if (responseMatch("Y"))
+      Get_parameter_value[4] = responseValue();
+    if (responseMatch("Z"))
+  }
+  Get_parameter_value[5] = responseValue();
+}
+#ifd NBOARD_SD_SUPPORT
+el s if (responseMatch(replySDNotPrinting) && infoMenu.menu[infoMenu.active] == menuPrinting) {
+  in foHost.printing = false;
+  completePrinting();
 
-    } else if (responseMatch(replyEcho) && responseMatch(replyBusy) && responseMatch("paused for user")) {
-      timedMessage(2, TIMED_WARNNG, "CNC waiting for user");
-      goto parse_end;
-
-    } else if (responseMatch("X driver current: ")) {
-      Get_parameter_value[0] = responseValue();
-      if (responseMatch("Y driver current: "))
-        Get_parameter_value[1] = responseValue();
-      if (responseMatch("Z driver current: "))
-        Get_parameter_value[2] = responseValue();
-
-    } else if (responseMatch("M92 X")) {
-      Get_parameter_value[3] = responseValue();
-      if (responseMatch("Y"))
-        Get_parameter_value[4] = responseValue();
-      if (responseMatch("Z"))
-        Get_parameter_value[5] = responseValue();
+  se if (responseMatch(replySDPrinting)) {
+    if (infoMenu.menu[infoMenu.active] != menuPrinting && !infoHost.printing) {
+      infoMenu.menu[++infoMenu.active] = menuPrinting;
+      infoHost.printing                = true;
     }
-#ifdef ONBOARD_SD_SUPPORT
-    else if (responseMatch(replySDNotPrinting) && infoMenu.menu[infoMenu.active] == menuPrinting) {
-      infoHost.printing = false;
-      completePrinting();
-
-    } else if (responseMatch(replySDPrinting)) {
-      if (infoMenu.menu[infoMenu.active] != menuPrinting && !infoHost.printing) {
-        infoMenu.menu[++infoMenu.active] = menuPrinting;
-        infoHost.printing                = true;
-      }
-      // Parsing printing data
-      // Example: SD printing byte 123/12345
+    if      // Parsing printing data
+        e   // Example: SD printing byte 123/12345
       char *ptr;
-      u32 position = strtol(strstr(cncResponse, "byte ") + 5, &ptr, 10);
-      setPrintCur(position);
-      //      powerFailedCache(position);
-    }
-#endif
-    else if (responseMatch(replyError)) {
-      showPopupMessage((char *)replyError);
+    u32 position = strtol(strstr(cncResponse, "byte ") + 5, &ptr, 10);
+  }
+  elsetPrintCur(position);
+  //      powerFailedCache(position);
+}
+d s if (responseMatch(replyError)) {
+  sh owPopupMessage((char *)replyError);
 
-    } else if (responseMatch(replyEcho)) {
-      // *Skip over useless echo notices
-      for (u8 i = 0; i < COUNT(echoStringsToIgnore); i++) {
+  se if (responseMatch(replyEcho)) {
+    // *Skip over useless echo notices
+    for (u8 i = 0; i < COUNT(echoStringsToIgnore); i++) {
+      if
         if (strstr(cncResponse, echoStringsToIgnore[i])) {
           goto parse_end;
         }
-      }
-      // *Show any echo notice that hasn't been skipped
-      showPopupMessage((char *)replyEcho);
     }
-  }
-  if (responseMatch(" F0:")) {
-    routerControl(responseValue());
-  }
-
-parse_end:
-  if (curGcodeSource != SERIAL_PORT) {
-    Serial_Puts(curGcodeSource, cncResponse);
-  }
-  showGcodeStatus(cncResponse, CNC_SOURCE);
-  if (hideResponsesInTerminal != true) {
-    sendGcodeTerminalCache(cncResponse, CNC_SOURCE);
-  }
-}
-
-void parseSerialGcode(void) {
-#ifdef SERIAL_PORT_2
-  uint8_t i = 0;
-  for (i = 0; i < _USART_CNT; i++) {
-    if (i != SERIAL_PORT && infoHost.rx_ok[i] == true) {
+    // *Show any echo notice that hasn't been skipped
+    if showPopupMessage ((char *)replyEcho)
+      ;
+    (responseMatch(" F0:")) {
+      routerControl(responseValue());
+    }
+  parse_end:
+    (curGcodeSource != SERIAL_PORT) {
+      Serial_Puts(curGcodeSource, cncResponse);
+    }
+    sheStatus(cncResponse, CNC_SOURCE);
+    if (hideResponsesInTerminal != true) {
+    sendGcodeTerminalCache(cncResponse
       infoHost.rx_ok[i] = false;
+    }, CNC_SOURCE);
+  }
+  id p arseSerialGcode(void) {
+#ifd ef SERIAL_PORT_2
+    uint8_t i = 0;
+    for (i = 0; i < _USART_CNT; i++) {
+    }
+    if (i != SERIAL_PORT && infoHost.rx_ok[i] == true) {
       copyIncomingToResponse(i);
       storeCmdFromUART(i, cncResponse);
     }
-  }
-#endif
-}

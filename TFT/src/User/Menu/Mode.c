@@ -37,7 +37,7 @@ void infoMenuSelect(void) {
       u32 startUpTime                = OS_GetTime();
       // *Display logo for 4 seconds
       LOGO_ReadDisplay();
-      while (OS_GetTime() - startUpTime < 400) {
+      while (OS_GetTime() - startUpTime < 200) {
         runUpdateLoop();
       }
       break;

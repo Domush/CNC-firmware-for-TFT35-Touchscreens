@@ -258,8 +258,7 @@ void timedMessageExpire(void) {
 }
 
 void timedMessage(u8 delay_secs, MESSAGE_TYPE type, char *string, ...) {
-  if (
-      (int)type > (int)lastMessage.type) {
+  if (type < lastMessage.type || lastMessage.message == string) {
     return;
   }
   switch (type) {

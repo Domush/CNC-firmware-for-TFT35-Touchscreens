@@ -223,9 +223,9 @@ void sendGcodeTerminalCache(char *serial_text, COMMAND_SOURCE src) {
 }
 
 #define CURSOR_START_X 0
-#define CURSOR_END_X LCD_WIDTH
+#define CURSOR_END_X   LCD_WIDTH
 #define CURSOR_START_Y (BYTE_HEIGHT * 2)
-#define CURSOR_END_Y LCD_HEIGHT
+#define CURSOR_END_Y   LCD_HEIGHT
 void menuTerminal(void) {
   const GUI_RECT terminalRect = {0, 0, LCD_WIDTH, LCD_HEIGHT};
   CHAR_INFO info;
@@ -278,8 +278,6 @@ void menuTerminal(void) {
   GUI_RestoreColorDefault();
 }
 
-static char *last_rcv_text;
-static char *last_sent_text;
 /**
  * showGcodeStatus.
  *
@@ -291,6 +289,8 @@ static char *last_sent_text;
  * @return	void
  */
 void showGcodeStatus(char *serial_text, COMMAND_SOURCE src) {
+  static char *lastReceivedText;
+  static char *lastSentText;
   // *Disable on pages that need the extra space
   if (infoMenu.menu[infoMenu.active] == menuSettings ||
       infoMenu.menu[infoMenu.active] == menuFeatureSettings ||
@@ -332,20 +332,20 @@ void showGcodeStatus(char *serial_text, COMMAND_SOURCE src) {
   }
 
   if (src) {   // *If incoming (Rcv), then display text in the Rcv section of the gcode status
-    if (last_rcv_text == final_text) {
-      return;   // *Don't update if the message hasn't changed since (prevents flickering)
+    if (lastReceivedText == final_text) {
+      return;   // *Don't update if the message hasn't changed (prevents flickering)
     } else {
-      last_rcv_text = final_text;
+      lastReceivedText = final_text;
     }
     begin_x = (LCD_WIDTH / 3) * 2;
     end_x   = LCD_WIDTH;
     width_x = (LCD_WIDTH / 3) - BYTE_WIDTH - BYTE_WIDTH * strlen(prefix[src]);
 
   } else {   // *else display text in the Sent section
-    if (last_sent_text == final_text) {
+    if (lastSentText == final_text) {
       return;   // *Don't update if the message hasn't changed since (prevents flickering)
     } else {
-      last_sent_text = final_text;
+      lastSentText = final_text;
     }
     begin_x = 0;
     end_x   = (LCD_WIDTH / 3) * 2;
