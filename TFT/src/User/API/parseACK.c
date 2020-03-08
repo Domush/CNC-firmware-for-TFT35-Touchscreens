@@ -58,26 +58,37 @@ static float ack_second_value() {
 }
  */
 void showPopupMessage(char *info) {
-  popup_title   = "Notice:";
+  const char ch[2] = "\n";
+  char *token;
+  popup_title   = info;
   popup_message = "No reason given. Continue when ready.";
   if (infoMenu.menu[infoMenu.active] == parametersetting) return;
   if (infoMenu.menu[infoMenu.active] == menuTerminal) return;
   if (strstr((const char *)cncResponse + responseIndex, "//action:prompt_end")) {
-    setPrintPause(true);
-    popup_title   = info;
-    popup_message = &cncResponse[responseIndex];
-    if (infoMenu.menu[infoMenu.active] != menuM0Pause) {
-      infoMenu.menu[++infoMenu.active] = menuM0Pause;
+    if (strstr((const char *)cncResponse + responseIndex, "M0/1")) {
+      setPrintPause(true);
+      popup_message = &cncResponse[responseIndex];
+      if (infoMenu.menu[infoMenu.active] != menuM0Pause) {
+        infoMenu.menu[++infoMenu.active] = menuM0Pause;
+      }
+    } else {
+      char *prompt_text = strstr((const char *)cncResponse + responseIndex, "//action:prompt_end") + 19;
+      // *get the first token
+      token         = strtok(prompt_text, ch);
+      popup_message = token;
+      popupReminder((u8 *)popup_title, (u8 *)popup_message);
     }
+  } else if (strstr((const char *)cncResponse + responseIndex, "//action:notification")) {
+    char *prompt_text = strstr((const char *)cncResponse + responseIndex, "//action:notification") + 21;
+    // *get the first token
+    token         = strtok(prompt_text, ch);
+    popup_message = token;
+    popupReminder((u8 *)popup_title, (u8 *)popup_message);
   } else if (strstr((const char *)cncResponse + responseIndex, "echo:")) {
-    popup_title = info;
     // *Break it up into useful sections
-    const char ch[2] = "\n";
-    char *token;
     char *prompt_text = strstr((const char *)cncResponse + responseIndex, "echo:") + 5;
     // *get the first token
-    token = strtok(prompt_text, ch);
-    // *walk through other tokens
+    token         = strtok(prompt_text, ch);
     popup_message = token;
 
     popupReminder((u8 *)popup_title, (u8 *)popup_message);
@@ -205,10 +216,11 @@ void parseGcodeResponse(void) {
       //      powerFailedCache(position);
     }
 #endif
-    else if (responseMatch(replyError)) {
-      showPopupMessage((char *)replyError);
-
-    } else if (responseMatch(replyEcho)) {
+    else if (responseMatch("//action:")) {
+      showPopupMessage((char *)"Notice:");
+    } else if (responseMatch("error:")) {
+      showPopupMessage((char *)"Error detected:");
+    } else if (responseMatch("echo:")) {
       // *Skip over useless echo notices
       for (u8 i = 0; i < COUNT(echoStringsToIgnore); i++) {
         if (strstr(cncResponse, echoStringsToIgnore[i])) {
@@ -216,7 +228,7 @@ void parseGcodeResponse(void) {
         }
       }
       // *Show any echo notice that hasn't been skipped
-      showPopupMessage((char *)replyEcho);
+      showPopupMessage((char *)"CNC message:");
     }
   }
   if (responseMatch(" F0:")) {

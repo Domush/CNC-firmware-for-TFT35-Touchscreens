@@ -67,9 +67,9 @@ void GUI_RestoreColorDefault(void) {
 }
 
 static const MENUITEMS *curMenuItems = NULL;   //current menu
-
 static const LISTITEMS *curListItems = NULL;   //current listmenu
 
+static int lastGcodeQueueValue = 0;
 static bool isListview;
 static u16 queueTextColor = MAT_LOWWHITE;
 
@@ -214,10 +214,10 @@ GUI_POINT getIconStartPoint(int index) {
 }
 
 void gcodeQueueStatus(void) {
-  if (!infoHost.connected) {
+  extern QUEUE gcodeCommand;
+  if (!infoHost.connected || lastGcodeQueueValue == gcodeCommand.count) {
     return;
   }
-  extern QUEUE gcodeCommand;
   if (gcodeCommand.count >= GCODE_QUEUE_MAX) {
     timedMessage(3, TIMED_CRITICAL, "gCode queue is full!");
     queueTextColor = MAT_RED;
@@ -306,12 +306,14 @@ void drawXYZ(void) {
   if (infoHost.connected) {
     COORDINATE curGantryCoords;
     coordinateGetAll(&curGantryCoords);
-
-    // *gCode queue size
-    GUI_SetColor(MAT_LOWWHITE);
-    GUI_DispString(0, BYTE_HEIGHT * 2, (u8 *)"Q:");
-    GUI_SetColor(queueTextColor);
-    GUI_DispDec(2 * BYTE_WIDTH, BYTE_HEIGHT * 2, gcodeCommand.count, 3, LEFT);
+    extern QUEUE gcodeCommand;
+    if (lastGcodeQueueValue != gcodeCommand.count) {
+      // *gCode queue size
+      GUI_SetColor(MAT_LOWWHITE);
+      GUI_DispString(0, BYTE_HEIGHT * 2, (u8 *)"Q:");
+      GUI_SetColor(queueTextColor);
+      GUI_DispDec(2 * BYTE_WIDTH, BYTE_HEIGHT * 2, gcodeCommand.count, 3, LEFT);
+    }
     // *X location [X_MIN_POS - X_MAX_POS] (set in Configuration.c)
     GUI_SetColor(MAT_RED);
     GUI_DispString((LCD_WIDTH / 3) * 0 + 6 * BYTE_WIDTH, BYTE_HEIGHT * 2, (u8 *)"X:");

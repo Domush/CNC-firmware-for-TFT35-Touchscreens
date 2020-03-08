@@ -35,10 +35,9 @@ void infoMenuSelect(void) {
       GUI_SetBkColor(BACKGROUND_COLOR);
       infoMenu.menu[infoMenu.active] = menuMain;   // Main menu as default screen on boot
       u32 startUpTime                = OS_GetTime();
-      // *Display logo for 4 seconds
       LOGO_ReadDisplay();
+      // *Display logo for 2 seconds
       while (OS_GetTime() - startUpTime < 200) {
-        runUpdateLoop();
       }
       break;
     }
@@ -135,5 +134,9 @@ void menuMode(void) {
 
   MODEselect = 0;
   infoMenuSelect();
+  runUpdateLoop();
+  while (infoMenu.menu[infoMenu.active] == menuMain) {
+    runUpdateLoop();
+  }
 }
 #endif
