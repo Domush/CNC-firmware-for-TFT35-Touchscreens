@@ -340,26 +340,9 @@ void drawXYZ(void) {
   }
 }
 
-void processGcode(void) {
-  getGcodeFromFile();     //Get Gcode command from the file to be printed
-  sendGcodeCommands();    //Parse and send Gcode commands in the queue
-  parseGcodeResponse();   //Parse the received slave response information
-  parseSerialGcode();     //Parse the received Gcode from other UART, such as: ESP3D, etc...
-#if defined ONBOARD_SD_SUPPORT && !defined M27_AUTOREPORT
-  checkJobStatus();   //Check if there is a SD or USB print running.
-#endif
-
-  // #ifdef U_DISK_SUPPROT
-  //   USBH_Process(&USB_OTG_Core, &USB_Host);
-  // #endif
-
-  // #if LCD_ENCODER_SUPPORT
-  //   loopCheckMode();
-  // #endif
-
-  // #ifdef FIL_RUNOUT_PIN
-  //   loopFILRunoutDetect();
-  // #endif
+void runUpdateLoop(void) {
+  processGcode();
+  updateScreen();
 }
 
 void updateScreen(void) {
@@ -369,7 +352,24 @@ void updateScreen(void) {
   updateGantryLocation();
 }
 
-void runUpdateLoop(void) {
-  processGcode();
-  updateScreen();
+void processGcode(void) {
+  getGcodeFromFile();     //Get Gcode command from the file to be printed
+  sendGcodeCommands();    //Parse and send Gcode commands in the queue
+  parseGcodeResponse();   //Parse the received slave response information
+  parseSerialGcode();     //Parse the received Gcode from other UART, such as: ESP3D, etc...
+#if defined ONBOARD_SD_SUPPORT && !defined M27_AUTOREPORT
+  checkJobStatus();   //Check if there is a SD or USB print running.
+#endif
+
+#ifdef U_DISK_SUPPORT
+  USBH_Process(&USB_OTG_Core, &USB_Host);
+#endif
+
+#if LCD_ENCODER_SUPPORT
+  loopCheckMode();
+#endif
+
+#ifdef FIL_RUNOUT_PIN
+  loopFILRunoutDetect();
+#endif
 }

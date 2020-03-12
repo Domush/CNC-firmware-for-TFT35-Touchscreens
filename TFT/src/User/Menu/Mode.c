@@ -17,7 +17,7 @@ void Serial_ReSourceInit(void) {
 #endif
   Serial_Init(infoSettings.baudrate);
 
-#ifdef U_DISK_SUPPROT
+#ifdef U_DISK_SUPPORT
   USBH_Init(&USB_OTG_Core, USB_OTG_FS_CORE_ID, &USB_Host, &USBH_MSC_cb, &USR_cb);
 #endif
 }
@@ -39,14 +39,15 @@ void infoMenuSelect(void) {
       // *Display logo for 2 seconds
       while (OS_GetTime() - startUpTime < 200) {
       }
+      runUpdateLoop();
       break;
     }
 
 #ifdef ST7920_SPI
     case LCD12864:
-#ifdef LED_color_PIN
+  #ifdef LED_color_PIN
       LED_color_PIN_IPN();   ////
-#endif
+  #endif
       GUI_SetColor(ST7920_FNCOLOR);
       GUI_SetBkColor(ST7920_BKCOLOR);
       infoMenu.menu[infoMenu.active] = menuST7920;
@@ -57,7 +58,7 @@ void infoMenuSelect(void) {
 
 #if LCD_ENCODER_SUPPORT
 void menuMode(void) {
-#if defined(ST7920_BANNER_TEXT)
+  #if defined(ST7920_BANNER_TEXT)
   RADIO modeRadio = {
       {(u8*)"Serial Touch Screen", (u8*)ST7920_BANNER_TEXT, (u8*)"LCD2004 Simulator"},
       SIMULATOR_XSTART,
@@ -65,7 +66,7 @@ void menuMode(void) {
       BYTE_HEIGHT * 2,
       2,
       0};
-#else
+  #else
   RADIO modeRadio = {
       {(u8*)"Serial Touch Screen", (u8*)"12864 Simulator", (u8*)"LCD2004 Simulator"},
       SIMULATOR_XSTART,
@@ -73,7 +74,7 @@ void menuMode(void) {
       BYTE_HEIGHT * 2,
       2,
       0};
-#endif
+  #endif
 
   MKEY_VALUES key_num = MKEY_IDLE;
   MODEselect          = 1;

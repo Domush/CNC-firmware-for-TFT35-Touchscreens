@@ -334,7 +334,7 @@ MENUITEMS sourceSelItems = {
 #ifdef ONBOARD_SD_SUPPORT
         {ICON_BSD_SOURCE, LABEL_ONBOARDSD},
 #endif
-#ifdef U_DISK_SUPPROT
+#ifdef U_DISK_SUPPORT
         {ICON_U_DISK, LABEL_U_DISK},
 #else
         {ICON_BACKGROUND, LABEL_BACKGROUND},
@@ -367,12 +367,12 @@ void menuPrint(void) {
         goto selectEnd;
 #endif
 
-#ifdef U_DISK_SUPPROT
-#ifdef ONBOARD_SD_SUPPORT
+#ifdef U_DISK_SUPPORT
+  #ifdef ONBOARD_SD_SUPPORT
       case KEY_ICON_4:
-#else
+  #else
       case KEY_ICON_3:
-#endif
+  #endif
         infoFile.source                  = TFT_UDISK;
         infoMenu.menu[++infoMenu.active] = menuPrintFromSource;
         infoMenu.menu[++infoMenu.active] = menuPowerOff;
