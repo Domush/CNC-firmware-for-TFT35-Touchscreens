@@ -124,13 +124,13 @@ void parseGcodeResponse(void) {
     } else {
       if (OS_GetTime() - connectionRetryDelay > connectionRetryTime) {
         connectionRetryTime = OS_GetTime();
-        mustStoreCmd("M105\n");   // *Attempts to send a "wake up" packet to trigger a connection
+        mustStoreCmd("M114\n");   // *Attempts to send a "wake up" packet to trigger a connection
       }
       goto parse_end;
     }
-    // #ifdef AUTO_SAVE_LOAD_LEVELING_VALUE
-    // storeCmd("M420 S1\n");
-    // #endif
+#ifdef AUTO_SAVE_LOAD_LEVELING_VALUE
+    storeCmd("M420 S1\n");
+#endif
   }
 
   // GCode command response

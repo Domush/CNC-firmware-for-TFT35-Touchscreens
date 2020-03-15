@@ -28,7 +28,7 @@
 #include "delay.h"
 #include "variants.h"
 
-#ifdef U_DISK_SUPPROT
+#ifdef U_DISK_SUPPORT
 /**
   * @brief  USB_OTG_BSP_Init
   *         Initializes BSP configurations
@@ -38,14 +38,14 @@
 
 void USB_OTG_BSP_Init(USB_OTG_CORE_HANDLE* pdev) {
   // EXTI_InitTypeDef EXTI_InitStructure;
-#ifdef STM32F10X_CL
+  #ifdef STM32F10X_CL
 
   RCC_OTGFSCLKConfig(RCC_OTGFSCLKSource_PLLVCO_Div3);
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_OTG_FS, ENABLE);
 
-#else   // USE_STM322xG_EVAL
+  #else   // USE_STM322xG_EVAL
   GPIO_InitTypeDef GPIO_InitStructure;
-#ifdef USE_USB_OTG_FS
+    #ifdef USE_USB_OTG_FS
 
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
 
@@ -63,9 +63,9 @@ void USB_OTG_BSP_Init(USB_OTG_CORE_HANDLE* pdev) {
 
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
   RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_OTG_FS, ENABLE);
-#else   // USE_USB_OTG_HS
+    #else   // USE_USB_OTG_HS
 
-#ifdef USE_ULPI_PHY   // ULPI
+      #ifdef USE_ULPI_PHY   // ULPI
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB |
                              RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOH |
                              RCC_AHB1Periph_GPIOI,
@@ -130,7 +130,7 @@ void USB_OTG_BSP_Init(USB_OTG_CORE_HANDLE* pdev) {
                              RCC_AHB1Periph_OTG_HS_ULPI,
                          ENABLE);
 
-#else
+      #else
 
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
 
@@ -151,9 +151,9 @@ void USB_OTG_BSP_Init(USB_OTG_CORE_HANDLE* pdev) {
 
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_OTG_HS, ENABLE);
 
-#endif
-#endif   // USB_OTG_HS
-#endif   // USE_STM322xG_EVAL
+      #endif
+    #endif   // USB_OTG_HS
+  #endif     // USE_STM322xG_EVAL
 
   Delay_init(F_CPUM);
 }
@@ -167,16 +167,16 @@ void USB_OTG_BSP_Init(USB_OTG_CORE_HANDLE* pdev) {
 void USB_OTG_BSP_EnableInterrupt(USB_OTG_CORE_HANDLE* pdev) {
   NVIC_InitTypeDef NVIC_InitStructure;
 
-#ifdef USE_USB_OTG_HS
+  #ifdef USE_USB_OTG_HS
   NVIC_InitStructure.NVIC_IRQChannel = OTG_HS_IRQn;
-#else
+  #else
   NVIC_InitStructure.NVIC_IRQChannel = OTG_FS_IRQn;
-#endif
+  #endif
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
   NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 0;
   NVIC_InitStructure.NVIC_IRQChannelCmd                = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
-#ifdef USB_OTG_HS_DEDICATED_EP1_ENABLED
+  #ifdef USB_OTG_HS_DEDICATED_EP1_ENABLED
   NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
   NVIC_InitStructure.NVIC_IRQChannel                   = OTG_HS_EP1_OUT_IRQn;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
@@ -190,7 +190,7 @@ void USB_OTG_BSP_EnableInterrupt(USB_OTG_CORE_HANDLE* pdev) {
   NVIC_InitStructure.NVIC_IRQChannelSubPriority        = 1;
   NVIC_InitStructure.NVIC_IRQChannelCmd                = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
-#endif
+  #endif
 }
 
 /**
@@ -245,11 +245,11 @@ void USB_OTG_BSP_mDelay(const uint32_t msec) {
   Delay_ms(msec);
 }
 
-#ifdef USE_USB_OTG_FS
+  #ifdef USE_USB_OTG_FS
 void OTG_FS_IRQHandler(void)
-#else
+  #else
 void OTG_HS_IRQHandler(void)
-#endif
+  #endif
 {
   USBH_OTG_ISR_Handler(&USB_OTG_Core);
 }

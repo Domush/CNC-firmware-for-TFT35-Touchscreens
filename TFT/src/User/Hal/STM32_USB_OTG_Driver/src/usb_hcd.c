@@ -25,7 +25,7 @@
 #include "usb_conf.h"
 #include "usb_bsp.h"
 
-#ifdef U_DISK_SUPPROT
+#ifdef U_DISK_SUPPORT
 
 /** @addtogroup USB_OTG_DRIVER
   * @{
@@ -95,7 +95,7 @@ uint32_t HCD_Init(USB_OTG_CORE_HANDLE *pdev,
   pdev->host.hc[0].max_packet = 8;
 
   USB_OTG_SelectCore(pdev, coreID);
-#ifndef DUAL_ROLE_MODE_ENABLED
+  #ifndef DUAL_ROLE_MODE_ENABLED
   USB_OTG_DisableGlobalInt(pdev);
   USB_OTG_CoreInit(pdev);
 
@@ -103,7 +103,7 @@ uint32_t HCD_Init(USB_OTG_CORE_HANDLE *pdev,
   USB_OTG_SetCurrentMode(pdev, HOST_MODE);
   USB_OTG_CoreInitHost(pdev);
   USB_OTG_EnableGlobalInt(pdev);
-#endif
+  #endif
 
   return 0;
 }

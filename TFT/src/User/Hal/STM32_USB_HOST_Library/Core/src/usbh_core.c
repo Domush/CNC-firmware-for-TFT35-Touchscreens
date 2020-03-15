@@ -28,7 +28,7 @@
 #include "usbh_core.h"
 #include "usb_hcd_int.h"
 
-#ifdef U_DISK_SUPPROT
+#ifdef U_DISK_SUPPORT
 
 /** @addtogroup USBH_LIB
   * @{
@@ -310,11 +310,11 @@ void USBH_Process(USB_OTG_CORE_HANDLE *pdev, USBH_HOST *phost) {
 
         /* user callback for end of device basic enumeration */
         phost->usr_cb->EnumerationDone();
-#if defined(USB_OTG_FS_LOW_PWR_MGMT_SUPPORT) || defined(USB_OTG_HS_LOW_PWR_MGMT_SUPPORT)
+  #if defined(USB_OTG_FS_LOW_PWR_MGMT_SUPPORT) || defined(USB_OTG_HS_LOW_PWR_MGMT_SUPPORT)
         phost->gState = HOST_SUSPENDED;
-#else
+  #else
         phost->gState = HOST_USR_INPUT;
-#endif /* LOW_PWR_MGMT_SUPPORT*/
+  #endif /* LOW_PWR_MGMT_SUPPORT*/
       }
       break;
 
@@ -350,7 +350,7 @@ void USBH_Process(USB_OTG_CORE_HANDLE *pdev, USBH_HOST *phost) {
       /* process control transfer state machine */
       USBH_HandleControl(pdev, phost);
       break;
-#if defined(USB_OTG_FS_LOW_PWR_MGMT_SUPPORT) || defined(USB_OTG_HS_LOW_PWR_MGMT_SUPPORT)
+  #if defined(USB_OTG_FS_LOW_PWR_MGMT_SUPPORT) || defined(USB_OTG_HS_LOW_PWR_MGMT_SUPPORT)
     case HOST_SUSPENDED:
       if (USBH_SetDeviceFeature(pdev, phost, FEATURE_SELECTOR_DEVICE, 0) == USBH_OK) {
         suspend_flag = 1;
@@ -368,7 +368,7 @@ void USBH_Process(USB_OTG_CORE_HANDLE *pdev, USBH_HOST *phost) {
         phost->gState = HOST_USR_INPUT;
       }
       break;
-#endif /* USE_HOST_MODE */
+  #endif /* USE_HOST_MODE */
     case HOST_ERROR_STATE:
       /* Re-Initialize Host for new Enumeration */
       USBH_DeInit(pdev, phost);
@@ -390,11 +390,11 @@ void USBH_Process(USB_OTG_CORE_HANDLE *pdev, USBH_HOST *phost) {
 
       /* Re-Initialize Host for new Enumeration */
       HCD_Init(pdev,
-#ifdef USE_USB_OTG_FS
+  #ifdef USE_USB_OTG_FS
                USB_OTG_FS_CORE_ID
-#else
+  #else
                USB_OTG_HS_CORE_ID
-#endif
+  #endif
       );
 
       break;

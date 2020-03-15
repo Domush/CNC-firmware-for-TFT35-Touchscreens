@@ -39,61 +39,61 @@
 #include "usbh_core.h"
 #include "usb_log.h"
 
-#ifdef U_DISK_SUPPROT
-/** @addtogroup USBH_LIB
+#ifdef U_DISK_SUPPORT
+  /** @addtogroup USBH_LIB
   * @{
   */
 
-/** @addtogroup USBH_CLASS
+  /** @addtogroup USBH_CLASS
   * @{
   */
 
-/** @addtogroup USBH_MSC_CLASS
+  /** @addtogroup USBH_MSC_CLASS
   * @{
   */
 
-/** @defgroup USBH_MSC_CORE
+  /** @defgroup USBH_MSC_CORE
   * @brief    This file includes the mass storage related functions
   * @{
   */
 
-/** @defgroup USBH_MSC_CORE_Private_TypesDefinitions
+  /** @defgroup USBH_MSC_CORE_Private_TypesDefinitions
   * @{
   */
-/**
+  /**
   * @}
   */
 
-/** @defgroup USBH_MSC_CORE_Private_Defines
+  /** @defgroup USBH_MSC_CORE_Private_Defines
   * @{
   */
-#define USBH_MSC_ERROR_RETRY_LIMIT 10
-/**
+  #define USBH_MSC_ERROR_RETRY_LIMIT 10
+  /**
   * @}
   */
 
-/** @defgroup USBH_MSC_CORE_Private_Macros
+  /** @defgroup USBH_MSC_CORE_Private_Macros
   * @{
   */
-/**
+  /**
   * @}
   */
 
-/** @defgroup USBH_MSC_CORE_Private_Variables
+  /** @defgroup USBH_MSC_CORE_Private_Variables
   * @{
   */
-#ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
-#if defined(__ICCARM__) /*!< IAR Compiler */
-#pragma data_alignment = 4
-#endif
-#endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
+  #ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
+    #if defined(__ICCARM__) /*!< IAR Compiler */
+      #pragma data_alignment = 4
+    #endif
+  #endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
 __ALIGN_BEGIN MSC_Machine_TypeDef MSC_Machine __ALIGN_END;
 
-#ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
-#if defined(__ICCARM__) /*!< IAR Compiler */
-#pragma data_alignment = 4
-#endif
-#endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
+  #ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
+    #if defined(__ICCARM__) /*!< IAR Compiler */
+      #pragma data_alignment = 4
+    #endif
+  #endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
 __ALIGN_BEGIN USB_Setup_TypeDef MSC_Setup __ALIGN_END;
 uint8_t MSCErrorCount = 0;
 

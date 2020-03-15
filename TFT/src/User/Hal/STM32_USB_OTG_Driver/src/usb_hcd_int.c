@@ -24,14 +24,14 @@
 #include "usb_defines.h"
 #include "usb_hcd_int.h"
 
-#ifdef U_DISK_SUPPROT
+#ifdef U_DISK_SUPPORT
 
-#if defined(__CC_ARM) /*!< ARM Compiler */
-#pragma O0
-#elif defined(__GNUC__) /*!< GNU Compiler */
-#pragma GCC optimize("O0")
+  #if defined(__CC_ARM) /*!< ARM Compiler */
+    #pragma O0
+  #elif defined(__GNUC__) /*!< GNU Compiler */
+    #pragma GCC optimize("O0")
 
-#endif /* __CC_ARM */
+  #endif /* __CC_ARM */
 
 /** @addtogroup USB_OTG_DRIVER
 * @{
@@ -220,9 +220,9 @@ static uint32_t USB_OTG_USBH_handle_Disconnect_ISR(USB_OTG_CORE_HANDLE *pdev) {
 
   return 1;
 }
-#if defined(__ICCARM__) /*!< IAR Compiler */
-#pragma optimize = none
-#endif /* __CC_ARM */
+  #if defined(__ICCARM__) /*!< IAR Compiler */
+    #pragma optimize = none
+  #endif /* __CC_ARM */
 /**
 * @brief  USB_OTG_USBH_handle_nptxfempty_ISR
 *         Handles non periodic tx fifo empty.
@@ -266,9 +266,9 @@ static uint32_t USB_OTG_USBH_handle_nptxfempty_ISR(USB_OTG_CORE_HANDLE *pdev) {
 
   return 1;
 }
-#if defined(__ICCARM__) /*!< IAR Compiler */
-#pragma optimize = none
-#endif /* __CC_ARM */
+  #if defined(__ICCARM__) /*!< IAR Compiler */
+    #pragma optimize = none
+  #endif /* __CC_ARM */
 /**
 * @brief  USB_OTG_USBH_handle_ptxfempty_ISR
 *         Handles periodic tx fifo empty
@@ -312,15 +312,15 @@ static uint32_t USB_OTG_USBH_handle_ptxfempty_ISR(USB_OTG_CORE_HANDLE *pdev) {
   return 1;
 }
 
-/**
+  /**
 * @brief  USB_OTG_USBH_handle_port_ISR
 *         This function determines which interrupt conditions have occurred
 * @param  pdev: Selected device
 * @retval status
 */
-#if defined(__ICCARM__) /*!< IAR Compiler */
-#pragma optimize = none
-#endif /* __CC_ARM */
+  #if defined(__ICCARM__) /*!< IAR Compiler */
+    #pragma optimize = none
+  #endif /* __CC_ARM */
 static uint32_t USB_OTG_USBH_handle_port_ISR(USB_OTG_CORE_HANDLE *pdev) {
   USB_OTG_HPRT0_TypeDef hprt0;
   USB_OTG_HPRT0_TypeDef hprt0_dup;
@@ -398,9 +398,9 @@ static uint32_t USB_OTG_USBH_handle_port_ISR(USB_OTG_CORE_HANDLE *pdev) {
 
   return retval;
 }
-#if defined(__ICCARM__) /*!< IAR Compiler */
-#pragma optimize = none
-#endif /* __CC_ARM */
+  #if defined(__ICCARM__) /*!< IAR Compiler */
+    #pragma optimize = none
+  #endif /* __CC_ARM */
 /**
 * @brief  USB_OTG_USBH_handle_hc_n_Out_ISR
 *         Handles interrupt for a specific Host Channel
@@ -503,9 +503,9 @@ uint32_t USB_OTG_USBH_handle_hc_n_Out_ISR(USB_OTG_CORE_HANDLE *pdev, uint32_t nu
 
   return 1;
 }
-#if defined(__ICCARM__) /*!< IAR Compiler */
-#pragma optimize = none
-#endif /* __CC_ARM */
+  #if defined(__ICCARM__) /*!< IAR Compiler */
+    #pragma optimize = none
+  #endif /* __CC_ARM */
 /**
 * @brief  USB_OTG_USBH_handle_hc_n_In_ISR
 *         Handles interrupt for a specific Host Channel
@@ -629,15 +629,15 @@ uint32_t USB_OTG_USBH_handle_hc_n_In_ISR(USB_OTG_CORE_HANDLE *pdev, uint32_t num
   return 1;
 }
 
-/**
+  /**
 * @brief  USB_OTG_USBH_handle_rx_qlvl_ISR
 *         Handles the Rx Status Queue Level Interrupt
 * @param  pdev: Selected device
 * @retval status
 */
-#if defined(__ICCARM__) /*!< IAR Compiler */
-#pragma optimize = none
-#endif /* __CC_ARM */
+  #if defined(__ICCARM__) /*!< IAR Compiler */
+    #pragma optimize = none
+  #endif /* __CC_ARM */
 static uint32_t USB_OTG_USBH_handle_rx_qlvl_ISR(USB_OTG_CORE_HANDLE *pdev) {
   USB_OTG_GRXFSTS_TypeDef grxsts;
   USB_OTG_GINTMSK_TypeDef intmsk;
@@ -691,15 +691,15 @@ static uint32_t USB_OTG_USBH_handle_rx_qlvl_ISR(USB_OTG_CORE_HANDLE *pdev) {
   return 1;
 }
 
-/**
+  /**
 * @brief  USB_OTG_USBH_handle_IncompletePeriodicXfer_ISR
 *         Handles the incomplete Periodic transfer Interrupt
 * @param  pdev: Selected device
 * @retval status
 */
-#if defined(__ICCARM__) /*!< IAR Compiler */
-#pragma optimize = none
-#endif /* __CC_ARM */
+  #if defined(__ICCARM__) /*!< IAR Compiler */
+    #pragma optimize = none
+  #endif /* __CC_ARM */
 static uint32_t USB_OTG_USBH_handle_IncompletePeriodicXfer_ISR(USB_OTG_CORE_HANDLE *pdev) {
   USB_OTG_GINTSTS_TypeDef gintsts;
   USB_OTG_HCCHAR_TypeDef hcchar;

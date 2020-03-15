@@ -71,16 +71,16 @@ MassStorageParameter_TypeDef USBH_MSC_Param;
   */
 
 #ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
-#if defined(__ICCARM__) /*!< IAR Compiler */
-#pragma data_alignment = 4
-#endif
+  #if defined(__ICCARM__) /*!< IAR Compiler */
+    #pragma data_alignment = 4
+  #endif
 #endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
 __ALIGN_BEGIN uint8_t USBH_DataInBuffer[512] __ALIGN_END;
 
 #ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
-#if defined(__ICCARM__) /*!< IAR Compiler */
-#pragma data_alignment = 4
-#endif
+  #if defined(__ICCARM__) /*!< IAR Compiler */
+    #pragma data_alignment = 4
+  #endif
 #endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
 __ALIGN_BEGIN uint8_t USBH_DataOutBuffer[512] __ALIGN_END;
 /**
@@ -106,7 +106,7 @@ __ALIGN_BEGIN uint8_t USBH_DataOutBuffer[512] __ALIGN_END;
   * @{
   */
 
-#ifdef U_DISK_SUPPROT
+#ifdef U_DISK_SUPPORT
 /**
   * @brief  USBH_MSC_TestUnitReady
   *         Issues 'Test unit ready' command to the device. Once the response

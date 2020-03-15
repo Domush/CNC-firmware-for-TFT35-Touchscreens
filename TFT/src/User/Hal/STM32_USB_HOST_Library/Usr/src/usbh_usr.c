@@ -27,20 +27,20 @@
 #include "usb_log.h"
 
 #ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
-#if defined(__ICCARM__) /* !< IAR Compiler */
-#pragma data_alignment = 4
-#endif
+  #if defined(__ICCARM__) /* !< IAR Compiler */
+    #pragma data_alignment = 4
+  #endif
 #endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
 __ALIGN_BEGIN USB_OTG_CORE_HANDLE USB_OTG_Core __ALIGN_END;
 
 #ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
-#if defined(__ICCARM__) /* !< IAR Compiler */
-#pragma data_alignment = 4
-#endif
+  #if defined(__ICCARM__) /* !< IAR Compiler */
+    #pragma data_alignment = 4
+  #endif
 #endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
 __ALIGN_BEGIN USBH_HOST USB_Host __ALIGN_END;
 
-#ifdef U_DISK_SUPPROT
+#ifdef U_DISK_SUPPORT
 
 uint8_t u_disk_inserted = 0;
 
@@ -98,15 +98,15 @@ void USBH_USR_Init(void) {
   static uint8_t startup = 0;
 
   if (startup == 0) {
-#ifdef USE_USB_OTG_HS
-#ifdef USE_EMBEDDED_PHY
+  #ifdef USE_USB_OTG_HS
+    #ifdef USE_EMBEDDED_PHY
     LOG_printf((uint8_t *)" USB OTG HS_IN_FS MSC Host");
-#else
+    #else
     LOG_printf((uint8_t *)" USB OTG HS MSC Host");
-#endif
-#else
+    #endif
+  #else
     LOG_printf("USB OTG FS MSC Host");
-#endif
+  #endif
     LOG_printf("> USB Host library started.\n");
     LOG_printf("  USB Host Library v2.2.1");
   }

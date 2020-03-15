@@ -80,7 +80,8 @@ void menuMode(void) {
   MODEselect          = 1;
   bool keyback        = false;
 
-  int16_t nowEncoder = encoderPosition = 0;
+  // int16_t nowEncoder = encoderPosition = 0;
+  int16_t encoderPosition = 0;
   int8_t nowMode = modeRadio.select = infoSettings.mode;
 
   GUI_Clear(BACKGROUND_COLOR);

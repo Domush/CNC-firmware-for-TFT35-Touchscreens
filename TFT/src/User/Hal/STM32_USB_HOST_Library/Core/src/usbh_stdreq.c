@@ -23,52 +23,52 @@
 #include "usbh_ioreq.h"
 #include "usbh_stdreq.h"
 
-#ifdef U_DISK_SUPPROT
-/** @addtogroup USBH_LIB
+#ifdef U_DISK_SUPPORT
+  /** @addtogroup USBH_LIB
 * @{
 */
 
-/** @addtogroup USBH_LIB_CORE
+  /** @addtogroup USBH_LIB_CORE
 * @{
 */
 
-/** @defgroup USBH_STDREQ
+  /** @defgroup USBH_STDREQ
 * @brief This file implements the standard requests for device enumeration
 * @{
 */
 
-/** @defgroup USBH_STDREQ_Private_Defines
+  /** @defgroup USBH_STDREQ_Private_Defines
 * @{
 */
-/**
+  /**
 * @}
 */
 
-/** @defgroup USBH_STDREQ_Private_TypesDefinitions
+  /** @defgroup USBH_STDREQ_Private_TypesDefinitions
 * @{
 */
-/**
+  /**
 * @}
 */
 
-/** @defgroup USBH_STDREQ_Private_Macros
+  /** @defgroup USBH_STDREQ_Private_Macros
 * @{
 */
-/**
+  /**
 * @}
 */
 
-/** @defgroup USBH_STDREQ_Private_Variables
+  /** @defgroup USBH_STDREQ_Private_Variables
 * @{
 */
-/**
+  /**
 * @}
 */
-#ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
-#if defined(__ICCARM__) /*!< IAR Compiler */
-#pragma data_alignment = 4
-#endif
-#endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
+  #ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
+    #if defined(__ICCARM__) /*!< IAR Compiler */
+      #pragma data_alignment = 4
+    #endif
+  #endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
 __ALIGN_BEGIN uint8_t USBH_CfgDesc[CFG_DESC_MAX_SIZE] __ALIGN_END;
 
 /** @defgroup USBH_STDREQ_Private_FunctionPrototypes

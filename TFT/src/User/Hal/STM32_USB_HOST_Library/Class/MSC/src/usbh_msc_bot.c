@@ -27,7 +27,7 @@
 #include "usbh_def.h"
 #include "usb_hcd_int.h"
 
-#ifdef U_DISK_SUPPROT
+#ifdef U_DISK_SUPPORT
 /** @addtogroup USBH_LIB
 * @{
 */
@@ -70,18 +70,18 @@
 * @{
 */
 
-#ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
-#if defined(__ICCARM__) /*!< IAR Compiler */
-#pragma data_alignment = 4
-#endif
-#endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
+  #ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
+    #if defined(__ICCARM__) /*!< IAR Compiler */
+      #pragma data_alignment = 4
+    #endif
+  #endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
 __ALIGN_BEGIN HostCBWPkt_TypeDef USBH_MSC_CBWData __ALIGN_END;
 
-#ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
-#if defined(__ICCARM__) /*!< IAR Compiler */
-#pragma data_alignment = 4
-#endif
-#endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
+  #ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
+    #if defined(__ICCARM__) /*!< IAR Compiler */
+      #pragma data_alignment = 4
+    #endif
+  #endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
 __ALIGN_BEGIN HostCSWPkt_TypeDef USBH_MSC_CSWData __ALIGN_END;
 
 static uint32_t BOTStallErrorCount; /* Keeps count of STALL Error Cases*/
