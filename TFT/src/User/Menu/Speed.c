@@ -23,7 +23,7 @@ const ITEM itemSpeedOverrideIcons[ITEM_SPEEDOVERRIDE_NUM] = {
     {ICON_MOVE, LABEL_PERCENTAGE_SPEED},
 };
 
-static u16 percentage = 100;   // Speed
+static u16 cncSpeedValue = 100;   // Speed
 
 #define ITEM_PERCENT_INCREMENT 3
 const ITEM itemIncrementIcons[ITEM_PERCENT_INCREMENT] = {
@@ -45,7 +45,7 @@ static u8 itemIncrementIndex                         = 1;
  * @return	void
  */
 void setCNCSpeedOverride(u16 percent) {
-  percentage = limitValue(10, percent, 999);
+  cncSpeedValue = limitValue(10, percent, 999);
 }
 
 /**
@@ -53,25 +53,22 @@ void setCNCSpeedOverride(u16 percent) {
  *
  * @version	v1.0.0	Thursday, February 27th, 2020.
  * @global
- * @param	u8	tool
+ * @param	mixed	void
  * @return	mixed
  */
 u16 getCNCSpeedOverride(void) {
-  return percentage;
+  return cncSpeedValue;
 }
 
 void showCNCSpeedOverride(void) {
-  GUI_DispDec(CENTER_X - 3 * BYTE_WIDTH / 2, CENTER_Y, percentage, 3, LEFT);
+  GUI_DispDec(CENTER_X - 3 * BYTE_WIDTH / 2, CENTER_Y, cncSpeedValue, 3, LEFT);
   GUI_DispString(CENTER_X - 3 * BYTE_WIDTH / 2 + 3 * BYTE_WIDTH, CENTER_Y, (u8 *)"%");
-}
-void redrawCNCSpeedOverride(void) {
-  GUI_DispDec(CENTER_X - 3 * BYTE_WIDTH / 2, CENTER_Y, percentage, 3, LEFT);
 }
 
 void menuSpeed(void) {
   KEY_VALUES key_num = KEY_IDLE;
   u16 nowSpeed;
-  nowSpeed = percentage;
+  nowSpeed = cncSpeedValue;
 
   menuDrawPage(&speedOverrideItems);
   showCNCSpeedOverride();
@@ -84,20 +81,20 @@ void menuSpeed(void) {
     key_num = menuKeyGetValue();
     switch (key_num) {
       case KEY_ICON_0:
-        if (percentage > 10) {
-          percentage =
+        if (cncSpeedValue > 10) {
+          cncSpeedValue =
               limitValue(10,
-                         percentage - itemIncrementValues[itemIncrementIndex],
+                         cncSpeedValue - itemIncrementValues[itemIncrementIndex],
                          999);
         }
         timedMessage(2, TIMED_INFO, "Slowing down CNC");
         break;
 
       case KEY_ICON_3:
-        if (percentage < 999) {
-          percentage =
+        if (cncSpeedValue < 999) {
+          cncSpeedValue =
               limitValue(10,
-                         percentage + itemIncrementValues[itemIncrementIndex],
+                         cncSpeedValue + itemIncrementValues[itemIncrementIndex],
                          999);
         }
         timedMessage(2, TIMED_INFO, "Speeding up CNC");
@@ -113,7 +110,7 @@ void menuSpeed(void) {
         menuDrawItem(&speedOverrideItems.items[key_num], key_num);
         break;
       case KEY_ICON_6:
-        percentage = 100;
+        cncSpeedValue = 100;
         timedMessage(2, TIMED_INFO, "Resetting CNC speed");
         break;
       case KEY_ICON_7:
@@ -122,16 +119,16 @@ void menuSpeed(void) {
       default:
 #if LCD_ENCODER_SUPPORT
         if (encoderPosition) {
-          if (percentage < 999 && encoderPosition > 0) {
-            percentage =
+          if (cncSpeedValue < 999 && encoderPosition > 0) {
+            cncSpeedValue =
                 limitValue(10,
-                           percentage + itemIncrementValues[itemIncrementIndex],
+                           cncSpeedValue + itemIncrementValues[itemIncrementIndex],
                            999);
           }
-          if (percentage > 10 && encoderPosition < 0) {
-            percentage =
+          if (cncSpeedValue > 10 && encoderPosition < 0) {
+            cncSpeedValue =
                 limitValue(10,
-                           percentage - itemIncrementValues[itemIncrementIndex],
+                           cncSpeedValue - itemIncrementValues[itemIncrementIndex],
                            999);
           }
           encoderPosition = 0;
@@ -141,10 +138,10 @@ void menuSpeed(void) {
         break;
     }
 
-    if (nowSpeed != percentage) {
-      nowSpeed = percentage;
-      storeCmd("M220 S%d\n", percentage);
-      redrawCNCSpeedOverride();
+    if (nowSpeed != cncSpeedValue) {
+      nowSpeed = cncSpeedValue;
+      storeCmd("M220 S%d\n", cncSpeedValue);
+      showCNCSpeedOverride();
     }
     runUpdateLoop();
   }

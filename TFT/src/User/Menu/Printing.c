@@ -31,11 +31,11 @@ const ITEM itemIsFinished[2] = {
 };
 
 #ifndef M27_WATCH_OTHER_SOURCES
-#define M27_WATCH_OTHER_SOURCES false
+  #define M27_WATCH_OTHER_SOURCES false
 #endif
 
 #ifndef M27_REFRESH
-#define M27_REFRESH 3
+  #define M27_REFRESH 3
 #endif
 
 PRINTING infoPrinting;
@@ -98,7 +98,7 @@ void startGcodeExecute(void) {
 }
 
 void endGcodeExecute(void) {
-  mustStoreCmd("G90\n");
+  storeCmd("G90\n");
   routerControl(0);
   if (strlen(PRINT_END_GCODE) > 0)
     storeCmd(PRINT_END_GCODE);
@@ -236,29 +236,29 @@ bool setPrintPause(bool pauseCalled) {
         curRouterSpeed = infoPrinting.routerSpeed;   // *Save current router speed
         routerControl(0);                            // *turn off the router
         coordinateGetAll(&pauseCoords);              // *save the current gantry position
-        if (isCoorRelative == true) mustStoreCmd("G90\n");
+        if (isCoorRelative == true) storeCmd("G90\n");
         if (coordinateIsClear()) {   // *move the gantry into paused position
-          mustStoreCmd("G1 Z%.3f F%d\n", pauseCoords.axis[Z_AXIS] + SPINDLE_PAUSE_Z_RAISE, SPINDLE_PAUSE_Z_GANTRYSPEED);
-          mustStoreCmd("G1 X%d Y%d F%d\n", SPINDLE_PAUSE_X_POSITION, SPINDLE_PAUSE_Y_POSITION, SPINDLE_PAUSE_XY_GANTRYSPEED);
+          storeCmd("G1 Z%.3f F%d\n", pauseCoords.axis[Z_AXIS] + SPINDLE_PAUSE_Z_RAISE, SPINDLE_PAUSE_Z_GANTRYSPEED);
+          storeCmd("G1 X%d Y%d F%d\n", SPINDLE_PAUSE_X_POSITION, SPINDLE_PAUSE_Y_POSITION, SPINDLE_PAUSE_XY_GANTRYSPEED);
         }
 
-        if (isCoorRelative == true) mustStoreCmd("G91\n");
+        if (isCoorRelative == true) storeCmd("G91\n");
       } else {
         timedMessage(3, TIMED_INFO, "Resuming CNC");
         if (infoPrinting.m0_pause == true) {
           Serial_Puts(SERIAL_PORT, "M108\n");
           infoPrinting.m0_pause = false;
         }
-        if (isCoorRelative == true) mustStoreCmd("G90\n");
+        if (isCoorRelative == true) storeCmd("G90\n");
 
         routerControl(curRouterSpeed);   // *resume previous router speed
         if (coordinateIsClear()) {       // *restore previous gantry position
-          mustStoreCmd("G1 X%.3f Y%.3f F%d\n", pauseCoords.axis[X_AXIS], pauseCoords.axis[Y_AXIS], SPINDLE_PAUSE_XY_GANTRYSPEED);
-          mustStoreCmd("G1 Z%.3f F%d\n", pauseCoords.axis[Z_AXIS], SPINDLE_PAUSE_Z_GANTRYSPEED);
+          storeCmd("G1 X%.3f Y%.3f F%d\n", pauseCoords.axis[X_AXIS], pauseCoords.axis[Y_AXIS], SPINDLE_PAUSE_XY_GANTRYSPEED);
+          storeCmd("G1 Z%.3f F%d\n", pauseCoords.axis[Z_AXIS], SPINDLE_PAUSE_Z_GANTRYSPEED);
         }
-        mustStoreCmd("G1 F%d\n", pauseCoords.gantryspeed);
+        storeCmd("G1 F%d\n", pauseCoords.gantryspeed);
 
-        if (isCoorRelative == true) mustStoreCmd("G91\n");
+        if (isCoorRelative == true) storeCmd("G91\n");
       }
       break;
   }
@@ -271,8 +271,8 @@ const GUI_RECT progressRect = {1 * SPACE_X_PER_ICON, 0 * ICON_HEIGHT + 0 * SPACE
                                3 * SPACE_X_PER_ICON, 0 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y + ICON_HEIGHT * 3 / 4};
 
 #define PRINT_STATUS_ROUTER_X (progressRect.x1 - 10 * BYTE_WIDTH)
-#define PRINT_STATUS_SPEED_Y (progressRect.y1 + 3)
-#define PRINT_STATUS_TIME_Y (PRINT_STATUS_SPEED_Y + 1 * BYTE_HEIGHT + 3)
+#define PRINT_STATUS_SPEED_Y  (progressRect.y1 + 3)
+#define PRINT_STATUS_TIME_Y   (PRINT_STATUS_SPEED_Y + 1 * BYTE_HEIGHT + 3)
 
 void showPrintTime(void) {
   u8 hour = infoPrinting.time / 3600,
@@ -562,9 +562,9 @@ void abortPrinting(void) {
       break;
   }
 
-  mustStoreCmd("G0 Z%d F3000\n", limitValue(0, (int)coordinateGetAxisTarget(Z_AXIS) + 10, Z_MAX_POS));
+  storeCmd("G0 Z%d F3000\n", limitValue(0, (int)coordinateGetAxisTarget(Z_AXIS) + 10, Z_MAX_POS));
   if (strlen(CANCEL_CNC_GCODE) > 0)
-    mustStoreCmd(CANCEL_CNC_GCODE);
+    storeCmd(CANCEL_CNC_GCODE);
 
   endPrinting();
   exitPrinting();
@@ -612,7 +612,7 @@ void menuShutDown(void) {
     }
   shutdown:
     routerControl(0);
-    mustStoreCmd("M81\n");
+    storeCmd("M81\n");
     infoMenu.active--;
     popupReminder(textSelect(LABEL_SHUT_DOWN), textSelect(LABEL_SHUTTING_DOWN));
     runUpdateLoop();
@@ -633,7 +633,7 @@ void getGcodeFromFile(void) {
 
   if (gcodeCommand.count || infoPrinting.pause) return;
 
-  if (moveCacheToCmd() == true) return;
+  // if (moveCacheToCmd() == true) return;
 
   for (; infoPrinting.currentLine < infoPrinting.size;) {
     if (f_read(&infoPrinting.file, &sd_char, 1, &br) != FR_OK) break;
