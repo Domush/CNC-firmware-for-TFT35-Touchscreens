@@ -80,9 +80,9 @@ void routerChangeBit(void) {
     routerControl(0);
   }
   if (infoPrinting.coordSpace < 53) infoPrinting.coordSpace = 53;
-  storeCmd("G59\n");
-  storeCmd("G0 X20 Y200 Z150 F%d\n", SPEED_MOVE_FAST);
-  storeCmd("M0 Please replace the bit. Continue when finished.");
+  mustStoreCmd("G59\n");
+  mustStoreCmd("G0 X20 Y200 Z150 F%d\n", SPEED_MOVE_FAST);
+  mustStoreCmd("M0 Please replace the bit. Continue when finished.");
   infoPrinting.m0_pause = true;
 }
 

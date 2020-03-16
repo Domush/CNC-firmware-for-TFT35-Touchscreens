@@ -73,59 +73,59 @@ void menuMove(void) {
   }
 
   menuDrawPage(&moveItems);
-  storeCmd("G91\n");
+  mustStoreCmd("G91\n");
 
   switch (infoSettings.move_speed) {
     case 1:
-      storeCmd("G1 F%d\n", SPEED_MOVE_SLOW);
+      mustStoreCmd("G1 F%d\n", SPEED_MOVE_SLOW);
       break;
     case 2:
-      storeCmd("G1 F%d\n", SPEED_MOVE_FAST);
+      mustStoreCmd("G1 F%d\n", SPEED_MOVE_FAST);
       break;
     default:
-      storeCmd("G1 F%d\n", DEFAULT_SPEED_MOVE);
+      mustStoreCmd("G1 F%d\n", DEFAULT_SPEED_MOVE);
       break;
   }
-  storeCmd("M114\n");
+  mustStoreCmd("M114\n");
   drawXYZ();
 
   while (infoMenu.menu[infoMenu.active] == menuMove) {
     key_num = menuKeyGetValue();
     switch (key_num) {
       case KEY_ICON_0:
-        timedMessage(2, TIMED_INFO, "Moving Z up %f%s", moveDistance[moveDistance_index], "mm");
+        timedMessage(2, TIMED_INFO, "Moving Z up %d%s", moveDistance[moveDistance_index], "mm");
         storeCmd(z_axis_up, moveDistance[moveDistance_index]);
         break;
 
       case KEY_ICON_1:
-        timedMessage(2, TIMED_INFO, "Moving Y up %f%s", moveDistance[moveDistance_index], "mm");
+        timedMessage(2, TIMED_INFO, "Moving Y up %d%s", moveDistance[moveDistance_index], "mm");
         storeCmd(y_axis_up, moveDistance[moveDistance_index]);
         break;
 
       case KEY_ICON_2:
-        timedMessage(2, TIMED_INFO, "Moving Z down %f%s", moveDistance[moveDistance_index], "mm");
+        timedMessage(2, TIMED_INFO, "Moving Z down %d%s", moveDistance[moveDistance_index], "mm");
         storeCmd(z_axis_down, moveDistance[moveDistance_index]);
         break;
 
       case KEY_ICON_3:
         moveDistance_index       = (moveDistance_index + 1) % ITEM_MOVE_DISTANCE;
         moveItems.items[key_num] = itemMoveDistance[moveDistance_index];
-        timedMessage(2, TIMED_INFO, "Using %f%s steps", moveDistance[moveDistance_index], "mm");
+        timedMessage(2, TIMED_INFO, "Using %d%s steps", moveDistance[moveDistance_index], "mm");
         menuDrawItem(&moveItems.items[key_num], key_num);
         break;
 
       case KEY_ICON_4:
-        timedMessage(2, TIMED_INFO, "Moving X down %f%s", moveDistance[moveDistance_index], "mm");
+        timedMessage(2, TIMED_INFO, "Moving X down %d%s", moveDistance[moveDistance_index], "mm");
         storeCmd("G1 X-%.1f\n", moveDistance[moveDistance_index]);
         break;
 
       case KEY_ICON_5:
-        timedMessage(2, TIMED_INFO, "Moving Y down %f%s", moveDistance[moveDistance_index], "mm");
+        timedMessage(2, TIMED_INFO, "Moving Y down %d%s", moveDistance[moveDistance_index], "mm");
         storeCmd(y_axis_down, moveDistance[moveDistance_index]);
         break;
 
       case KEY_ICON_6:
-        timedMessage(2, TIMED_INFO, "Moving X up %f%s", moveDistance[moveDistance_index], "mm");
+        timedMessage(2, TIMED_INFO, "Moving X up %d%s", moveDistance[moveDistance_index], "mm");
         storeCmd("G1 X%.1f\n", moveDistance[moveDistance_index]);
         break;
       case KEY_ICON_7:
@@ -136,7 +136,7 @@ void menuMove(void) {
     }
     runUpdateLoop();
   }
-  storeCmd("G90\n");
+  mustStoreCmd("G90\n");
 }
 
 void updateGantryLocation(void) {

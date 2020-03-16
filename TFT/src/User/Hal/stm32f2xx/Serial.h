@@ -7,12 +7,14 @@
 
 typedef struct
 {
-  char *responseBuffer;
+  char *cache;
   uint16_t pendingIndex;
-  uint16_t processedIndex;
-} SERIAL_RECEIVE_BUFFER;
+  uint16_t parsedIndex;
+} DMA_CIRCULAR_BUFFER;
 
-extern SERIAL_RECEIVE_BUFFER cncIncoming[_USART_CNT];
+#define DMA_TRANS_LEN MAX_RESPONSE_SIZE
+
+extern DMA_CIRCULAR_BUFFER cncIncoming[_USART_CNT];
 
 void Serial_DMAClearFlag(uint8_t port);
 void Serial_Init(u32 baud);

@@ -2,7 +2,6 @@
 #include "includes.h"
 
 char cncResponse[MAX_RESPONSE_SIZE];
-RESPONSE_QUEUE gcodeResponse;   // Current gcode response
 static u16 responseIndex = 0;
 static u8 curGcodeSource = SERIAL_PORT;
 int MODEselect;
@@ -27,7 +26,7 @@ static char responseMatch(const char *str) {
     for (i = 0; str[i] != 0 && cncResponse[responseIndex + i] != 0 && cncResponse[responseIndex + i] == str[i]; i++) {
     }
     if (str[i] == 0) {
-      // responseIndex += i;
+      responseIndex += i;
       return true;
     }
   }
@@ -65,15 +64,7 @@ void showPopupMessage(char *info) {
   popup_message = "No reason given. Continue when ready.";
   if (infoMenu.menu[infoMenu.active] == parametersetting) return;
   if (infoMenu.menu[infoMenu.active] == menuTerminal) return;
-  /*
-  "Load V-Bit -  0.5\" Dia., then Pos@ 0:0:1mm\r
-  \n//action:prompt_end
-  \n//action:prompt_begin M0/1 Break Called
-  \n//action:prompt_button Continue
-  \n//action:prompt_show
-  \n"
-  */
-  if (responseMatch("prompt_end")) {
+  if (strstr((const char *)cncResponse + responseIndex, "//action:prompt_end")) {
     if (strstr((const char *)cncResponse + responseIndex, "M0/1")) {
       setPrintPause(true);
       popup_message = &cncResponse[responseIndex];
@@ -108,46 +99,19 @@ void showPopupMessage(char *info) {
 
 void copyIncomingToResponse(uint8_t port) {
   uint16_t i = 0;
-  for (i = 0; cncIncoming[port].processedIndex != cncIncoming[port].pendingIndex; i++) {
-    cncResponse[i]                   = cncIncoming[port].responseBuffer[cncIncoming[port].processedIndex];
-    cncIncoming[port].processedIndex = (cncIncoming[port].processedIndex + 1) % MAX_RESPONSE_SIZE;
+  for (i = 0; cncIncoming[port].parsedIndex != cncIncoming[port].pendingIndex; i++) {
+    cncResponse[i]                = cncIncoming[port].cache[cncIncoming[port].parsedIndex];
+    cncIncoming[port].parsedIndex = (cncIncoming[port].parsedIndex + 1) % MAX_RESPONSE_SIZE;
   }
   cncResponse[i] = 0;   // End character
 }
 
-void addGcodeResponse(const char *gcodeString, uint8_t port) {
-  strncpy(gcodeResponse.queue[gcodeResponse.queueIndex].response, gcodeString, MAX_RESPONSE_SIZE - 1);
-  gcodeResponse.queue[gcodeResponse.queueIndex].src = port;
-
-  gcodeResponse.queueIndex = (gcodeResponse.queueIndex + 1) % RESPONSE_QUEUE_SIZE;
-  if (gcodeResponse.count < RESPONSE_QUEUE_SIZE) gcodeResponse.count++;
-  cncIncoming[port].processedIndex = (cncIncoming[port].processedIndex + strlen(gcodeString) + 1) % MAX_RESPONSE_SIZE;
-}
-
-// *Add a Gcode response to the gcodeResponse queue.
-bool getNextResponse(uint8_t port) {
-  // *Queue each response line individually
-  const char ch[2] = "\n";
-  char *token;
-  // *get the first token
-  token = strtok(&cncIncoming[port].responseBuffer[cncIncoming[port].processedIndex], ch);
-  // *walk through other tokens
-  // while (token != NULL) {
-  addGcodeResponse(token, port);
-  // token = strtok(NULL, ch);
-  // }
-  return true;
-}
-
 void parseGcodeResponse(void) {
   bool hideResponsesInTerminal = false;
-  if (infoHost.responseReceived[SERIAL_PORT] != true) return;   // *Only process response data from the correct serial port
+  if (infoHost.rx_ok[SERIAL_PORT] != true) return;   // *Only process response data from the correct serial port
 
-  // copyIncomingToResponse(SERIAL_PORT);
-  getNextResponse(SERIAL_PORT);
-  char *responseLine;
-  responseLine                           = gcodeResponse.queue[gcodeResponse.queueIndex].response;
-  infoHost.responseReceived[SERIAL_PORT] = false;   // *All response data has been moved to cncResponse
+  copyIncomingToResponse(SERIAL_PORT);
+  infoHost.rx_ok[SERIAL_PORT] = false;   // *All response data has been moved to cncResponse
 
   // *Look for Marlin and wake it up if sleeping
   if (infoHost.connected == false) {
@@ -160,7 +124,7 @@ void parseGcodeResponse(void) {
     } else {
       if (OS_GetTime() - connectionRetryDelay > connectionRetryTime) {
         connectionRetryTime = OS_GetTime();
-        storeCmd("G53\n");   // *Attempts to send a "wake up" packet to trigger a connection
+        mustStoreCmd("M114\n");   // *Attempts to send a "wake up" packet to trigger a connection
       }
       goto parse_end;
     }
@@ -175,8 +139,8 @@ void parseGcodeResponse(void) {
       // *Found the response we wanted
       requestCommandInfo.responseInProgress = true;
       requestCommandInfo.waitingForResponse = false;
-      if (strlen(requestCommandInfo.commandResponse) + strlen(responseLine) < RESPONSE_MAX_CHARS) {
-        strcat(requestCommandInfo.commandResponse, responseLine);
+      if (strlen(requestCommandInfo.commandResponse) + strlen(cncResponse) < RESPONSE_MAX_CHARS) {
+        strcat(requestCommandInfo.commandResponse, cncResponse);
         if (responseMatch(requestCommandInfo.responseEnd)) {
           requestCommandInfo.responseInProgress = false;
           requestCommandInfo.commandComplete    = true;
@@ -198,9 +162,9 @@ void parseGcodeResponse(void) {
   if (responseCompare("ok\n")) {
     infoHost.waiting = false;
   } else {
-    // if (responseMatch("ok")) {
-    //   infoHost.waiting = false;
-    // }
+    if (responseMatch("ok")) {
+      infoHost.waiting = false;
+    }
     if (responseMatch("X:")) {
       storegantry(0, responseValue());
       if (responseMatch("Y:")) {
@@ -211,7 +175,7 @@ void parseGcodeResponse(void) {
       }
 
     } else if (responseMatch("Mean:")) {
-      popupReminder((u8 *)"Repeatability Test", (u8 *)responseLine + responseIndex - 5);
+      popupReminder((u8 *)"Repeatability Test", (u8 *)cncResponse + responseIndex - 5);
 
     } else if (responseMatch(replyEcho) && responseMatch(replyBusy) && responseMatch("processing")) {
       timedMessage(2, TIMED_WARNNG, (char *)textSelect(LABEL_BUSY));
@@ -247,7 +211,7 @@ void parseGcodeResponse(void) {
       // Parsing printing data
       // Example: SD printing byte 123/12345
       char *ptr;
-      u32 position = strtol(strstr(responseLine, "byte ") + 5, &ptr, 10);
+      u32 position = strtol(strstr(cncResponse, "byte ") + 5, &ptr, 10);
       setPrintCur(position);
       //      powerFailedCache(position);
     }
@@ -259,7 +223,7 @@ void parseGcodeResponse(void) {
     } else if (responseMatch("echo:")) {
       // *Skip over useless echo notices
       for (u8 i = 0; i < COUNT(echoStringsToIgnore); i++) {
-        if (strstr(responseLine, echoStringsToIgnore[i])) {
+        if (strstr(cncResponse, echoStringsToIgnore[i])) {
           goto parse_end;
         }
       }
@@ -273,11 +237,11 @@ void parseGcodeResponse(void) {
 
 parse_end:
   if (curGcodeSource != SERIAL_PORT) {
-    Serial_Puts(curGcodeSource, responseLine);
+    Serial_Puts(curGcodeSource, cncResponse);
   }
-  showGcodeStatus(responseLine, CNC_SOURCE);
+  showGcodeStatus(cncResponse, CNC_SOURCE);
   if (hideResponsesInTerminal != true) {
-    sendGcodeTerminalCache(responseLine, CNC_SOURCE);
+    sendGcodeTerminalCache(cncResponse, CNC_SOURCE);
   }
 }
 
@@ -285,12 +249,10 @@ void parseSerialGcode(void) {
 #ifdef SERIAL_PORT_2
   uint8_t i = 0;
   for (i = 0; i < _USART_CNT; i++) {
-    if (i != SERIAL_PORT && infoHost.responseReceived[i] == true) {
-      infoHost.responseReceived[i] = false;
-      // copyIncomingToResponse(i);
-      // storeCmdFromUART(i, cncResponse);
-      getNextResponse(i);
-      storeCmdFromUART(i, &gcodeResponse.queue[gcodeResponse.queueIndex].response[0]);
+    if (i != SERIAL_PORT && infoHost.rx_ok[i] == true) {
+      infoHost.rx_ok[i] = false;
+      copyIncomingToResponse(i);
+      storeCmdFromUART(i, cncResponse);
     }
   }
 #endif
