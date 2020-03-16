@@ -39,7 +39,7 @@ bool request_M21(void) {
   strcpy(requestCommandInfo.responseError, "init fail");
 
   resetRequestCommandInfo();
-  mustStoreCmd(requestCommandInfo.command);
+  storeCmd(requestCommandInfo.command);
   // Wait for response
   WaitingGcodeResponse = true;
   while (!requestCommandInfo.commandComplete) {
@@ -71,7 +71,7 @@ char *request_M20(void) {
   strcpy(requestCommandInfo.responseEnd, "End file list");
   strcpy(requestCommandInfo.responseError, "Error");
   resetRequestCommandInfo();
-  mustStoreCmd(requestCommandInfo.command);
+  storeCmd(requestCommandInfo.command);
   // Wait for response
   WaitingGcodeResponse = true;
   while (!requestCommandInfo.commandComplete) {
@@ -94,7 +94,7 @@ char *request_M33(char *filename) {
   strcpy(requestCommandInfo.responseEnd, "ok");
   strcpy(requestCommandInfo.responseError, "Cannot open subdir");
   resetRequestCommandInfo();
-  mustStoreCmd(requestCommandInfo.command);
+  storeCmd(requestCommandInfo.command);
   // Wait for response
   WaitingGcodeResponse = true;
   while (!requestCommandInfo.commandComplete) {
@@ -120,7 +120,7 @@ long request_M23(char *filename) {
   strcpy(requestCommandInfo.responseEnd, "File selected");
   strcpy(requestCommandInfo.responseError, "open failed");
   resetRequestCommandInfo();
-  mustStoreCmd(requestCommandInfo.command);
+  storeCmd(requestCommandInfo.command);
   // Wait for response
   WaitingGcodeResponse = true;
   while (!requestCommandInfo.commandComplete) {
@@ -139,11 +139,11 @@ long request_M23(char *filename) {
  **/
 bool request_M24(int file_position) {
   if (file_position == 0) {
-    mustStoreCmd("M24\n");
+    storeCmd("M24\n");
   } else {
     char command[100];
     sprintf(command, "M24 S%d\n", file_position);
-    mustStoreCmd(command);
+    storeCmd(command);
   }
   return true;
 }
@@ -152,14 +152,14 @@ bool request_M24(int file_position) {
  * Abort print
  **/
 bool request_M524(void) {
-  mustStoreCmd("M524\n");
+  storeCmd("M524\n");
   return true;
 }
 /**
  * Pause print
  **/
 bool request_M25(void) {
-  mustStoreCmd("M25\n");
+  storeCmd("M25\n");
   return true;
 }
 
@@ -171,6 +171,6 @@ bool request_M25(void) {
 bool request_M27(int update_delay_seconds) {
   char command[10];
   sprintf(command, "M27 S%d\n", update_delay_seconds);
-  mustStoreCmd(command);
+  storeCmd(command);
   return true;
 }

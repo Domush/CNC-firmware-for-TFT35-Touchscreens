@@ -5,16 +5,8 @@
 #include "stdbool.h"
 #include "parseAck.h"
 
-#define GCODE_QUEUE_MAX 2
-#define GCODE_MAX_CHARACTERS 150
-
-typedef struct
-{
-  char sent[GCODE_MAX_CHARACTERS];
-  uint8_t sentIndex;   // Ring buffer read position
-  char response[MAX_RESPONSE_SIZE];
-  uint8_t responseIndex;   // Ring buffer read position
-} GCODE_LAST;
+#define GCODE_QUEUE_MAX      20
+#define GCODE_MAX_CHARACTERS 96
 
 typedef struct
 {
@@ -30,21 +22,16 @@ typedef struct
   uint8_t count;        // Count of commands in the queue
 } QUEUE;
 
-extern QUEUE gcodeCommand;        // Outgoing gcode command
-extern QUEUE gcodeCommandQueue;   // Cache for gcode commands waiting for gcodeCommand to empty
+extern QUEUE gcodeCommand;   // Outgoing gcode command
 uint8_t curRouterSpeed;
-extern GCODE_LAST gcodeLastCommand;
 
-bool storeCmd(const char* format, ...);
-void mustStoreCmd(const char* format, ...);
+bool storeCmd(const char* gcodeString, ...);
 
 bool storeCmdFromUART(uint8_t port, const char* gcode);
-void mustStoreCacheCmd(const char* format, ...);
 
-bool moveCacheToCmd(void);
+bool isQueueFull(void);
 void clearCmdQueue(void);
 
-void parseQueueCmd(void);
 void sendGcodeCommands(void);
 
 void menuM0Pause(void);
