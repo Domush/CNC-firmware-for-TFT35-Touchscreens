@@ -193,9 +193,9 @@
 
 //Debug disable, free pins for other function
 #if defined(TFT35_V1_0) || defined(TFT35_V1_1) || defined(TFT35_V1_2) || defined(TFT28_V1_0) || defined(TFT35_V2_0)
-// #define DISABLE_JTAG   //free JTAG(PB3/PB4) for SPI3 // !Enable after release
+  #define DISABLE_JTAG   //free JTAG(PB3/PB4) for SPI3 // !Enable after release
 #elif defined(TFT24_V1_1)
-// #define DISABLE_DEBUG   //
+  #define DISABLE_DEBUG   //
 #elif defined(TFT35_V3_0) || defined(TFT28_V3_0)
 //stm32f207 needn't this
 #endif
