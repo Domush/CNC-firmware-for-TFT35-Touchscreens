@@ -44,12 +44,7 @@ u8 calibrationEnsure(u16 x, u16 y) {
   int lcd_x, lcd_y;
   GUI_SetColor(BLACK);
   GUI_FillCircle(x, y, 5);
-  for (i = 0; i < 10; i++) {
-    GUI_DrawPoint(x + i, y);
-    GUI_DrawPoint(x - i, y);
-    GUI_DrawPoint(x, y + i);
-    GUI_DrawPoint(x, y - i);
-  }
+  GUI_DrawCircle(x - 5, y - 5, 10);
   while (!isPress())
     ;
   tp_x = XPT2046_Repeated_Compare_AD(CMD_RDX);
@@ -190,7 +185,7 @@ typedef enum {
   LONG_PRESS,
 } KEY_STATUS;
 
-#define KEY_DOUOBLE_SPACE 15       //�೤ʱ���ڵ�������ж��?˫��
+#define KEY_DOUBLE_SPACE     15    //�೤ʱ���ڵ�������ж��?˫��
 #define KEY_LONG_PRESS_START 200   //��������ÿ�ʼ�ж��? ���� ��ֵ
 
 #define KEY_LONG_PRESS_SPACE_MAX 10   //����ʱ ���÷���һ�μ��?
@@ -267,7 +262,7 @@ typedef enum {
 //        break;
 
 //      case FIRST_RELEASE:
-//        if(OS_GetTime()-first_time>KEY_DOUOBLE_SPACE)
+//        if(OS_GetTime()-first_time>KEY_DOUBLE_SPACE)
 //        {
 //        nowStatus  = NO_CLICK;
 //        key_return = first_key;
