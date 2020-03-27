@@ -354,9 +354,9 @@ void updateScreen(void) {
 
 void processGcode(void) {
   getGcodeFromFile();     //Get Gcode command from the file to be printed
-  sendGcodeCommands();    //Parse and send Gcode commands in the queue
   parseGcodeResponse();   //Parse the received slave response information
   parseSerialGcode();     //Parse the received Gcode from other UART, such as: ESP3D, etc...
+  sendGcodeCommands();    //Parse and send Gcode commands in the queue
 #if defined ONBOARD_SD_SUPPORT && !defined M27_AUTOREPORT
   checkJobStatus();   //Check if there is a SD or USB print running.
 #endif

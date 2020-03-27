@@ -62,12 +62,12 @@ void addGcodeCommand(const char *gcodeString, uint8_t port) {
 // *Add a Gcode command to the gcodeCommand queue.
 // *Will be sent to UART in sendGcodeCommands()
 // If the gcodeCommand queue is full, display a "waiting" banner.
-bool storeCmd(const char *gcodeString, ...) {
+bool storeCmd(char *gcodeString, ...) {
   // *Queue each command individually
   const char ch[2] = "\n";
   char *token;
   char *gcodeLine;
-  gcodeLine = "";
+  gcodeLine = 0;
   // char buffer[GCODE_MAX_CHARACTERS] = "";
   my_va_list ap;
   my_va_start(ap, gcodeString);

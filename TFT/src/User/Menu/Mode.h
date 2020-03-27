@@ -4,4 +4,6 @@
 void infoMenuSelect(void);
 void menuMode(void);
 
+// extern int MODEselect;
+
 #endif

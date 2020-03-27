@@ -93,8 +93,8 @@ void USART_IRQHandler(uint8_t port) {
 
     cncIncoming[port].pendingIndex = MAX_RESPONSE_SIZE - Serial[port].dma_chanel->CNDTR;
     uint16_t pendingIndex          = (cncIncoming[port].pendingIndex == 0) ? MAX_RESPONSE_SIZE : cncIncoming[port].pendingIndex;
-    if (cncIncoming[port].responseBuffer[pendingIndex - 1] == '\n')   // Receive completed
-    {
+    if (cncIncoming[port].responseBuffer[pendingIndex - 1] == '\n') {
+      // Receive completed
       infoHost.responseReceived[port] = true;
     }
   }

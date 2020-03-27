@@ -32,14 +32,13 @@ typedef struct
 
 RESPONSE_QUEUE gcodeResponse;   // Outgoing gcode command
 
-extern int MODEselect;
 char *popup_title;
 char *popup_message;
 
 void setGcodeCommandSource(uint8_t src);
 void parseGcodeResponse(void);
 void parseSerialGcode(void);
-void showPopupMessage(char *info);
+void showPopupMessage(char *title);
 void copyIncomingToResponse(uint8_t port);
 
 #endif

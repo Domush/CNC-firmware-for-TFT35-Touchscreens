@@ -39,7 +39,7 @@ void TS_Get_Coordinates(u16 *x, u16 *y) {
 
 #define TS_ERR_RANGE 10
 u8 calibrationEnsure(u16 x, u16 y) {
-  u32 i;
+  // u32 i;
   u16 tp_x, tp_y, x_offset;
   int lcd_x, lcd_y;
   GUI_SetColor(BLACK);

@@ -1,11 +1,10 @@
 #include "parseACK.h"
 #include "includes.h"
 
+RESPONSE_QUEUE gcodeResponse;   // Last gCode responses
 char cncResponse[MAX_RESPONSE_SIZE];
-RESPONSE_QUEUE gcodeResponse;   // Current gcode response
-static u16 responseIndex = 0;
-static u8 curGcodeSource = SERIAL_PORT;
-int MODEselect;
+static u8 cncResponseIndex = 0;
+static u8 curSerialPort    = SERIAL_PORT;   // Defaults to direct CNC serial
 char *popup_title;
 char *popup_message;
 
@@ -18,23 +17,23 @@ const char *const echoStringsToIgnore[] = {
 };
 
 void setGcodeCommandSource(uint8_t src) {
-  curGcodeSource = src;
+  curSerialPort = src;
 }
 
-static char responseMatch(const char *str) {
+static bool responseMatch(const char *str) {
   u16 i;
-  for (responseIndex = 0; responseIndex < MAX_RESPONSE_SIZE && cncResponse[responseIndex] != 0; responseIndex++) {
-    for (i = 0; str[i] != 0 && cncResponse[responseIndex + i] != 0 && cncResponse[responseIndex + i] == str[i]; i++) {
+  for (cncResponseIndex = 0; cncResponseIndex < MAX_RESPONSE_SIZE && cncResponse[cncResponseIndex] != 0; cncResponseIndex++) {
+    for (i = 0; str[i] != 0 && cncResponse[cncResponseIndex + i] != 0 && cncResponse[cncResponseIndex + i] == str[i]; i++) {
     }
     if (str[i] == 0) {
-      // responseIndex += i;
+      // cncResponseIndex += i;
       return true;
     }
   }
   return false;
 }
 
-static char responseCompare(const char *str) {
+static bool responseCompare(const char *str) {
   u16 i;
   for (i = 0; i < MAX_RESPONSE_SIZE && str[i] != 0 && cncResponse[i] != 0; i++) {
     if (str[i] != cncResponse[i])
@@ -45,13 +44,14 @@ static char responseCompare(const char *str) {
 }
 
 static float responseValue() {
-  return (strtod(&cncResponse[responseIndex], NULL));
+  return (strtod(&cncResponse[cncResponseIndex], NULL));
 }
 
-void showPopupMessage(char *info) {
+void showPopupMessage(char *title) {
   const char ch[2] = "\n";
   char *token;
-  popup_title   = info;
+  token         = 0;
+  popup_title   = title;
   popup_message = "No reason given. Continue when ready.";
   if (infoMenu.menu[infoMenu.active] == parametersetting) return;
   if (infoMenu.menu[infoMenu.active] == menuTerminal) return;
@@ -63,36 +63,36 @@ void showPopupMessage(char *info) {
   \n//action:prompt_show
   \n"
   */
-  if (strstr((const char *)cncResponse + responseIndex, "//action:prompt_end")) {
-    if (strstr((const char *)cncResponse + responseIndex, "M0/1")) {
+  if (strstr((const char *)cncResponse + cncResponseIndex, "//action:prompt_end")) {
+    if (strstr((const char *)cncResponse + cncResponseIndex, "M0/1")) {
       setPrintPause(true);
-      popup_message = &cncResponse[responseIndex];
+      popup_message = &cncResponse[cncResponseIndex];
       if (infoMenu.menu[infoMenu.active] != menuM0Pause) {
         infoMenu.menu[++infoMenu.active] = menuM0Pause;
       }
     } else {
-      char *prompt_text = strstr((const char *)cncResponse + responseIndex, "//action:prompt_end") + 19;
+      char *prompt_text = strstr((const char *)cncResponse + cncResponseIndex, "//action:prompt_end") + 19;
       // *get the first token
       token         = strtok(prompt_text, ch);
       popup_message = token;
       popupReminder((u8 *)popup_title, (u8 *)popup_message);
     }
-  } else if (strstr((const char *)cncResponse + responseIndex, "//action:notification")) {
-    char *prompt_text = strstr((const char *)cncResponse + responseIndex, "//action:notification") + 21;
+  } else if (strstr((const char *)cncResponse + cncResponseIndex, "//action:notification")) {
+    char *prompt_text = strstr((const char *)cncResponse + cncResponseIndex, "//action:notification") + 21;
     // *get the first token
     token         = strtok(prompt_text, ch);
     popup_message = token;
     popupReminder((u8 *)popup_title, (u8 *)popup_message);
-  } else if (strstr((const char *)cncResponse + responseIndex, "echo:")) {
+  } else if (strstr((const char *)cncResponse + cncResponseIndex, "echo:")) {
     // *Break it up into useful sections
-    char *prompt_text = strstr((const char *)cncResponse + responseIndex, "echo:") + 5;
+    char *prompt_text = strstr((const char *)cncResponse + cncResponseIndex, "echo:") + 5;
     // *get the first token
     token         = strtok(prompt_text, ch);
     popup_message = token;
 
     popupReminder((u8 *)popup_title, (u8 *)popup_message);
   } else {
-    popupReminder((u8 *)info, (u8 *)cncResponse + responseIndex);
+    popupReminder((u8 *)title, (u8 *)cncResponse + cncResponseIndex);
   }
 }
 
@@ -119,13 +119,19 @@ bool getNextResponse(uint8_t port) {
   // *Queue each response line individually
   const char ch[2] = "\n";
   char *token;
+  token = 0;
   // *get the first token
-  token = strtok(&cncIncoming[port].responseBuffer[cncIncoming[port].processedIndex], ch);
+  token = strtok(cncIncoming[port].responseBuffer + cncIncoming[port].processedIndex, ch);
   // *walk through other tokens
-  // while (token != NULL) {
-  addGcodeResponse(token, port);
-  // token = strtok(NULL, ch);
-  // }
+  while (token != NULL && gcodeResponse.count < RESPONSE_QUEUE_SIZE) {
+    if (strstr(token, "wait") != NULL) {
+      infoHost.waiting                 = true;
+      cncIncoming[port].processedIndex = (cncIncoming[port].processedIndex + strlen(token) + 1) % MAX_RESPONSE_SIZE;
+    } else {
+      addGcodeResponse((const char *)token, port);
+    }
+    token = strtok(NULL, ch);
+  }
   return true;
 }
 
@@ -201,7 +207,7 @@ void parseGcodeResponse(void) {
       }
 
     } else if (responseMatch("Mean:")) {
-      popupReminder((u8 *)"Repeatability Test", (u8 *)responseLine + responseIndex - 5);
+      popupReminder((u8 *)"Repeatability Test", (u8 *)responseLine + cncResponseIndex - 5);
 
     } else if (responseMatch(replyEcho) && responseMatch(replyBusy) && responseMatch("processing")) {
       timedMessage(2, TIMED_WARNNG, (char *)textSelect(LABEL_BUSY));
@@ -262,8 +268,8 @@ void parseGcodeResponse(void) {
   }
 
 parse_end:
-  if (curGcodeSource != SERIAL_PORT) {
-    Serial_Puts(curGcodeSource, responseLine);
+  if (curSerialPort != SERIAL_PORT) {
+    Serial_Puts(curSerialPort, responseLine);
   }
   showGcodeStatus(responseLine, CNC_SOURCE);
   if (hideResponsesInTerminal != true) {

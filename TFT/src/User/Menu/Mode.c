@@ -1,6 +1,8 @@
 #include "Mode.h"
 #include "includes.h"
 
+// int MODEselect;
+
 void Serial_ReSourceDeInit(void) {
   memset(&infoHost, 0, sizeof(infoHost));
   resetInfoFile();
@@ -77,8 +79,8 @@ void menuMode(void) {
   #endif
 
   MKEY_VALUES key_num = MKEY_IDLE;
-  MODEselect          = 1;
-  bool keyback        = false;
+  // MODEselect          = 1;
+  bool keyback = false;
 
   // int16_t nowEncoder = encoderPosition = 0;
   int16_t encoderPosition = 0;
@@ -134,7 +136,7 @@ void menuMode(void) {
     storePara();
   }
 
-  MODEselect = 0;
+  // MODEselect = 0;
   infoMenuSelect();
   runUpdateLoop();
   while (infoMenu.menu[infoMenu.active] == menuMain) {

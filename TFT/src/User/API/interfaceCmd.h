@@ -3,7 +3,7 @@
 
 #include "stdint.h"
 #include "stdbool.h"
-#include "parseAck.h"
+#include "parseACK.h"
 
 #define GCODE_QUEUE_MAX      20
 #define GCODE_MAX_CHARACTERS 96
@@ -25,7 +25,7 @@ typedef struct
 extern QUEUE gcodeCommand;   // Outgoing gcode command
 uint8_t curRouterSpeed;
 
-bool storeCmd(const char* gcodeString, ...);
+bool storeCmd(char* gcodeString, ...);
 
 bool storeCmdFromUART(uint8_t port, const char* gcode);
 
