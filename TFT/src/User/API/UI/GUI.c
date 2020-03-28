@@ -1,4 +1,4 @@
-#include "GUI.h"
+// #include "GUI.h"
 #include "includes.h"
 
 uint16_t foreGroundColor  = WHITE;
@@ -649,7 +649,7 @@ void GUI_DispFloat(int16_t x, int16_t y, float value, uint8_t leftDigits, uint8_
 
 /****************************************************     Widget    *******************************************************************/
 #define RADIO_SELECTED_COLOR GREEN
-#define RADIO_IDLE_COLOR WHITE
+#define RADIO_IDLE_COLOR     WHITE
 void RADIO_Create(RADIO *radioInfo) {
   u16 origColor = GUI_GetColor();
   uint8_t i     = 0;

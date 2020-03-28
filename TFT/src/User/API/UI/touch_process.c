@@ -1,4 +1,4 @@
-#include "touch_process.h"
+// #include "touch_process.h"
 #include "GPIO_Init.h"
 #include "includes.h"
 

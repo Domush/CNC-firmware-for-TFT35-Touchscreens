@@ -1,8 +1,9 @@
 #ifndef _LANGUAGE_H_
 #define _LANGUAGE_H_
+#include "includes.h"
 
-#include "stdbool.h"
-#include "variants.h"
+// #include "stdbool.h"
+// #include "System/variants.h"
 
 enum {
   ENGLISH = 0,

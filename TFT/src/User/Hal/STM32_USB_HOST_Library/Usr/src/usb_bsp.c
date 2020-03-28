@@ -26,7 +26,7 @@
 #include "usb_hcd_int.h"
 #include "usbh_core.h"
 #include "delay.h"
-#include "variants.h"
+#include "System/variants.h"
 
 #ifdef U_DISK_SUPPORT
 /**

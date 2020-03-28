@@ -1,6 +1,6 @@
-#include "LCD_Init.h"
-#include "GPIO_Init.h"
 #include "includes.h"
+// #include "LCD_Init.h"
+#include "GPIO_Init.h"
 
 #ifdef LCD_LED_PIN
 void LCD_LED_On() {
@@ -402,11 +402,11 @@ void LCD_RefreshDirection(void) {
     LCD_WR_DATA(0XE8);
 #endif
 #ifdef ILI9341
-#if defined(TFT28_V3_0)
+  #if defined(TFT28_V3_0)
     LCD_WR_DATA(0X60);   //
-#else
+  #else
     LCD_WR_DATA(0XA8);
-#endif
+  #endif
 #endif
   } else {
     LCD_WR_REG(0X36);
@@ -417,11 +417,11 @@ void LCD_RefreshDirection(void) {
     LCD_WR_DATA(0X28);
 #endif
 #ifdef ILI9341
-#if defined(TFT28_V3_0)
+  #if defined(TFT28_V3_0)
     LCD_WR_DATA(0XA0);   //
-#else
+  #else
     LCD_WR_DATA(0X68);
-#endif
+  #endif
 #endif
   }
 }

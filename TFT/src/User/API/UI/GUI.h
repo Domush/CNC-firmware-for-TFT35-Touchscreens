@@ -1,8 +1,9 @@
 #ifndef _GUI_H_
 #define _GUI_H_
+#include "includes.h"
 
-#include "stdint.h"
-#include "utf8_decode.h"
+// #include "stdint.h"
+// #include "utf8_decode.h"
 
 enum {
   LEFT = 0,

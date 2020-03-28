@@ -1,88 +1,99 @@
 #ifndef _INCLUDES_H_
 #define _INCLUDES_H_
 
-#include "variants.h"
-
+// C helper classes
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
-#include "my_misc.h"
+#include "API/helperFunctions.h"
 
-#include "variants.h"
-#include "os_timer.h"
-#include "delay.h"
+// Model specific configuration
+#include "System/variants.h"
+#include "Configuration.h"
 
-#include "boot.h"
+// Timing functions
+#include "System/os_timer.h"
+#include "System/delay.h"
+#include "System/boot.h"
 
+// LCD init functions
 #include "lcd.h"
-#include "LCD_Init.h"
+#include "Hal/LCD_Init.h"
 #include "lcd_dma.h"
-#include "GUI.h"
-#include "Language.h"
-#include "utf8_decode.h"
+#include "UI/GUI.h"
 
+// Multi-language support
+#include "Language/Language.h"
+#include "Language/utf8_decode.h"
+
+// Chip specific includes
 #include "usart.h"
 #include "Serial.h"
 #include "spi.h"
 #include "sw_spi.h"
 #include "spi_slave.h"
 
+// USB drive support (select TFT models)
 #include "usbh_core.h"
 #include "usbh_usr.h"
 #include "usbh_msc_core.h"
 
-#include "sd.h"
-#include "w25qxx.h"
-#include "xpt2046.h"
+// SD card support
+#include "Hal/sd.h"
+#include "Hal/w25qxx.h"
+#include "Hal/xpt2046.h"
 
-#include "LCD_Encoder.h"
+// File handling
+#include "System/LCD_Encoder.h"
 #include "ST7920_Simulator.h"
-#include "ui_draw.h"
-#include "touch_process.h"
-#include "interfaceCmd.h"
-#include "coordinate.h"
-#include "ff.h"
+#include "Fatfs/ff.h"
 #include "Vfs/vfs.h"
-#include "myfatfs.h"
-#include "Gcode/gcode.h"
-#include "Gcode/mygcodefs.h"
-#include "flashStore.h"
-#include "parseACK.h"
-#include "Selectmode.h"
-#include "Parametersetting.h"
+#include "Fatfs/myfatfs.h"
 
-#include "extend.h"
+// UI handling
+#include "UI/ui_draw.h"
+#include "UI/list_item.h"
+#include "UI/touch_process.h"
+#include "System/flashStorage.h"
+#include "System/emulationToggle.h"
 
-//menu
-#include "menu.h"
-#include "MainPage.h"
-#include "Move.h"
-#include "Home.h"
-#include "Print.h"
-#include "Printing.h"
-#include "More.h"
-#include "Speed.h"
-#include "BabyStep.h"
-#include "ledcolor.h"
+// Base API functions
+#include "API/coordinate.h"
+#include "API/gantry.h"
+#include "API/menu.h"
+#include "API/extendedFeatures.h"
 
-#include "Router.h"
-#include "Settings.h"
-#include "ScreenSettings.h"
-#include "MachineSettings.h"
-#include "FeatureSettings.h"
-#include "SendGcode.h"
-#include "JobSetup.h"
-// #include "ZeroAxis.h"
-#include "PowerFailed.h"
+// Gcode processing
+#include "Gcode/gcodeFileHandler.h"
+#include "Gcode/gcodeRequests.h"
+#include "Gcode/gcodeSender.h"
+#include "Gcode/gcodeResponseHandler.h"
+// #include "interfaceCmd.h"
+// #include "parseACK.h"
 
-#include "Popup.h"
-#include "Mode.h"
-
-// #include "UnifiedMove.h"
-#include "Gantry.h"
-#include "list_item.h"
+// Menus
+#include "Menu/menuMain.h"   // Home screen
+#include "Menu/menuMove.h"
+#include "Menu/menuBabystepping.h"
+#include "Menu/menuCustomGcode.h"
+#include "Menu/menuFileSelect.h"
+#include "Menu/menuHoming.h"
+#include "Menu/menuJobSetup.h"
+#include "Menu/menuJobStatus.h"
+#include "Menu/menuLEDColor.h"
+#include "Menu/menuPause.h"
+#include "Menu/menuPopup.h"
+#include "Menu/menuPower.h"
+#include "Menu/menuRouter.h"
+#include "Menu/menuSettingsFeatures.h"
+#include "Menu/menuSettingsHome.h"
+#include "Menu/menuSettingsMisc.h"
+#include "Menu/menuSettingsTFT.h"
+#include "Menu/menuSettingsTMC.h"
+#include "Menu/menuSpeed.h"
+#include "Menu/menuTerminal.h"
 
 #define MAX_MENU_DEPTH 10   // max sub menu depth
 typedef void (*FP_MENU)(void);

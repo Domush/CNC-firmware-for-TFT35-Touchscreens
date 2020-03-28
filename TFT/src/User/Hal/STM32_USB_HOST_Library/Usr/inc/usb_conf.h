@@ -23,7 +23,7 @@
 #ifndef __USB_CONF__H__
   #define __USB_CONF__H__
 
-  #include "variants.h"
+  #include "System/variants.h"
 
   /** @addtogroup USB_OTG_DRIVER
   * @{

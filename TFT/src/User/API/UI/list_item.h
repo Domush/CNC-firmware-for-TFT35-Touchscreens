@@ -1,12 +1,11 @@
-// *List View Mode ** Author: Gurmeet Athwal https://github.com/guruathwal **
-
 #ifndef _LIST_ITEM_H_
 #define _LIST_ITEM_H_
+#include "includes.h"
 
-#include "stdint.h"
-#include "stdbool.h"
-#include "GUI.h"
-#include "menu.h"
+// #include "stdint.h"
+// #include "stdbool.h"
+// #include "GUI.h"
+// #include "menu.h"
 
 enum {
   ICONCHAR_BLANK = 0,
@@ -134,14 +133,14 @@ typedef enum {
 extern char* dynamic_label[LISTITEM_PER_PAGE];
 
 #define LISTBTN_BKCOLOR 0x2187
-#define MAT_RED 0xE124
-#define MAT_YELLOW 0xED80
-#define MAT_GREEN 0x1DC4
-#define MAT_BLUE 0x24BD
-#define MAT_ORANGE 0xF3A0
-#define MAT_DARKGRAY 0x52AA
-#define MAT_LOWWHITE 0xCE79
-#define MAT_PURPLE 0x9135
+#define MAT_RED         0xE124
+#define MAT_YELLOW      0xED80
+#define MAT_GREEN       0x1DC4
+#define MAT_BLUE        0x24BD
+#define MAT_ORANGE      0xF3A0
+#define MAT_DARKGRAY    0x52AA
+#define MAT_LOWWHITE    0xCE79
+#define MAT_PURPLE      0x9135
 
 //#define LABEL_DYNAMIC 12345 //just random number for reference
 

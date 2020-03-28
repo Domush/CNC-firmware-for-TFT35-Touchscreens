@@ -1,5 +1,5 @@
 #include "includes.h"
-#include "lcd.h"
+// #include "lcd.h"
 #include "GPIO_Init.h"
 
 #ifdef STM32_HAS_FSMC
@@ -104,5 +104,5 @@ void LCD_HardwareConfig(void) {
 }
 
 #else
-#error "don't support LCD-GPIO yet"
+  #error "don't support LCD-GPIO yet"
 #endif

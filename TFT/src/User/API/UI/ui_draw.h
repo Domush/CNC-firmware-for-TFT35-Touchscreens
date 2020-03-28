@@ -1,19 +1,20 @@
 #ifndef _UI_DRAW_H_
 #define _UI_DRAW_H_
+#include "includes.h"
 
-#include "stdint.h"
-#include "variants.h"
-#include "stdbool.h"
-#include "GUI.h"
+// #include "stdint.h"
+// #include "System/variants.h"
+// #include "stdbool.h"
+// #include "GUI.h"
 
-#define SPACE_X ((LCD_WIDTH - ICON_WIDTH * 4) / 4)
-#define START_X (SPACE_X / 2)
+#define SPACE_X          ((LCD_WIDTH - ICON_WIDTH * 4) / 4)
+#define START_X          (SPACE_X / 2)
 #define SPACE_X_PER_ICON (LCD_WIDTH / 4)
 
 #define SPACE_Y ((LCD_HEIGHT - ICON_START_Y - ICON_HEIGHT * 2) / 2)
 
 /*about GCODE KEY*/
-#define GKEY_WIDTH (LCD_WIDTH / 6)
+#define GKEY_WIDTH  (LCD_WIDTH / 6)
 #define GKEY_HEIGHT ((LCD_HEIGHT - ICON_START_Y) / 4)
 
 //select marlin or bigtree

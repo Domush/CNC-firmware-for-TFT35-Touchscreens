@@ -1,31 +1,32 @@
-#include "lcd_dma.h"
-#include "variants.h"
-#include "lcd.h"
-#include "GUI.h"
-#include "delay.h"
-#include "w25qxx.h"
+#include "includes.h"
+// #include "lcd_dma.h"
+// #include "System/variants.h"
+// #include "lcd.h"
+// #include "GUI.h"
+// #include "delay.h"
+// #include "w25qxx.h"
 
 #ifdef STM32_HAS_FSMC
-//Config for SPI Channel
-#if W25Qxx_SPI == _SPI1
-#define W25QXX_SPI_NUM SPI1
-#define W25QXX_SPI_DMA_RCC_AHB RCC_AHBPeriph_DMA1
-#define W25QXX_SPI_DMA DMA1
-#define W25QXX_SPI_DMA_CHANNEL DMA1_Channel2
-#define W25QXX_SPI_DMA_IFCR_BIT 5
-#elif W25Qxx_SPI == _SPI2
-#define W25QXX_SPI_NUM SPI2
-#define W25QXX_SPI_DMA DMA1
-#define W25QXX_SPI_DMA_RCC_AHB RCC_AHBPeriph_DMA1
-#define W25QXX_SPI_DMA_CHANNEL DMA1_Channel4
-#define W25QXX_SPI_DMA_IFCR_BIT 13
-#elif W25Qxx_SPI == _SPI3
-#define W25QXX_SPI_NUM SPI3
-#define W25QXX_SPI_DMA DMA2
-#define W25QXX_SPI_DMA_RCC_AHB RCC_AHBPeriph_DMA2
-#define W25QXX_SPI_DMA_CHANNEL DMA2_Channel1
-#define W25QXX_SPI_DMA_IFCR_BIT 1
-#endif
+  //Config for SPI Channel
+  #if W25Qxx_SPI == _SPI1
+    #define W25QXX_SPI_NUM          SPI1
+    #define W25QXX_SPI_DMA_RCC_AHB  RCC_AHBPeriph_DMA1
+    #define W25QXX_SPI_DMA          DMA1
+    #define W25QXX_SPI_DMA_CHANNEL  DMA1_Channel2
+    #define W25QXX_SPI_DMA_IFCR_BIT 5
+  #elif W25Qxx_SPI == _SPI2
+    #define W25QXX_SPI_NUM          SPI2
+    #define W25QXX_SPI_DMA          DMA1
+    #define W25QXX_SPI_DMA_RCC_AHB  RCC_AHBPeriph_DMA1
+    #define W25QXX_SPI_DMA_CHANNEL  DMA1_Channel4
+    #define W25QXX_SPI_DMA_IFCR_BIT 13
+  #elif W25Qxx_SPI == _SPI3
+    #define W25QXX_SPI_NUM          SPI3
+    #define W25QXX_SPI_DMA          DMA2
+    #define W25QXX_SPI_DMA_RCC_AHB  RCC_AHBPeriph_DMA2
+    #define W25QXX_SPI_DMA_CHANNEL  DMA2_Channel1
+    #define W25QXX_SPI_DMA_IFCR_BIT 1
+  #endif
 
 //SPI --> FSMC DMA (LCD_RAM)
 //16bits, SPI_RX to LCD_RAM.
@@ -46,7 +47,7 @@ void LCD_DMA_Config(void) {
   W25QXX_SPI_DMA_CHANNEL->CCR |= 0 << 14;                     //�Ǵ洢�����洢��ģʽ
 }
 
-#define LCD_DMA_MAX_TRANS 65535   //DMA 65535 bytes one frame
+  #define LCD_DMA_MAX_TRANS 65535   //DMA 65535 bytes one frame
 // start DMA transfer from SPI->DR to FSMC
 // the max bytes of one frame is LCD_DMA_MAX_TRANS 65535
 void lcd_frame_segment_display(u16 size, u32 addr) {

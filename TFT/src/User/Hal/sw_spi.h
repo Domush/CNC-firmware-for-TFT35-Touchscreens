@@ -1,7 +1,7 @@
 #ifndef _SW_SPI_H_
 #define _SW_SPI_H_
 
-#include "variants.h"
+#include "System/variants.h"
 
 typedef enum {
   _SPI_MODE0,

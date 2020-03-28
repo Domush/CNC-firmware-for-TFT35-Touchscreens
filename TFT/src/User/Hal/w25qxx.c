@@ -1,5 +1,5 @@
 #include "w25qxx.h"
-#include "variants.h"
+#include "System/variants.h"
 
 /*************************** W25Qxx SPI ģʽ�ײ���ֲ�Ľӿ� ***************************/
 //#define W25Qxx_SPI     _SPI3

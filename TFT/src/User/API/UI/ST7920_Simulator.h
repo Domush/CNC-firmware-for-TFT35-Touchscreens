@@ -1,27 +1,28 @@
 #ifndef _ST7920_SIMULATOR_H_
 #define _ST7920_SIMULATOR_H_
+#include "includes.h"
 
-#include "stdint.h"
-#include "../../Configuration.h"
+// #include "stdint.h"
+// #include "../../Configuration.h"
 
 // User-defined colors for 12864 mode from Configuration.h
 #ifndef ST7920_BKCOLOR
-#define ST7920_BKCOLOR (BLACK)
+  #define ST7920_BKCOLOR (BLACK)
 #endif
 
 #ifndef ST7920_FNCOLOR
-#define ST7920_FNCOLOR (GREEN)
+  #define ST7920_FNCOLOR (GREEN)
 #endif
 
 #define ST7920_XSTART (0x80)
 #define ST7920_YSTART (0x80)
 
 #ifndef ST7920_FULLSCREEN
-#define LCD_XROWS 128
-#define LCD_YROWS 64
+  #define LCD_XROWS 128
+  #define LCD_YROWS 64
 #else
-#define LCD_XROWS 128.0f
-#define LCD_YROWS 64.0f
+  #define LCD_XROWS 128.0f
+  #define LCD_YROWS 64.0f
 #endif
 
 #define PIXEL_XSIZE (MIN(LCD_WIDTH / LCD_XROWS, LCD_HEIGHT / LCD_YROWS))

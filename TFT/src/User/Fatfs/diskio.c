@@ -6,18 +6,17 @@
 /* This is an example of glue functions to attach various exsisting      */
 /* storage control modules to the FatFs module with a defined API.       */
 /*-----------------------------------------------------------------------*/
-
 #include "ff.h"     /* Obtains integer types */
 #include "diskio.h" /* Declarations of disk functions */
 #include "usb_conf.h"
 #include "usbh_msc_core.h"
 #include "usbh_usr.h"
-#include "variants.h"
+#include "System/variants.h"
 
 #ifdef SD_SPI_SUPPORT
-#include "sd.h"
+  #include "sd.h"
 #else
-#include "sdio_sdcard.h"
+  #include "sdio_sdcard.h"
 #endif
 
 /* Definitions of physical drive number for each drive */

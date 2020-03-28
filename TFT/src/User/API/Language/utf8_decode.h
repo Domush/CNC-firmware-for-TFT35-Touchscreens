@@ -1,7 +1,8 @@
 #ifndef _UTF8_DECODE_H_
 #define _UTF8_DECODE_H_
+#include "includes.h"
 
-#include "stdint.h"
+// #include "stdint.h"
 
 typedef struct {
   uint32_t startCodePoint;         // start unicode code point for language

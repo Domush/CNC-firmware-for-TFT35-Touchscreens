@@ -1,5 +1,5 @@
 #include "includes.h"
-#include "lcd.h"
+// #include "lcd.h"
 
 #ifdef STM32_HAS_FSMC
 u16 LCD_RD_DATA(void) {

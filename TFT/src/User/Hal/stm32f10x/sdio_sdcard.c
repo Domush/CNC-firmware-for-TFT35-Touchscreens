@@ -1,10 +1,10 @@
-#include "variants.h"
+#include "System/variants.h"
 
 #ifdef SD_SDIO_SUPPORT
 
-#include "sdio_sdcard.h"
-#include "string.h"
-#include "GPIO_Init.h"
+  #include "sdio_sdcard.h"
+  #include "string.h"
+  #include "GPIO_Init.h"
 
 static u8 CardType = SDIO_STD_CAPACITY_SD_CARD_V1_1;
 static u32 CSD_Tab[4], CID_Tab[4], RCA = 0;
@@ -36,28 +36,28 @@ void MY_NVIC_Init(u8 NVIC_PreemptionPriority, u8 NVIC_SubPriority, u8 NVIC_Chann
   NVIC->IP[NVIC_Channel] |= temp << 4;
 }
 
-#ifdef SD_CD_PIN
+  #ifdef SD_CD_PIN
 //SD_CD insert detect
 void SD_CD_WP_Init(void) {
   GPIO_InitSet(SD_CD_PIN, MGPIO_MODE_IPU, 0);
 }
-#endif
+  #endif
 
 uint8_t SD_CD_Inserted(void) {
-#ifdef SD_CD_PIN
+  #ifdef SD_CD_PIN
   return !GPIO_GetLevel(SD_CD_PIN);
-#else
+  #else
   return 0;
-#endif
+  #endif
 }
 
 SD_Error SD_Init(void) {
   u8 clkdiv            = 0;
   SD_Error errorstatus = SD_OK;
 
-#ifdef SD_CD_PIN
+  #ifdef SD_CD_PIN
   SD_CD_WP_Init();
-#endif
+  #endif
 
   RCC->APB2ENR |= 1 << 4;
   RCC->APB2ENR |= 1 << 5;

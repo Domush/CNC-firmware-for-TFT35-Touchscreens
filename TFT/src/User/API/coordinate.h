@@ -1,8 +1,9 @@
 #ifndef _COORDINATE_H_
 #define _COORDINATE_H_
+#include "includes.h"
 
-#include "variants.h"
-#include "stdbool.h"
+// #include "System/variants.h"
+// #include "stdbool.h"
 
 typedef enum {
   X_AXIS = 0,

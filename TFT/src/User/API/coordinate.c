@@ -1,6 +1,7 @@
-#include "coordinate.h"
-#include "string.h"
-#include "Configuration.h"
+#include "includes.h"
+// #include "coordinate.h"
+// #include "string.h"
+// #include "Configuration.h"
 
 const char axis_id[TOTAL_AXIS] = {'X', 'Y', 'Z'};
 

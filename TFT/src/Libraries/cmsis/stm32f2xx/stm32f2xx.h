@@ -60,7 +60,7 @@ extern "C" {
   /** @addtogroup Library_configuration_section
   * @{
   */
-  #include "variants.h"
+  #include "System/variants.h"
 /* Uncomment the line below according to the target STM32 device used in your
    application
   */

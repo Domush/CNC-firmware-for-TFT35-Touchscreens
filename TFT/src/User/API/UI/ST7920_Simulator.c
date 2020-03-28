@@ -1,7 +1,7 @@
-#include "ST7920_Simulator.h"
+// #include "ST7920_Simulator.h"
 #include "includes.h"
-#include "GUI.h"
-#include "../../Configuration.h"
+// #include "GUI.h"
+// #include "../../Configuration.h"
 
 #ifdef ST7920_SPI
 
@@ -110,9 +110,9 @@ void menuST7920(void) {
   GUI_SetColor(infoSettings.font_color);
   GUI_SetBkColor(infoSettings.bg_color);
 
-#if defined(ST7920_BANNER_TEXT)
+  #if defined(ST7920_BANNER_TEXT)
   GUI_DispStringInRect(0, 0, LCD_WIDTH, SIMULATOR_YSTART, (u8*)ST7920_BANNER_TEXT);
-#endif
+  #endif
 
   SPI_Slave();
   SPI_Slave_CS_Config();
@@ -129,9 +129,9 @@ void menuST7920(void) {
     if (LCD_BtnTouch(LCD_BUTTON_INTERVALS))
       Touch_Sw(1);
 
-#if LCD_ENCODER_SUPPORT
+  #if LCD_ENCODER_SUPPORT
     loopCheckMode();
-#endif
+  #endif
   }
   SPI_SlaveDeInit();
 }

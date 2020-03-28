@@ -1,8 +1,8 @@
-#include "variants.h"
+#include "System/variants.h"
 
 #ifdef SD_SPI_SUPPORT
-#include "sd.h"
-#include "GPIO_Init.h"
+  #include "sd.h"
+  #include "GPIO_Init.h"
 
 u8 SD_Type = 0;   //SD card type
 
@@ -21,26 +21,26 @@ void SD_SPI_CS_Set(u8 level) {
   SPI_CS_Set(SD_SPI, level);
 }
 
-#ifdef SD_CD_PIN
+  #ifdef SD_CD_PIN
 //SD_CD insert detect
 void SD_CD_WP_Init(void) {
   GPIO_InitSet(SD_CD_PIN, MGPIO_MODE_IPU, 0);
 }
-#endif
+  #endif
 
 u8 SD_CD_Inserted(void) {
-#ifdef SD_CD_PIN
+  #ifdef SD_CD_PIN
   return !GPIO_GetLevel(SD_CD_PIN);
-#else
+  #else
   return 0;
-#endif
+  #endif
 }
 
 //initialization
 void SD_SPI_Init(void) {
-#ifdef SD_CD_PIN
+  #ifdef SD_CD_PIN
   SD_CD_WP_Init();
-#endif
+  #endif
   SPI_Config(SD_SPI);
   SD_SPI_CS_Set(1);
 }
