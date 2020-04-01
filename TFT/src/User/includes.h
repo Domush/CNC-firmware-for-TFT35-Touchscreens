@@ -111,7 +111,7 @@ typedef struct
   bool waiting;                        //Whether wait for Marlin's response
   bool responseReceived[_USART_CNT];   //Whether receive Marlin's response or get Gcode by other UART(ESP3D/OctoPrint)
   bool connected;                      //Whether have connected to Marlin
-  bool printing;                       //Whether the host is busy in printing execution. ( USB serial printing and GCODE print from onboard)
+  bool jobInProgress;                  //Whether the host is busy in printing execution. ( USB serial printing and GCODE print from onboard)
 } HOST;
 
 extern HOST infoHost;

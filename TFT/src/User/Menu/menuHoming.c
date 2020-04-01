@@ -17,8 +17,8 @@ const MENUITEMS homeItems = {
     }};
 
 void menuHome(void) {
-  extern PRINTING infoPrinting;
-  if (infoPrinting.coordSpace < 53) infoPrinting.coordSpace = 53;
+  extern JOBSTATUS infoJobStatus;
+  if (infoJobStatus.coordSpace < 53) infoJobStatus.coordSpace = 53;
 
   KEY_VALUES key_num = KEY_IDLE;
   menuDrawPage(&homeItems);
@@ -27,33 +27,33 @@ void menuHome(void) {
     switch (key_num) {
       case KEY_ICON_0:   // Home all
         timedMessage(2, TIMED_INFO, "Homing all axes");
-        storeCmd("G28\n");
+        queueCommand(false, "G28\n");
         break;
       case KEY_ICON_1:   // Home X
         timedMessage(2, TIMED_INFO, "Homing X axis");
-        storeCmd("G28 X\n");
+        queueCommand(false, "G28 X\n");
         break;
       case KEY_ICON_2:   // Home Y
         timedMessage(2, TIMED_INFO, "Homing Y axis");
-        storeCmd("G28 Y\n");
+        queueCommand(false, "G28 Y\n");
         break;
       case KEY_ICON_3:   // Home Z
         timedMessage(2, TIMED_INFO, "Homing Z axis");
-        storeCmd("G28 Z\n");
+        queueCommand(false, "G28 Z\n");
         break;
       case KEY_ICON_4:   // Change to Machine Coord Space (G53)
-        infoPrinting.coordSpace = 53;
+        infoJobStatus.coordSpace = 53;
         timedMessage(2, TIMED_INFO, "Coord set 1");
-        storeCmd("G%d\n", infoPrinting.coordSpace);
+        queueCommand(false, "G%d\n", infoJobStatus.coordSpace);
         break;
       case KEY_ICON_5:   // Change to Coord Space 2 (G54)
-        infoPrinting.coordSpace = 54;
+        infoJobStatus.coordSpace = 54;
         timedMessage(2, TIMED_INFO, "Coord set 2");
-        storeCmd("G%d\n", infoPrinting.coordSpace);
+        queueCommand(false, "G%d\n", infoJobStatus.coordSpace);
         break;
       case KEY_ICON_6:   // Move to X0,Y0
         timedMessage(2, TIMED_INFO, "Moving to X0,Y0");
-        storeCmd("G0 X0 Y0\n");
+        queueCommand(false, "G0 X0 Y0\n");
         break;
       case KEY_ICON_7:
         infoMenu.active--;

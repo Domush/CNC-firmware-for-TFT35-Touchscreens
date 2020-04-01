@@ -18,6 +18,6 @@ extern SERIAL_RECEIVE_BUFFER cncIncoming[_USART_CNT];
 void Serial_DMAClearFlag(uint8_t port);
 void Serial_Init(u32 baud);
 void Serial_DeInit(void);
-void Serial_Puts(uint8_t port, char *command, ...);
+void sendCommand(uint8_t port, char *command, ...);
 
 #endif

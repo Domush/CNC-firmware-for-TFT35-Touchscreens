@@ -45,7 +45,7 @@ void powerFailedCache(u32 offset) {
   if (OS_GetTime() < nowTime + 100) return;
   if (create_ok == false) return;
   if (powerFailedSave == false) return;
-  if (isPause() == true) return;
+  if (jobIsPaused() == true) return;
 
   // if (gcodeCommandQueue.count != 0) return;
 
@@ -111,26 +111,26 @@ bool powerOffGetData(void) {
   }
 
   if (infoBreakPoint.gantryspeed != 0) {
-    storeCmd("G92 Z%.3f\n", infoBreakPoint.axis[Z_AXIS]
+    queueCommand(false, "G92 Z%.3f\n", infoBreakPoint.axis[Z_AXIS]
 #ifdef BTT_MINI_UPS
-                                + POWER_LOSS_ZRAISE
+                                           + POWER_LOSS_ZRAISE
 #endif
     );
-    storeCmd("G1 Z%.3f\n", infoBreakPoint.axis[Z_AXIS] + POWER_LOSS_ZRAISE);
+    queueCommand(false, "G1 Z%.3f\n", infoBreakPoint.axis[Z_AXIS] + POWER_LOSS_ZRAISE);
 #ifdef HOME_BEFORE_PLR
-    storeCmd("G28\n");
-    storeCmd("G1 Z%.3f\n", infoBreakPoint.axis[Z_AXIS] + POWER_LOSS_ZRAISE);
+    queueCommand(false, "G28\n");
+    queueCommand(false, "G1 Z%.3f\n", infoBreakPoint.axis[Z_AXIS] + POWER_LOSS_ZRAISE);
 #else
-    storeCmd("G28 R0 XY\n");
+    queueCommand(false, "G28 R0 XY\n");
 #endif
-    storeCmd("G1 X%.3f Y%.3f Z%.3f F3000\n",
-             infoBreakPoint.axis[X_AXIS],
-             infoBreakPoint.axis[Y_AXIS],
-             infoBreakPoint.axis[Z_AXIS]);
-    storeCmd("G1 F%d\n", infoBreakPoint.gantryspeed);
+    queueCommand(false, "G1 X%.3f Y%.3f Z%.3f F3000\n",
+                 infoBreakPoint.axis[X_AXIS],
+                 infoBreakPoint.axis[Y_AXIS],
+                 infoBreakPoint.axis[Z_AXIS]);
+    queueCommand(false, "G1 F%d\n", infoBreakPoint.gantryspeed);
 
     if (infoBreakPoint.relative == true) {
-      storeCmd("G91\n");
+      queueCommand(false, "G91\n");
     }
   }
 

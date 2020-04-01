@@ -21,7 +21,7 @@ const MENUITEMS routerItems = {
 const char* routerID  = ROUTER_ID;
 const u8 routerMaxPWM = ROUTER_MAX_PWM;
 
-extern PRINTING infoPrinting;
+extern JOBSTATUS infoJobStatus;
 
 /**
  * routerControl.
@@ -38,36 +38,36 @@ void routerControl(u8 speed) {
   switch (infoSettings.router_power) {
     case 1:
       if (!speed || speed < 1) {
-        if (infoPrinting.m0_pause) {
-          Serial_Puts(SERIAL_PORT, "M5\n");
+        if (infoJobStatus.isM0Paused) {
+          sendCommand(SERIAL_PORT, "M5\n");
         } else {
-          storeCmd("M5\n");
+          queueCommand(false, "M5\n");
         }
       } else {
-        if (infoPrinting.m0_pause) {
-          Serial_Puts(SERIAL_PORT, "M3 S%d\n", speed);
+        if (infoJobStatus.isM0Paused) {
+          sendCommand(SERIAL_PORT, "M3 S%d\n", speed);
         } else {
-          storeCmd("M3 S%d\n", speed);
+          queueCommand(false, "M3 S%d\n", speed);
         }
       }
-      infoPrinting.routerSpeed = speed;
+      infoJobStatus.routerSpeed = speed;
       break;
 
     case 2:
       if (!speed || speed < 1) {
-        if (infoPrinting.m0_pause) {
-          Serial_Puts(SERIAL_PORT, "M107\n");
+        if (infoJobStatus.isM0Paused) {
+          sendCommand(SERIAL_PORT, "M107\n");
         } else {
-          storeCmd("M107\n");
+          queueCommand(false, "M107\n");
         }
       } else {
-        if (infoPrinting.m0_pause) {
-          Serial_Puts(SERIAL_PORT, "M106 S%d\n", speed);
+        if (infoJobStatus.isM0Paused) {
+          sendCommand(SERIAL_PORT, "M106 S%d\n", speed);
         } else {
-          storeCmd("M106 S%d\n", speed);
+          queueCommand(false, "M106 S%d\n", speed);
         }
       }
-      infoPrinting.routerSpeed = speed;
+      infoJobStatus.routerSpeed = speed;
       break;
 
     default:
@@ -75,21 +75,21 @@ void routerControl(u8 speed) {
   }
 }
 void routerChangeBit(void) {
-  u8 speed = infoPrinting.routerSpeed;
+  u8 speed = infoJobStatus.routerSpeed;
   if (speed > 0) {
     routerControl(0);
   }
-  if (infoPrinting.coordSpace < 53) infoPrinting.coordSpace = 53;
-  storeCmd("G59\n");
-  storeCmd("G0 X20 Y200 Z150 F%d\n", SPEED_MOVE_FAST);
-  storeCmd("M0 Please replace the bit. Continue when finished.");
-  infoPrinting.m0_pause = true;
+  if (infoJobStatus.coordSpace < 53) infoJobStatus.coordSpace = 53;
+  queueCommand(false, "G59\n");
+  queueCommand(false, "G0 X20 Y200 Z150 F%d\n", SPEED_MOVE_FAST);
+  queueCommand(false, "M0 Please replace the bit. Continue when finished.");
+  infoJobStatus.isM0Paused = true;
 }
 
 void routerShowSpeed(void) {
   const GUI_RECT rect = {exhibitRect.x0, CENTER_Y - BYTE_HEIGHT, exhibitRect.x1, CENTER_Y};
   u8 fs;
-  fs = (infoPrinting.routerSpeed * 100) / 255;
+  fs = (infoJobStatus.routerSpeed * 100) / 255;
   GUI_ClearRect(rect.x0, rect.y0, rect.x1, rect.y1);
   GUI_DispStringInPrect(&rect, (u8*)routerID);
   char router_s[5];
@@ -99,12 +99,12 @@ void routerShowSpeed(void) {
 
 void routerSpeedReDraw(void) {
   char router_s[5] = "";
-  sprintf(router_s, "%3d%%", (infoPrinting.routerSpeed * 100) / 255);
+  sprintf(router_s, "%3d%%", (infoJobStatus.routerSpeed * 100) / 255);
   GUI_DispString(CENTER_X - BYTE_WIDTH, CENTER_Y, (u8*)router_s);
 }
 
 void menuRouter(void) {
-  u8 nowRouterSpeed  = infoPrinting.routerSpeed;
+  u8 nowRouterSpeed  = infoJobStatus.routerSpeed;
   KEY_VALUES key_num = KEY_IDLE;
 
   menuDrawPage(&routerItems);
@@ -113,31 +113,31 @@ void menuRouter(void) {
     key_num = menuKeyGetValue();
     switch (key_num) {
       case KEY_ICON_0:   // Router speed --
-        if (infoPrinting.routerSpeed > 0) {
-          if ((infoPrinting.routerSpeed - 2) > 0) {
-            infoPrinting.routerSpeed -= 2;   //2.55 is 1 percent, rounding down
+        if (infoJobStatus.routerSpeed > 0) {
+          if ((infoJobStatus.routerSpeed - 2) > 0) {
+            infoJobStatus.routerSpeed -= 2;   //2.55 is 1 percent, rounding down
             timedMessage(2, TIMED_INFO, "Reducing router speed");
           } else {
-            infoPrinting.routerSpeed = 0;
+            infoJobStatus.routerSpeed = 0;
             timedMessage(2, TIMED_INFO, "Turning off router");
           }
         }
         break;
 
       case KEY_ICON_3:   // Router speed ++
-        if (infoPrinting.routerSpeed < routerMaxPWM) {
-          if (infoPrinting.routerSpeed + 2 <= routerMaxPWM) {
-            infoPrinting.routerSpeed += 2;   //2.55 is 1 percent, rounding down
+        if (infoJobStatus.routerSpeed < routerMaxPWM) {
+          if (infoJobStatus.routerSpeed + 2 <= routerMaxPWM) {
+            infoJobStatus.routerSpeed += 2;   //2.55 is 1 percent, rounding down
             timedMessage(2, TIMED_INFO, "Increasing router speed");
           } else {
-            infoPrinting.routerSpeed = routerMaxPWM;
+            infoJobStatus.routerSpeed = routerMaxPWM;
             timedMessage(2, TIMED_INFO, "Turning off router");
           }
         }
         break;
 
       case KEY_ICON_4:   // Router off
-        if (isPrinting() && !isPause()) {
+        if (jobInProgress() && !jobIsPaused()) {
           popupReminder((u8*)"Not allowed - Bit damage likely", (u8*)"You must first pause the CNC job.");
         } else {
           timedMessage(2, TIMED_INFO, "Turning off router");
@@ -162,9 +162,9 @@ void menuRouter(void) {
       default:
         break;
     }
-    if (nowRouterSpeed != infoPrinting.routerSpeed) {
-      routerControl(infoPrinting.routerSpeed);
-      nowRouterSpeed = infoPrinting.routerSpeed;
+    if (nowRouterSpeed != infoJobStatus.routerSpeed) {
+      routerControl(infoJobStatus.routerSpeed);
+      nowRouterSpeed = infoJobStatus.routerSpeed;
       routerSpeedReDraw();
     }
     runUpdateLoop();

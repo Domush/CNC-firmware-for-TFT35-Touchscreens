@@ -21,12 +21,13 @@
 
 /* Includes ------------------------------------------------------------------ */
 
+#include "includes.h"
 #include "usbh_usr.h"
 #include "usb_bsp.h"
 #include "usb_hcd_int.h"
 #include "usbh_core.h"
-#include "delay.h"
-#include "System/variants.h"
+// #include "delay.h"
+// #include "System/variants.h"
 
 #ifdef U_DISK_SUPPORT
 /**

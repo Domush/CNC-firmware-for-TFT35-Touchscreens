@@ -48,24 +48,24 @@ bool readStoredPara(void) {
   {
     infoSettingsReset();
   } else {
-    infoSettings.baudrate         = byteToWord(data + (index += 4), 4);
-    infoSettings.language         = byteToWord(data + (index += 4), 4);
-    infoSettings.mode             = byteToWord(data + (index += 4), 4);
-    infoSettings.runout           = byteToWord(data + (index += 4), 4);
-    infoSettings.rotate_ui        = byteToWord(data + (index += 4), 4);
-    infoSettings.bg_color         = byteToWord(data + (index += 4), 4);
-    infoSettings.font_color       = byteToWord(data + (index += 4), 4);
-    infoSettings.silent           = byteToWord(data + (index += 4), 4);
-    infoSettings.auto_off         = byteToWord(data + (index += 4), 4);
-    infoSettings.terminalACK      = byteToWord(data + (index += 4), 4);
-    infoSettings.invert_yaxis     = byteToWord(data + (index += 4), 4);
-    infoSettings.move_speed       = byteToWord(data + (index += 4), 4);
-    infoSettings.router_power     = byteToWord(data + (index += 4), 4);
-    infoSettings.invert_zaxis     = byteToWord(data + (index += 4), 4);
-    infoSettings.send_start_gcode = byteToWord(data + (index += 4), 4);
-    infoSettings.send_end_gcode   = byteToWord(data + (index += 4), 4);
-    infoSettings.persistent_info  = byteToWord(data + (index += 4), 4);
-    infoSettings.file_listmode    = byteToWord(data + (index += 4), 4);
+    infoSettings.baudrate               = byteToWord(data + (index += 4), 4);
+    infoSettings.language               = byteToWord(data + (index += 4), 4);
+    infoSettings.mode                   = byteToWord(data + (index += 4), 4);
+    infoSettings.runout                 = byteToWord(data + (index += 4), 4);
+    infoSettings.rotate_ui              = byteToWord(data + (index += 4), 4);
+    infoSettings.bg_color               = byteToWord(data + (index += 4), 4);
+    infoSettings.font_color             = byteToWord(data + (index += 4), 4);
+    infoSettings.silent                 = byteToWord(data + (index += 4), 4);
+    infoSettings.auto_off               = byteToWord(data + (index += 4), 4);
+    infoSettings.showResponseInTerminal = byteToWord(data + (index += 4), 4);
+    infoSettings.invert_yaxis           = byteToWord(data + (index += 4), 4);
+    infoSettings.move_speed             = byteToWord(data + (index += 4), 4);
+    infoSettings.router_power           = byteToWord(data + (index += 4), 4);
+    infoSettings.invert_zaxis           = byteToWord(data + (index += 4), 4);
+    infoSettings.send_start_gcode       = byteToWord(data + (index += 4), 4);
+    infoSettings.send_end_gcode         = byteToWord(data + (index += 4), 4);
+    infoSettings.persistent_info        = byteToWord(data + (index += 4), 4);
+    infoSettings.file_listmode          = byteToWord(data + (index += 4), 4);
   }
 
   return paraExist;
@@ -89,7 +89,7 @@ void storePara(void) {
   wordToByte(infoSettings.font_color, data + (index += 4));
   wordToByte(infoSettings.silent, data + (index += 4));
   wordToByte(infoSettings.auto_off, data + (index += 4));
-  wordToByte(infoSettings.terminalACK, data + (index += 4));
+  wordToByte(infoSettings.showResponseInTerminal, data + (index += 4));
   wordToByte(infoSettings.invert_yaxis, data + (index += 4));
   wordToByte(infoSettings.move_speed, data + (index += 4));
   wordToByte(infoSettings.router_power, data + (index += 4));

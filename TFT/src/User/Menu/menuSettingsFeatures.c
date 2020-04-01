@@ -131,15 +131,13 @@ LISTITEM settingPage[SKEY_COUNT] = {
 
 };
 
-//
-//perform action on button press
-//
+//* Perform action on button press
 void updateFeatureSettings(uint8_t key_val) {
   uint8_t item_index = fe_cur_page * LISTITEM_PER_PAGE + key_val;
   switch (item_index) {
     case SKEY_HIDEACK:
-      infoSettings.terminalACK            = (infoSettings.terminalACK + 1) % TOGGLE_NUM;
-      settingPage[item_index].icon        = toggleitem[infoSettings.terminalACK];
+      infoSettings.showResponseInTerminal = (infoSettings.showResponseInTerminal + 1) % TOGGLE_NUM;
+      settingPage[item_index].icon        = toggleitem[infoSettings.showResponseInTerminal];
       featureSettingsItems.items[key_val] = settingPage[item_index];
 
       menuDrawListItem(&featureSettingsItems.items[key_val], key_val);
@@ -245,15 +243,13 @@ void updateFeatureSettings(uint8_t key_val) {
   }
 }
 
-//
-//load values on page change and reload
-//
+//* Load values on page change and reload
 void loadFeatureSettings() {
   for (uint8_t i = 0; i < LISTITEM_PER_PAGE; i++) {
     uint8_t item_index = fe_cur_page * LISTITEM_PER_PAGE + i;
     switch (item_index) {
       case SKEY_HIDEACK:
-        settingPage[item_index].icon  = toggleitem[infoSettings.terminalACK];
+        settingPage[item_index].icon  = toggleitem[infoSettings.showResponseInTerminal];
         featureSettingsItems.items[i] = settingPage[item_index];
         break;
 

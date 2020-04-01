@@ -38,7 +38,7 @@ void menuMain(void) {
         infoMenu.menu[++infoMenu.active] = menuJobSetup;
         break;
       case KEY_ICON_3:
-        if (infoPrinting.printing) {
+        if (infoJobStatus.inProgress) {
           infoMenu.menu[++infoMenu.active] = menuPrinting;
         } else {
           infoMenu.menu[++infoMenu.active] = menuPrint;
@@ -49,11 +49,11 @@ void menuMain(void) {
         break;
       case KEY_ICON_5: {
         timedMessage(2, TIMED_INFO, "X,Y steppers disabled");
-        storeCmd("M18 X Y\n");   //disable X and Y motors
+        queueCommand(false, "M18 X Y\n");   //disable X and Y motors
       } break;
       case KEY_ICON_6: {
         timedMessage(2, TIMED_INFO, "Z stepper disabled");
-        storeCmd("M18 Z\n");   //disable Z motors
+        queueCommand(false, "M18 Z\n");   //disable Z motors
       } break;
       case KEY_ICON_7:
         infoMenu.menu[++infoMenu.active] = menuSettings;

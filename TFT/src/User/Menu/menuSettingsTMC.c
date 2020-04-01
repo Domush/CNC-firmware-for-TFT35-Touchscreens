@@ -103,8 +103,8 @@ NUM_KEY_VALUES NumKeyGetValue(void) {
 }
 
 void Send_Settingcmd(void) {
-  storeCmd("M906\n");
-  storeCmd("M92\n");
+  queueCommand(false, "M906\n");
+  queueCommand(false, "M92\n");
   return;
 }
 
@@ -232,7 +232,7 @@ void Setting_parameter(void) {
           cmd_buff = malloc(cmd_long + strlen(ParameterBuf));
           if (cmd_buff) {
             strcpy(cmd_buff, parameter_cmd[Select_Parameter]);
-            storeCmd(strcat(cmd_buff, ParameterBuf));
+            queueCommand(false, strcat(cmd_buff, ParameterBuf));
             free(cmd_buff);
           }
 #endif

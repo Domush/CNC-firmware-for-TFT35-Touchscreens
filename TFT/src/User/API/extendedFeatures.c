@@ -25,10 +25,11 @@ void PS_ON_Off(void) {
 // Filament runout detect
 #ifdef FIL_RUNOUT_PIN
 
-static bool update_waiting = false;
+static bool updateJobStatus = true;
+
 /* Set whether we need to query the current position */
-void positionSetUpdateWaiting(bool isWaiting) {
-  update_waiting = isWaiting;
+void positionSetUpdateWaiting(bool needUpdate) {
+  updateJobStatus = needUpdate;
 }
 
 void FIL_Runout_Init(void) {
@@ -90,7 +91,7 @@ bool FIL_IsRunout(void) {
 void loopFILRunoutDetect(void) {
   if (infoSettings.runout == FILAMENT_RUNOUT_OFF) return;   // Filament runout turn off
   if (!FIL_IsRunout()) return;                              // Filament not runout yet, need constant scanning to filter interference
-  if (!isPrinting() || isPause()) return;                   // No printing or printing paused
+  if (!jobInProgress() || jobIsPaused()) return;            // No printing or printing paused
 
   if (setPrintPause(true)) {
     popupReminder(textSelect(LABEL_WARNING), textSelect(LABEL_FILAMENT_RUNOUT));

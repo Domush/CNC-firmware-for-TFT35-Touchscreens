@@ -27,7 +27,7 @@ void TIM4_IRQHandler(void)   //TIM4 interrupt
   {
     os_counter++;
     //Statistics printing takes time during printing
-    setPrintingTime(os_counter);
+    jobSetTimeElapsed(os_counter);
 
     loopTouchScreen();
 

@@ -140,7 +140,7 @@ void menuSpeed(void) {
 
     if (nowSpeed != cncSpeedValue) {
       nowSpeed = cncSpeedValue;
-      storeCmd("M220 S%d\n", cncSpeedValue);
+      queueCommand(false, "M220 S%d\n", cncSpeedValue);
       showCNCSpeedOverride();
     }
     runUpdateLoop();

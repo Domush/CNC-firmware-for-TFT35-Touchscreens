@@ -38,70 +38,72 @@ const ITEM itemIsFinished[2] = {
   #define M27_REFRESH 3
 #endif
 
-PRINTING infoPrinting;
-static u16 update_delay = M27_REFRESH * 100;
+JOBSTATUS infoJobStatus;
+static u16 jobStatusUpdateDelay = M27_REFRESH * 100;
 
 #ifdef ONBOARD_SD_SUPPORT
-static bool update_waiting = M27_WATCH_OTHER_SOURCES;
+static bool updateJobStatus = M27_WATCH_OTHER_SOURCES;
 #else
-static bool update_waiting = false;
+static bool updateJobStatus = false;
 #endif
 
-//
-bool isPrinting(void) {
-  return infoPrinting.printing;
+//* Is there a job in progress?
+bool jobInProgress(void) {
+  return infoJobStatus.inProgress;
 }
 
-//
-bool isPause(void) {
-  return infoPrinting.pause;
+//* Is the job paused?
+bool jobIsPaused(void) {
+  return infoJobStatus.isPaused;
 }
 
-bool isM0_Pause(void) {
-  return infoPrinting.m0_pause;
+//* Is the job paused via M0 command?
+bool jobIsM0Paused(void) {
+  return infoJobStatus.isM0Paused;
 }
 
-//
-void setPrintingTime(u32 RTtime) {
+//* Set the job elapsed time
+void jobSetTimeElapsed(u32 RTtime) {
   if (RTtime % 100 == 0) {
-    if (isPrinting() && !isPause()) {
-      infoPrinting.time++;
+    if (jobInProgress() && !jobIsPaused()) {
+      infoJobStatus.timeElapsed++;
     }
   }
 }
 
-//
-void setPrintSize(u32 size) {
-  infoPrinting.size = size;
+//* Set the job's file size
+void jobSetSize(u32 size) {
+  infoJobStatus.size = size;
 }
 
-//
-void setPrintCur(u32 line) {
-  infoPrinting.currentLine = line;
+//* Set the job's current file line
+void jobSetCurrentLine(u32 line) {
+  infoJobStatus.currentLine = line;
 }
 
-u8 getPrintProgress(void) {
-  return infoPrinting.progress;
-}
-u32 getPrintTime(void) {
-  return infoPrinting.time;
+u8 jobGetPercentComplete(void) {
+  return infoJobStatus.percentComplete;
 }
 
-void printSetUpdateWaiting(bool isWaiting) {
-  update_waiting = isWaiting;
+u32 jobGetTimeElapsed(void) {
+  return infoJobStatus.timeElapsed;
+}
+
+void jobNeedUpdate(bool needUpdate) {
+  updateJobStatus = needUpdate;
 }
 
 void startGcodeExecute(void) {
   if (strlen(PRINT_START_GCODE) > 0)
-    storeCmd(PRINT_START_GCODE);
+    queueCommand(false, PRINT_START_GCODE);
   routerControl(ROUTER_MAX_PWM);
 }
 
 void endGcodeExecute(void) {
-  storeCmd("G90\n");
+  queueCommand(false, "G90\n");
   routerControl(0);
   if (strlen(PRINT_END_GCODE) > 0)
-    storeCmd(PRINT_END_GCODE);
+    queueCommand(false, PRINT_END_GCODE);
 }
 
 // *Return gCode filename with NO path
@@ -129,6 +131,7 @@ u8* getGcodePathFilename(char* fullFilename) {
   return (u8*)(&fullFilename[i + 1]);
 }
 
+//* Select gcode file to run
 void menuBeforePrinting(void) {
   long size = 0;
   switch (infoFile.source) {
@@ -146,7 +149,7 @@ void menuBeforePrinting(void) {
         return;
       }
 
-      infoPrinting.size = size;
+      infoJobStatus.size = size;
 
       //    if(powerFailedExist())
       //    {
@@ -156,7 +159,7 @@ void menuBeforePrinting(void) {
       //    {
       //      request_M24(infoBreakPoint.offset);
       //    }
-      printSetUpdateWaiting(true);
+      jobNeedUpdate(true);
 
 #ifdef M27_AUTOREPORT
       request_M27(M27_REFRESH);
@@ -164,28 +167,28 @@ void menuBeforePrinting(void) {
       request_M27(0);
 #endif
 
-      infoHost.printing = true;   // Global lock info on printer is busy in printing.
+      infoHost.jobInProgress = true;   // Global lock info on printer is busy in printing.
       break;
 
     case TFT_UDISK:
     case TFT_SD:   // GCode from file on TFT SD
-      if (f_open(&infoPrinting.file, infoFile.title, FA_OPEN_EXISTING | FA_READ) != FR_OK) {
+      if (f_open(&infoJobStatus.file, infoFile.title, FA_OPEN_EXISTING | FA_READ) != FR_OK) {
         ExitDir();
         infoMenu.active--;
         return;
       }
       if (powerFailedCreate(infoFile.title) == false) {
       }
-      powerFailedlSeek(&infoPrinting.file);
+      powerFailedlSeek(&infoJobStatus.file);
 
-      infoPrinting.size        = f_size(&infoPrinting.file);
-      infoPrinting.currentLine = infoPrinting.file.fptr;
+      infoJobStatus.size        = f_size(&infoJobStatus.file);
+      infoJobStatus.currentLine = infoJobStatus.file.fptr;
       if (infoSettings.send_start_gcode == 1) {
         startGcodeExecute();
       }
       break;
   }
-  infoPrinting.printing          = true;
+  infoJobStatus.inProgress       = true;
   infoMenu.menu[infoMenu.active] = menuPrinting;
   printingItems.title.address    = getGcodePathFilename(infoFile.title);
 }
@@ -199,7 +202,7 @@ void resumeToPause(bool pauseCalled) {
 bool setPrintPause(bool pauseCalled) {
   static bool pauseInProgress = false;
   extern u8 curRouterSpeed;
-  if (pauseInProgress || infoPrinting.pause == pauseCalled) {
+  if (pauseInProgress || infoJobStatus.isPaused == pauseCalled) {
     return false;
   } else {
     pauseInProgress = true;
@@ -207,9 +210,9 @@ bool setPrintPause(bool pauseCalled) {
 
   switch (infoFile.source) {
     case BOARD_SD:
-      infoPrinting.pause = pauseCalled;
+      infoJobStatus.isPaused = pauseCalled;
       if (pauseCalled) {
-        curRouterSpeed = infoPrinting.routerSpeed;
+        curRouterSpeed = infoJobStatus.routerSpeed;
         routerControl(0);
         request_M25();
       } else {
@@ -220,9 +223,9 @@ bool setPrintPause(bool pauseCalled) {
 
     case TFT_UDISK:
     case TFT_SD:
-      infoPrinting.pause = pauseCalled;
+      infoJobStatus.isPaused = pauseCalled;
       if (pauseCalled) {
-        while (gcodeCommand.count != 0) {
+        while (gcodeOutgoing.count != 0) {
           timedMessage(1, TIMED_WARNNG, "Finishing gCode queue");
           runUpdateLoop();
         }
@@ -233,32 +236,35 @@ bool setPrintPause(bool pauseCalled) {
 
       if (pauseCalled) {
         timedMessage(3, TIMED_INFO, "Pausing CNC");
-        curRouterSpeed = infoPrinting.routerSpeed;   // *Save current router speed
-        routerControl(0);                            // *turn off the router
-        coordinateGetAll(&pauseCoords);              // *save the current gantry position
-        if (isCoorRelative == true) storeCmd("G90\n");
+        curRouterSpeed = infoJobStatus.routerSpeed;   // *Save current router speed
+        routerControl(0);                             // *turn off the router
+        coordinateGetAll(&pauseCoords);               // *save the current gantry position
+        if (isCoorRelative == true) queueCommand(false, "G90\n");
+        queueCommand(false, "G53\n");
         if (coordinateIsClear()) {   // *move the gantry into paused position
-          storeCmd("G1 Z%.3f F%d\n", pauseCoords.axis[Z_AXIS] + SPINDLE_PAUSE_Z_RAISE, SPINDLE_PAUSE_Z_GANTRYSPEED);
-          storeCmd("G1 X%d Y%d F%d\n", SPINDLE_PAUSE_X_POSITION, SPINDLE_PAUSE_Y_POSITION, SPINDLE_PAUSE_XY_GANTRYSPEED);
+          queueCommand(false, "G1 Z%.3f F%d\n", pauseCoords.axis[Z_AXIS] + SPINDLE_PAUSE_Z_RAISE, SPINDLE_PAUSE_Z_GANTRYSPEED);
+          // queueCommand(false, "G1 X%d Y%d F%d\n", SPINDLE_PAUSE_X_POSITION, SPINDLE_PAUSE_Y_POSITION, SPINDLE_PAUSE_XY_GANTRYSPEED);
         }
 
-        if (isCoorRelative == true) storeCmd("G91\n");
+        if (isCoorRelative == true) queueCommand(false, "G91\n");
       } else {
         timedMessage(3, TIMED_INFO, "Resuming CNC");
-        if (infoPrinting.m0_pause == true) {
-          Serial_Puts(SERIAL_PORT, "M108\n");
-          infoPrinting.m0_pause = false;
+        if (infoJobStatus.isM0Paused == true) {
+          // sendCommand(SERIAL_PORT, "M108\n");
+          infoJobStatus.isM0Paused = false;
         }
-        if (isCoorRelative == true) storeCmd("G90\n");
+        if (isCoorRelative == true) queueCommand(false, "G90\n");
+
+        queueCommand(false, "G%d\n", infoJobStatus.coordSpace);
+        if (coordinateIsClear()) {   // *restore previous gantry position
+          queueCommand(false, "G1 X%.3f Y%.3f F%d\n", pauseCoords.axis[X_AXIS], pauseCoords.axis[Y_AXIS], SPINDLE_PAUSE_XY_GANTRYSPEED);
+          // queueCommand(false, "G1 Z%.3f F%d\n", pauseCoords.axis[Z_AXIS], SPINDLE_PAUSE_Z_GANTRYSPEED);
+        }
 
         routerControl(curRouterSpeed);   // *resume previous router speed
-        if (coordinateIsClear()) {       // *restore previous gantry position
-          storeCmd("G1 X%.3f Y%.3f F%d\n", pauseCoords.axis[X_AXIS], pauseCoords.axis[Y_AXIS], SPINDLE_PAUSE_XY_GANTRYSPEED);
-          storeCmd("G1 Z%.3f F%d\n", pauseCoords.axis[Z_AXIS], SPINDLE_PAUSE_Z_GANTRYSPEED);
-        }
-        storeCmd("G1 F%d\n", pauseCoords.gantryspeed);
+        queueCommand(false, "G1 F%d\n", pauseCoords.gantryspeed);
 
-        if (isCoorRelative == true) storeCmd("G91\n");
+        if (isCoorRelative == true) queueCommand(false, "G91\n");
       }
       break;
   }
@@ -275,9 +281,9 @@ const GUI_RECT progressRect = {1 * SPACE_X_PER_ICON, 0 * ICON_HEIGHT + 0 * SPACE
 #define PRINT_STATUS_TIME_Y   (PRINT_STATUS_SPEED_Y + 1 * BYTE_HEIGHT + 3)
 
 void showPrintTime(void) {
-  u8 hour = infoPrinting.time / 3600,
-     min  = infoPrinting.time % 3600 / 60,
-     sec  = infoPrinting.time % 60;
+  u8 hour = infoJobStatus.timeElapsed / 3600,
+     min  = infoJobStatus.timeElapsed % 3600 / 60,
+     sec  = infoJobStatus.timeElapsed % 60;
   if (hour > 0) {
     GUI_RestoreColorDefault();
     GUI_DispString(PRINT_STATUS_ROUTER_X + 3 * BYTE_WIDTH, PRINT_STATUS_TIME_Y, (u8*)"h");
@@ -298,9 +304,9 @@ void showPrintTime(void) {
 }
 
 void showPrintTimeUpper(void) {
-  u8 hour = infoPrinting.time / 3600,
-     min  = infoPrinting.time % 3600 / 60,
-     sec  = infoPrinting.time % 60;
+  u8 hour = infoJobStatus.timeElapsed / 3600,
+     min  = infoJobStatus.timeElapsed % 3600 / 60,
+     sec  = infoJobStatus.timeElapsed % 60;
   if (hour > 0) {
     GUI_RestoreColorDefault();
     GUI_DispString(LCD_WIDTH - 8 * BYTE_WIDTH, 0, (u8*)"h");
@@ -321,11 +327,11 @@ void showPrintTimeUpper(void) {
 }
 
 void showBabyStepValue(void) {
-  if (infoPrinting.babyStep != 0) {
+  if (infoJobStatus.babyStep != 0) {
     GUI_SetColor(MAT_LOWWHITE);
     GUI_DispString(PRINT_STATUS_ROUTER_X + 0 * BYTE_WIDTH, PRINT_STATUS_SPEED_Y - BYTE_HEIGHT * 2, (u8*)"Adj:");
     GUI_RestoreColorDefault();
-    GUI_DispFloat(PRINT_STATUS_ROUTER_X + 5 * BYTE_WIDTH, PRINT_STATUS_SPEED_Y - BYTE_HEIGHT * 2, infoPrinting.babyStep, 2, 1, RIGHT);
+    GUI_DispFloat(PRINT_STATUS_ROUTER_X + 5 * BYTE_WIDTH, PRINT_STATUS_SPEED_Y - BYTE_HEIGHT * 2, infoJobStatus.babyStep, 2, 1, RIGHT);
     // GUI_SetColor(MAT_LOWWHITE);
     // GUI_DispString(PRINT_STATUS_ROUTER_X + 8 * BYTE_WIDTH, PRINT_STATUS_SPEED_Y - BYTE_HEIGHT * 2, (u8*)"mm");
     GUI_RestoreColorDefault();
@@ -345,7 +351,7 @@ void showCNCSpeed(void) {
 
 void showRouterSpeed(void) {
   u8 routerSpeedPercent;
-  routerSpeedPercent = (infoPrinting.routerSpeed * 100) / 255;
+  routerSpeedPercent = (infoJobStatus.routerSpeed * 100) / 255;
   GUI_SetColor(MAT_LOWWHITE);
   GUI_DispString(PRINT_STATUS_ROUTER_X + 0 * BYTE_WIDTH, PRINT_STATUS_SPEED_Y, (u8*)"Bit:");
   GUI_RestoreColorDefault();
@@ -446,30 +452,30 @@ void menuPrinting(void) {
   KEY_VALUES key_num = KEY_IDLE;
   u32 time           = 0;
 
-  printingItems.items[KEY_ICON_0] = itemIsPause[infoPrinting.pause];
-  if (isPrinting())
+  printingItems.items[KEY_ICON_0] = itemIsPause[infoJobStatus.isPaused];
+  if (jobInProgress())
     printingItems.items[KEY_ICON_3] = itemIsFinished[0];
   else
     printingItems.items[KEY_ICON_3] = itemIsFinished[1];
 
   printingDrawPage();
-  // printingItems.items[key_pause] = itemIsPause[infoPrinting.pause];
+  // printingItems.items[key_pause] = itemIsPause[infoJobStatus.isPaused];
 
   while (infoMenu.menu[infoMenu.active] == menuPrinting) {
     //    Scroll_DispString(&titleScroll, LEFT); //Scroll display file name will take too many CPU cycles
 
-    if (infoPrinting.size != 0) {
-      if (infoPrinting.progress != limitValue(0, (uint64_t)infoPrinting.currentLine * 100 / infoPrinting.size, 100)) {
-        infoPrinting.progress = limitValue(0, (uint64_t)infoPrinting.currentLine * 100 / infoPrinting.size, 100);
+    if (infoJobStatus.size != 0) {
+      if (infoJobStatus.percentComplete != limitValue(0, (uint64_t)infoJobStatus.currentLine * 100 / infoJobStatus.size, 100)) {
+        infoJobStatus.percentComplete = limitValue(0, (uint64_t)infoJobStatus.currentLine * 100 / infoJobStatus.size, 100);
       }
-    } else if (infoPrinting.progress != 100) {
-      infoPrinting.progress = 100;
+    } else if (infoJobStatus.percentComplete != 100) {
+      infoJobStatus.percentComplete = 100;
     }
-    // showPrintProgress(infoPrinting.progress);
-    showIconPrintProgress(infoPrinting.progress);
+    // showPrintProgress(infoJobStatus.percentComplete);
+    showIconPrintProgress(infoJobStatus.percentComplete);
 
-    if (time != infoPrinting.time) {
-      time = infoPrinting.time;
+    if (time != infoJobStatus.timeElapsed) {
+      time = infoJobStatus.timeElapsed;
       showPrintTimeUpper();   // job timer
     }
     showBabyStepValue();
@@ -479,14 +485,14 @@ void menuPrinting(void) {
     key_num = menuKeyGetValue();
     switch (key_num) {
       case KEY_ICON_0:
-        setPrintPause(!isPause());
+        setPrintPause(!jobIsPaused());
         break;
 
       case KEY_ICON_3:
-        if (isPrinting())
+        if (jobInProgress())
           infoMenu.menu[++infoMenu.active] = menuStopPrinting;
         else {
-          exitPrinting();
+          jobExit();
           infoMenu.active--;
         }
         break;
@@ -514,23 +520,23 @@ void menuPrinting(void) {
   }
 }
 
-void exitPrinting(void) {
-  memset(&infoPrinting, 0, sizeof(PRINTING));
+void jobExit(void) {
+  memset(&infoJobStatus, 0, sizeof(JOBSTATUS));
   ExitDir();
 }
 
-void endPrinting(void) {
+void jobEnd(void) {
   switch (infoFile.source) {
     case BOARD_SD:
-      printSetUpdateWaiting(M27_WATCH_OTHER_SOURCES);
+      jobNeedUpdate(M27_WATCH_OTHER_SOURCES);
       break;
 
     case TFT_UDISK:
     case TFT_SD:
-      f_close(&infoPrinting.file);
+      f_close(&infoJobStatus.file);
       break;
   }
-  infoPrinting.printing = infoPrinting.pause = false;
+  infoJobStatus.inProgress = infoJobStatus.isPaused = false;
   powerFailedClose();
   powerFailedDelete();
   if (infoSettings.send_end_gcode == 1) {
@@ -538,9 +544,9 @@ void endPrinting(void) {
   }
 }
 
-void completePrinting(void) {
+void jobComplete(void) {
   timedMessage(3, TIMED_WARNNG, "Job complete!");
-  endPrinting();
+  jobEnd();
 
   printingItems.items[KEY_ICON_3] = itemIsFinished[1];
   printingDrawPage();
@@ -550,7 +556,7 @@ void completePrinting(void) {
   }
 }
 
-void abortPrinting(void) {
+void jobAbort(void) {
   switch (infoFile.source) {
     case BOARD_SD:
       request_M524();
@@ -558,16 +564,16 @@ void abortPrinting(void) {
 
     case TFT_UDISK:
     case TFT_SD:
-      clearCmdQueue();
+      clearGcodeQueue();
       break;
   }
 
-  storeCmd("G0 Z%d F3000\n", limitValue(0, (int)coordinateGetAxisTarget(Z_AXIS) + 10, Z_MAX_POS));
+  queueCommand(false, "G0 Z%d F3000\n", limitValue(0, (int)coordinateGetAxisTarget(Z_AXIS) + 10, Z_MAX_POS));
   if (strlen(CANCEL_CNC_GCODE) > 0)
-    storeCmd(CANCEL_CNC_GCODE);
+    queueCommand(false, CANCEL_CNC_GCODE);
 
-  endPrinting();
-  exitPrinting();
+  jobEnd();
+  jobExit();
 }
 
 void menuStopPrinting(void) {
@@ -580,7 +586,7 @@ void menuStopPrinting(void) {
     switch (key_num) {
       case KEY_POPUP_CONFIRM:
         timedMessage(3, TIMED_ERROR, "Aborting CNC job");
-        abortPrinting();
+        jobAbort();
         infoMenu.active -= 2;
         break;
 
@@ -612,7 +618,7 @@ void menuShutDown(void) {
     }
   shutdown:
     routerControl(0);
-    storeCmd("M81\n");
+    queueCommand(false, "M81\n");
     infoMenu.active--;
     popupReminder(textSelect(LABEL_SHUT_DOWN), textSelect(LABEL_SHUTTING_DOWN));
     runUpdateLoop();
@@ -627,63 +633,70 @@ void getGcodeFromFile(void) {
   u8 sdCharIndex = 0;
   UINT br        = 0;
 
-  if (isPrinting() == false || infoFile.source == BOARD_SD) return;
+  if (jobInProgress() == false || infoFile.source == BOARD_SD) return;
 
-  powerFailedCache(infoPrinting.file.fptr);
+  powerFailedCache(infoJobStatus.file.fptr);
 
-  if (gcodeCommand.count || infoPrinting.pause) return;
+  // Don't queue commands if commands are queued or paused
+  if (gcodeOutgoing.count || infoJobStatus.isPaused || infoJobStatus.isM0Paused) return;
 
-  if (isQueueFull()) return;
+  // If queue is full, don't fetch the next one
+  if (isQueueFull()) return;   //TODO (Check may be redundant)
 
-  for (; infoPrinting.currentLine < infoPrinting.size;) {
-    if (f_read(&infoPrinting.file, &sd_char, 1, &br) != FR_OK) break;
+  for (; infoJobStatus.currentLine < infoJobStatus.size;) {
+    if (f_read(&infoJobStatus.file, &sd_char, 1, &br) != FR_OK) break;
 
-    infoPrinting.currentLine++;
+    infoJobStatus.currentLine++;
 
-    //Gcode
-    if (sd_char == '\n')   //'\n' is end flag for per command
-    {
+    // Fetch only valid gcode
+    if (sd_char == '\n') {
+      // '\n' is end flag for per command
       sd_comment_mode  = false;   //for new command
       sd_comment_space = true;
       if (sdCharIndex != 0) {
-        gcodeCommand.queue[gcodeCommand.writeIndex].gcode[sdCharIndex++] = '\n';
-        gcodeCommand.queue[gcodeCommand.writeIndex].gcode[sdCharIndex]   = 0;   //terminate string
-        gcodeCommand.queue[gcodeCommand.writeIndex].src                  = SERIAL_PORT;
-        sdCharIndex                                                      = 0;   //clear buffer
-        gcodeCommand.writeIndex                                          = (gcodeCommand.writeIndex + 1) % GCODE_QUEUE_MAX;
-        gcodeCommand.count++;
+        gcodeOutgoing.queue[gcodeOutgoing.queueIndex].gcode[sdCharIndex++] = '\n';
+        gcodeOutgoing.queue[gcodeOutgoing.queueIndex].gcode[sdCharIndex]   = 0;   //terminate string
+        gcodeOutgoing.queue[gcodeOutgoing.queueIndex].src                  = SERIAL_PORT;
+        sdCharIndex                                                        = 0;   //clear buffer
+        gcodeOutgoing.queueIndex                                           = (gcodeOutgoing.queueIndex + 1) % GCODE_QUEUE_SIZE;
+        gcodeOutgoing.count++;
         break;
       }
     } else if (sdCharIndex >= GCODE_MAX_CHARACTERS - 2) {
-    }   //when the command length beyond the maximum, ignore the following bytes
-    else {
-      if (sd_char == ';')   //';' is comment out flag
+      // When the command length beyond the maximum, ignore the following bytes
+    } else {
+      if (sd_char == ';') {
+        // ';' is comment out flag
         sd_comment_mode = true;
-      else {
-        if (sd_comment_space && (sd_char == 'G' || sd_char == 'M' || sd_char == 'T'))   //ignore ' ' space bytes
+      } else {
+        if (sd_comment_space && (sd_char == 'G' || sd_char == 'M' || sd_char == 'T')) {
+          // Ignore ' ' space bytes
           sd_comment_space = false;
-        if (!sd_comment_mode && !sd_comment_space && sd_char != '\r')   //normal gcode
-          gcodeCommand.queue[gcodeCommand.writeIndex].gcode[sdCharIndex++] = sd_char;
+        }
+        if (!sd_comment_mode && !sd_comment_space && sd_char != '\r') {
+          // Normal gcode
+          gcodeOutgoing.queue[gcodeOutgoing.queueIndex].gcode[sdCharIndex++] = sd_char;
+        }
       }
     }
   }
 
   // *end of .gcode file - Finish up
-  if ((infoPrinting.currentLine >= infoPrinting.size) && isPrinting()) {
-    completePrinting();
+  if ((infoJobStatus.currentLine >= infoJobStatus.size) && jobInProgress()) {
+    jobComplete();
   }
 }
 
 void checkJobStatus(void) {
-  static u32 nowTime = 0;
+  static u32 lastUpdate = 0;
   do { /* WAIT FOR M27	*/
-    if (update_waiting == true) {
-      nowTime = OS_GetTime();
+    if (updateJobStatus == false) {
+      lastUpdate = OS_GetTime();
       break;
     }
-    if (OS_GetTime() < nowTime + update_delay) break;
-    if (storeCmd("M27\n") == false) break;
-    nowTime        = OS_GetTime();
-    update_waiting = true;
+    if (OS_GetTime() < lastUpdate + jobStatusUpdateDelay) break;
+    queueCommand(true, "M27\n");
+    lastUpdate      = OS_GetTime();
+    updateJobStatus = false;
   } while (0);
 }

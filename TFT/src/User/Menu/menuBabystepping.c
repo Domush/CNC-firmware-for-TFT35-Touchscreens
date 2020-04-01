@@ -34,7 +34,7 @@ const ITEM itemBabyStepUnit[ITEM_BABYSTEP_UNIT_NUM] = {
 const float item_babystep_unit[ITEM_BABYSTEP_UNIT_NUM] = {0.1f, 1};
 
 static ELEMENTS elementsUnit;
-extern PRINTING infoPrinting;
+extern JOBSTATUS infoJobStatus;
 
 static void initElements(u8 position) {
   elementsUnit.totaled = ITEM_BABYSTEP_UNIT_NUM;
@@ -53,15 +53,15 @@ static void initElements(u8 position) {
 #define BABYSTEP_MIN_VALUE -9.0f
 
 void showBabyStep(void) {
-  GUI_DispFloat(CENTER_X - 5 * BYTE_WIDTH / 2, CENTER_Y, infoPrinting.babyStep, 3, 2, RIGHT);
+  GUI_DispFloat(CENTER_X - 5 * BYTE_WIDTH / 2, CENTER_Y, infoJobStatus.babyStep, 3, 2, RIGHT);
 }
 void babyStepReDraw(void) {
-  GUI_DispFloat(CENTER_X - 5 * BYTE_WIDTH / 2, CENTER_Y, infoPrinting.babyStep, 3, 2, RIGHT);
+  GUI_DispFloat(CENTER_X - 5 * BYTE_WIDTH / 2, CENTER_Y, infoJobStatus.babyStep, 3, 2, RIGHT);
 }
 
 void menuBabyStep(void) {
   KEY_VALUES key_num = KEY_IDLE;
-  float curBabyStep  = infoPrinting.babyStep;
+  float curBabyStep  = infoJobStatus.babyStep;
 
   initElements(KEY_ICON_5);
   menuDrawPage(&babyStepItems);
@@ -75,24 +75,24 @@ void menuBabyStep(void) {
     key_num = menuKeyGetValue();
     switch (key_num) {
       case KEY_ICON_0:
-        if (infoPrinting.babyStep - elementsUnit.ele[elementsUnit.cur] > BABYSTEP_MIN_VALUE) {
-          if (storeCmd("M290 Z-%.2f\n", elementsUnit.ele[elementsUnit.cur])) {
-            infoPrinting.babyStep -= elementsUnit.ele[elementsUnit.cur];
+        if (infoJobStatus.babyStep - elementsUnit.ele[elementsUnit.cur] > BABYSTEP_MIN_VALUE) {
+          if (queueCommand(true, "M290 Z-%.2f\n", elementsUnit.ele[elementsUnit.cur])) {
+            infoJobStatus.babyStep -= elementsUnit.ele[elementsUnit.cur];
             timedMessage(2, TIMED_INFO, "Decreasing Z height by %fmm", elementsUnit.ele[elementsUnit.cur]);
           }
         }
         break;
       case KEY_ICON_3:
-        if (infoPrinting.babyStep + elementsUnit.ele[elementsUnit.cur] < BABYSTEP_MAX_VALUE) {
-          if (storeCmd("M290 Z%.2f\n", elementsUnit.ele[elementsUnit.cur])) {
-            infoPrinting.babyStep += elementsUnit.ele[elementsUnit.cur];
+        if (infoJobStatus.babyStep + elementsUnit.ele[elementsUnit.cur] < BABYSTEP_MAX_VALUE) {
+          if (queueCommand(true, "M290 Z%.2f\n", elementsUnit.ele[elementsUnit.cur])) {
+            infoJobStatus.babyStep += elementsUnit.ele[elementsUnit.cur];
             timedMessage(2, TIMED_INFO, "Increasing Z height by %fmm", elementsUnit.ele[elementsUnit.cur]);
           }
         }
         break;
       case KEY_ICON_4:
         infoMenu.menu[++infoMenu.active] = menuJobSetup;
-        // storeCmd("M500\n");
+        // queueCommand(false,"M500\n");
         break;
       case KEY_ICON_5:
         elementsUnit.cur             = (elementsUnit.cur + 1) % elementsUnit.totaled;
@@ -100,8 +100,8 @@ void menuBabyStep(void) {
         menuDrawItem(&babyStepItems.items[key_num], key_num);
         break;
       case KEY_ICON_6:
-        if (storeCmd("M290 Z%.2f\n", -infoPrinting.babyStep)) {
-          infoPrinting.babyStep = 0.0f;
+        if (queueCommand(true, "M290 Z%.2f\n", -infoJobStatus.babyStep)) {
+          infoJobStatus.babyStep = 0.0f;
           timedMessage(2, TIMED_INFO, "Resetting Z height");
         }
         break;
@@ -111,15 +111,15 @@ void menuBabyStep(void) {
       default:
 #if LCD_ENCODER_SUPPORT
         if (encoderPosition) {
-          infoPrinting.babyStep += elementsUnit.ele[elementsUnit.cur] * encoderPosition;
+          infoJobStatus.babyStep += elementsUnit.ele[elementsUnit.cur] * encoderPosition;
           encoderPosition = 0;
         }
         LCD_LoopEncoder();
 #endif
         break;
     }
-    if (curBabyStep != infoPrinting.babyStep) {
-      curBabyStep = infoPrinting.babyStep;
+    if (curBabyStep != infoJobStatus.babyStep) {
+      curBabyStep = infoJobStatus.babyStep;
       babyStepReDraw();
     }
     runUpdateLoop();

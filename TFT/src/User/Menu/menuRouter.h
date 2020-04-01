@@ -7,6 +7,8 @@
 // const char* routerID;
 // const uint8_t routerMaxPWM;
 
+extern uint8_t curRouterSpeed;
+
 void menuRouter(void);
 
 void routerControl(uint8_t speed);

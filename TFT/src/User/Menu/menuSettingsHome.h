@@ -21,7 +21,7 @@ typedef struct
   uint16_t font_color;
   uint8_t silent;
   uint8_t auto_off;
-  uint8_t terminalACK;
+  uint8_t showResponseInTerminal;
   uint8_t invert_yaxis;
   uint8_t move_speed;
   uint8_t router_power;

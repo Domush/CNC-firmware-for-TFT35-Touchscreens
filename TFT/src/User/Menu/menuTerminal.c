@@ -165,7 +165,7 @@ void menuSendGcode(void) {
         if (nowIndex) {
           gcodeBuf[nowIndex++] = '\n';   // End char '\n' for Gcode
           gcodeBuf[nowIndex]   = 0;
-          storeCmd(gcodeBuf);
+          queueCommand(false, gcodeBuf);
           gcodeBuf[nowIndex = 0] = 0;
         }
         infoMenu.menu[++infoMenu.active] = menuTerminal;
@@ -211,7 +211,7 @@ void menuSendGcode(void) {
 #define TERMINAL_MAX_CHAR (LCD_WIDTH / BYTE_WIDTH * (LCD_HEIGHT - BYTE_HEIGHT) / BYTE_HEIGHT)
 
 char terminalBuf[TERMINAL_MAX_CHAR];
-void sendGcodeTerminalCache(char *serial_text, COMMAND_SOURCE src) {
+void showInTerminal(char *serial_text, COMMAND_SOURCE src) {
   if (strstr(serial_text, (const char *)"wait") && src) return;
   const char *const terminalSign[] = {"Sent: ", "Rcv: "};
   // if (infoMenu.menu[infoMenu.active] != menuSendGcode && infoMenu.menu[infoMenu.active] != menuTerminal) return;

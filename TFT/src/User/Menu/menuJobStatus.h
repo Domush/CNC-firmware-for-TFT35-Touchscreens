@@ -7,41 +7,40 @@
 
 typedef struct
 {
-  FIL file;
+  FIL file;             // File details
+  u32 timeElapsed;      // Job time in sec
+  u32 size;             // Gcode file total size
+  u32 currentLine;      // Current Gcode line
+  u8 coordSpace;        // CNC coodinate space (53-59) [53 is the default machine coords]
+  u8 percentComplete;   // Print progress (0-100)
+  bool inProgress;      // true = job active, false = idle
+  bool isPaused;        // true = paused
+  bool isM0Paused;      // true = M0/M1 gcode triggered pause
+  u8 routerSpeed;       // Current router speed
+  float babyStep;       // Current Z-height adjustment
+} JOBSTATUS;
 
-  u32 time;          // Printed time in sec
-  u32 size;          // Gcode file total size
-  u32 currentLine;   // Current Gcode line
-  u8 coordSpace;     // CNC coodinate space (53-59) [53 is the default machine coords]
-  u8 progress;       // Print progress (0-100)
-  bool printing;     // true = printing, false = idle
-  bool pause;        // true = paused
-  bool m0_pause;     // true = M0/M1 gcode triggered pause
-  u8 routerSpeed;    // Current router speed
-  float babyStep;    // Current Z-height adjustment
-} PRINTING;
+JOBSTATUS infoJobStatus;
 
-PRINTING infoPrinting;
-
-void exitPrinting(void);
-void endPrinting(void);
-void completePrinting(void);
-void abortPrinting(void);
+void jobExit(void);
+void jobEnd(void);
+void jobComplete(void);
+void jobAbort(void);
 
 bool setPrintPause(bool pauseCalled);
 
-bool isPrinting(void);
-bool isPause(void);
-bool isM0_Pause(void);
-void setPrintingTime(u32 RTtime);
+bool jobInProgress(void);
+bool jobIsPaused(void);
+bool jobIsM0Paused(void);
+void jobSetTimeElapsed(u32 RTtime);
 
-void setPrintSize(u32 size);
-void setPrintCur(u32 currentLine);
+void jobSetSize(u32 size);
+void jobSetCurrentLine(u32 currentLine);
 
-u8 getPrintProgress(void);
-u32 getPrintTime(void);
+u8 jobGetPercentComplete(void);
+u32 jobGetTimeElapsed(void);
 
-void printSetUpdateWaiting(bool isWaiting);
+void jobNeedUpdate(bool isWaiting);
 
 void startGcodeExecute(void);
 void endGcodeExecute(void);

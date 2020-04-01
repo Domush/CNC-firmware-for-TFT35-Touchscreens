@@ -30,7 +30,7 @@ void Serial_DMA_Config(uint8_t port) {
 
   cfg->dma_chanel->CPAR  = (u32)(&cfg->uart->DR);
   cfg->dma_chanel->CMAR  = (u32)(cncIncoming[port].responseBuffer);
-  cfg->dma_chanel->CNDTR = MAX_RESPONSE_SIZE;
+  cfg->dma_chanel->CNDTR = RESPONSE_MAX_CHARS;
   cfg->dma_chanel->CCR   = 0X00000000;
   cfg->dma_chanel->CCR |= 3 << 12;   // Channel priority level
   cfg->dma_chanel->CCR |= 1 << 7;    // Memory increment mode
@@ -40,7 +40,7 @@ void Serial_DMA_Config(uint8_t port) {
 
 void Serial_Config(uint8_t port, u32 baud) {
   cncIncoming[port].processedIndex = cncIncoming[port].pendingIndex = 0;
-  cncIncoming[port].responseBuffer                                  = malloc(MAX_RESPONSE_SIZE);
+  cncIncoming[port].responseBuffer                                  = malloc(RESPONSE_MAX_CHARS);
   while (!cncIncoming[port].responseBuffer)
     ;                                        // malloc failed
   USART_Config(port, baud, USART_IT_IDLE);   //IDLE interrupt
@@ -91,8 +91,8 @@ void USART_IRQHandler(uint8_t port) {
     Serial[port].uart->SR;
     Serial[port].uart->DR;
 
-    cncIncoming[port].pendingIndex = MAX_RESPONSE_SIZE - Serial[port].dma_chanel->CNDTR;
-    uint16_t pendingIndex          = (cncIncoming[port].pendingIndex == 0) ? MAX_RESPONSE_SIZE : cncIncoming[port].pendingIndex;
+    cncIncoming[port].pendingIndex = RESPONSE_MAX_CHARS - Serial[port].dma_chanel->CNDTR;
+    uint16_t pendingIndex          = (cncIncoming[port].pendingIndex == 0) ? RESPONSE_MAX_CHARS : cncIncoming[port].pendingIndex;
     if (cncIncoming[port].responseBuffer[pendingIndex - 1] == '\n') {
       // Receive completed
       infoHost.responseReceived[port] = true;
@@ -120,7 +120,7 @@ void UART5_IRQHandler(void) {
   USART_IRQHandler(_UART5);
 }
 
-void Serial_Puts(uint8_t port, char *command, ...) {
+void sendCommand(uint8_t port, char *command, ...) {
   char buffer[100];
   char *gString;
   my_va_list ap;

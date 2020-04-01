@@ -47,20 +47,20 @@ void LCD_LoopEncoder(void) {
 
   buttons = newbutton;
 
-#define encrot0 0
-#define encrot1 2
-#define encrot2 3
-#define encrot3 1
+  #define encrot0 0
+  #define encrot1 2
+  #define encrot2 3
+  #define encrot3 1
 
-// Manage encoder rotation
-#define ENCODER_SPIN(_E1, _E2)         \
-  switch (lastEncoderBits) {           \
-    case _E1:                          \
-      encoderDiff += encoderDirection; \
-      break;                           \
-    case _E2:                          \
-      encoderDiff -= encoderDirection; \
-  }
+  // Manage encoder rotation
+  #define ENCODER_SPIN(_E1, _E2)         \
+    switch (lastEncoderBits) {           \
+      case _E1:                          \
+        encoderDiff += encoderDirection; \
+        break;                           \
+      case _E2:                          \
+        encoderDiff -= encoderDirection; \
+    }
 
   if (buttons != lastEncoderBits) {
     switch (buttons) {
@@ -89,7 +89,7 @@ void LCD_LoopEncoder(void) {
 }
 
 void loopCheckMode(void) {
-  if (isPrinting()) return;
+  if (jobInProgress()) return;
   if (LCD_ReadBtn(LCD_CHANGE_MODE_INTERVALS) || LCD_ReadPen(LCD_CHANGE_MODE_INTERVALS)) {
     infoMenu.menu[++infoMenu.active] = menuMode;
   }

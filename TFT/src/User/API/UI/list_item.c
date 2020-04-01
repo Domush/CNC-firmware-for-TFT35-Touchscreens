@@ -426,7 +426,7 @@ void DrawListItemPress(const GUI_RECT *rect, bool pressed) {
 }
 
 void ListItem_Display(const GUI_RECT *rect, uint8_t positon, const LISTITEM *curitem, bool pressed) {
-  //storeCmd("%d\n",curitem->titlelabel.index);
+  //queueCommand(false,"%d\n",curitem->titlelabel.index);
   if (positon > 4) {
     if (curitem->icon != ICONCHAR_BACKGROUND) {
       ListDrawIcon(rect, MIDDLE, curitem->icon, LISTBTN_BKCOLOR);

@@ -42,7 +42,7 @@ void ICON_ReadDisplay(u16 sx, u16 sy, u8 icon) {
 
 //directly draw BMP file to lcd (pos - GUI_POINT(top left corner of image location on lcd), bmp: path of bmp file)
 bool bmp_DirectDisplay(GUI_POINT pos, char *bmp) {
-  infoPrinting.m0_pause = true;
+  infoJobStatus.isM0Paused = true;
   FIL bmpFile;
   char magic[2];
   int w, h, bytePerLine;
@@ -97,7 +97,7 @@ bool bmp_DirectDisplay(GUI_POINT pos, char *bmp) {
     }
   }
   f_close(&bmpFile);
-  infoPrinting.m0_pause = false;
+  infoJobStatus.isM0Paused = false;
   return true;
 }
 

@@ -55,37 +55,37 @@ void menuCustom(void) {
     switch (key_num) {
   #ifdef CUSTOM_0_GCODE
       case KEY_ICON_0:
-        storeCmd(CUSTOM_0_GCODE);
+        queueCommand(false, CUSTOM_0_GCODE);
         break;
   #endif
   #ifdef CUSTOM_1_GCODE
       case KEY_ICON_1:
-        storeCmd(CUSTOM_1_GCODE);
+        queueCommand(false, CUSTOM_1_GCODE);
         break;
   #endif
   #ifdef CUSTOM_2_GCODE
       case KEY_ICON_2:
-        storeCmd(CUSTOM_2_GCODE);
+        queueCommand(false, CUSTOM_2_GCODE);
         break;
   #endif
   #ifdef CUSTOM_3_GCODE
       case KEY_ICON_3:
-        storeCmd(CUSTOM_3_GCODE);
+        queueCommand(false, CUSTOM_3_GCODE);
         break;
   #endif
   #ifdef CUSTOM_4_GCODE
       case KEY_ICON_4:
-        storeCmd(CUSTOM_4_GCODE);
+        queueCommand(false, CUSTOM_4_GCODE);
         break;
   #endif
   #ifdef CUSTOM_5_GCODE
       case KEY_ICON_5:
-        storeCmd(CUSTOM_5_GCODE);
+        queueCommand(false, CUSTOM_5_GCODE);
         break;
   #endif
   #ifdef CUSTOM_6_GCODE
       case KEY_ICON_6:
-        storeCmd(CUSTOM_6_GCODE);
+        queueCommand(false, CUSTOM_6_GCODE);
         break;
   #endif
       case KEY_ICON_7:
@@ -223,7 +223,7 @@ const char *const gcodelist[CKEY_COUNT][2] = {
 void sendCustomGcode(uint32_t key_val) {
   uint32_t item_index = gc_cur_page * LISTITEM_PER_PAGE + key_val;
   if (item_index < CKEY_COUNT) {
-    storeCmd((char *)gcodelist[item_index][1]);
+    queueCommand(false, (char *)gcodelist[item_index][1]);
   }
 }
 
@@ -330,27 +330,27 @@ void menuRGBSettings(void) {
     switch (key_num) {
       case KEY_ICON_0:   //Red
         timedMessage(2, TIMED_INFO, "Red LEDs enabled");
-        storeCmd("M150 R255 U0 B0 P255\n");
+        queueCommand(false, "M150 R255 U0 B0 P255\n");
         break;
 
       case KEY_ICON_1:   //Green
         timedMessage(2, TIMED_INFO, "Green LEDs enabled");
-        storeCmd("M150 R0 U255 B0 P255\n");
+        queueCommand(false, "M150 R0 U255 B0 P255\n");
         break;
 
       case KEY_ICON_2:   //Blue
         timedMessage(2, TIMED_INFO, "Blue LEDs enabled");
-        storeCmd("M150 R0 U0 B255 P255\n");
+        queueCommand(false, "M150 R0 U0 B255 P255\n");
         break;
 
       case KEY_ICON_3:   //White
         timedMessage(2, TIMED_INFO, "White LEDs enabled");
-        storeCmd("M150 R255 U255 B255 P255\n");
+        queueCommand(false, "M150 R255 U255 B255 P255\n");
         break;
 
       case KEY_ICON_4:   //Turn Off
         timedMessage(2, TIMED_INFO, "LEDs disabled");
-        storeCmd("M150 R0 U0 B0 P0\n");
+        queueCommand(false, "M150 R0 U0 B0 P0\n");
         break;
 
       case KEY_ICON_7:
@@ -401,7 +401,7 @@ void menuMachineSettings(void) {
 
       case KEY_ICON_3:
         timedMessage(2, TIMED_CRITICAL, "Powering off CNC");
-        storeCmd("M81\n");
+        queueCommand(false, "M81\n");
         break;
 
       case KEY_ICON_4:

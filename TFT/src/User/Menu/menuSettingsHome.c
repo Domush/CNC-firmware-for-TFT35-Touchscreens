@@ -5,25 +5,25 @@ SETTINGS infoSettings;
 
 // Reset settings data
 void infoSettingsReset(void) {
-  infoSettings.baudrate         = 250000;
-  infoSettings.language         = ENGLISH;
-  infoSettings.mode             = SERIAL_TSC;
-  infoSettings.runout           = 0;
-  infoSettings.rotate_ui        = 0;
-  infoSettings.bg_color         = ST7920_BKCOLOR;
-  infoSettings.font_color       = ST7920_FNCOLOR;
-  infoSettings.silent           = 0;
-  infoSettings.auto_off         = 0;
-  infoSettings.terminalACK      = 0;
-  infoSettings.invert_yaxis     = 0;
-  infoSettings.move_speed       = 2;
-  infoSettings.router_power     = 1;
-  infoSettings.led_color        = LED_OFF;
-  infoSettings.invert_zaxis     = 0;
-  infoSettings.send_start_gcode = 1;
-  infoSettings.send_end_gcode   = 1;
-  infoSettings.persistent_info  = 1;
-  infoSettings.file_listmode    = 1;
+  infoSettings.baudrate               = 250000;
+  infoSettings.language               = ENGLISH;
+  infoSettings.mode                   = SERIAL_TSC;
+  infoSettings.runout                 = 0;
+  infoSettings.rotate_ui              = 0;
+  infoSettings.bg_color               = ST7920_BKCOLOR;
+  infoSettings.font_color             = ST7920_FNCOLOR;
+  infoSettings.silent                 = 0;
+  infoSettings.auto_off               = 0;
+  infoSettings.showResponseInTerminal = 0;
+  infoSettings.invert_yaxis           = 0;
+  infoSettings.move_speed             = 2;
+  infoSettings.router_power           = 1;
+  infoSettings.led_color              = LED_OFF;
+  infoSettings.invert_zaxis           = 0;
+  infoSettings.send_start_gcode       = 1;
+  infoSettings.send_end_gcode         = 1;
+  infoSettings.persistent_info        = 1;
+  infoSettings.file_listmode          = 1;
 }
 
 // Version infomation

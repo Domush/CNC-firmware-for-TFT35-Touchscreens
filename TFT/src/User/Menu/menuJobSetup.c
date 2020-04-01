@@ -18,8 +18,8 @@ const MENUITEMS jobSetupItems = {
     }};
 
 void menuJobSetup(void) {
-  extern PRINTING infoPrinting;
-  if (infoPrinting.coordSpace < 53) infoPrinting.coordSpace = 53;
+  extern JOBSTATUS infoJobStatus;
+  if (infoJobStatus.coordSpace < 53) infoJobStatus.coordSpace = 53;
 
   KEY_VALUES key_num = KEY_IDLE;
   menuDrawPage(&jobSetupItems);
@@ -27,42 +27,42 @@ void menuJobSetup(void) {
     key_num = menuKeyGetValue();
     switch (key_num) {
       case KEY_ICON_0:   // Zero X
-        infoPrinting.coordSpace = 54;
-        storeCmd("G%d\n", infoPrinting.coordSpace);
+        infoJobStatus.coordSpace = 54;
+        queueCommand(false, "G%d\n", infoJobStatus.coordSpace);
         timedMessage(2, TIMED_INFO, "Zeroing X axis");
-        storeCmd("G92 X0\n");
+        queueCommand(false, "G92 X0\n");
         break;
       case KEY_ICON_1:   // Zero Y
-        infoPrinting.coordSpace = 54;
-        storeCmd("G%d\n", infoPrinting.coordSpace);
+        infoJobStatus.coordSpace = 54;
+        queueCommand(false, "G%d\n", infoJobStatus.coordSpace);
         timedMessage(2, TIMED_INFO, "Zeroing Y axis");
-        storeCmd("G92 Y0\n");
+        queueCommand(false, "G92 Y0\n");
         break;
       case KEY_ICON_2:   // Zero Z
-        infoPrinting.coordSpace = 54;
-        storeCmd("G%d\n", infoPrinting.coordSpace);
+        infoJobStatus.coordSpace = 54;
+        queueCommand(false, "G%d\n", infoJobStatus.coordSpace);
         timedMessage(2, TIMED_INFO, "Zeroing Z axis");
-        storeCmd("G92 Z0\n");
+        queueCommand(false, "G92 Z0\n");
         break;
       case KEY_ICON_3:   // Zero all
-        infoPrinting.coordSpace = 54;
-        storeCmd("G%d\n", infoPrinting.coordSpace);
+        infoJobStatus.coordSpace = 54;
+        queueCommand(false, "G%d\n", infoJobStatus.coordSpace);
         timedMessage(2, TIMED_INFO, "Zeroing all axes");
-        storeCmd("G92 X0 Y0 Z0\n");
+        queueCommand(false, "G92 X0 Y0 Z0\n");
         break;
       case KEY_ICON_4:   // Change to Machine Coord Space (G53)
-        infoPrinting.coordSpace = 53;
+        infoJobStatus.coordSpace = 53;
         timedMessage(2, TIMED_INFO, "Coord set 1");
-        storeCmd("G%d\n", infoPrinting.coordSpace);
+        queueCommand(false, "G%d\n", infoJobStatus.coordSpace);
         break;
       case KEY_ICON_5:   // Change to Coord Space 2 (G54)
         timedMessage(2, TIMED_INFO, "Coord set 2");
-        infoPrinting.coordSpace = 54;
-        storeCmd("G%d\n", infoPrinting.coordSpace);
+        infoJobStatus.coordSpace = 54;
+        queueCommand(false, "G%d\n", infoJobStatus.coordSpace);
         break;
       case KEY_ICON_6:   // Move to X0,Y0
         timedMessage(2, TIMED_INFO, "Moving to X0,Y0");
-        storeCmd("G0 X0 Y0\n");
+        queueCommand(false, "G0 X0 Y0\n");
         break;
       case KEY_ICON_7:   // Back
         infoMenu.active--;
@@ -97,11 +97,11 @@ void moveToLevelingPoint(u8 point) {
       {LEVELING_POINT_4_X, LEVELING_POINT_4_Y},
   };
   if (coordinateIsClear() == false) {
-    storeCmd("G28\n");
+    queueCommand(false, "G28\n");
   }
-  storeCmd("G0 Z%.3f F%d\n", LEVELING_POINT_MOVE_Z, LEVELING_POINT_Z_GANTRYSPEED);
-  storeCmd("G0 X%d Y%d F%d\n", pointPosition[point][0], pointPosition[point][1], LEVELING_POINT_XY_GANTRYSPEED);
-  storeCmd("G0 Z%.3f F%d\n", LEVELING_POINT_Z, LEVELING_POINT_Z_GANTRYSPEED);
+  queueCommand(false, "G0 Z%.3f F%d\n", LEVELING_POINT_MOVE_Z, LEVELING_POINT_Z_GANTRYSPEED);
+  queueCommand(false, "G0 X%d Y%d F%d\n", pointPosition[point][0], pointPosition[point][1], LEVELING_POINT_XY_GANTRYSPEED);
+  queueCommand(false, "G0 Z%.3f F%d\n", LEVELING_POINT_Z, LEVELING_POINT_Z_GANTRYSPEED);
 }
 
 void menuManualLeveling(void) {
