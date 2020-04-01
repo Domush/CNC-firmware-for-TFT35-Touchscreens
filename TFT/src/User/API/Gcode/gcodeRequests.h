@@ -4,7 +4,7 @@
 #include "Gcode/gcodeSender.h"
 // #include "Gcode/gcodeSender.h"
 
-#define RESPONSE_MAX_CHARS 5000
+#define PREPARED_RESPONSE_MAX_CHARS 5000
 
 typedef struct {
   char command[GCODE_MAX_CHARACTERS];         // The command sent to printer

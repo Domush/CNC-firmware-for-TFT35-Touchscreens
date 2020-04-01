@@ -29,8 +29,8 @@ typedef struct
 
 RESPONSE_QUEUE gcodeResponse[3];   // Incoming gcode response
 
-extern char *popup_title;     // Title of popup window
-extern char *popup_message;   // Message text of popup window
+char *popup_title;     // Title of popup window
+char *popup_message;   // Message text of popup window
 
 void setGcodeCommandSource(uint8_t src);
 void parseGcodeResponse(void);

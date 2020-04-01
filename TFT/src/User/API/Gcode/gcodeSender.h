@@ -22,14 +22,14 @@ typedef struct
   uint8_t count;        // Count of unsent commands
 } GCODE_QUEUE;
 
-extern GCODE_QUEUE gcodeOutgoing;   // Outgoing gcode queue
+GCODE_QUEUE gcodeOutgoing;   // Outgoing gcode queue
 
 bool addGcodeCommand(bool skipIfQueueFull, const char* gcodeString, uint8_t port);
 bool queueCommand(bool skipIfQueueFull, char* gcodeString, ...);
 
 void queueCommandFromSerial(uint8_t port, const char* gcode);
 
-// bool isQueueFull(void);
+bool isQueueFull(void);
 void clearGcodeQueue(void);
 
 void parseGcodeOutgoing(void);

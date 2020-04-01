@@ -15,13 +15,164 @@ const char *const echoStringsToIgnore[] = {
 };
 
 /**
- * parseGcodeResponse.
+ * parseSerialGcode.
  *
  * @version	v1.0.0	Friday, March 27th, 2020.
  * @global
  * @param	mixed	void
  * @return	void
  */
+void parseSerialGcode(void) {
+#ifdef SERIAL_PORT_2
+  uint8_t port = 0;
+  for (port = 0; port < _USART_CNT; port++) {
+    if (port != SERIAL_PORT && infoHost.responseReceived[port] == true) {
+      queueCncResponses(port);
+      while (gcodeResponse[port].count > 0) {
+        strncpy(&responseLine[0], gcodeResponse[port].queue[(gcodeResponse[port].queueIndex - gcodeResponse[port].count) % RESPONSE_QUEUE_SIZE].response, RESPONSE_MAX_CHARS - 1);
+        queueCommandFromSerial(port, &responseLine[0]);
+        gcodeResponse[port].count--;
+      }
+      infoHost.responseReceived[port] = false;   // *All response data has been processed
+    }
+  }
+#endif
+}
+
+void setGcodeCommandSource(uint8_t src) {
+  curSerialPort = src;
+}
+
+// *Check if responseLine contains string, then record the location using responseLineIndex
+static bool responseContains(const char *string, u8 beginAtChar) {
+  const char *match;
+  match = strstr((const char *)&responseLine[beginAtChar], string);
+  if (match) {
+    responseLineIndex = strlen((const char *)responseLine) - strlen(match) + strlen(string);
+    if (strchr((const char *)&responseLine[responseLineIndex], (int)" ")) {
+      responseLineIndex++;
+    }
+    return true;
+  } else {
+    return false;
+  }
+}
+
+// // *Check if responseLine is *exactly* string
+// static bool responseIsExactly(const char *string) {
+//   if ((const char *)responseLine == string) {
+//     return true;
+//   } else {
+//     return false;
+//   }
+// }
+
+// *Check if responseLine begins with string
+static bool responseBeginsWith(const char *string) {
+  if (strstr((const char *)responseLine, string) == &responseLine[0]) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+// *Get the float value from responseLine at the current gcodeLineIndex
+static float responseValueFloat(void) {
+  return (strtod((const char *)&responseLine[responseLineIndex], NULL));
+}
+
+// *Get the integer value from responseLine at the current gcodeLineIndex
+static int responseValue(void) {
+  return (strtol((const char *)&responseLine[responseLineIndex], NULL, 10));
+}
+
+void showPopupMessage(char *title) {
+  const char ch[2] = "\n";
+  char *token;
+  token       = 0;
+  popup_title = title;
+  if (!popup_message) {
+    popup_message = "No reason given. Continue when ready.";
+  }
+  if (infoMenu.menu[infoMenu.active] == parametersetting) return;
+  if (infoMenu.menu[infoMenu.active] == menuTerminal) return;
+  /*
+  "Load V-Bit -  0.5\" Dia., then Pos@ 0:0:1mm\r
+  \n//action:prompt_end
+  \n//action:prompt_begin M0/1 Break Called
+  \n//action:prompt_button Continue
+  \n//action:prompt_show
+  \n"
+  */
+  if (strstr((const char *)responseLine + responseLineIndex, "//action:prompt_end")) {
+    if (strstr((const char *)responseLine + responseLineIndex, "M0/1")) {
+      setPrintPause(true);
+      popup_message = &responseLine[responseLineIndex];
+      if (infoMenu.menu[infoMenu.active] != menuM0Pause) {
+        infoMenu.menu[++infoMenu.active] = menuM0Pause;
+      }
+    } else {
+      char *prompt_text = strstr((const char *)responseLine + responseLineIndex, "//action:prompt_end") + 19;
+      // *get the first token
+      token         = strtok(prompt_text, ch);
+      popup_message = token;
+      popupReminder((u8 *)popup_title, (u8 *)popup_message);
+    }
+  } else if (strstr((const char *)responseLine + responseLineIndex, "//action:notification")) {
+    char *prompt_text = strstr((const char *)responseLine + responseLineIndex, "//action:notification") + 21;
+    // *get the first token
+    token         = strtok(prompt_text, ch);
+    popup_message = token;
+    popupReminder((u8 *)popup_title, (u8 *)popup_message);
+  } else if (strstr((const char *)responseLine + responseLineIndex, "echo:")) {
+    // *Break it up into useful sections
+    char *prompt_text = strstr((const char *)responseLine + responseLineIndex, "echo:") + 5;
+    // *get the first token
+    token         = strtok(prompt_text, ch);
+    popup_message = token;
+
+    popupReminder((u8 *)popup_title, (u8 *)popup_message);
+  } else {
+    popupReminder((u8 *)title, (u8 *)responseLine + responseLineIndex);
+  }
+  popup_message = 0;
+}
+
+//* Add CNC response lines to the gcodeResponse queue
+void addCncResponseToQueue(char *gcodeString, uint8_t port) {
+  strncpy(gcodeResponse[port].queue[gcodeResponse[port].queueIndex].response, gcodeString, RESPONSE_MAX_CHARS - 1);
+  gcodeResponse[port].queueIndex = (gcodeResponse[port].queueIndex + 1) % RESPONSE_QUEUE_SIZE;
+  if (gcodeResponse[port].count < RESPONSE_QUEUE_SIZE) gcodeResponse[port].count++;
+
+  cncIncoming[port].processedIndex = (cncIncoming[port].processedIndex + strlen(gcodeString) + 1) % RESPONSE_MAX_CHARS;
+}
+
+//* Split incoming serial responses by '\n' and send them to the gcodeResponse queue
+void queueCncResponses(uint8_t port) {
+  char cncResponse[RESPONSE_MAX_CHARS];
+  int i;
+  for (i = 0; cncIncoming[port].processedIndex != cncIncoming[port].pendingIndex && gcodeResponse[port].count < RESPONSE_QUEUE_SIZE; i++) {
+    cncResponse[i] = cncIncoming[port].responseBuffer[cncIncoming[port].processedIndex + i];
+    if (strchr(&cncResponse[i], (int)"\n")) {
+      cncResponse[i] = 0;   // End character
+      while (strchr(&cncResponse[strlen(cncResponse) - 1], (int)" ")) {
+        // Remove trailing spaces
+        cncResponse[strlen(cncResponse) - 1] = 0;                                                             // Remove last character
+        cncIncoming[port].processedIndex     = (cncIncoming[port].processedIndex + 1) % RESPONSE_MAX_CHARS;   // Account for the missing character
+      }
+      addCncResponseToQueue(&cncResponse[0], port);
+
+      i = -1;   // Reset i to process the next response line
+    } else if (i == 0 && strchr(&cncResponse[i], (int)" ")) {
+      // Ignore leading spaces
+      cncIncoming[port].processedIndex = (cncIncoming[port].processedIndex + 1) % RESPONSE_MAX_CHARS;   // Account for the missing character
+
+      i = -1;   // Reset i to ignore leading space
+    }
+  }
+}
+
+//* Process all queued responses
 void parseGcodeResponse(void) {
   static u8 connectionRetryDelay = 2;   // # of seconds to wait before retrying to connect
   static u16 connectionRetryTime = 0;   // stored timestamp for reconnect attempt
@@ -163,162 +314,4 @@ void parseGcodeResponse(void) {
     gcodeResponse[SERIAL_PORT].count--;
   }
   infoHost.responseReceived[SERIAL_PORT] = false;   // *All response data has been processed
-}
-
-/**
- * parseSerialGcode.
- *
- * @version	v1.0.0	Friday, March 27th, 2020.
- * @global
- * @param	mixed	void
- * @return	void
- */
-void parseSerialGcode(void) {
-#ifdef SERIAL_PORT_2
-  uint8_t port = 0;
-  for (port = 0; port < _USART_CNT; port++) {
-    if (port != SERIAL_PORT && infoHost.responseReceived[port] == true) {
-      queueCncResponses(port);
-      while (gcodeResponse[port].count > 0) {
-        strncpy(&responseLine[0], gcodeResponse[port].queue[(gcodeResponse[port].queueIndex - gcodeResponse[port].count) % RESPONSE_QUEUE_SIZE].response, RESPONSE_MAX_CHARS - 1);
-        queueCommandFromSerial(port, &responseLine[0]);
-        gcodeResponse[port].count--;
-      }
-      infoHost.responseReceived[port] = false;   // *All response data has been processed
-    }
-  }
-#endif
-}
-
-void setGcodeCommandSource(uint8_t src) {
-  curSerialPort = src;
-}
-
-// *Check if responseLine contains string, then record the location using responseLineIndex
-static bool responseContains(const char *string, u8 beginAtChar) {
-  char *match;
-  match = strstr(&responseLine[beginAtChar], string);
-  if (match) {
-    responseLineIndex = strlen(responseLine) - strlen(match) + strlen(string);
-    if (strchr(responseLine[responseLineIndex], " ")) {
-      responseLineIndex++;
-    }
-    return true;
-  } else {
-    return false;
-  }
-}
-
-// *Check if responseLine is *exactly* string
-static bool responseIsExactly(const char *string) {
-  if (responseLine == string) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-// *Check if responseLine begins with string
-static bool responseBeginsWith(const char *string) {
-  if (strstr(responseLine, string) == responseLine) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-// *Get the float value from responseLine at the current gcodeLineIndex
-static float responseValueFloat() {
-  return (strtod(&responseLine[responseLineIndex], NULL));
-}
-
-// *Get the integer value from responseLine at the current gcodeLineIndex
-static int responseValue() {
-  return (strtol(&responseLine[responseLineIndex], NULL, 10));
-}
-
-void showPopupMessage(char *title) {
-  const char ch[2] = "\n";
-  char *token;
-  token       = 0;
-  popup_title = title;
-  if (!popup_message) {
-    popup_message = "No reason given. Continue when ready.";
-  }
-  if (infoMenu.menu[infoMenu.active] == parametersetting) return;
-  if (infoMenu.menu[infoMenu.active] == menuTerminal) return;
-  /*
-  "Load V-Bit -  0.5\" Dia., then Pos@ 0:0:1mm\r
-  \n//action:prompt_end
-  \n//action:prompt_begin M0/1 Break Called
-  \n//action:prompt_button Continue
-  \n//action:prompt_show
-  \n"
-  */
-  if (strstr((const char *)responseLine + responseLineIndex, "//action:prompt_end")) {
-    if (strstr((const char *)responseLine + responseLineIndex, "M0/1")) {
-      setPrintPause(true);
-      popup_message = &responseLine[responseLineIndex];
-      if (infoMenu.menu[infoMenu.active] != menuM0Pause) {
-        infoMenu.menu[++infoMenu.active] = menuM0Pause;
-      }
-    } else {
-      char *prompt_text = strstr((const char *)responseLine + responseLineIndex, "//action:prompt_end") + 19;
-      // *get the first token
-      token         = strtok(prompt_text, ch);
-      popup_message = token;
-      popupReminder((u8 *)popup_title, (u8 *)popup_message);
-    }
-  } else if (strstr((const char *)responseLine + responseLineIndex, "//action:notification")) {
-    char *prompt_text = strstr((const char *)responseLine + responseLineIndex, "//action:notification") + 21;
-    // *get the first token
-    token         = strtok(prompt_text, ch);
-    popup_message = token;
-    popupReminder((u8 *)popup_title, (u8 *)popup_message);
-  } else if (strstr((const char *)responseLine + responseLineIndex, "echo:")) {
-    // *Break it up into useful sections
-    char *prompt_text = strstr((const char *)responseLine + responseLineIndex, "echo:") + 5;
-    // *get the first token
-    token         = strtok(prompt_text, ch);
-    popup_message = token;
-
-    popupReminder((u8 *)popup_title, (u8 *)popup_message);
-  } else {
-    popupReminder((u8 *)title, (u8 *)responseLine + responseLineIndex);
-  }
-  popup_message = 0;
-}
-
-//* Split incoming serial responses by '\n' and send them to the gcodeResponse queue
-void queueCncResponses(uint8_t port) {
-  char cncResponse[RESPONSE_MAX_CHARS];
-  int i;
-  for (i = 0; cncIncoming[port].processedIndex != cncIncoming[port].pendingIndex && gcodeResponse[port].count < RESPONSE_QUEUE_SIZE; i++) {
-    cncResponse[i] = cncIncoming[port].responseBuffer[cncIncoming[port].processedIndex + i];
-    if (strchr(cncResponse[i], "\n")) {
-      cncResponse[i] = 0;   // End character
-      while (strchr(cncResponse[strlen(cncResponse) - 1], " ")) {
-        // Remove trailing spaces
-        cncResponse[strlen(cncResponse) - 1] = 0;                                                             // Remove last character
-        cncIncoming[port].processedIndex     = (cncIncoming[port].processedIndex + 1) % RESPONSE_MAX_CHARS;   // Account for the missing character
-      }
-      addCncResponseToQueue(&cncResponse[0], port);
-
-      i = -1;   // Reset i to process the next response line
-    } else if (i == 0 && strchr(cncResponse[i], " ")) {
-      // Ignore leading spaces
-      cncIncoming[port].processedIndex = (cncIncoming[port].processedIndex + 1) % RESPONSE_MAX_CHARS;   // Account for the missing character
-
-      i = -1;   // Reset i to ignore leading space
-    }
-  }
-}
-
-//* Add CNC response lines to the gcodeResponse queue
-void addCncResponseToQueue(char *gcodeString, uint8_t port) {
-  strncpy(gcodeResponse[port].queue[gcodeResponse[port].queueIndex].response, gcodeString, RESPONSE_MAX_CHARS - 1);
-  gcodeResponse[port].queueIndex = (gcodeResponse[port].queueIndex + 1) % RESPONSE_QUEUE_SIZE;
-  if (gcodeResponse[port].count < RESPONSE_QUEUE_SIZE) gcodeResponse[port].count++;
-
-  cncIncoming[port].processedIndex = (cncIncoming[port].processedIndex + strlen(gcodeString) + 1) % RESPONSE_MAX_CHARS;
 }

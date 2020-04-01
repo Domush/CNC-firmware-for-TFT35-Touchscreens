@@ -7,26 +7,27 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
-#include "API/helperFunctions.h"
 
 // Model specific configuration
 #include "System/variants.h"
 #include "Configuration.h"
+
+#include "API/helperFunctions.h"
 
 // Timing functions
 #include "System/os_timer.h"
 #include "System/delay.h"
 #include "System/boot.h"
 
+// Multi-language support
+#include "Language/Language.h"
+#include "Language/utf8_decode.h"
+
 // LCD init functions
 #include "lcd.h"
 #include "Hal/LCD_Init.h"
 #include "lcd_dma.h"
 #include "UI/GUI.h"
-
-// Multi-language support
-#include "Language/Language.h"
-#include "Language/utf8_decode.h"
 
 // Chip specific includes
 #include "usart.h"
@@ -52,26 +53,25 @@
 #include "Vfs/vfs.h"
 #include "Fatfs/myfatfs.h"
 
-// UI handling
-#include "UI/ui_draw.h"
-#include "UI/list_item.h"
-#include "UI/touch_process.h"
-#include "System/flashStorage.h"
-#include "System/emulationToggle.h"
+// Gcode processing
+#include "Gcode/gcodeSender.h"
+#include "Gcode/gcodeRequests.h"
+#include "Gcode/gcodeFileHandler.h"
+#include "Gcode/gcodeResponseHandler.h"
 
 // Base API functions
 #include "API/coordinate.h"
 #include "API/gantry.h"
 #include "API/menu.h"
 #include "API/extendedFeatures.h"
+#include "API/ledcolor.h"
 
-// Gcode processing
-#include "Gcode/gcodeFileHandler.h"
-#include "Gcode/gcodeRequests.h"
-#include "Gcode/gcodeSender.h"
-#include "Gcode/gcodeResponseHandler.h"
-// #include "interfaceCmd.h"
-// #include "parseACK.h"
+// UI handling
+#include "UI/ui_draw.h"
+#include "UI/list_item.h"
+#include "UI/touch_process.h"
+#include "System/flashStorage.h"
+#include "System/emulationToggle.h"
 
 // Menus
 #include "Menu/menuMain.h"   // Home screen

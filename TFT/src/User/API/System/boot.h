@@ -1,8 +1,9 @@
 #ifndef _BOOT_H_
 #define _BOOT_H_
+#include "includes.h"
 
-#include "System/variants.h"
-#include "stdbool.h"
+// #include "System/variants.h"
+// #include "stdbool.h"
 
 #define W25QXX_SECTOR_SIZE (0x1000)   // 4096-4K
 

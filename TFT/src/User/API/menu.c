@@ -355,7 +355,7 @@ void updateScreen(void) {
 
 void processGcode(void) {
   parseGcodeResponse();   // Parse the received slave response information
-  sendGcodeCommands();    // Parse and send Gcode commands in the queue
+  parseGcodeOutgoing();   // Parse and send Gcode commands in the queue
   parseSerialGcode();     // Parse the received Gcode from other UART, such as: ESP3D, etc...
   getGcodeFromFile();     // Get Gcode command from the file to be printed
 #if defined ONBOARD_SD_SUPPORT && !defined M27_AUTOREPORT

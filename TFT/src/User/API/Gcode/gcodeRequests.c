@@ -5,10 +5,10 @@ REQUEST_COMMAND_INFO requestCommandInfo;
 bool WaitingGcodeResponse = false;
 
 static void resetRequestCommandInfo(void) {
-  requestCommandInfo.commandResponse = malloc(RESPONSE_MAX_CHARS);
+  requestCommandInfo.commandResponse = malloc(PREPARED_RESPONSE_MAX_CHARS);
   while (!requestCommandInfo.commandResponse)
     ;   // malloc failed
-  memset(requestCommandInfo.commandResponse, 0, RESPONSE_MAX_CHARS);
+  memset(requestCommandInfo.commandResponse, 0, PREPARED_RESPONSE_MAX_CHARS);
   requestCommandInfo.waitingForResponse     = true;
   requestCommandInfo.responseInProgress     = false;
   requestCommandInfo.commandComplete        = false;

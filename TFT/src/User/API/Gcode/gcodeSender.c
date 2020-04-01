@@ -27,6 +27,132 @@ static u8 gcodeLineIndex = 0;
 // u8 curRouterSpeed;
 // extern JOBSTATUS infoJobStatus;
 
+// *Check if gcodeLine contains string, then record the location using gcodeLineIndex
+static bool gcodeContains(u8 *string, u8 beginAtChar) {
+  char *match;
+  match = strstr(&gcodeLine[beginAtChar], (char *)string);
+  if (match) {
+    gcodeLineIndex = strlen(gcodeLine) - strlen(match) + strlen((char *)string);
+    if (strchr(&gcodeLine[gcodeLineIndex], (int)" ")) {
+      gcodeLineIndex++;
+    }
+    return true;
+  } else {
+    return false;
+  }
+}
+
+// // *Check if gcodeLine is *exactly* string
+// static bool gcodeIsExactly(u8 *string) {
+//   if ((char *)gcodeLine == (char *)string) {
+//     return true;
+//   } else {
+//     return false;
+//   }
+// }
+
+// // *Check if gcodeLine begins with string
+// static bool gcodeBeginsWith(u8 *string) {
+//   if (strstr(gcodeLine, (char *)string) == gcodeLine) {
+//     return true;
+//   } else {
+//     return false;
+//   }
+// }
+
+// *Get the float value from gcodeLine at the current gcodeLineIndex
+static float gcodeValueFloat(void) {
+  return strtof(&gcodeLine[gcodeLineIndex], NULL);
+}
+
+// *Get the integer value from gcodeLine at the current gcodeLineIndex
+static u16 gcodeValue(void) {
+  return strtol(&gcodeLine[gcodeLineIndex], NULL, 10);
+}
+
+// *Add a Gcode command to the gcodeOutgoing queue.
+// If the gcodeOutgoing queue is full, display a "waiting" banner.
+bool addGcodeCommand(bool skipIfQueueFull, const char *gcodeString, uint8_t port) {
+  if (gcodeOutgoing.count >= GCODE_QUEUE_SIZE) {
+    if (skipIfQueueFull) {
+      return false;
+    }
+    while (gcodeOutgoing.count >= GCODE_QUEUE_SIZE) {
+      timedMessage(1, TIMED_ERROR, "Queue is full");
+      runUpdateLoop();
+    }
+  }
+  strncpy(gcodeOutgoing.queue[gcodeOutgoing.queueIndex].gcode, gcodeString, GCODE_MAX_CHARACTERS - 1);
+  gcodeOutgoing.queue[gcodeOutgoing.queueIndex].src = port;
+  gcodeOutgoing.queueIndex                          = (gcodeOutgoing.queueIndex + 1) % GCODE_QUEUE_SIZE;
+  gcodeOutgoing.count++;
+  return true;
+}
+
+// *Add a Gcode command to the gcodeOutgoing queue.
+// *Will be sent to UART in parseGcodeOutgoing()
+// If the gcodeOutgoing queue is full, display a "waiting" banner.
+bool queueCommand(bool skipIfQueueFull, char *gcodeString, ...) {
+  // *Process formatted text (if applicable)
+  char *gcodeCommandSet;
+  gcodeCommandSet = 0;
+  my_va_list ap;
+  my_va_start(ap, gcodeString);
+  my_vsprintf(gcodeCommandSet, gcodeString, ap);
+  my_va_end(ap);
+
+  //* If there are multiple commands, queue each command individually
+  char *gcodeCommand;
+  gcodeCommand  = "";
+  int lineIndex = 0;
+  for (u8 setIndex = 0; gcodeCommandSet[setIndex] != 0; setIndex++) {
+    gcodeCommand[lineIndex] = gcodeCommandSet[setIndex];
+    if (strchr(&gcodeCommand[lineIndex], (int)"\n") || gcodeCommandSet[setIndex + 1] == 0) {
+      if (strchr(&gcodeCommand[lineIndex], (int)"\n")) {
+        gcodeCommand[lineIndex] = 0;   // End character
+      } else {
+        gcodeCommand[lineIndex + 1] = 0;
+      }
+      while (strchr(&gcodeCommand[strlen(gcodeCommand) - 1], (int)" ")) {
+        //* Remove trailing spaces
+        gcodeCommand[strlen(gcodeCommand) - 1] = 0;   // Remove last character
+      }
+      if (strlen(gcodeCommand) > 1) {
+        if (!addGcodeCommand(skipIfQueueFull, gcodeCommand, SERIAL_PORT)) {
+          return false;
+        }
+      }
+      lineIndex = -1;   // Reset lineIndex for next command
+    } else if (lineIndex == 0 && strchr(&gcodeCommand[lineIndex], (int)" ")) {
+      //* Ignore leading spaces
+      lineIndex = -1;   // Reset lineIndex to ignore leading space
+    }
+    lineIndex++;
+  }
+  return true;
+}
+
+// Store from UART cmd(such as: ESP3D, OctoPrint, else TouchScreen) to gcodeOutgoing queue, this cmd will be sent by UART in sendGcodeCommands(),
+// If the gcodeOutgoing queue is full, display warning and wait.
+void queueCommandFromSerial(uint8_t port, const char *gcode) {
+  while (gcodeOutgoing.count >= GCODE_QUEUE_SIZE) {
+    timedMessage(1, TIMED_ERROR, "Queue is full");
+    runUpdateLoop();
+  }
+  addGcodeCommand(false, gcode, port);
+}
+
+// *Check if the gcodeOutgoing queue is full
+bool isQueueFull(void) {
+  if (gcodeOutgoing.count >= GCODE_QUEUE_SIZE) return true;
+  return false;
+}
+
+//* Clear all gcode cmd in gcodeOutgoing queue for abort printing.
+void clearGcodeQueue(void) {
+  gcodeOutgoing.count = gcodeOutgoing.queueIndex = 0;
+}
+
 //* Parse and send gcode stored in gcodeOutgoing.
 void parseGcodeOutgoing(void) {
   if (infoJobStatus.isM0Paused == true || infoHost.waiting == true || gcodeOutgoing.count == 0) {
@@ -100,7 +226,7 @@ void parseGcodeOutgoing(void) {
           break;
 
         case 220:   //M220 Set the global CNC speed percentage.
-          if (gcodeContains('S', 4)) {
+          if (gcodeContains((u8 *)'S', 4)) {
             setCNCSpeedOverride(gcodeValue());
           } else {
             char buf[12];
@@ -125,11 +251,11 @@ void parseGcodeOutgoing(void) {
         {
           AXIS axis;
           for (axis = X_AXIS; axis < TOTAL_AXIS; axis++) {
-            if (gcodeContains(axis_id[axis], gcodeLineIndex)) {
+            if (gcodeContains((u8 *)&axis_id[axis], gcodeLineIndex)) {
               coordinateSetAxisTarget(axis, gcodeValueFloat());
             }
           }
-          if (gcodeContains('F', 3)) {
+          if (gcodeContains((u8 *)'F', 3)) {
             coordinateSetGantrySpeed(gcodeValue());
           }
           break;
@@ -164,7 +290,7 @@ void parseGcodeOutgoing(void) {
           // Set to absolute mode
           coorSetRelative(false);
           for (axis = X_AXIS; axis < TOTAL_AXIS; axis++) {
-            if (gcodeContains(axis_id[axis], gcodeLineIndex)) {
+            if (gcodeContains((u8 *)&axis_id[axis], gcodeLineIndex)) {
               coordinateSetAxisTarget(axis, gcodeValueFloat());
             }
           }
@@ -190,132 +316,6 @@ void parseGcodeOutgoing(void) {
   }
   gcodeOutgoing.count--;
   powerFailedEnable(true);
-}
-
-// *Check if gcodeLine contains string, then record the location using gcodeLineIndex
-static bool gcodeContains(const char *string, u8 beginAtChar) {
-  char *match;
-  match = strstr(&gcodeLine[beginAtChar], string);
-  if (match) {
-    gcodeLineIndex = strlen(gcodeLine) - strlen(match) + strlen(string);
-    if (strchr(gcodeLine[gcodeLineIndex], " ")) {
-      gcodeLineIndex++;
-    }
-    return true;
-  } else {
-    return false;
-  }
-}
-
-// *Check if gcodeLine is *exactly* string
-static bool gcodeIsExactly(const char *string) {
-  if (gcodeLine == string) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-// *Check if gcodeLine begins with string
-static bool gcodeBeginsWith(const char *string) {
-  if (strstr(gcodeLine, string) == gcodeLine) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-// *Get the float value from gcodeLine at the current gcodeLineIndex
-static float gcodeValueFloat() {
-  return (strtod(&gcodeLine[gcodeLineIndex], NULL));
-}
-
-// *Get the integer value from gcodeLine at the current gcodeLineIndex
-static int gcodeValue() {
-  return (strtol(&gcodeLine[gcodeLineIndex], NULL, 10));
-}
-
-// *Add a Gcode command to the gcodeOutgoing queue.
-// If the gcodeOutgoing queue is full, display a "waiting" banner.
-bool addGcodeCommand(bool skipIfQueueFull, const char *gcodeString, uint8_t port) {
-  if (gcodeOutgoing.count >= GCODE_QUEUE_SIZE) {
-    if (skipIfQueueFull) {
-      return false;
-    }
-    while (gcodeOutgoing.count >= GCODE_QUEUE_SIZE) {
-      timedMessage(1, TIMED_ERROR, "Queue is full");
-      runUpdateLoop();
-    }
-  }
-  strncpy(gcodeOutgoing.queue[gcodeOutgoing.queueIndex].gcode, gcodeString, GCODE_MAX_CHARACTERS - 1);
-  gcodeOutgoing.queue[gcodeOutgoing.queueIndex].src = port;
-  gcodeOutgoing.queueIndex                          = (gcodeOutgoing.queueIndex + 1) % GCODE_QUEUE_SIZE;
-  gcodeOutgoing.count++;
-  return true;
-}
-
-// *Add a Gcode command to the gcodeOutgoing queue.
-// *Will be sent to UART in parseGcodeOutgoing()
-// If the gcodeOutgoing queue is full, display a "waiting" banner.
-bool queueCommand(bool skipIfQueueFull, char *gcodeString, ...) {
-  // *Process formatted text (if applicable)
-  char *gcodeCommandSet;
-  gcodeCommandSet = 0;
-  my_va_list ap;
-  my_va_start(ap, gcodeString);
-  my_vsprintf(gcodeCommandSet, gcodeString, ap);
-  my_va_end(ap);
-
-  //* If there are multiple commands, queue each command individually
-  char *gcodeCommand;
-  int lineIndex = 0;
-  for (u8 setIndex = 0; gcodeCommandSet[setIndex] != 0; setIndex++) {
-    gcodeCommand[lineIndex] = gcodeCommandSet[setIndex];
-    if (strchr(gcodeCommand[lineIndex], "\n") || gcodeCommandSet[setIndex + 1] == 0) {
-      if (strchr(gcodeCommand[lineIndex], "\n")) {
-        gcodeCommand[lineIndex] = 0;   // End character
-      } else {
-        gcodeCommand[lineIndex + 1] = 0;
-      }
-      while (strchr(gcodeCommand[strlen(gcodeCommand) - 1], " ")) {
-        //* Remove trailing spaces
-        gcodeCommand[strlen(gcodeCommand) - 1] = 0;   // Remove last character
-      }
-      if (strlen(gcodeCommand) > 1) {
-        if (!addGcodeCommand(skipIfQueueFull, gcodeCommand, SERIAL_PORT)) {
-          return false;
-        }
-      }
-      lineIndex = -1;   // Reset lineIndex for next command
-    } else if (lineIndex == 0 && strchr(gcodeCommand[lineIndex], " ")) {
-      //* Ignore leading spaces
-      lineIndex = -1;   // Reset lineIndex to ignore leading space
-    }
-    lineIndex++;
-  }
-  return true;
-}
-
-// Store from UART cmd(such as: ESP3D, OctoPrint, else TouchScreen) to gcodeOutgoing queue, this cmd will be sent by UART in sendGcodeCommands(),
-// If the gcodeOutgoing queue is full, display warning and wait.
-void queueCommandFromSerial(uint8_t port, const char *gcode) {
-  while (gcodeOutgoing.count >= GCODE_QUEUE_SIZE) {
-    timedMessage(1, TIMED_ERROR, "Queue is full");
-    runUpdateLoop();
-  }
-  addGcodeCommand(false, gcode, port);
-  return true;
-}
-
-// *Check if the gcodeOutgoing queue is full
-static bool isQueueFull(void) {
-  if (gcodeOutgoing.count >= GCODE_QUEUE_SIZE) return true;
-  return false;
-}
-
-//* Clear all gcode cmd in gcodeOutgoing queue for abort printing.
-void clearGcodeQueue(void) {
-  gcodeOutgoing.count = gcodeOutgoing.queueIndex = 0;
 }
 
 void menuM0Pause(void) {
@@ -404,8 +404,8 @@ void menuChangeBit(void) {
         queueCommand(false, "G0 X40 Y200 Z120 F%d\n", SPEED_MOVE_FAST);
         drawXYZ();
         infoMenu.active--;
-        infoMenu.menu[infoMenu.active++] = menuJobSetup;
-        infoMenu.menu[infoMenu.active++] = menuMove;
+        infoMenu.menu[++infoMenu.active] = menuJobSetup;
+        infoMenu.menu[++infoMenu.active] = menuMove;
         break;
 
       case KEY_POPUP_CANCEL:
