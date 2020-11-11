@@ -1,5 +1,33 @@
-// #include "boot.h"
+#include "boot.h"
 #include "includes.h"
+
+// LCD init functions
+#include "lcd.h"
+#include "GUI.h"
+
+// Chip specific includes
+#include "Serial.h"
+#include "usart.h"
+
+// USB drive support (select TFT models)
+#include "usbh_usr.h"
+
+// SD card support
+#include "Hal/w25qxx.h"
+
+// UI handling
+#include "ui_draw.h"
+#include "touch_process.h"
+
+// File handling
+#include "Fatfs/myfatfs.h"
+#include "System/flashStorage.h"
+
+// Gcode processing
+#include "Gcode/gcodeSender.h"
+
+// Menus
+#include "Menu/menuSettingsHome.h"
 
 const GUI_RECT iconUpdateRect  = {(LCD_WIDTH - ICON_WIDTH) / 2, (LCD_HEIGHT - ICON_HEIGHT) / 2,
                                  (LCD_WIDTH - ICON_WIDTH) / 2 + ICON_WIDTH, (LCD_HEIGHT - ICON_HEIGHT) / 2 + ICON_HEIGHT};

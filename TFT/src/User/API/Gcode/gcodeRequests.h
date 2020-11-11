@@ -1,8 +1,9 @@
 #ifndef _GCODEREQUESTS_H_
 #define _GCODEREQUESTS_H_
-#include "stdbool.h"
+#include "includes.h"
+
+// Gcode processing
 #include "Gcode/gcodeSender.h"
-// #include "Gcode/gcodeSender.h"
 
 #define PREPARED_RESPONSE_MAX_CHARS 5000
 

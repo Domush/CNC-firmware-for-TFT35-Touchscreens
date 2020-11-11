@@ -1,6 +1,4 @@
 #include "STM32_Flash.h"
-#include "my_misc.h"
-#include "stm32f2xx.h"
 
 /*
 Sector 0 0x0800 0000 - 0x0800 3FFF 16 Kbyte

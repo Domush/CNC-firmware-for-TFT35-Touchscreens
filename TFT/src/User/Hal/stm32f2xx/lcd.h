@@ -1,9 +1,5 @@
 #ifndef _LCD_H_
 #define _LCD_H_
-#include "includes.h"
-
-// #include "stdint.h"
-// #include "System/variants.h"
 
 #ifdef STM32_HAS_FSMC
 
@@ -47,4 +43,4 @@ typedef struct
 void LCD_HardwareConfig(void);
 uint16_t LCD_RD_DATA(void);
 
-#endif
+#endif   // _LCD_H_

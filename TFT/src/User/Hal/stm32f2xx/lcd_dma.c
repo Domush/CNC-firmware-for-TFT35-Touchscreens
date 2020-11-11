@@ -1,10 +1,4 @@
-#include "includes.h"
-// #include "lcd_dma.h"
-// #include "System/variants.h"
-// #include "lcd.h"
-// #include "GUI.h"
-// #include "delay.h"
-// #include "w25qxx.h"
+#include "lcd_dma.h"
 
 #ifdef STM32_HAS_FSMC
   //Config for SPI Channel

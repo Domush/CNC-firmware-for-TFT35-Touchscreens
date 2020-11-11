@@ -1,5 +1,34 @@
-// #include "PowerFailed.h"
+#include "menuPower.h"
 #include "includes.h"
+
+// LCD init functions
+#include "lcd.h"
+#include "GUI.h"
+
+// Multi-language support
+#include "Language/Language.h"
+
+// Chip specific includes
+#include "Serial.h"
+
+// USB drive support (select TFT models)
+#include "usbh_usr.h"
+
+// UI handling
+#include "touch_process.h"
+
+// File handling
+#include "Vfs/vfs.h"
+#include "list_item.h"
+
+// Gcode processing
+#include "Gcode/gcodeSender.h"
+
+// Timing functions
+#include "System/os_timer.h"
+
+// Menus
+#include "includesMenus.h" // All menu headers
 
 BREAK_POINT infoBreakPoint;
 char powerFailedFileName[256];

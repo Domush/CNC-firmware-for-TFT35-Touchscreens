@@ -1,6 +1,26 @@
-// #include "Popup.h"
-// #include "my_misc.h"
+#include "menuPopup.h"
 #include "includes.h"
+
+// LCD init functions
+#include "lcd.h"
+#include "GUI.h"
+
+// Multi-language support
+#include "Language/Language.h"
+
+// Chip specific includes
+#include "Serial.h"
+#include "usart.h"
+
+// UI handling
+#include "touch_process.h"
+#include "ledcolor.h"
+
+// File handling
+#include "list_item.h"
+
+// Menus
+#include "includesMenus.h" // All menu headers
 
 #define BUTTON_NUM 1
 

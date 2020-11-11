@@ -1,6 +1,5 @@
 #ifndef _SPI_SLAVE_H_
 #define _SPI_SLAVE_H_
-
 #include "stm32f10x_conf.h"
 
 #define SPI_SLAVE_MAX (1024 * 5)

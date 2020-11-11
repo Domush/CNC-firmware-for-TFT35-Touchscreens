@@ -1,5 +1,4 @@
 #include "spi.h"
-#include "GPIO_Init.h"
 
 #ifndef SPI1_CS_PIN
 #define SPI1_CS_PIN PA4

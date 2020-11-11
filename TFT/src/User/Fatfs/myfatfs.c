@@ -1,6 +1,15 @@
 #include "myfatfs.h"
 #include "includes.h"
+
+// USB drive support (select TFT models)
+#include "usbh_usr.h"
+
+// UI handling
+#include "ST7920_Simulator.h"
+
+// File handling
 #include "diskio.h"
+#include "Vfs/vfs.h"
 
 FATFS fatfs[FF_VOLUMES]; /* FATFS work area*/
 

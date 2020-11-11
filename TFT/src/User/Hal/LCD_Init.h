@@ -2,7 +2,8 @@
 #define _LCD_INIT_H_
 #include "includes.h"
 
-// #include "System/variants.h"
+// LCD init functions
+#include "lcd.h"
 
 //TFT35 V1.0 V1.1 RM68042 8bit
 //TFT35 V1.2 ili9488 16bit

@@ -1,7 +1,6 @@
-#ifndef _SCREEN_SETTINGS_H_
-#define _SCREEN_SETTINGS_H_
-#include "includes.h"
+#ifndef _MENUSETTINGSTFT_H_
+#define _MENUSETTINGSTFT_H_
 
-void menuScreenSettings(void);
+void menuSettingsTFT(void);
 
 #endif

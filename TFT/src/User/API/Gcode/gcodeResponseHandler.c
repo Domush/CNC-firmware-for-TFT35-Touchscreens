@@ -1,5 +1,28 @@
-// #include "parseACK.h"
+#include "gcodeResponseHandler.h"
 #include "includes.h"
+
+// Multi-language support
+#include "Language/Language.h"
+
+// Chip specific includes
+#include "Serial.h"
+#include "usart.h"
+
+// File handling
+#include "list_item.h"
+
+// Gcode processing
+#include "Gcode/gcodeSender.h"
+#include "Gcode/gcodeRequests.h"
+
+// Base API functions
+#include "API/gantry.h"
+
+// Timing functions
+#include "System/os_timer.h"
+
+// Menus
+#include "includesMenus.h" // All menu headers
 
 // RESPONSE_QUEUE gcodeResponse[3];   // Last gCode responses
 static char responseLine[RESPONSE_MAX_CHARS];   // Current response being processed
@@ -29,8 +52,8 @@ void parseSerialGcode(void) {
     if (port != SERIAL_PORT && infoHost.responseReceived[port] == true) {
       queueCncResponses(port);
       while (gcodeResponse[port].count > 0) {
-        strncpy(&responseLine[0], gcodeResponse[port].queue[(gcodeResponse[port].queueIndex - gcodeResponse[port].count) % RESPONSE_QUEUE_SIZE].response, RESPONSE_MAX_CHARS - 1);
-        queueCommandFromSerial(port, &responseLine[0]);
+        strncpy(responseLine, gcodeResponse[port].queue[(gcodeResponse[port].queueIndex - gcodeResponse[port].count) % RESPONSE_QUEUE_SIZE].response, RESPONSE_MAX_CHARS - 1);
+        queueCommandFromSerial(port, responseLine);
         gcodeResponse[port].count--;
       }
       infoHost.responseReceived[port] = false;   // *All response data has been processed
@@ -46,10 +69,10 @@ void setGcodeCommandSource(uint8_t src) {
 // *Check if responseLine contains string, then record the location using responseLineIndex
 static bool responseContains(const char *string, u8 beginAtChar) {
   const char *match;
-  match = strstr((const char *)&responseLine[beginAtChar], string);
+  match = strstr(&responseLine[beginAtChar], string);
   if (match) {
-    responseLineIndex = strlen((const char *)responseLine) - strlen(match) + strlen(string);
-    if (strchr((const char *)&responseLine[responseLineIndex], (int)" ")) {
+    responseLineIndex = strlen(responseLine) - strlen(match) + strlen(string);
+    if (responseLine[responseLineIndex] == ' ') {
       responseLineIndex++;
     }
     return true;
@@ -69,7 +92,7 @@ static bool responseContains(const char *string, u8 beginAtChar) {
 
 // *Check if responseLine begins with string
 static bool responseBeginsWith(const char *string) {
-  if (strstr((const char *)responseLine, string) == &responseLine[0]) {
+  if (strstr(responseLine, string) == responseLine) {
     return true;
   } else {
     return false;
@@ -78,12 +101,12 @@ static bool responseBeginsWith(const char *string) {
 
 // *Get the float value from responseLine at the current gcodeLineIndex
 static float responseValueFloat(void) {
-  return (strtod((const char *)&responseLine[responseLineIndex], NULL));
+  return (strtod(&responseLine[responseLineIndex], NULL));
 }
 
 // *Get the integer value from responseLine at the current gcodeLineIndex
 static int responseValue(void) {
-  return (strtol((const char *)&responseLine[responseLineIndex], NULL, 10));
+  return (strtol(&responseLine[responseLineIndex], NULL, 10));
 }
 
 void showPopupMessage(char *title) {
@@ -94,7 +117,7 @@ void showPopupMessage(char *title) {
   if (!popup_message) {
     popup_message = "No reason given. Continue when ready.";
   }
-  if (infoMenu.menu[infoMenu.active] == parametersetting) return;
+  if (infoMenu.menu[infoMenu.active] == menuSettingsTMC) return;
   if (infoMenu.menu[infoMenu.active] == menuTerminal) return;
   /*
   "Load V-Bit -  0.5\" Dia., then Pos@ 0:0:1mm\r
@@ -144,7 +167,7 @@ void addCncResponseToQueue(char *gcodeString, uint8_t port) {
   gcodeResponse[port].queueIndex = (gcodeResponse[port].queueIndex + 1) % RESPONSE_QUEUE_SIZE;
   if (gcodeResponse[port].count < RESPONSE_QUEUE_SIZE) gcodeResponse[port].count++;
 
-  cncIncoming[port].processedIndex = (cncIncoming[port].processedIndex + strlen(gcodeString) + 1) % RESPONSE_MAX_CHARS;
+  cncIncoming[port].processedIndex = (cncIncoming[port].processedIndex + strlen(gcodeString) + 1) % RESPONSE_BUFFER_SIZE;
 }
 
 //* Split incoming serial responses by '\n' and send them to the gcodeResponse queue
@@ -153,17 +176,17 @@ void queueCncResponses(uint8_t port) {
   int i;
   for (i = 0; cncIncoming[port].processedIndex != cncIncoming[port].pendingIndex && gcodeResponse[port].count < RESPONSE_QUEUE_SIZE; i++) {
     cncResponse[i] = cncIncoming[port].responseBuffer[cncIncoming[port].processedIndex + i];
-    if (strchr(&cncResponse[i], (int)"\n")) {
+    if (cncResponse[i] == '\n') {
       cncResponse[i] = 0;   // End character
-      while (strchr(&cncResponse[strlen(cncResponse) - 1], (int)" ")) {
+      while (cncResponse[strlen(cncResponse) - 1] == ' ') {
         // Remove trailing spaces
-        cncResponse[strlen(cncResponse) - 1] = 0;                                                             // Remove last character
-        cncIncoming[port].processedIndex     = (cncIncoming[port].processedIndex + 1) % RESPONSE_MAX_CHARS;   // Account for the missing character
+        cncResponse[strlen(cncResponse) - 1] = 0;                                                               // Remove last character
+        cncIncoming[port].processedIndex     = (cncIncoming[port].processedIndex + 1) % RESPONSE_BUFFER_SIZE;   // Account for the missing character
       }
-      addCncResponseToQueue(&cncResponse[0], port);
-
-      i = -1;   // Reset i to process the next response line
-    } else if (i == 0 && strchr(&cncResponse[i], (int)" ")) {
+      addCncResponseToQueue(cncResponse, port);
+      cncResponse[0] = 0;    // Empty out the last response
+      i              = -1;   // Reset i to process the next response line
+    } else if (i == 0 && cncResponse[i] == ' ') {
       // Ignore leading spaces
       cncIncoming[port].processedIndex = (cncIncoming[port].processedIndex + 1) % RESPONSE_MAX_CHARS;   // Account for the missing character
 
@@ -177,6 +200,7 @@ void parseGcodeResponse(void) {
   static u8 connectionRetryDelay = 2;   // # of seconds to wait before retrying to connect
   static u16 connectionRetryTime = 0;   // stored timestamp for reconnect attempt
   bool hideResponsesInTerminal   = false;
+  queueCncResponses(SERIAL_PORT);
   // *Only process response data if data is waiting from SERIAL_PORT
   if (infoHost.responseReceived[SERIAL_PORT] != true) {
     // *Look for Marlin and wake it up if sleeping
@@ -186,15 +210,12 @@ void parseGcodeResponse(void) {
         connectionRetryTime = OS_GetTime();
         queueCommand(false, "G53\n");   // *Attempts to send a "wake up" packet to trigger a connection
       }
-      goto parse_end;
-    } else {
-      return;
     }
+    return;
   }
 
-  queueCncResponses(SERIAL_PORT);
   while (gcodeResponse[SERIAL_PORT].count > 0) {
-    strncpy(&responseLine[0], gcodeResponse[SERIAL_PORT].queue[(gcodeResponse[SERIAL_PORT].queueIndex - gcodeResponse[SERIAL_PORT].count) % RESPONSE_QUEUE_SIZE].response, RESPONSE_MAX_CHARS);
+    strncpy(responseLine, gcodeResponse[SERIAL_PORT].queue[(gcodeResponse[SERIAL_PORT].queueIndex - gcodeResponse[SERIAL_PORT].count) % RESPONSE_QUEUE_SIZE].response, RESPONSE_MAX_CHARS);
 
     // *Look for Marlin and wake it up if sleeping
     if (infoHost.connected == false) {
@@ -228,13 +249,13 @@ void parseGcodeResponse(void) {
           requestCommandInfo.responseInProgress     = false;
           requestCommandInfo.responseErrorTriggered = true;
         }
-        infoHost.waiting = false;
+        infoHost.waitForResponse = false;
         goto parse_end;
       }
       // end
 
       if (responseBeginsWith("ok")) {
-        infoHost.waiting = false;
+        infoHost.waitForResponse = false;
       } else {
         // non-"ok" response section
         if (responseContains("X:", 0)) {
@@ -266,13 +287,13 @@ void parseGcodeResponse(void) {
             Get_parameter_value[5] = responseValue();
         }
 #ifdef ONBOARD_SD_SUPPORT
-        else if (responseContains(replySDNotPrinting, 0) && infoMenu.menu[infoMenu.active] == menuPrinting) {
+        else if (responseContains(replySDNotPrinting, 0) && infoMenu.menu[infoMenu.active] == menuJobStatus) {
           infoHost.jobInProgress = false;
           jobComplete();
 
         } else if (responseContains(replySDPrinting, 0)) {
-          if (infoMenu.menu[infoMenu.active] != menuPrinting && !infoHost.jobInProgress) {
-            infoMenu.menu[++infoMenu.active] = menuPrinting;
+          if (infoMenu.menu[infoMenu.active] != menuJobStatus && !infoHost.jobInProgress) {
+            infoMenu.menu[++infoMenu.active] = menuJobStatus;
             infoHost.jobInProgress           = true;
           }
           // Parsing printing data

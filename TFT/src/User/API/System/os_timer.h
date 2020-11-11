@@ -1,6 +1,7 @@
 #ifndef _OS_TIMER_H_
 #define _OS_TIMER_H_
-#include "stdint.h"
+// Timing functions
+#include "System/delay.h"
 
 typedef void (*FP_TASK)(void *);
 

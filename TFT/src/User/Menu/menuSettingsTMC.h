@@ -1,7 +1,12 @@
-#ifndef _PARAMETERSETTING_H_
-#define _PARAMETERSETTING_H_
+#ifndef _MENUSETTINGSTMC_H_
+#define _MENUSETTINGSTMC_H_
 #include "includes.h"
-// #include "menu.h"
+
+// LCD init functions
+#include "lcd.h"
+
+// File handling
+#include "list_item.h"
 
 #define P_height   LCD_HEIGHT / 4
 #define Key_height (LCD_HEIGHT - P_height) / 4
@@ -55,7 +60,7 @@ typedef enum {
   NUM_KEY_IDLE = IDLE_TOUCH,
 } NUM_KEY_VALUES;
 
-void parametersetting(void);
+void menuSettingsTMC(void);
 extern bool getsetparameter;
 extern int cmd_getparameter_num;
 extern float Get_parameter_value[VALUE_NUM];

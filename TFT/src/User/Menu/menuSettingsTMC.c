@@ -1,5 +1,23 @@
-// #include "Parametersetting.h"
+#include "menuSettingsTMC.h"
 #include "includes.h"
+
+// LCD init functions
+#include "lcd.h"
+#include "GUI.h"
+
+// Chip specific includes
+#include "Serial.h"
+#include "usart.h"
+
+// UI handling
+#include "ui_draw.h"
+#include "touch_process.h"
+
+// File handling
+#include "list_item.h"
+
+// Gcode processing
+#include "Gcode/gcodeSender.h"
 
 SKEY_VALUES Select_Parameter;
 bool getsetparameter, rev_success;
@@ -265,13 +283,13 @@ void Setting_parameter(void) {
   return;
 }
 
-void parametersetting(void) {
+void menuSettingsTMC(void) {
   TSC_ReDrawIcon = NULL;
   Draw_parameterbutton();
   Send_Settingcmd();
   SKEY_VALUES key_num = SKEY_IDLE;
 
-  while (infoMenu.menu[infoMenu.active] == parametersetting) {
+  while (infoMenu.menu[infoMenu.active] == menuSettingsTMC) {
     key_num = SKeyGetValue();
     switch (key_num) {
       case SKEY_3:

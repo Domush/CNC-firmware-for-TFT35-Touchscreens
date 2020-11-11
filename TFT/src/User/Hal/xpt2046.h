@@ -1,8 +1,6 @@
 #ifndef _XPT2046_H_
 #define _XPT2046_H_
-
-#include "sw_spi.h"
-#include "stdbool.h"
+#include "spi.h"
 
 void XPT2046_Init(void);
 u8 XPT2046_Read_Pen(void);

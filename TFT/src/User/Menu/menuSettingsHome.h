@@ -1,8 +1,6 @@
-#ifndef _SETTINGS_H_
-#define _SETTINGS_H_
+#ifndef _MENUSETTINGSHOME_H_
+#define _MENUSETTINGSHOME_H_
 #include "includes.h"
-
-// #include "stdint.h"
 
 typedef enum {
   SERIAL_TSC = 0,
@@ -33,7 +31,8 @@ typedef struct
   uint8_t file_listmode;
 } SETTINGS;
 
-extern SETTINGS infoSettings;
+// extern SETTINGS infoSettings;
+SETTINGS infoSettings;
 
 void infoSettingsReset(void);
 void menuSettings(void);

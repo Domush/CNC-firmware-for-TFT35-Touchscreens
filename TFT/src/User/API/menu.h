@@ -1,12 +1,18 @@
-#ifndef _MENU_H_
-#define _MENU_H_
+#ifndef _API_MENU_H_
+#define _API_MENU_H_
 #include "includes.h"
 
-// #include "GUI.h"
-// #include "stdbool.h"
-// #include "stdint.h"
+// LCD init functions
+#include "GUI.h"
+
+// Chip specific includes
+#include "usart.h"
+
+// UI handling
+#include "ui_draw.h"
 
 #define IDLE_TOUCH 0xFFFF
+
 typedef enum {
   KEY_ICON_0 = 0,
   KEY_ICON_1,
@@ -86,7 +92,7 @@ typedef struct {
   MESSAGE_TYPE type;
 } TIMEDMESSAGE;
 
-extern const GUI_RECT exhibitRect;
+const GUI_RECT exhibitRect;
 
 #define CENTER_Y         ((exhibitRect.y1 - exhibitRect.y0) / 2 + exhibitRect.y0)
 #define CENTER_X         ((exhibitRect.x1 - exhibitRect.x0 - BYTE_WIDTH) / 2 + exhibitRect.x0)
@@ -110,10 +116,6 @@ void timedMessage(uint8_t delay_secs, MESSAGE_TYPE type, char *string, ...);
 void timedMessageExpire(void);
 
 void processGcode(void);
-
-void gcodeQueueStatus(void);
-
-void drawXYZ(void);
 
 void updateScreen(void);
 void runUpdateLoop(void);

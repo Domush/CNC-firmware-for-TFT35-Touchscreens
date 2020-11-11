@@ -1,8 +1,13 @@
-#include "System/variants.h"
-
 #ifdef SD_SPI_SUPPORT
-  #include "sd.h"
-  #include "GPIO_Init.h"
+#include "includes.h"
+
+// Chip specific includes
+#include "Serial.h"
+#include "GPIO_Init.h"
+#include "spi.h"
+
+// SD card support
+#include "sd.h"
 
 u8 SD_Type = 0;   //SD card type
 

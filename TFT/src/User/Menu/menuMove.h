@@ -1,6 +1,6 @@
-#ifndef _MOVE_H_
-#define _MOVE_H_
-#include "includes.h"
+#ifndef _MENUMOVE_H_
+#define _MENUMOVE_H_
+
 
 void menuMove(void);
 void updateGantryLocation(void);

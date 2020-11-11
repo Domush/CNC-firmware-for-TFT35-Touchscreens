@@ -1,5 +1,25 @@
-// #include "ui_draw.h"
+#include "ui_draw.h"
 #include "includes.h"
+
+// LCD init functions
+#include "lcd.h"
+#include "Hal/LCD_Init.h"
+
+// Chip specific includes
+#include "Serial.h"
+#include "usart.h"
+
+// USB drive support (select TFT models)
+#include "usbh_usr.h"
+
+// SD card support
+#include "Hal/w25qxx.h"
+
+// Timing functions
+#include "System/boot.h"
+
+// Menus
+#include "Menu/menuJobStatus.h"
 
 #ifdef STM32_HAS_FSMC
 
@@ -104,10 +124,6 @@ bool bmp_DirectDisplay(GUI_POINT pos, char *bmp) {
 //draw icon with different length and width (sx & sy cordinates for top left of icon, w width, h height, addr flash byte address)
 void ICON_CustomReadDisplay(u16 sx, u16 sy, u16 w, u16 h, u32 addr) {
   lcd_frame_display(sx, sy, w, h, addr);
-}
-
-void SMALLICON_ReadDisplay(u16 sx, u16 sy, u8 icon) {
-  lcd_frame_display(sx, sy, SMALLICON_WIDTH, SMALLICON_HEIGHT, SMALL_ICON_ADDR(icon));
 }
 
 void ICON_PressedDisplay(u16 sx, u16 sy, u8 icon) {

@@ -1,8 +1,6 @@
-#ifndef _SEND_GCODE_H_
-#define _SEND_GCODE_H_
-#include "includes.h"
-
-// #include "menu.h"
+#ifndef _MENUTERMINAL_H_
+#define _MENUTERMINAL_H_
+#include "API/menu.h"
 
 typedef enum {
   GKEY_0 = 0,
@@ -39,8 +37,8 @@ typedef enum {
   CNC_SOURCE,
 } COMMAND_SOURCE;
 
-void menuSendGcode(void);
 void menuTerminal(void);
+void menuTerminal2(void);
 void showInTerminal(char *serial_text, COMMAND_SOURCE src);
 void showGcodeStatus(char *serial_text, COMMAND_SOURCE src);
 

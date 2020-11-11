@@ -2,10 +2,12 @@
 #define _UI_DRAW_H_
 #include "includes.h"
 
-// #include "stdint.h"
-// #include "System/variants.h"
-// #include "stdbool.h"
-// #include "GUI.h"
+// LCD init functions
+#include "GUI.h"
+
+// Chip specific includes
+#include "Serial.h"
+#include "usart.h"
 
 #define SPACE_X          ((LCD_WIDTH - ICON_WIDTH * 4) / 4)
 #define START_X          (SPACE_X / 2)
@@ -30,4 +32,4 @@ bool bmp_DirectDisplay(GUI_POINT pos, char *bmp);
 void ICON_CustomReadDisplay(u16 sx, u16 sy, u16 w, u16 h, u32 addr);
 void ICON_PressedDisplay(uint16_t sx, uint16_t sy, uint8_t icon);
 
-#endif
+#endif   // _UI_DRAW_H_

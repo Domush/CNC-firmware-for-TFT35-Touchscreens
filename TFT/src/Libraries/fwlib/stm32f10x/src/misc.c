@@ -23,6 +23,10 @@
 /* Includes ------------------------------------------------------------------*/
 #include "misc.h"
 
+// Chip specific includes
+#include "usart.h"
+#include "spi.h"
+
 /** @addtogroup STM32F10x_StdPeriph_Driver
   * @{
   */

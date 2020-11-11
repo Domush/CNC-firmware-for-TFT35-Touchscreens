@@ -1,11 +1,8 @@
-#ifndef _FLASHSTORE_H_
-#define _FLASHSTORE_H_
-
-#include "stdbool.h"
-#include "System/variants.h"
-#include "Menu/menuSettingsHome.h"
+#ifndef _FLASHSTORAGE_H_
+#define _FLASHSTORAGE_H_
+#include "includes.h"
 
 bool readStoredPara(void);
 void storePara(void);
 
-#endif
+#endif   // _FLASHSTORAGE_H_

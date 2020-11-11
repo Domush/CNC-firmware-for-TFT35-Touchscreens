@@ -1,5 +1,17 @@
-// #include "gcodeFileHandler.h"
+#include "gcodeFileHandler.h"
 #include "includes.h"
+
+// Chip specific includes
+#include "usart.h"
+
+// USB drive support (select TFT models)
+#include "usbh_usr.h"
+
+// File handling
+#include "Vfs/vfs.h"
+
+// Gcode processing
+#include "Gcode/gcodeRequests.h"
 
 /*
 */
@@ -41,16 +53,16 @@ bool scanPrintFilesGcodeFs(void) {
   clearRequestCommandInfo();
   char s[3];
 
-  if (strstr(data, "\r\n"))   //for smoothieware
+  if (strstr(data, "\r\n"))  //for smoothieware
     strcpy(s, "\r\n");
-  else   //for Marlin
+  else  //for Marlin
     strcpy(s, "\n");
 
   char* line = strtok(data, s);
   for (; line != NULL; line = strtok(NULL, s)) {
-    if (strcmp(line, "Begin file list") == 0 || strcmp(line, "End file list") == 0 || strcmp(line, "ok") == 0) continue;   // Start and Stop tag
-    if (strlen(line) < strlen(infoFile.title) - 4) continue;                                                               // No path line exclude
-    if (strlen(infoFile.title) > 4 && strstr(line, infoFile.title + 4) == NULL) continue;                                  // No current directory
+    if (strcmp(line, "Begin file list") == 0 || strcmp(line, "End file list") == 0 || strcmp(line, "ok") == 0) continue;  // Start and Stop tag
+    if (strlen(line) < strlen(infoFile.title) - 4) continue;                                                              // No path line exclude
+    if (strlen(infoFile.title) > 4 && strstr(line, infoFile.title + 4) == NULL) continue;                                 // No current directory
 
     char* pline = line + strlen(infoFile.title) - 4;
     if (strlen(infoFile.title) > 4) pline++;
@@ -61,11 +73,11 @@ bool scanPrintFilesGcodeFs(void) {
         continue; /* Gcode max number is FILE_NUM*/
 
       char* Pstr_tmp = strrchr(line, ' ');
-      if (Pstr_tmp != NULL) *Pstr_tmp = 0;   //remove file size from line
+      if (Pstr_tmp != NULL) *Pstr_tmp = 0;  //remove file size from line
       char* longfilemane = request_M33(line);
       Pstr_tmp           = strchr(longfilemane, '\n');
-      if (Pstr_tmp != NULL) *Pstr_tmp = 0;     //remove end of M33 command
-      Pstr_tmp = strrchr(longfilemane, '/');   //remove folder information
+      if (Pstr_tmp != NULL) *Pstr_tmp = 0;    //remove end of M33 command
+      Pstr_tmp = strrchr(longfilemane, '/');  //remove folder information
       if (Pstr_tmp == NULL)
         Pstr_tmp = longfilemane;
       else
@@ -76,10 +88,10 @@ bool scanPrintFilesGcodeFs(void) {
         break;
       }
       strcpy(infoFile.Longfile[infoFile.f_num], Pstr_tmp);
-      clearRequestCommandInfo();   // for M33
+      clearRequestCommandInfo();  // for M33
 
       char* rest                    = pline;
-      char* file                    = strtok_r(rest, " ", &rest);   //remove file size from pline
+      char* file                    = strtok_r(rest, " ", &rest);  //remove file size from pline
       infoFile.file[infoFile.f_num] = malloc(strlen(file) + 1);
       if (infoFile.file[infoFile.f_num] == NULL) break;
       strcpy(infoFile.file[infoFile.f_num++], file);

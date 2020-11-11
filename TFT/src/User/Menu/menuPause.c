@@ -1,5 +1,23 @@
+#include "menuPause.h"
 #include "includes.h"
-// #include "More.h"
+
+// Multi-language support
+#include "Language/Language.h"
+
+// Chip specific includes
+#include "Serial.h"
+
+// UI handling
+#include "touch_process.h"
+
+// File handling
+#include "list_item.h"
+
+// Timing functions
+#include "System/boot.h"
+
+// Menus
+#include "includesMenus.h" // All menu headers
 
 void menuIsPause(void) {
   u16 key_num = IDLE_TOUCH;
@@ -53,7 +71,7 @@ void menuMore(void) {
         break;
 
       case KEY_ICON_2:
-        infoMenu.menu[++infoMenu.active] = menuFeatureSettings;
+        infoMenu.menu[++infoMenu.active] = menuSettingsFeatures;
         break;
 
       case KEY_ICON_7:

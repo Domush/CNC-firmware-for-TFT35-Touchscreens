@@ -1,6 +1,8 @@
-// #include "ledcolor.h"
+#include "ledcolor.h"
+// Chip specific includes
+#include "Serial.h"
+#include "usart.h"
 #include "GPIO_Init.h"
-#include "includes.h"
 
 #ifdef LED_color_PIN
 

@@ -1,9 +1,6 @@
-#ifndef _SELECTMODE_H_
-#define _SELECTMODE_H_
-
-#include "UI/GUI.h"
-#include "stdint.h"
-#include "stdbool.h"
+#ifndef _EMULATIONTOGGLE_H_
+#define _EMULATIONTOGGLE_H_
+#include "includes.h"
 
 #define IDLE_TOUCH 0xFFFF
 #define SELECTMODE 2
@@ -23,4 +20,4 @@ void show_selectICON(void);
 MKEY_VALUES MKeyGetValue(void);
 void selectmode(int8_t nowMode);
 
-#endif
+#endif   // _EMULATIONTOGGLE_H_

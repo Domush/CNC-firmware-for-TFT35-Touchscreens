@@ -1,7 +1,6 @@
 #ifndef _SD_H_
 #define _SD_H_
 
-#include "includes.h"
 
 // SD�����Ͷ���
 #define SD_TYPE_ERR  0X00

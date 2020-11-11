@@ -4,7 +4,7 @@
 /*------------------------------------------------------------------------*/
 
 #include "ff.h"
-#include "stdlib.h"
+#include <stdlib.h>
 
 #if FF_USE_LFN == 3 /* Dynamic memory allocation */
 

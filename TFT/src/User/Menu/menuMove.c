@@ -1,5 +1,27 @@
-// #include "Move.h"
+#include "menuMove.h"
 #include "includes.h"
+
+// Multi-language support
+#include "Language/Language.h"
+
+// Chip specific includes
+#include "Serial.h"
+
+// File handling
+#include "list_item.h"
+
+// Gcode processing
+#include "Gcode/gcodeSender.h"
+
+// Base API functions
+#include "API/gantry.h"
+
+// Timing functions
+#include "System/os_timer.h"
+#include "System/boot.h"
+
+// Menus
+#include "includesMenus.h" // All menu headers
 
 //const GUI_RECT RecXYZ = {START_X + 1*ICON_WIDTH,        STATUS_GANTRY_YOFFSET,
 //                         4*ICON_WIDTH+3*SPACE_X+START_X,ICON_START_Y-STATUS_GANTRY_YOFFSET};
@@ -141,7 +163,7 @@ void menuMove(void) {
 
 void updateGantryLocation(void) {
   if (OS_GetTime() > nowTime + update_time) {
-    if (infoHost.connected == true && infoHost.waiting == false) {
+    if (infoHost.connected == true && infoHost.waitForResponse == false) {
       queueCommand(false, "M114\n");
     }
     drawXYZ();

@@ -1,6 +1,5 @@
-#ifndef _MAINPAGE_H_
-#define _MAINPAGE_H_
-#include "includes.h"
+#ifndef _MENUMAIN_H_
+#define _MENUMAIN_H_
 
 void menuMain(void);
 

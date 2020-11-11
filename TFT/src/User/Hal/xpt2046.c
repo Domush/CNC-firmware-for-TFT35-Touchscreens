@@ -1,6 +1,11 @@
 #include "xpt2046.h"
-#include "GPIO_Init.h"
 #include "includes.h"
+
+// Chip specific includes
+#include "Serial.h"
+#include "GPIO_Init.h"
+#include "sw_spi.h"
+
 /***************************************** XPT2046 SPI Interface ported by the underlying pattern********************************************/
 //XPT2046 SPI Related-Using Analog SPI
 _SW_SPI xpt2046;
@@ -50,7 +55,7 @@ u16 XPT2046_Read_AD(u8 CMD) {
 }
 
 #define READ_TIMES 5   //Read times
-#define LOST_VAL 1     //Drop value
+#define LOST_VAL   1   //Drop value
 u16 XPT2046_Average_AD(u8 CMD) {
   u16 i, j;
   u16 buf[READ_TIMES];

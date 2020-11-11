@@ -1,5 +1,12 @@
+#include "lcd.h"
 #include "includes.h"
-// #include "lcd.h"
+
+// Chip specific includes
+#include "Serial.h"
+#include "spi.h"
+
+// Gcode processing
+#include "Gcode/gcodeSender.h"
 
 #ifdef STM32_HAS_FSMC
 u16 LCD_RD_DATA(void) {

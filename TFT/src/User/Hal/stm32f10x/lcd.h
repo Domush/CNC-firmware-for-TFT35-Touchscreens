@@ -2,9 +2,6 @@
 #define _LCD_H_
 #include "includes.h"
 
-// #include "stdint.h"
-// #include "System/variants.h"
-
 #ifdef STM32_HAS_FSMC
 
 typedef struct

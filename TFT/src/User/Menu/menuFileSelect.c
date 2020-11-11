@@ -1,5 +1,29 @@
-// #include "Print.h"
+#include "menuFileSelect.h"
 #include "includes.h"
+
+// LCD init functions
+#include "lcd.h"
+#include "GUI.h"
+
+// Multi-language support
+#include "Language/Language.h"
+
+// Chip specific includes
+#include "Serial.h"
+#include "usart.h"
+
+// UI handling
+#include "ui_draw.h"
+
+// File handling
+#include "Vfs/vfs.h"
+#include "list_item.h"
+
+// Timing functions
+#include "System/boot.h"
+
+// Menus
+#include "includesMenus.h" // All menu headers
 
 LISTITEMS printListItems = {
     // title
@@ -93,7 +117,7 @@ void gcodeIconDraw(void) {
   scrollFileNameCreate(0);
   Scroll_CreatePara(&titleScroll, (uint8_t*)infoFile.title, &titleRect);
   printIconItems.title.address = (uint8_t*)infoFile.title;
-  GUI_SetBkColor(TITLE_BACKGROUND_COLOR);
+  GUI_SetBkColor(BACKGROUND_COLOR);
   GUI_ClearPrect(&titleRect);
   GUI_SetBkColor(BACKGROUND_COLOR);
 
@@ -141,7 +165,7 @@ void gcodeListDraw(void) {
 
   Scroll_CreatePara(&titleScroll, (u8*)infoFile.title, &titleRect);
   printListItems.title.address = (u8*)infoFile.title;
-  GUI_SetBkColor(TITLE_BACKGROUND_COLOR);
+  GUI_SetBkColor(BACKGROUND_COLOR);
   GUI_ClearRect(0, 0, LCD_WIDTH, TITLE_END_Y);
   GUI_SetBkColor(BACKGROUND_COLOR);
 
@@ -213,7 +237,7 @@ void menuPrintFromSource(void) {
   }
 
   while (infoMenu.menu[infoMenu.active] == menuPrintFromSource) {
-    GUI_SetBkColor(TITLE_BACKGROUND_COLOR);
+    GUI_SetBkColor(BACKGROUND_COLOR);
     Scroll_DispString(&titleScroll, LEFT);   //
     GUI_SetBkColor(BACKGROUND_COLOR);
 

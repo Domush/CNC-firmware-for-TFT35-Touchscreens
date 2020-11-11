@@ -1,6 +1,5 @@
-#ifndef _MY_MISC_H_
-#define _MY_MISC_H_
-#include "includes.h"
+#ifndef _HELPERFUNCTIONS_H_
+#define _HELPERFUNCTIONS_H_
 
 // Macros to make a string from a macro
 #define STRINGIFY_(M) #M

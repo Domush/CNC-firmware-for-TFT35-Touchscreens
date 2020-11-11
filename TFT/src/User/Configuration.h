@@ -1,5 +1,10 @@
-#ifndef _CONFIGRATION_H_
-#define _CONFIGRATION_H_
+#ifndef _CONFIGURATION_H_
+#define _CONFIGURATION_H_
+
+//!! Remove these two lines after development !!
+//TODO Remove lines after testing
+// #define TFT35_V2_0
+//#define TFT35_V3_0
 
 //===========================================================================
 //=========================== Marlin Mode Settings ===========================
@@ -32,11 +37,8 @@
 #define SHOW_BTT_BOOTSCREEN
 
 // TFT mode color
-#define TITLE_BACKGROUND_COLOR     BLACK   // Title background color // 0xD928
-#define BACKGROUND_COLOR           BLACK   // Background color // 0x0A29
-#define FONT_COLOR                 WHITE   // Font foreground color
-#define REMINDER_FONT_COLOR        RED     // Reminder font color, such as: "No print attached", "Busy process", etc...
-#define VOLUME_REMINDER_FONT_COLOR GBLUE   // Volume reminder font color,such as: "Card inserted", "Card removed"
+#define BACKGROUND_COLOR BLACK  // Background color // 0x0A29
+#define FONT_COLOR       WHITE  // Font foreground color
 
 #define ROUTER_MAX_PWM 255
 #define ROUTER_ID      "Router Power"
@@ -57,11 +59,11 @@
 #define Z_MAX_POS 200
 
 // Specify a pause position as { X, Y, Z_raise }
-#define SPINDLE_PAUSE_X_POSITION     (X_MIN_POS + 10)   // (mm) Must be an integer
-#define SPINDLE_PAUSE_Y_POSITION     (Y_MIN_POS + 10)   // (mm) Must be an integer
-#define SPINDLE_PAUSE_Z_RAISE        40                 // (mm)
-#define SPINDLE_PAUSE_XY_GANTRYSPEED 3000               // (mm/min) X and Y axes gantryspeed
-#define SPINDLE_PAUSE_Z_GANTRYSPEED  600                // (mm/min) Z axis gantryspeed
+#define SPINDLE_PAUSE_X_POSITION     (X_MIN_POS + 10)  // (mm) Must be an integer
+#define SPINDLE_PAUSE_Y_POSITION     (Y_MIN_POS + 10)  // (mm) Must be an integer
+#define SPINDLE_PAUSE_Z_RAISE        40                // (mm)
+#define SPINDLE_PAUSE_XY_GANTRYSPEED 3000              // (mm/min) X and Y axes gantryspeed
+#define SPINDLE_PAUSE_Z_GANTRYSPEED  600               // (mm/min) Z axis gantryspeed
 
 // Send G29 for auto bed leveling
 // #define AUTO_BED_LEVELING
@@ -80,17 +82,17 @@
 #define LEVELING_POINT_3_Y            (Y_MAX_POS - 20)
 #define LEVELING_POINT_4_X            (X_MIN_POS + 20)
 #define LEVELING_POINT_4_Y            (Y_MAX_POS - 20)
-#define LEVELING_POINT_Z              0.2f    // Z-axis position when spindle stays for leveling
-#define LEVELING_POINT_MOVE_Z         10.0f   // Z-axis position when spindle move to next point
-#define LEVELING_POINT_XY_GANTRYSPEED 5000    // (mm/min) X and Y axes move gantryspeed
-#define LEVELING_POINT_Z_GANTRYSPEED  600     // (mm/min) Z axis move gantryspeed
+#define LEVELING_POINT_Z              0.2f   // Z-axis position when spindle stays for leveling
+#define LEVELING_POINT_MOVE_Z         10.0f  // Z-axis position when spindle move to next point
+#define LEVELING_POINT_XY_GANTRYSPEED 5000   // (mm/min) X and Y axes move gantryspeed
+#define LEVELING_POINT_Z_GANTRYSPEED  600    // (mm/min) Z axis move gantryspeed
 
 // Power Supply
-#define PS_ON_ACTIVE_HIGH true   // Set 'false' for ATX (1), 'true' for X-Box (2)
+#define PS_ON_ACTIVE_HIGH true  // Set 'false' for ATX (1), 'true' for X-Box (2)
 
 // Filament runout detection
-#define FIL_RUNOUT_INVERTING true   // Set to false to invert the logic of the sensor.
-#define FIL_NOISE_THRESHOLD  10     // 10*10 = 100ms,  Pause print when filament runout is detected for 100ms.
+#define FIL_RUNOUT_INVERTING true  // Set to false to invert the logic of the sensor.
+#define FIL_NOISE_THRESHOLD  10    // 10*10 = 100ms,  Pause print when filament runout is detected for 100ms.
 
 // Enable alternative Move Menu Buttons Layout matching the direction of actual printer axis.
 // update the icons from alternate icon folder
@@ -102,9 +104,9 @@
 // SD support
 #define ONBOARD_SD_SUPPORT
 #ifdef ONBOARD_SD_SUPPORT
-  #define M27_AUTOREPORT                  // Disable M27 polling if you enable AUTO_REPORT_SD_STATUS in Marlin
-  #define M27_REFRESH             3       // Time in sec for M27 command
-  #define M27_WATCH_OTHER_SOURCES false   // if true the polling on M27 report is always active. Case: SD print started not from TFT35
+  #define M27_AUTOREPORT                 // Disable M27 polling if you enable AUTO_REPORT_SD_STATUS in Marlin
+  #define M27_REFRESH             3      // Time in sec for M27 command
+  #define M27_WATCH_OTHER_SOURCES false  // if true the polling on M27 report is always active. Case: SD print started not from TFT35
 #endif
 
 /**
@@ -114,14 +116,14 @@
  */
 //#define HOME_BEFORE_PLR
 //#define BTT_MINI_UPS // Backup power / UPS to move the Z axis steppers on power loss
-#define POWER_LOSS_ZRAISE 10   // (mm) Z axis raise on resume (on power loss with UPS)
+#define POWER_LOSS_ZRAISE 10  // (mm) Z axis raise on resume (on power loss with UPS)
 
 /**
   * Maximum hotend temperature of automatic shut down after printing.
   * When enable automatic shutdown(Auto Power), when the hotend temperature is higher than this value
   * turn on the router to cool down, wait for the hotend temperature to be lower than this value, then turn off the power automatically
   */
-#define SHOW_ROUTER_PERCENTAGE   // enable to show router speed as a percentage instead of a value
+#define SHOW_ROUTER_PERCENTAGE  // enable to show router speed as a percentage instead of a value
 
 /*
   Rapid Serial Communication:More frequent Serial communicaiton while printing.
@@ -198,4 +200,4 @@ custom gcode below are compatible only if CUSTOM_GCODE_LIST_MODE is active
 // #define CANCEL_CNC_GCODE "M5\nM107\nG1 Z40\nG0 X0 Y0\n"
 #define CANCEL_CNC_GCODE ""
 
-#endif
+#endif  // _CONFIGURATION_H_

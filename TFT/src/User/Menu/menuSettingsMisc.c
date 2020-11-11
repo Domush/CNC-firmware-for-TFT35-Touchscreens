@@ -1,5 +1,23 @@
-// #include "MachineSettings.h"
+#include "menuSettingsMisc.h"
 #include "includes.h"
+
+// Multi-language support
+#include "Language/Language.h"
+
+// Chip specific includes
+#include "usart.h"
+
+// File handling
+#include "list_item.h"
+
+// Gcode processing
+#include "Gcode/gcodeSender.h"
+
+// Timing functions
+#include "System/boot.h"
+
+// Menus
+#include "includesMenus.h" // All menu headers
 
 #ifndef CUSTOM_GCODE_LIST_MODE
 MENUITEMS customItems = {
@@ -379,12 +397,12 @@ MENUITEMS machineSettingsItems = {
         {ICON_BACK, LABEL_BACK},
     }};
 
-void menuMachineSettings(void) {
+void menuSettingsMisc(void) {
   KEY_VALUES key_num = KEY_IDLE;
 
   menuDrawPage(&machineSettingsItems);
 
-  while (infoMenu.menu[infoMenu.active] == menuMachineSettings) {
+  while (infoMenu.menu[infoMenu.active] == menuSettingsMisc) {
     key_num = menuKeyGetValue();
     switch (key_num) {
       case KEY_ICON_0:
@@ -396,7 +414,7 @@ void menuMachineSettings(void) {
         break;
 
       case KEY_ICON_2:
-        infoMenu.menu[++infoMenu.active] = menuSendGcode;
+        infoMenu.menu[++infoMenu.active] = menuTerminal;
         break;
 
       case KEY_ICON_3:
@@ -405,7 +423,7 @@ void menuMachineSettings(void) {
         break;
 
       case KEY_ICON_4:
-        infoMenu.menu[++infoMenu.active] = parametersetting;
+        infoMenu.menu[++infoMenu.active] = menuSettingsTMC;
         break;
 
       case KEY_ICON_7:

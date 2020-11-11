@@ -1,12 +1,17 @@
-#include "System/flashStorage.h"
-#include "STM32_Flash.h"
+#include "Hal/stm32f10x/STM32_Flash.h"
+#include "flashStorage.h"
+// Gcode processing
+#include "Gcode/gcodeFileHandler.h"
+
+// Menus
+#include "Menu/menuSettingsHome.h"
 
 #define PARA_SIZE 256          //bytes
 #define TSC_SIGN  0x20190827   // DO NOT MODIFY
 #define PARA_SIGN 0x20200224   // If a new setting parameter is added, modify here and initialize the initial value in the "infoSettingsReset()" function
 
 extern u32 TSC_Para[7];         //
-extern SETTINGS infoSettings;   //
+//extern SETTINGS infoSettings;   //
 
 void wordToByte(u32 word, u8 *bytes)   //
 {

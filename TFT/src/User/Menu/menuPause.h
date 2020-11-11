@@ -1,7 +1,7 @@
-#ifndef _MORE_H_
-#define _MORE_H_
-#include "includes.h"
+#ifndef _MENUPAUSE_H_
+#define _MENUPAUSE_H_
 
+void menuIsPause(void);
 void menuMore(void);
 
 #endif

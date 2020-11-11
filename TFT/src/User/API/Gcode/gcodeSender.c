@@ -1,24 +1,48 @@
-// #include "interfaceCmd.h"
-// #include "Printing.h"
-// #include "Home.h"
+#include "gcodeSender.h"
 #include "includes.h"
 
-//1 title, ITEM_PER_PAGE items(icon+label)
-MENUITEMS M0PauseItems = {
-    //title
-    LABEL_M0_PAUSE,
-    //icon                        label
-    {
-        {ICON_PAUSE, LABEL_PAUSE},
-        {ICON_RESUME, LABEL_RESUME},
-        {ICON_BACK, LABEL_BACK},
-    }};
+// LCD init functions
+#include "GUI.h"
 
-const ITEM itemM0Pause[2] = {
-    // icon                       label
-    {ICON_PAUSE, LABEL_PAUSE},
-    {ICON_RESUME, LABEL_RESUME},
-};
+
+// Chip specific includes
+#include "Serial.h"
+#include "usart.h"
+
+
+// UI handling
+#include "touch_process.h"
+#include "ledcolor.h"
+#include "emulationToggle.h"
+
+// File handling
+#include "list_item.h"
+
+// Gcode processing
+#include "Gcode/gcodeResponseHandler.h"
+
+// Base API functions
+#include "API/coordinate.h"
+#include "API/gantry.h"
+#include "API/extendedFeatures.h"
+
+// Menus
+#include "includesMenus.h" // All menu headers
+
+// //1 title, ITEM_PER_PAGE items(icon+label)
+// MENUITEMS M0PauseItems = {
+//     //title
+//     LABEL_M0_PAUSE,
+//     //icon                        label
+//     {
+//         {ICON_PAUSE, LABEL_PAUSE},
+//         {ICON_RESUME, LABEL_RESUME},
+//         {ICON_BACK, LABEL_BACK}}};
+
+// const ITEM itemM0Pause[2] = {
+//     // icon                       label
+//     {ICON_PAUSE, LABEL_PAUSE},
+//     {ICON_RESUME, LABEL_RESUME}};
 
 // Current gcode line for processing
 static char gcodeLine[GCODE_MAX_CHARACTERS];
@@ -33,7 +57,7 @@ static bool gcodeContains(u8 *string, u8 beginAtChar) {
   match = strstr(&gcodeLine[beginAtChar], (char *)string);
   if (match) {
     gcodeLineIndex = strlen(gcodeLine) - strlen(match) + strlen((char *)string);
-    if (strchr(&gcodeLine[gcodeLineIndex], (int)" ")) {
+    if (gcodeLine[gcodeLineIndex] == ' ') {
       gcodeLineIndex++;
     }
     return true;
@@ -94,26 +118,26 @@ bool addGcodeCommand(bool skipIfQueueFull, const char *gcodeString, uint8_t port
 // If the gcodeOutgoing queue is full, display a "waiting" banner.
 bool queueCommand(bool skipIfQueueFull, char *gcodeString, ...) {
   // *Process formatted text (if applicable)
-  char *gcodeCommandSet;
-  gcodeCommandSet = 0;
+  char gcodeCommandSet[1024];
+  gcodeCommandSet[0] = 0;
   my_va_list ap;
   my_va_start(ap, gcodeString);
   my_vsprintf(gcodeCommandSet, gcodeString, ap);
   my_va_end(ap);
 
   //* If there are multiple commands, queue each command individually
-  char *gcodeCommand;
-  gcodeCommand  = "";
-  int lineIndex = 0;
+  char gcodeCommand[1024];
+  gcodeCommand[0] = 0;
+  int lineIndex   = 0;
   for (u8 setIndex = 0; gcodeCommandSet[setIndex] != 0; setIndex++) {
     gcodeCommand[lineIndex] = gcodeCommandSet[setIndex];
-    if (strchr(&gcodeCommand[lineIndex], (int)"\n") || gcodeCommandSet[setIndex + 1] == 0) {
-      if (strchr(&gcodeCommand[lineIndex], (int)"\n")) {
+    if (gcodeCommand[lineIndex] == '\n' || gcodeCommandSet[setIndex + 1] == 0) {
+      if (gcodeCommand[lineIndex] == '\n') {
         gcodeCommand[lineIndex] = 0;   // End character
       } else {
         gcodeCommand[lineIndex + 1] = 0;
       }
-      while (strchr(&gcodeCommand[strlen(gcodeCommand) - 1], (int)" ")) {
+      while (gcodeCommand[strlen(gcodeCommand) - 1] == ' ') {
         //* Remove trailing spaces
         gcodeCommand[strlen(gcodeCommand) - 1] = 0;   // Remove last character
       }
@@ -123,7 +147,7 @@ bool queueCommand(bool skipIfQueueFull, char *gcodeString, ...) {
         }
       }
       lineIndex = -1;   // Reset lineIndex for next command
-    } else if (lineIndex == 0 && strchr(&gcodeCommand[lineIndex], (int)" ")) {
+    } else if (lineIndex == 0 && gcodeCommand[lineIndex] == ' ') {
       //* Ignore leading spaces
       lineIndex = -1;   // Reset lineIndex to ignore leading space
     }
@@ -155,14 +179,14 @@ void clearGcodeQueue(void) {
 
 //* Parse and send gcode stored in gcodeOutgoing.
 void parseGcodeOutgoing(void) {
-  if (infoJobStatus.isM0Paused == true || infoHost.waiting == true || gcodeOutgoing.count == 0) {
+  if (infoHost.waitForResponse == true || gcodeOutgoing.count == 0) {
     return;
   }
   // *Wait for an 'ok' or error response before sending next command (only if connected)
-  infoHost.waiting    = infoHost.connected;
-  bool skipCommand    = false;
-  u16 cmd             = 0;
-  u8 activeQueueIndex = (gcodeOutgoing.queueIndex - (gcodeOutgoing.count)) % GCODE_QUEUE_SIZE;
+  infoHost.waitForResponse = infoHost.connected;
+  bool skipCommand         = false;
+  u16 cmd                  = 0;
+  u8 activeQueueIndex      = (gcodeOutgoing.queueIndex - (gcodeOutgoing.count)) % GCODE_QUEUE_SIZE;
   strcpy(gcodeLine, gcodeOutgoing.queue[activeQueueIndex].gcode);
   gcodeLineIndex = 0;
   switch (gcodeLine[0]) {
@@ -173,6 +197,7 @@ void parseGcodeOutgoing(void) {
         case 1:
           popup_message                    = &gcodeLine[3];
           infoMenu.menu[++infoMenu.active] = menuM0Pause;
+          infoJobStatus.isM0Paused         = true;
           setPrintPause(true);
           skipCommand = true;   //* Don't sent the command
           break;
@@ -238,7 +263,7 @@ void parseGcodeOutgoing(void) {
         case 500:   //M500 Save EEPROM
         case 501:   //M501 Load EEPROM
         case 502:   //M502 Load default (firmware) settings
-          infoHost.waiting = false;
+          infoHost.waitForResponse = false;
           break;
       }
       break;
@@ -315,11 +340,11 @@ void parseGcodeOutgoing(void) {
     showInTerminal(gcodeLine, TFT_SOURCE);   // Display sent gcode on the terminal screen
   }
   gcodeOutgoing.count--;
-  powerFailedEnable(true);
+  // powerFailedEnable(true);
 }
 
 void menuM0Pause(void) {
-  extern char *popup_message;
+  // extern char *popup_message;
   u16 key_num = IDLE_TOUCH;
   drawXYZ();
   infoJobStatus.isM0Paused = true;
@@ -418,4 +443,28 @@ void menuChangeBit(void) {
     }
     runUpdateLoop();
   }
+}
+
+void gcodeQueueStatus(void) {
+  if (!infoHost.connected || lastGcodeQueueValue == gcodeOutgoing.count) {
+    return;
+  }
+  if (gcodeOutgoing.count >= GCODE_QUEUE_SIZE) {
+    timedMessage(3, TIMED_CRITICAL, "gCode queue is full!");
+    queueTextColor = MAT_RED;
+  } else if (gcodeOutgoing.count > GCODE_QUEUE_SIZE * .9) {
+    timedMessage(2, TIMED_ERROR, "gCode queue almost full");
+    queueTextColor = COLOR_MAROON;
+  } else if (gcodeOutgoing.count > GCODE_QUEUE_SIZE * .7) {
+    queueTextColor = MAT_ORANGE;
+  } else if (gcodeOutgoing.count > GCODE_QUEUE_SIZE * .5) {
+    queueTextColor = MAT_YELLOW;
+  } else if (gcodeOutgoing.count > 1) {
+    queueTextColor = MAT_GREEN;
+  } else {
+    queueTextColor = MAT_DARKGRAY;
+  }
+  GUI_SetColor(queueTextColor);
+  GUI_FillCircle(BYTE_HEIGHT / 2, BYTE_HEIGHT / 2, BYTE_HEIGHT / 3);
+  GUI_RestoreColorDefault();
 }

@@ -1,6 +1,8 @@
 #ifndef _DELAY_H_
 #define _DELAY_H_
-#include "stdint.h"
+// C helper classes
+#include <stdint.h>
+
 
 void Delay_init(uint8_t clk);   //initialization
 void Delay_ms(uint16_t ms);     //Delay millisecond

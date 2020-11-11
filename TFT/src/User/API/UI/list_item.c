@@ -1,115 +1,123 @@
-// *List View Mode ** Author: Gurmeet Athwal https://github.com/guruathwal **
-
-// #include "list_item.h"
+#include "list_item.h"
 #include "includes.h"
-// #include "menu.h"
-// #include "GUI.h"
+
+// LCD init functions
+#include "lcd.h"
+
+// Multi-language support
+#include "Language/Language.h"
+
+// Chip specific includes
+#include "Serial.h"
+
+// UI handling
+#include "ST7920_Simulator.h"
 
 char *dynamic_label[LISTITEM_PER_PAGE];
 
 const uint16_t ICON_COLOR[ICONCHAR_NUM] = {
-    BLACK,          //ICONCHAR_BLANK = 0
-    WHITE,          //ICONCHAR_SPINDLE
-    WHITE,          //ICONCHAR_ROUTER
-    MAT_YELLOW,     //ICONCHAR_FOLDER
-    MAT_BLUE,       //ICONCHAR_FILE
-    WHITE,          //ICONCHAR_PAGEUP
-    WHITE,          //ICONCHAR_PAGEDOWN
-    WHITE,          //ICONCHAR_BACK
-    WHITE,          //ICONCHAR_LEFT
-    WHITE,          //ICONCHAR_LEFT_TOP
-    WHITE,          //ICONCHAR_LEFT_BOTTOM
-    WHITE,          //ICONCHAR_RIGHT
-    WHITE,          //ICONCHAR_RIGHT_TOP
-    WHITE,          //ICONCHAR_RIGHT_BOTTOM
-    MAT_YELLOW,     //ICONCHAR_ALERT
-    MAT_RED,        //ICONCHAR_WARNING
-    MAT_RED,        //ICONCHAR_ERROR
-    MAT_YELLOW,     //ICONCHAR_CAUTION
-    MAT_BLUE,       //ICONCHAR_INFO
-    MAT_YELLOW,     //ICONCHAR_HAND
-    MAT_YELLOW,     //ICONCHAR_WAIT
-    MAT_BLUE,       //ICONCHAR_QUESTION
-    WHITE,          //ICONCHAR_PLAY
-    WHITE,          //ICONCHAR_PAUSE
-    WHITE,          //ICONCHAR_STOP
-    WHITE,          //ICONCHAR_EJECT
-    WHITE,          //ICONCHAR_PLAY_ROUND
-    WHITE,          //ICONCHAR_PAUSE_ROUND
-    WHITE,          //ICONCHAR_OK_ROUND
-    WHITE,          //ICONCHAR_CANCEL_ROUND
-    WHITE,          //ICONCHAR_MINUS_ROUND
-    WHITE,          //ICONCHAR_PLUS_ROUND
-    WHITE,          //ICONCHAR_MINUS
-    WHITE,          //ICONCHAR_PLUS
-    WHITE,          //ICONCHAR_OK
-    WHITE,          //ICONCHAR_CANCEL
-    MAT_RED,        //ICONCHAR_HALT
-    WHITE,          //ICONCHAR_UP_DOWN
-    WHITE,          //ICONCHAR_LEFT_RIGHT
-    WHITE,          //ICONCHAR_POINT_LEFT
-    WHITE,          //ICONCHAR_POINT_RIGHT
-    WHITE,          //ICONCHAR_RETURN
-    WHITE,          //ICONCHAR_REDO
-    WHITE,          //ICONCHAR_UNDO
-    WHITE,          //ICONCHAR_DOWNLOAD
-    WHITE,          //ICONCHAR_UPLOAD
-    WHITE,          //ICONCHAR_BULLET
-    WHITE,          //ICONCHAR_BACK_SMALL
-    WHITE,          //ICONCHAR_EXPAND
-    WHITE,          //ICONCHAR_MOVE
-    WHITE,          //ICONCHAR_ROTATE
-    WHITE,          //ICONCHAR_RESET
-    WHITE,          //ICONCHAR_EDIT
-    WHITE,          //ICONCHAR_SAVE
-    MAT_ORANGE,     //ICONCHAR_DELETE
-    MAT_LOWWHITE,   //ICONCHAR_RADIO_CHECKED
-    MAT_LOWWHITE,   //ICONCHAR_RADIO_UNCHECKED
-    MAT_LOWWHITE,   //ICONCHAR_CHECKED
-    MAT_LOWWHITE,   //ICONCHAR_UNCHECKED
-    MAT_RED,        //ICONCHAR_SOUND_OFF
-    MAT_GREEN,      //ICONCHAR_SOUND_ON
-    MAT_RED,        //ICONCHAR_ALERT_OFF
-    MAT_GREEN,      //ICONCHAR_ALERT_ON
-    MAT_RED,        //ICONCHAR_POWER_OFF
-    MAT_GREEN,      //ICONCHAR_POWER_ON
-    MAT_RED,        //ICONCHAR_WIFI_OFF
-    MAT_GREEN,      //ICONCHAR_WIFI_ON
-    WHITE,          //ICONCHAR_KEYBOARD
-    MAT_RED,        //ICONCHAR_SD_ERROR
-    MAT_GREEN,      //ICONCHAR_SD_OK
-    MAT_BLUE,       //ICONCHAR_SD_REFRESH
-    MAT_RED,        //ICONCHAR_USB_ERROR
-    MAT_GREEN,      //ICONCHAR_USB_OK
-    MAT_RED,        //ICONCHAR_CNC_ERROR
-    MAT_GREEN,      //ICONCHAR_CNC_OK
-    WHITE,          //ICONCHAR_BOARD
-    WHITE,          //ICONCHAR_EEPROM
-    WHITE,          //ICONCHAR_CNC
-    WHITE,          //ICONCHAR_SETTING1
-    WHITE,          //ICONCHAR_PLUGIN
-    WHITE,          //ICONCHAR_FEATURE
-    WHITE,          //ICONCHAR_SETTING2
-    WHITE,          //ICONCHAR_DETAIL
-    WHITE,          //ICONCHAR_DETAIL2
-    WHITE,          //ICONCHAR_ADJUST
-    WHITE,          //ICONCHAR_MENU
-    WHITE,          //ICONCHAR_POWER
-    WHITE,          //ICONCHAR_TOUCH
-    WHITE,          //ICONCHAR_LANGUAGE
-    WHITE,          //ICONCHAR_CODE
-    WHITE,          //ICONCHAR_POWER_PLUG
-    WHITE,          //ICONCHAR_ROTATE_DEVICE
-    WHITE,          //ICONCHAR_WINDOW
-    WHITE,          //ICONCHAR_BACKGROUND_COLOR
-    WHITE,          //ICONCHAR_FONT_COLOR
-    WHITE,          //ICONCHAR_PAINT
-    MAT_GREEN,      //ICONCHAR_TOGGLE_SMALL_ON
-    MAT_RED,        //ICONCHAR_TOGGLE_SMALL_OFF
-    MAT_GREEN,      //ICONCHAR_TOGGLE_ON
-    MAT_RED,        //ICONCHAR_TOGGLE_OFF
-    MAT_DARKGRAY,   //ICONCHAR_TOGGLE_BODY
-    WHITE,          //ICONCHAR_TOGGLE_SWITCH
+    BLACK,         //ICONCHAR_BLANK = 0
+    WHITE,         //ICONCHAR_SPINDLE
+    WHITE,         //ICONCHAR_ROUTER
+    MAT_YELLOW,    //ICONCHAR_FOLDER
+    MAT_BLUE,      //ICONCHAR_FILE
+    WHITE,         //ICONCHAR_PAGEUP
+    WHITE,         //ICONCHAR_PAGEDOWN
+    WHITE,         //ICONCHAR_BACK
+    WHITE,         //ICONCHAR_LEFT
+    WHITE,         //ICONCHAR_LEFT_TOP
+    WHITE,         //ICONCHAR_LEFT_BOTTOM
+    WHITE,         //ICONCHAR_RIGHT
+    WHITE,         //ICONCHAR_RIGHT_TOP
+    WHITE,         //ICONCHAR_RIGHT_BOTTOM
+    MAT_YELLOW,    //ICONCHAR_ALERT
+    MAT_RED,       //ICONCHAR_WARNING
+    MAT_RED,       //ICONCHAR_ERROR
+    MAT_YELLOW,    //ICONCHAR_CAUTION
+    MAT_BLUE,      //ICONCHAR_INFO
+    MAT_YELLOW,    //ICONCHAR_HAND
+    MAT_YELLOW,    //ICONCHAR_WAIT
+    MAT_BLUE,      //ICONCHAR_QUESTION
+    WHITE,         //ICONCHAR_PLAY
+    WHITE,         //ICONCHAR_PAUSE
+    WHITE,         //ICONCHAR_STOP
+    WHITE,         //ICONCHAR_EJECT
+    WHITE,         //ICONCHAR_PLAY_ROUND
+    WHITE,         //ICONCHAR_PAUSE_ROUND
+    WHITE,         //ICONCHAR_OK_ROUND
+    WHITE,         //ICONCHAR_CANCEL_ROUND
+    WHITE,         //ICONCHAR_MINUS_ROUND
+    WHITE,         //ICONCHAR_PLUS_ROUND
+    WHITE,         //ICONCHAR_MINUS
+    WHITE,         //ICONCHAR_PLUS
+    WHITE,         //ICONCHAR_OK
+    WHITE,         //ICONCHAR_CANCEL
+    MAT_RED,       //ICONCHAR_HALT
+    WHITE,         //ICONCHAR_UP_DOWN
+    WHITE,         //ICONCHAR_LEFT_RIGHT
+    WHITE,         //ICONCHAR_POINT_LEFT
+    WHITE,         //ICONCHAR_POINT_RIGHT
+    WHITE,         //ICONCHAR_RETURN
+    WHITE,         //ICONCHAR_REDO
+    WHITE,         //ICONCHAR_UNDO
+    WHITE,         //ICONCHAR_DOWNLOAD
+    WHITE,         //ICONCHAR_UPLOAD
+    WHITE,         //ICONCHAR_BULLET
+    WHITE,         //ICONCHAR_BACK_SMALL
+    WHITE,         //ICONCHAR_EXPAND
+    WHITE,         //ICONCHAR_MOVE
+    WHITE,         //ICONCHAR_ROTATE
+    WHITE,         //ICONCHAR_RESET
+    WHITE,         //ICONCHAR_EDIT
+    WHITE,         //ICONCHAR_SAVE
+    MAT_ORANGE,    //ICONCHAR_DELETE
+    MAT_LOWWHITE,  //ICONCHAR_RADIO_CHECKED
+    MAT_LOWWHITE,  //ICONCHAR_RADIO_UNCHECKED
+    MAT_LOWWHITE,  //ICONCHAR_CHECKED
+    MAT_LOWWHITE,  //ICONCHAR_UNCHECKED
+    MAT_RED,       //ICONCHAR_SOUND_OFF
+    MAT_GREEN,     //ICONCHAR_SOUND_ON
+    MAT_RED,       //ICONCHAR_ALERT_OFF
+    MAT_GREEN,     //ICONCHAR_ALERT_ON
+    MAT_RED,       //ICONCHAR_POWER_OFF
+    MAT_GREEN,     //ICONCHAR_POWER_ON
+    MAT_RED,       //ICONCHAR_WIFI_OFF
+    MAT_GREEN,     //ICONCHAR_WIFI_ON
+    WHITE,         //ICONCHAR_KEYBOARD
+    MAT_RED,       //ICONCHAR_SD_ERROR
+    MAT_GREEN,     //ICONCHAR_SD_OK
+    MAT_BLUE,      //ICONCHAR_SD_REFRESH
+    MAT_RED,       //ICONCHAR_USB_ERROR
+    MAT_GREEN,     //ICONCHAR_USB_OK
+    MAT_RED,       //ICONCHAR_CNC_ERROR
+    MAT_GREEN,     //ICONCHAR_CNC_OK
+    WHITE,         //ICONCHAR_BOARD
+    WHITE,         //ICONCHAR_EEPROM
+    WHITE,         //ICONCHAR_CNC
+    WHITE,         //ICONCHAR_SETTING1
+    WHITE,         //ICONCHAR_PLUGIN
+    WHITE,         //ICONCHAR_FEATURE
+    WHITE,         //ICONCHAR_SETTING2
+    WHITE,         //ICONCHAR_DETAIL
+    WHITE,         //ICONCHAR_DETAIL2
+    WHITE,         //ICONCHAR_ADJUST
+    WHITE,         //ICONCHAR_MENU
+    WHITE,         //ICONCHAR_POWER
+    WHITE,         //ICONCHAR_TOUCH
+    WHITE,         //ICONCHAR_LANGUAGE
+    WHITE,         //ICONCHAR_CODE
+    WHITE,         //ICONCHAR_POWER_PLUG
+    WHITE,         //ICONCHAR_ROTATE_DEVICE
+    WHITE,         //ICONCHAR_WINDOW
+    WHITE,         //ICONCHAR_BACKGROUND_COLOR
+    WHITE,         //ICONCHAR_FONT_COLOR
+    WHITE,         //ICONCHAR_PAINT
+    MAT_GREEN,     //ICONCHAR_TOGGLE_SMALL_ON
+    MAT_RED,       //ICONCHAR_TOGGLE_SMALL_OFF
+    MAT_GREEN,     //ICONCHAR_TOGGLE_ON
+    MAT_RED,       //ICONCHAR_TOGGLE_OFF
+    MAT_DARKGRAY,  //ICONCHAR_TOGGLE_BODY
+    WHITE,         //ICONCHAR_TOGGLE_SWITCH
 };
 
 #define CHAR_BLANK   ""
@@ -439,6 +447,7 @@ void ListItem_Display(const GUI_RECT *rect, uint8_t positon, const LISTITEM *cur
   } else if (curitem->icon != ICONCHAR_BACKGROUND) {
     GUI_POINT pos = getTextStartPoint(rect->x0, rect->y0, rect->x1, rect->y1, LEFT_CENTER, GET_ICONCHAR[curitem->icon]);
     int textarea_width;
+    u16 wy;
     switch (curitem->itemType) {
       case LIST_LABEL:
 
@@ -448,7 +457,7 @@ void ListItem_Display(const GUI_RECT *rect, uint8_t positon, const LISTITEM *cur
         }
 
         if (curitem->titlelabel.index != LABEL_BACKGROUND) {
-          textarea_width = LISTITEM_WIDTH - (pos.x + 1);   //width after removing the width for icon
+          textarea_width = LISTITEM_WIDTH - (pos.x + 1);  //width after removing the width for icon
 
           if (curitem->titlelabel.index == LABEL_DYNAMIC) {
             GUI_DispLenString(pos.x, pos.y, (u8 *)getDynamicLabel(positon), textarea_width);
@@ -459,10 +468,10 @@ void ListItem_Display(const GUI_RECT *rect, uint8_t positon, const LISTITEM *cur
         DrawListItemPress(rect, pressed);
         break;
 
-      case LIST_TOGGLE:;
-        int16_t wy = (1 + GUI_StrPixelWidth(IconCharSelect(ICONCHAR_TOGGLE_BODY)) + 1);   //right edge of text area
-        GUI_ClearRect(rect->x0, rect->y0, rect->x1 - wy, rect->y1);                       // clear only text area
-        textarea_width = LISTITEM_WIDTH - (pos.x + wy);                                   //width after removing the width for icon
+      case LIST_TOGGLE:
+        wy = (1 + GUI_StrPixelWidth(IconCharSelect(ICONCHAR_TOGGLE_BODY)) + 1);  //right edge of text area
+        GUI_ClearRect(rect->x0, rect->y0, rect->x1 - wy, rect->y1);              // clear only text area
+        textarea_width = LISTITEM_WIDTH - (pos.x + wy);                          //width after removing the width for icon
 
         GUI_DispLenString(pos.x, pos.y, textSelect(curitem->titlelabel.index), textarea_width);
         pos = getTextStartPoint(rect->x0, rect->y0, rect->x1, rect->y1, RIGHT_CENTER, GET_ICONCHAR[ICONCHAR_TOGGLE_BODY]);
@@ -472,14 +481,13 @@ void ListItem_Display(const GUI_RECT *rect, uint8_t positon, const LISTITEM *cur
         break;
 
       case LIST_MOREBUTTON:
-
         GUI_ClearPrect(rect);
 
         if (curitem->icon != ICONCHAR_BLANK) {
           ListDrawIcon(rect, LEFT_CENTER, curitem->icon, BLACK);
           pos.x += (BYTE_HEIGHT + 1);
         }
-        textarea_width = LISTITEM_WIDTH - (pos.x + BYTE_HEIGHT + 2);   //width after removing the width for icon
+        textarea_width = LISTITEM_WIDTH - (pos.x + BYTE_HEIGHT + 2);  //width after removing the width for icon
 
         GUI_DispLenString(pos.x, pos.y, textSelect(curitem->titlelabel.index), textarea_width);
 
@@ -495,7 +503,7 @@ void ListItem_Display(const GUI_RECT *rect, uint8_t positon, const LISTITEM *cur
           ListDrawIcon(rect, LEFT_CENTER, curitem->icon, BLACK);
           pos.x += (BYTE_HEIGHT + 3);
         }
-        GUI_ClearRect(pos.x, rect->y0, rect->x1 - BYTE_WIDTH * 8 - 1, rect->y1);   // clear only text area
+        GUI_ClearRect(pos.x, rect->y0, rect->x1 - BYTE_WIDTH * 8 - 1, rect->y1);  // clear only text area
         GUI_DispString(pos.x, pos.y, textSelect(curitem->titlelabel.index));
 
         ListItem_DisplayCustomValue(rect, textSelect(curitem->valueLabel.index));

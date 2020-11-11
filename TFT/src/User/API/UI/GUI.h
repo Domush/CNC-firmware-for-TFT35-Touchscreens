@@ -1,9 +1,10 @@
-#ifndef _GUI_H_
-#define _GUI_H_
-#include "includes.h"
+#ifndef _UI_GUI_H_
+#define _UI_GUI_H_
+// Multi-language support
+#include "Language/utf8_decode.h"
 
-// #include "stdint.h"
-// #include "utf8_decode.h"
+// Chip specific includes
+#include "usart.h"
 
 enum {
   LEFT = 0,
@@ -21,13 +22,11 @@ typedef enum {
   GUI_NUMMODE_ZERO,
 } GUI_NUM_MODE;
 
-typedef struct
-{
+typedef struct GUI_POINT {
   int16_t x, y;
 } GUI_POINT;
 
-typedef struct
-{
+typedef struct GUI_RECT {
   int16_t x0, y0, x1, y1;
 } GUI_RECT;
 
@@ -62,7 +61,8 @@ void GUI_FillCircle(uint16_t x0, uint16_t y0, uint16_t r);
 void GUI_SetRange(int16_t x0, int16_t y0, int16_t x1, int16_t y1);
 void GUI_CancelRange(void);
 void GUI_DrawPixel(int16_t x, int16_t y, uint16_t color);
-CHAR_INFO GUI_DispOne(int16_t sx, int16_t sy, const uint8_t *string);
+
+CHAR_ATTR GUI_DispOne(int16_t sx, int16_t sy, const uint8_t *string);
 void GUI_DispString(int16_t x, int16_t y, const uint8_t *string);
 const uint8_t *GUI_DispLenString(int16_t x, int16_t y, const uint8_t *string, uint16_t pixelWidth);
 void GUI_DispStringRight(int16_t x, int16_t y, const uint8_t *string);
@@ -112,10 +112,10 @@ typedef struct
   const uint8_t *context;
   const uint16_t radius;
   const uint16_t lineWidth;
-  const uint16_t lineColor;   //����״̬�µ���ɫ
+  const uint16_t lineColor;  //����״̬�µ���ɫ
   const uint16_t fontColor;
   const uint16_t backColor;
-  const uint16_t pLineColor;   //��ѹ״̬�µ���ɫ
+  const uint16_t pLineColor;  //��ѹ״̬�µ���ɫ
   const uint16_t pFontColor;
   const uint16_t pBackColor;
 } BUTTON;
@@ -142,4 +142,4 @@ typedef struct
 
 void GUI_DrawWindow(const WINDOW *window, const uint8_t *title, const uint8_t *content);
 
-#endif
+#endif  // _GUI_H_

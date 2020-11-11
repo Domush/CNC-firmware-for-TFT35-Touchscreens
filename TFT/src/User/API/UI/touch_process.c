@@ -1,6 +1,29 @@
-// #include "touch_process.h"
-#include "GPIO_Init.h"
+#include "touch_process.h"
 #include "includes.h"
+
+// LCD init functions
+#include "lcd.h"
+
+// Multi-language support
+#include "Language/Language.h"
+
+// Chip specific includes
+#include "Serial.h"
+#include "usart.h"
+#include "GPIO_Init.h"
+#include "spi.h"
+
+// SD card support
+#include "Hal/xpt2046.h"
+
+// File handling
+#include "list_item.h"
+
+// Timing functions
+#include "System/os_timer.h"
+
+// Menus
+#include "Menu/menuSettingsHome.h"
 
 #define XL1 LCD_X[0]
 #define XL2 LCD_X[1]

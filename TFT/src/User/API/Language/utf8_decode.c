@@ -1,5 +1,11 @@
-// #include "utf8_decode.h"
-#include "includes.h"
+#include "utf8_decode.h"
+
+// Timing functions
+#include "System/os_timer.h"
+#include "System/boot.h"
+
+// Chip specific includes
+#include "usart.h"
 
 static FONT_BITMAP font[] = {
     {
@@ -68,7 +74,7 @@ static FONT_BITMAP font[] = {
 };
 
 // decode character encode info (UTF8)
-static void getUTF8EncodeInfo(const uint8_t *ch, CHAR_INFO *pInfo) {
+static void getUTF8EncodeInfo(const uint8_t *ch, CHAR_ATTR *pInfo) {
   uint8_t i;
   uint8_t bytes  = 0;
   uint8_t utfFlg = 0x80;
@@ -86,7 +92,7 @@ static void getUTF8EncodeInfo(const uint8_t *ch, CHAR_INFO *pInfo) {
 }
 
 // get character font bitmap info
-static void getBitMapFontInfo(CHAR_INFO *pInfo) {
+static void getBitMapFontInfo(CHAR_ATTR *pInfo) {
   uint8_t i;
   for (i = 0; i < COUNT(font); i++) {
     if (pInfo->codePoint >= font[i].startCodePoint && pInfo->codePoint <= font[i].endCodePoint) {
@@ -99,7 +105,7 @@ static void getBitMapFontInfo(CHAR_INFO *pInfo) {
 }
 
 //
-void getCharacterInfo(const uint8_t *ch, CHAR_INFO *pInfo) {
+void getCharacterInfo(const uint8_t *ch, CHAR_ATTR *pInfo) {
   pInfo->bytes = 0;
 
   if (ch == NULL || *ch == 0) return;
@@ -112,7 +118,7 @@ void getCharacterInfo(const uint8_t *ch, CHAR_INFO *pInfo) {
 // decode UTF-8 char display bit width
 uint16_t GUI_StrPixelWidth(const uint8_t *const str) {
   uint16_t i = 0, len = 0;
-  CHAR_INFO info;
+  CHAR_ATTR info;
 
   if (str == NULL) return 0;
   while (str[i]) {

@@ -1,10 +1,5 @@
-#ifndef _HOME_H_
-#define _HOME_H_
-#include "includes.h"
-
-// #include "ff.h"
-// #include "stdbool.h"
-// #include "System/variants.h"
+#ifndef _MENUHOMING_H_
+#define _MENUHOMING_H_
 
 void menuHome(void);
 

@@ -1,6 +1,41 @@
-// #include "Printing.h"
-// #include "Router.h"
+#include "menuJobStatus.h"
 #include "includes.h"
+
+// LCD init functions
+#include "lcd.h"
+#include "GUI.h"
+
+// Multi-language support
+#include "Language/Language.h"
+
+// Chip specific includes
+#include "Serial.h"
+#include "usart.h"
+
+// USB drive support (select TFT models)
+#include "usbh_usr.h"
+
+// UI handling
+#include "ui_draw.h"
+#include "touch_process.h"
+
+// File handling
+#include "Vfs/vfs.h"
+#include "list_item.h"
+
+// Gcode processing
+#include "Gcode/gcodeSender.h"
+#include "Gcode/gcodeRequests.h"
+
+// Base API functions
+#include "API/coordinate.h"
+
+// Timing functions
+#include "System/os_timer.h"
+#include "System/boot.h"
+
+// Menus
+#include "includesMenus.h" // All menu headers
 
 //1title, ITEM_PER_PAGE item(icon + label)
 MENUITEMS printingItems = {
@@ -189,12 +224,12 @@ void menuBeforePrinting(void) {
       break;
   }
   infoJobStatus.inProgress       = true;
-  infoMenu.menu[infoMenu.active] = menuPrinting;
+  infoMenu.menu[infoMenu.active] = menuJobStatus;
   printingItems.title.address    = getGcodePathFilename(infoFile.title);
 }
 
 void resumeToPause(bool pauseCalled) {
-  if (infoMenu.menu[infoMenu.active] != menuPrinting) return;
+  if (infoMenu.menu[infoMenu.active] != menuJobStatus) return;
   printingItems.items[KEY_ICON_0] = itemIsPause[pauseCalled];
   menuDrawItem(&itemIsPause[pauseCalled], 0);
 }
@@ -448,7 +483,7 @@ void fetchPreviewIcon(bool showPreviewBMP) {
   // model preview -- end
 }
 
-void menuPrinting(void) {
+void menuJobStatus(void) {
   KEY_VALUES key_num = KEY_IDLE;
   u32 time           = 0;
 
@@ -461,7 +496,7 @@ void menuPrinting(void) {
   printingDrawPage();
   // printingItems.items[key_pause] = itemIsPause[infoJobStatus.isPaused];
 
-  while (infoMenu.menu[infoMenu.active] == menuPrinting) {
+  while (infoMenu.menu[infoMenu.active] == menuJobStatus) {
     //    Scroll_DispString(&titleScroll, LEFT); //Scroll display file name will take too many CPU cycles
 
     if (infoJobStatus.size != 0) {

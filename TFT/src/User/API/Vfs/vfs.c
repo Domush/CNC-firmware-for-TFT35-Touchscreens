@@ -1,6 +1,25 @@
 #include "vfs.h"
 #include "includes.h"
 
+// Multi-language support
+#include "Language/Language.h"
+
+// Chip specific includes
+#include "Serial.h"
+
+// USB drive support (select TFT models)
+#include "usbh_usr.h"
+
+// SD card support
+#include "Hal/sd.h"
+
+// UI handling
+#include "ST7920_Simulator.h"
+
+// File handling
+#include "Fatfs/myfatfs.h"
+#include "list_item.h"
+
 MYFILE infoFile = {"?:", {0}, {0}, 0, 0, 0, TFT_SD, {0}};
 
 bool mountFS(void) {

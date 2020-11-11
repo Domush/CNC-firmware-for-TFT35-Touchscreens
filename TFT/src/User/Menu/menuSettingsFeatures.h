@@ -1,7 +1,7 @@
-#ifndef _FEATURE_SETTINGS_H_
-#define _FEATURE_SETTINGS_H_
-#include "includes.h"
+#ifndef _MENUSETTINGSFEATURES_H_
+#define _MENUSETTINGSFEATURES_H_
 
-void menuFeatureSettings(void);
+
+void menuSettingsFeatures(void);
 
 #endif

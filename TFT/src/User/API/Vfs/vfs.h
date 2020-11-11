@@ -1,12 +1,11 @@
 #ifndef _VFS_H_
 #define _VFS_H_
+#include "includes.h"
+#include "Fatfs/ff.h"
 
-#include "ff.h"
-#include "stdbool.h"
-#include "stdint.h"
 
-#define FOLDER_NUM 255
-#define FILE_NUM 255
+#define FOLDER_NUM   255
+#define FILE_NUM     255
 #define MAX_PATH_LEN 1024
 
 typedef enum {
@@ -15,8 +14,7 @@ typedef enum {
   BOARD_SD
 } FS_SOURCE;
 
-typedef struct
-{
+typedef struct MYFILE {
   TCHAR title[MAX_PATH_LEN];   // max path depth
   TCHAR *folder[FOLDER_NUM];   // folder name buffer
   TCHAR *file[FILE_NUM];       // file name buffer

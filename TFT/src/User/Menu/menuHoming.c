@@ -1,5 +1,20 @@
-// #include "Home.h"
+#include "menuHoming.h"
 #include "includes.h"
+
+// Multi-language support
+#include "Language/Language.h"
+
+// File handling
+#include "list_item.h"
+
+// Gcode processing
+#include "Gcode/gcodeSender.h"
+
+// Timing functions
+#include "System/boot.h"
+
+// Menus
+#include "includesMenus.h" // All menu headers
 
 const MENUITEMS homeItems = {
     //   title

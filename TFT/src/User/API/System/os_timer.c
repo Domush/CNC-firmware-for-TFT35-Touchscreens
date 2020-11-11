@@ -1,5 +1,13 @@
 #include "os_timer.h"
-#include "includes.h"
+// Chip specific includes
+#include "Serial.h"
+#include "spi.h"
+
+// UI handling
+#include "touch_process.h"
+
+// Menus
+#include "Menu/menuJobStatus.h"
 
 u32 os_counter = 0;
 

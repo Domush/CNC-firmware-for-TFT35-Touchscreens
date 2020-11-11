@@ -1,5 +1,21 @@
-// #include "GUI.h"
+#include "GUI.h"
 #include "includes.h"
+
+// LCD init functions
+#include "lcd.h"
+#include "Hal/LCD_Init.h"
+
+// Chip specific includes
+#include "Serial.h"
+
+// SD card support
+#include "Hal/w25qxx.h"
+
+// UI handling
+#include "ST7920_Simulator.h"
+
+// Timing functions
+#include "System/os_timer.h"
 
 uint16_t foreGroundColor  = WHITE;
 uint16_t backGroundColor  = BLACK;
@@ -194,7 +210,7 @@ void GUI_DrawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
   }
 }
 
-#include "math.h"
+#include <math.h>
 void GUI_DrawAngleLine(uint16_t x, uint16_t y, uint16_t radius, int16_t angle) {
   uint16_t ex, ey;
   float a = angle * 3.1415926f / 180;
@@ -441,9 +457,8 @@ void GUI_FillCircle(uint16_t x0, uint16_t y0, uint16_t radius) {
   }
 }
 
-//
-CHAR_INFO GUI_DispOne(int16_t sx, int16_t sy, const uint8_t *string) {
-  CHAR_INFO info = {.bytes = 0};
+CHAR_ATTR GUI_DispOne(int16_t sx, int16_t sy, const uint8_t *string) {
+  CHAR_ATTR info = {.bytes = 0};
 
   if (string == NULL || *string == 0) return info;
 
@@ -478,7 +493,7 @@ CHAR_INFO GUI_DispOne(int16_t sx, int16_t sy, const uint8_t *string) {
 }
 
 void GUI_DispString(int16_t x, int16_t y, const uint8_t *string) {
-  CHAR_INFO info;
+  CHAR_ATTR info;
   if (string == NULL) return;
 
   while (*string) {
@@ -489,7 +504,7 @@ void GUI_DispString(int16_t x, int16_t y, const uint8_t *string) {
 }
 
 const uint8_t *GUI_DispLenString(int16_t x, int16_t y, const uint8_t *string, uint16_t pixelWidth) {
-  CHAR_INFO info;
+  CHAR_ATTR info;
   uint16_t curPixelWidth = 0;
   if (string == NULL) return NULL;
 
@@ -536,7 +551,7 @@ void GUI_DispStringInPrect(const GUI_RECT *dimensions, const uint8_t *string) {
 
 void GUI_DispStringInRectEOL(int16_t sx, int16_t sy, int16_t ex, int16_t ey, const uint8_t *string) {
   if (string == NULL || *string == 0) return;
-  CHAR_INFO info;
+  CHAR_ATTR info;
   int16_t x = sx;
   while (*string) {
     getCharacterInfo(string, &info);
@@ -696,7 +711,7 @@ void Scroll_CreatePara(SCROLL *scrollInfo, uint8_t *pstr, const GUI_RECT *dimens
 
 void Scroll_DispString(SCROLL *scrollInfo, uint8_t align) {
   uint16_t i = 0;
-  CHAR_INFO info;
+  CHAR_ATTR info;
 
   if (scrollInfo->text == NULL) return;
   if (scrollInfo->totalPixelWidth > scrollInfo->maxPixelWidth) {

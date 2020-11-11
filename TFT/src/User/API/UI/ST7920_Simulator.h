@@ -1,9 +1,7 @@
 #ifndef _ST7920_SIMULATOR_H_
 #define _ST7920_SIMULATOR_H_
-#include "includes.h"
+#include <stdint.h>
 
-// #include "stdint.h"
-// #include "../../Configuration.h"
 
 // User-defined colors for 12864 mode from Configuration.h
 #ifndef ST7920_BKCOLOR

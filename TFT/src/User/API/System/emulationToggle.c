@@ -1,7 +1,23 @@
-#include "includes.h"
-#include "xpt2046.h"
-#include "GPIO_Init.h"
-#include "System/emulationToggle.h"
+#include "emulationToggle.h"
+// LCD init functions
+#include "lcd.h"
+#include "lcd_dma.h"
+#include "GUI.h"
+
+// Chip specific includes
+#include "Serial.h"
+#include "usart.h"
+
+// SD card support
+#include "Hal/xpt2046.h"
+
+// UI handling
+#include "ui_draw.h"
+#include "touch_process.h"
+
+// Timing functions
+#include "System/os_timer.h"
+#include "System/boot.h"
 
 const GUI_RECT rect_of_mode[SELECTMODE] = {
     //2 select icon
@@ -18,7 +34,6 @@ void show_selectICON(void) {
   for (u8 i = 0; i < SELECTMODE; i++) {
     lcd_frame_display(rect_of_mode[i].x0, rect_of_mode[i].y0 - BYTE_HEIGHT, selecticonw, selecticonw, ICON_ADDR(select_mode[i]));
   }
-  return;
 }
 
 bool LCD_ReadPen(uint8_t intervals) {

@@ -20,8 +20,7 @@
  * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
  *
  ******************************************************************************/
-
-#include <stdint.h>
+#include "includes.h"
 
 /* define compiler specific symbols */
 #if defined ( __CC_ARM   )

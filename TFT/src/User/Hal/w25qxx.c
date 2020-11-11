@@ -1,5 +1,10 @@
 #include "w25qxx.h"
-#include "System/variants.h"
+#include "includes.h"
+
+// Chip specific includes
+#include "Serial.h"
+#include "usart.h"
+#include "spi.h"
 
 /*************************** W25Qxx SPI ģʽ�ײ���ֲ�Ľӿ� ***************************/
 //#define W25Qxx_SPI     _SPI3

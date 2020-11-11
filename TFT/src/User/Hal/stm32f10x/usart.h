@@ -1,7 +1,6 @@
 #ifndef _USART_H_
 #define _USART_H_
-
-#include "stm32f10x_conf.h"
+#include <stdint.h>
 
 #define _USART1 0
 #define _USART2 1

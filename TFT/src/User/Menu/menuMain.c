@@ -1,8 +1,24 @@
-// #include "MainPage.h"
+#include "menuMain.h"
 #include "includes.h"
-// #include "Move.h"
 
-extern SETTINGS infoSettings;
+// LCD init functions
+#include "lcd.h"
+#include "GUI.h"
+
+// Multi-language support
+#include "Language/Language.h"
+
+// File handling
+#include "list_item.h"
+
+// Gcode processing
+#include "Gcode/gcodeSender.h"
+
+// Timing functions
+#include "System/boot.h"
+
+// Menus
+#include "includesMenus.h" // All menu headers
 
 //1 title, ITEM_PER_PAGE items(icon+label)
 const MENUITEMS mainPageItems = {
@@ -39,7 +55,7 @@ void menuMain(void) {
         break;
       case KEY_ICON_3:
         if (infoJobStatus.inProgress) {
-          infoMenu.menu[++infoMenu.active] = menuPrinting;
+          infoMenu.menu[++infoMenu.active] = menuJobStatus;
         } else {
           infoMenu.menu[++infoMenu.active] = menuPrint;
         }

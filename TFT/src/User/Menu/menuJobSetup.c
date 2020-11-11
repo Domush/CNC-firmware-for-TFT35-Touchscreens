@@ -1,6 +1,26 @@
-// #include "JobSetup.h"
-// #include "Home.h"
+#include "menuJobSetup.h"
 #include "includes.h"
+
+// Multi-language support
+#include "Language/Language.h"
+
+// Chip specific includes
+#include "Serial.h"
+
+// File handling
+#include "list_item.h"
+
+// Gcode processing
+#include "Gcode/gcodeSender.h"
+
+// Base API functions
+#include "API/coordinate.h"
+
+// Timing functions
+#include "System/boot.h"
+
+// Menus
+#include "includesMenus.h" // All menu headers
 
 const MENUITEMS jobSetupItems = {
     // title

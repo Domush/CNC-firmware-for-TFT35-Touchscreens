@@ -1,7 +1,9 @@
 #include "STM32_Flash.h"
 #include "includes.h"
-// #include "my_misc.h"
-#include "stm32f10x.h"
+
+// Chip specific includes
+#include "Serial.h"
+#include "spi.h"
 
 #define SIGN_ADDRESS (0x08040000 - 0x800)   //reserve the last page (2KB) to save user parameters
 

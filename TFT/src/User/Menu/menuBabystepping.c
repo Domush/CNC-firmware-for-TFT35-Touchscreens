@@ -1,5 +1,27 @@
-// #include "BabyStep.h"
+#include "menuBabystepping.h"
 #include "includes.h"
+
+// LCD init functions
+#include "GUI.h"
+
+// Multi-language support
+#include "Language/Language.h"
+
+// Chip specific includes
+#include "Serial.h"
+#include "usart.h"
+
+// File handling
+#include "list_item.h"
+
+// Gcode processing
+#include "Gcode/gcodeSender.h"
+
+// Timing functions
+#include "System/boot.h"
+
+// Menus
+#include "includesMenus.h" // All menu headers
 
 //1 title, ITEM_PER_PAGE items(icon+label)
 MENUITEMS babyStepItems = {
@@ -34,7 +56,7 @@ const ITEM itemBabyStepUnit[ITEM_BABYSTEP_UNIT_NUM] = {
 const float item_babystep_unit[ITEM_BABYSTEP_UNIT_NUM] = {0.1f, 1};
 
 static ELEMENTS elementsUnit;
-extern JOBSTATUS infoJobStatus;
+// extern JOBSTATUS infoJobStatus;
 
 static void initElements(u8 position) {
   elementsUnit.totaled = ITEM_BABYSTEP_UNIT_NUM;

@@ -1,9 +1,6 @@
-#ifndef _LANGUAGE_H_
-#define _LANGUAGE_H_
+#ifndef _TFT_LANGUAGE_H_
+#define _TFT_LANGUAGE_H_
 #include "includes.h"
-
-// #include "stdbool.h"
-// #include "System/variants.h"
 
 enum {
   ENGLISH = 0,

@@ -1,10 +1,8 @@
-#ifndef _MYGCODEFS_H_
-#define _MYGCODEFS_H_
-
-#include "stdbool.h"
-#include "Gcode/gcodeRequests.h"
+#ifndef _GCODEFILEHANDLER_H_
+#define _GCODEFILEHANDLER_H_
+#include <stdbool.h>
 
 bool mountGcodeSDCard(void);
 bool scanPrintFilesGcodeFs(void);
 
-#endif
+#endif  // _GCODEFILEHANDLER_H_

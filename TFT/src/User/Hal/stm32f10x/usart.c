@@ -1,5 +1,10 @@
 #include "usart.h"
+#include "includes.h"
+
+// Chip specific includes
+#include "Serial.h"
 #include "GPIO_Init.h"
+#include "spi.h"
 
 static USART_TypeDef *usart[_USART_CNT] = {
     USART1,   //TX--PA9  RX--PA10

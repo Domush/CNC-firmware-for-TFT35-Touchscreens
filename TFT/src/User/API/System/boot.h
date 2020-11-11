@@ -1,9 +1,10 @@
-#ifndef _BOOT_H_
-#define _BOOT_H_
+#ifndef _SYSTEM_BOOT_H_
+#define _SYSTEM_BOOT_H_
+// C helper classes
 #include "includes.h"
 
-// #include "System/variants.h"
-// #include "stdbool.h"
+// Chip specific includes
+#include "Serial.h"
 
 #define W25QXX_SECTOR_SIZE (0x1000)   // 4096-4K
 

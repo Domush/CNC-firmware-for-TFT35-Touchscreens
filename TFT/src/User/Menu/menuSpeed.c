@@ -1,7 +1,27 @@
-// #include "Speed.h"
+#include "menuSpeed.h"
 #include "includes.h"
 
-//1 title copy (copy title copy), ITEM_PER_PAGE copy title item (picture copy copy + signature copy)
+// LCD init functions
+#include "GUI.h"
+
+// Multi-language support
+#include "Language/Language.h"
+
+// Chip specific includes
+#include "Serial.h"
+
+// File handling
+#include "list_item.h"
+
+// Gcode processing
+#include "Gcode/gcodeSender.h"
+
+// Timing functions
+#include "System/boot.h"
+
+// Menus
+#include "includesMenus.h" // All menu headers
+
 MENUITEMS speedOverrideItems = {
     //   title
     LABEL_PERCENTAGE_SPEED,

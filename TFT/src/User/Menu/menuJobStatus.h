@@ -1,9 +1,12 @@
-#ifndef _PRINTING_H_
-#define _PRINTING_H_
+#ifndef _MENUJOBSTATUS_H_
+#define _MENUJOBSTATUS_H_
 #include "includes.h"
-// #include "ff.h"
-// #include "stdbool.h"
-// #include "System/variants.h"
+
+// Chip specific includes
+#include "Serial.h"
+
+// USB drive support (select TFT models)
+#include "usbh_usr.h"
 
 typedef struct
 {
@@ -49,7 +52,7 @@ void getGcodeFromFile(void);
 u8* getGcodeFilename(char* path);
 
 void menuBeforePrinting(void);
-void menuPrinting(void);
+void menuJobStatus(void);
 void menuStopPrinting(void);
 void menuShutDown(void);
 

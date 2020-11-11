@@ -1,7 +1,11 @@
 #ifndef _TOUCH_PROCESS_H_
 #define _TOUCH_PROCESS_H_
 
-#include "includes.h"
+// LCD init functions
+#include "GUI.h"
+
+// Chip specific includes
+#include "Serial.h"
 
 #define CMD_RDX 0xD0
 #define CMD_RDY 0x90
@@ -11,10 +15,10 @@ enum {
   KNOB_DEC,
 };
 
-#define KEY_CLICK 0x0000          // key����Ϊ u16, 16(u16 16bit) - 3(3 bits flag ) = 13 bit ���� u16 ���֧��? 2^13 = 8192 ����ֵ
+#define KEY_CLICK        0x0000   // key����Ϊ u16, 16(u16 16bit) - 3(3 bits flag ) = 13 bit ���� u16 ���֧��? 2^13 = 8192 ����ֵ
 #define KEY_DOUBLE_CLICK 0x2000   //����λ������ʶ˫������
 #define KEY_LONG_RELEASE 0x4000   //�ڶ�λ������ʶ�������ͷŶ���
-#define KEY_LONG_CLICK 0x8000     //��һλ������ʶ��������
+#define KEY_LONG_CLICK   0x8000   //��һλ������ʶ��������
 
 void TSC_Calibration(void);
 u8 isPress(void);

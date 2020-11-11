@@ -1,5 +1,19 @@
-// #include "FeatureSettings.h"
+#include "menuSettingsFeatures.h"
 #include "includes.h"
+
+// Multi-language support
+#include "Language/Language.h"
+
+// Chip specific includes
+#include "Serial.h"
+#include "usart.h"
+
+// File handling
+#include "list_item.h"
+#include "System/flashStorage.h"
+
+// Menus
+#include "includesMenus.h" // All menu headers
 
 LISTITEMS featureSettingsItems = {
     // title
@@ -340,14 +354,14 @@ void loadFeatureSettings() {
   //menuDrawListItem(&featureSettingsItems.items[6],6);
 }
 
-void menuFeatureSettings(void) {
+void menuSettingsFeatures(void) {
   KEY_VALUES key_num = KEY_IDLE;
   SETTINGS now       = infoSettings;
   fe_cur_page        = 0;
   loadFeatureSettings();
   menuDrawListPage(&featureSettingsItems);
 
-  while (infoMenu.menu[infoMenu.active] == menuFeatureSettings) {
+  while (infoMenu.menu[infoMenu.active] == menuSettingsFeatures) {
     key_num = menuKeyGetValue();
     switch (key_num) {
       case KEY_ICON_5:

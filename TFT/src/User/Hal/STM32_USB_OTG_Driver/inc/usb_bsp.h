@@ -21,10 +21,10 @@
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __USB_BSP__H__
-#define __USB_BSP__H__
+  #define __USB_BSP__H__
 
 /* Includes ------------------------------------------------------------------*/
-#include "usb_core.h"
+  #include "usb_core.h"
 
 /** @addtogroup USB_OTG_DRIVER
   * @{
@@ -73,13 +73,13 @@ void USB_OTG_BSP_uDelay(const uint32_t usec);
 void USB_OTG_BSP_mDelay(const uint32_t msec);
 void USB_OTG_BSP_EnableInterrupt(USB_OTG_CORE_HANDLE *pdev);
 void USB_OTG_BSP_TimerIRQ(void);
-#ifdef USE_HOST_MODE
+  #ifdef USE_HOST_MODE
 void USB_OTG_BSP_ConfigVBUS(USB_OTG_CORE_HANDLE *pdev);
 void USB_OTG_BSP_DriveVBUS(USB_OTG_CORE_HANDLE *pdev, uint8_t state);
 void USB_OTG_BSP_Resume(USB_OTG_CORE_HANDLE *pdev);
 void USB_OTG_BSP_Suspend(USB_OTG_CORE_HANDLE *pdev);
 
-#endif /* USE_HOST_MODE */
+  #endif /* USE_HOST_MODE */
 /**
   * @}
   */

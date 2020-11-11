@@ -1,10 +1,13 @@
-#ifndef _POPUP_H_
-#define _POPUP_H_
+#ifndef _MENUPOPUP_H_
+#define _MENUPOPUP_H_
 #include "includes.h"
 
-// #include "UI/GUI.h"
-// #include "API/helperFunctions.h"
-// #include "System/variants.h"
+// LCD init functions
+#include "GUI.h"
+
+// Chip specific includes
+#include "Serial.h"
+#include "usart.h"
 
 // #define POPUP_RECT_WINDOW         {80, 50, 400, 270} // Original config
 #define POPUP_RECT_WINDOW \

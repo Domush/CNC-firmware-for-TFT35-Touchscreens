@@ -1,4 +1,7 @@
 #include "sw_spi.h"
+// Chip specific includes
+#include "Serial.h"
+#include "usart.h"
 #include "GPIO_Init.h"
 
 void SW_SPI_Config(_SW_SPI *sw_spi, _SPI_MODE mode, u8 dataSize,

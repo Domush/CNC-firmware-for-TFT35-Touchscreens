@@ -1,6 +1,22 @@
+#include "LCD_Init.h"
 #include "includes.h"
-// #include "LCD_Init.h"
-#include "GPIO_Init.h"
+
+// LCD init functions
+#include "lcd.h"
+#include "GUI.h"
+
+// Chip specific includes
+#include "Serial.h"
+#include "usart.h"
+
+// UI handling
+#include "ui_draw.h"
+
+// File handling
+#include "list_item.h"
+
+// Menus
+#include "includesMenus.h" // All menu headers
 
 #ifdef LCD_LED_PIN
 void LCD_LED_On() {

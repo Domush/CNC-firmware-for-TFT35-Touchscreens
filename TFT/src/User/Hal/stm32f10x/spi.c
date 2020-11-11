@@ -1,4 +1,11 @@
 #include "spi.h"
+#include "includes.h"
+
+// Timing functions
+#include "System/os_timer.h"
+
+// Chip specific includes
+#include "Serial.h"
 #include "GPIO_Init.h"
 
 #ifndef SPI1_CS_PIN

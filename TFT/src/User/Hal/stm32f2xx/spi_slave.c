@@ -1,7 +1,4 @@
 #include "spi_slave.h"
-#include "spi.h"
-#include "GPIO_Init.h"
-#include "stdlib.h"
 
 //TODO:
 //now support SPI2 and PB12 CS only

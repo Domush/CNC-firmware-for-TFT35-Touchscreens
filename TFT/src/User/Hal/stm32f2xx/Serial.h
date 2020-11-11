@@ -1,13 +1,8 @@
 #ifndef _SERIAL_H_
 #define _SERIAL_H_
-#include "includes.h"
-
 #include "stm32f2xx.h"
-// #include "Gcode/gcodeResponseHandler.h"
-#include "usart.h"
 
-typedef struct
-{
+typedef struct SERIAL_RECEIVE_BUFFER {
   char *responseBuffer;
   uint16_t pendingIndex;
   uint16_t processedIndex;

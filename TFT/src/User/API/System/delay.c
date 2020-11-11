@@ -1,4 +1,7 @@
+#include "delay.h"
+// C helper classes
 #include "System/variants.h"
+
 
 static u16 fac_ms = 0;
 static u8 fac_us  = 0;
@@ -35,7 +38,7 @@ void Delay_ms(u16 ms)   //Delay is less than 1800ms
   SysTick->VAL  = 0x00;
 }
 
-void Delay(int time) {
+void Delay(u32 time) {
   int i;
   while (time--)
     for (i = 0; i < 120; i++)

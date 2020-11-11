@@ -1,6 +1,30 @@
-// #include "Router.h"
-// #include "Move.h"
+#include "menuRouter.h"
 #include "includes.h"
+
+// LCD init functions
+#include "GUI.h"
+
+// Multi-language support
+#include "Language/Language.h"
+
+// Chip specific includes
+#include "Serial.h"
+#include "usart.h"
+
+// USB drive support (select TFT models)
+#include "usbh_usr.h"
+
+// File handling
+#include "list_item.h"
+
+// Gcode processing
+#include "Gcode/gcodeSender.h"
+
+// Timing functions
+#include "System/boot.h"
+
+// Menus
+#include "includesMenus.h" // All menu headers
 
 //1 title, ITEM_PER_PAGE items(icon+label)
 const MENUITEMS routerItems = {

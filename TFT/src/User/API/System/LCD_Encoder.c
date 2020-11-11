@@ -1,6 +1,21 @@
 #include "LCD_Encoder.h"
+// Chip specific includes
+#include "Serial.h"
+#include "usart.h"
 #include "GPIO_Init.h"
-#include "includes.h"
+
+// UI handling
+#include "emulationToggle.h"
+
+// Gcode processing
+#include "Gcode/gcodeFileHandler.h"
+
+// Timing functions
+#include "System/delay.h"
+#include "System/os_timer.h"
+
+// Menus
+#include "Menu/menuJobStatus.h"
 
 #if LCD_ENCODER_SUPPORT
 

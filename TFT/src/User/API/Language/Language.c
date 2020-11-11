@@ -1,9 +1,18 @@
-// #include "Language.h"
-#include "includes.h"
+#include "Language.h"
 #include "language_en.h"
 #include "language_de.h"
 #include "language_es.h"
 #include "language_fr.h"
+
+// Chip specific includes
+#include "Serial.h"
+#include "usart.h"
+
+// Timing functions
+#include "System/delay.h"
+
+// Menus
+#include "Menu/menuSettingsHome.h"
 
 const char *const en_pack[LABEL_NUM] = {
     EN_LANGUAGE,

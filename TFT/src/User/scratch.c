@@ -1,36 +1,22 @@
-// C helper classes
-#include "System/variants.h"
-#include <stdio.h>
-#include <stdarg.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
-#include "API/helperFunctions.h"
-#include "API/System/init.h"
-
-// Timing functions
-#include "System/os_timer.h"
-#include "System/delay.h"
-#include "System/boot.h"
-
-// Multi-language support
-#include "Language/utf8_decode.h"
-#include "Language/Language.h"
+#include "includes.h"
 
 // LCD init functions
 #include "lcd.h"
 #include "Hal/LCD_Init.h"
 #include "lcd_dma.h"
-#include "UI/GUI.h"
-#include "GPIO_Init.h"
+#include "GUI.h"
+
+// Multi-language support
+#include "Language/Language.h"
+#include "Language/utf8_decode.h"
 
 // Chip specific includes
-#include "usart.h"
 #include "Serial.h"
+#include "usart.h"
+#include "GPIO_Init.h"
 #include "spi.h"
-#include "sw_spi.h"
 #include "spi_slave.h"
+#include "sw_spi.h"
 
 // USB drive support (select TFT models)
 #include "usbh_core.h"
@@ -42,12 +28,20 @@
 #include "Hal/w25qxx.h"
 #include "Hal/xpt2046.h"
 
-// File handling
-#include "System/LCD_Encoder.h"
+// UI handling
+#include "LCD_Encoder.h"
 #include "ST7920_Simulator.h"
+#include "ui_draw.h"
+#include "touch_process.h"
+#include "ledcolor.h"
+#include "emulationToggle.h"
+
+// File handling
 #include "Fatfs/ff.h"
 #include "Vfs/vfs.h"
 #include "Fatfs/myfatfs.h"
+#include "list_item.h"
+#include "System/flashStorage.h"
 
 // Gcode processing
 #include "Gcode/gcodeSender.h"
@@ -58,34 +52,30 @@
 // Base API functions
 #include "API/coordinate.h"
 #include "API/gantry.h"
-#include "API/menu.h"
 #include "API/extendedFeatures.h"
-#include "API/ledcolor.h"
+#include "API/menu.h"
 
-// UI handling
-#include "UI/ui_draw.h"
-#include "UI/list_item.h"
-#include "UI/touch_process.h"
-#include "System/flashStorage.h"
-#include "System/emulationToggle.h"
+// Timing functions
+#include "System/delay.h"
+#include "System/os_timer.h"
+#include "System/boot.h"
 
 // Menus
-#include "Menu/menuMain.h"  // Home screen
-#include "Menu/menuMove.h"
-#include "Menu/menuBabystepping.h"
-#include "Menu/menuFileSelect.h"
-#include "Menu/menuHoming.h"
-#include "Menu/menuJobSetup.h"
-#include "Menu/menuJobStatus.h"
-#include "Menu/menuPause.h"
-#include "Menu/menuPopup.h"
-#include "Menu/menuPower.h"
-#include "Menu/menuRouter.h"
-#include "Menu/menuSettingsFeatures.h"
 #include "Menu/menuSettingsHome.h"
 #include "Menu/menuSettingsMisc.h"
+#include "Menu/menuSettingsFeatures.h"
 #include "Menu/menuSettingsTFT.h"
 #include "Menu/menuSettingsTMC.h"
-#include "Menu/menuSpeed.h"
+#include "Menu/menuPower.h"
+#include "Menu/menuPopup.h"
 #include "Menu/menuTerminal.h"
-
+#include "Menu/menuMove.h"
+#include "Menu/menuHoming.h"
+#include "Menu/menuRouter.h"
+#include "Menu/menuJobSetup.h"
+#include "Menu/menuFileSelect.h"
+#include "Menu/menuJobStatus.h"
+#include "Menu/menuPause.h"
+#include "Menu/menuBabystepping.h"
+#include "Menu/menuSpeed.h"
+#include "Menu/menuMain.h"  // Home screen

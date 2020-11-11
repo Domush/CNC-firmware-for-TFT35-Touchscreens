@@ -1,5 +1,27 @@
-// #include "ScreenSettings.h"
+#include "menuSettingsTFT.h"
 #include "includes.h"
+
+// LCD init functions
+#include "Hal/LCD_Init.h"
+
+// Multi-language support
+#include "Language/Language.h"
+
+// Chip specific includes
+#include "Serial.h"
+
+// UI handling
+#include "touch_process.h"
+
+// File handling
+#include "list_item.h"
+#include "System/flashStorage.h"
+
+// Timing functions
+#include "System/boot.h"
+
+// Menus
+#include "Menu/menuSettingsHome.h"
 
 MENUITEMS screenSettingsItems = {
     // title
@@ -68,7 +90,7 @@ static u8 item_bgcolor_i             = 0;
 static u8 item_fontcolor_i           = 0;
 #endif
 
-void menuScreenSettings(void) {
+void menuSettingsTFT(void) {
   KEY_VALUES key_num = KEY_IDLE;
   SETTINGS now       = infoSettings;
 
@@ -100,7 +122,7 @@ void menuScreenSettings(void) {
 
   menuDrawPage(&screenSettingsItems);
 
-  while (infoMenu.menu[infoMenu.active] == menuScreenSettings) {
+  while (infoMenu.menu[infoMenu.active] == menuSettingsTFT) {
     key_num = menuKeyGetValue();
     switch (key_num) {
       case KEY_ICON_0:

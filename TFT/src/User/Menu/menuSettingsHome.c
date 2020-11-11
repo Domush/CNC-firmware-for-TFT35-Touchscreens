@@ -1,7 +1,29 @@
-// #include "Menu/menuSettingsHome.h"
+#include "menuSettingsHome.h"
 #include "includes.h"
 
-SETTINGS infoSettings;
+// LCD init functions
+#include "lcd.h"
+#include "GUI.h"
+
+// Multi-language support
+#include "Language/Language.h"
+
+// Chip specific includes
+#include "Serial.h"
+
+// UI handling
+#include "touch_process.h"
+#include "ledcolor.h"
+
+// File handling
+#include "list_item.h"
+#include "System/flashStorage.h"
+
+// Timing functions
+#include "System/boot.h"
+
+// Menus
+#include "includesMenus.h" // All menu headers
 
 // Reset settings data
 void infoSettingsReset(void) {
@@ -104,20 +126,19 @@ void menuSettings(void) {
   }
 
   menuDrawPage(&settingsItems);
-
   while (infoMenu.menu[infoMenu.active] == menuSettings) {
     key_num = menuKeyGetValue();
     switch (key_num) {
       case KEY_ICON_0:
-        infoMenu.menu[++infoMenu.active] = menuScreenSettings;
+        infoMenu.menu[++infoMenu.active] = menuSettingsTFT;
         break;
 
       case KEY_ICON_1:
-        infoMenu.menu[++infoMenu.active] = menuMachineSettings;
+        infoMenu.menu[++infoMenu.active] = menuSettingsMisc;
         break;
 
       case KEY_ICON_2:
-        infoMenu.menu[++infoMenu.active] = menuFeatureSettings;
+        infoMenu.menu[++infoMenu.active] = menuSettingsFeatures;
         break;
 
       case KEY_ICON_3:

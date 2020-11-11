@@ -1,11 +1,15 @@
-#ifndef _POWERFAILED_H_
-#define _POWERFAILED_H_
-
+#ifndef _MENUPOWER_H_
+#define _MENUPOWER_H_
 #include "includes.h"
-// #include "System/variants.h"
-// #include "coordinate.h"
-// #include "ff.h"
-// #include "Configuration.h"
+
+// Chip specific includes
+#include "Serial.h"
+
+// USB drive support (select TFT models)
+#include "usbh_usr.h"
+
+// Base API functions
+#include "API/coordinate.h"
 
 #define BREAK_POINT_FILE "Printing.sys"
 

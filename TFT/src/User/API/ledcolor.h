@@ -2,8 +2,6 @@
 #define _LEDCOLOR_H_
 #include "includes.h"
 
-// #include "System/variants.h"
-
 //24bit                           // G  R  B
 #define LED_OFF    0x00000000
 #define LED_WHITE  0x00FFFFFF

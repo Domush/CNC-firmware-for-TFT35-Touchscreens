@@ -1,10 +1,40 @@
-// #include "menu.h"
+#include "menu.h"
 #include "includes.h"
-// #include "list_item.h"
+
+// LCD init functions
+#include "lcd.h"
+#include "GUI.h"
+
+// Multi-language support
+#include "Language/Language.h"
+
+// Chip specific includes
+#include "Serial.h"
+#include "usart.h"
+
+// UI handling
+#include "ui_draw.h"
+#include "touch_process.h"
+
+// File handling
+#include "Vfs/vfs.h"
+#include "list_item.h"
+
+// Gcode processing
+#include "Gcode/gcodeSender.h"
+#include "Gcode/gcodeResponseHandler.h"
+
+// Timing functions
+#include "System/os_timer.h"
+#include "System/boot.h"
+
+// Menus
+#include "includesMenus.h" // All menu headers
 
 // exhibitRect is 2 ICON Space in the Upper Row and 2 Center Coloum.
 const GUI_RECT exhibitRect = {
     1 * ICON_WIDTH + 1 * SPACE_X + START_X, 0 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y, 3 * ICON_WIDTH + 2 * SPACE_X + START_X, 1 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y};
+
 const GUI_RECT rect_of_key[ITEM_PER_PAGE * 2] = {
     // 8 icons area
     {0 * ICON_WIDTH + 0 * SPACE_X + START_X, 0 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y, 1 * ICON_WIDTH + 0 * SPACE_X + START_X, 1 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y},
@@ -42,7 +72,7 @@ const GUI_RECT rect_of_keyListView[ITEM_PER_PAGE] = {
 
 //Clean up the gaps outside icons
 void menuClearGaps(void) {
-  return;
+  return; //!Prevent removal of wrapping text
   const GUI_RECT gaps[] = {
       {0, 0, LCD_WIDTH, TITLE_END_Y},
       {0, TITLE_END_Y, LCD_WIDTH, ICON_START_Y},
@@ -52,7 +82,7 @@ void menuClearGaps(void) {
       {3 * ICON_WIDTH + 2 * SPACE_X + START_X, ICON_START_Y, 3 * ICON_WIDTH + 3 * SPACE_X + START_X, LCD_HEIGHT},
       {4 * ICON_WIDTH + 3 * SPACE_X + START_X, ICON_START_Y, LCD_WIDTH, LCD_HEIGHT}};
 
-  GUI_SetBkColor(TITLE_BACKGROUND_COLOR);
+  GUI_SetBkColor(BACKGROUND_COLOR);
   GUI_ClearPrect(gaps);
   GUI_SetBkColor(BACKGROUND_COLOR);
   for (uint8_t i = 1; i < COUNT(gaps); i++)
@@ -69,9 +99,7 @@ void GUI_RestoreColorDefault(void) {
 static const MENUITEMS *curMenuItems = NULL;   //current menu
 static const LISTITEMS *curListItems = NULL;   //current listmenu
 
-static int lastGcodeQueueValue = 0;
 static bool isListview;
-static u16 queueTextColor = MAT_LOWWHITE;
 
 uint8_t *labelGetAddress(const LABEL *label) {
   if (label->index == LABEL_BACKGROUND) return NULL;   // No content in label
@@ -118,9 +146,9 @@ void menuRefreshListPage(void) {
 }
 
 void menuDrawTitle(const uint8_t *content) {
-  return;   // !Disabled for status message support
+  return;   //!Disabled for status message support
   uint16_t start_y = (TITLE_END_Y - BYTE_HEIGHT) / 2;
-  GUI_FillRectColor(10, start_y, LCD_WIDTH - 10, start_y + BYTE_HEIGHT, TITLE_BACKGROUND_COLOR);
+  GUI_FillRectColor(10, start_y, LCD_WIDTH - 10, start_y + BYTE_HEIGHT, BACKGROUND_COLOR);
 
   if (content) {
     GUI_SetTextMode(GUI_TEXTMODE_TRANS);
@@ -151,7 +179,7 @@ void menuDrawListPage(const LISTITEMS *listItems) {
   curListItems   = listItems;
   TSC_ReDrawIcon = itemDrawIconPress;
 
-  GUI_SetBkColor(TITLE_BACKGROUND_COLOR);
+  GUI_SetBkColor(BACKGROUND_COLOR);
   GUI_ClearRect(0, 0, LCD_WIDTH, TITLE_END_Y);
   GUI_SetBkColor(BACKGROUND_COLOR);
   GUI_ClearRect(0, TITLE_END_Y, LCD_WIDTH, LCD_HEIGHT);
@@ -213,43 +241,28 @@ GUI_POINT getIconStartPoint(int index) {
   return p;
 }
 
-void gcodeQueueStatus(void) {
-  if (!infoHost.connected || lastGcodeQueueValue == gcodeOutgoing.count) {
-    return;
-  }
-  if (gcodeOutgoing.count >= GCODE_QUEUE_SIZE) {
-    timedMessage(3, TIMED_CRITICAL, "gCode queue is full!");
-    queueTextColor = MAT_RED;
-  } else if (gcodeOutgoing.count > GCODE_QUEUE_SIZE * .9) {
-    timedMessage(2, TIMED_ERROR, "gCode queue almost full");
-    queueTextColor = MAT_RED;
-  } else if (gcodeOutgoing.count > GCODE_QUEUE_SIZE * .7) {
-    queueTextColor = MAT_ORANGE;
-  } else if (gcodeOutgoing.count > GCODE_QUEUE_SIZE * .5) {
-    queueTextColor = MAT_YELLOW;
-  } else if (gcodeOutgoing.count > 1) {
-    queueTextColor = MAT_GREEN;
-  } else {
-    queueTextColor = MAT_DARKGRAY;
-  }
-  GUI_SetColor(queueTextColor);
-  GUI_FillCircle(BYTE_HEIGHT / 2, BYTE_HEIGHT / 2, BYTE_HEIGHT / 3);
-  GUI_RestoreColorDefault();
-}
-
 static TIMEDMESSAGE lastMessage;
 
 void timedMessageExpire(void) {
+  char *menuTitle;
+  menuTitle = " ";
   if (OS_GetTime() > lastMessage.timeout) {
     GUI_SetColor(MAT_LOWWHITE);
     if (curMenuItems == NULL && strcmp(lastMessage.message, "Ready") != 0 && infoHost.connected) {
-      GUI_FillRectColor(BYTE_WIDTH * ((infoHost.connected) ? 2 : 0), 0, LCD_WIDTH - BYTE_WIDTH * ((infoJobStatus.inProgress) ? 9 : 0), BYTE_HEIGHT, TITLE_BACKGROUND_COLOR);
+      GUI_FillRectColor(BYTE_WIDTH * ((infoHost.connected) ? 2 : 0), 0, LCD_WIDTH - BYTE_WIDTH * ((infoJobStatus.inProgress) ? 9 : 0), BYTE_HEIGHT, BACKGROUND_COLOR);
       GUI_DispStringInRect(BYTE_WIDTH * 2, 0, LCD_WIDTH - BYTE_WIDTH * ((infoJobStatus.inProgress) ? 9 : 2), BYTE_HEIGHT, (u8 *)"Ready");
       lastMessage.message = "Ready";
-    } else if (curMenuItems != NULL && lastMessage.message != (char *)textSelect(curMenuItems->title.index) && infoHost.connected) {
-      GUI_FillRectColor(BYTE_WIDTH * ((infoHost.connected) ? 2 : 0), 0, LCD_WIDTH - BYTE_WIDTH * ((infoJobStatus.inProgress) ? 9 : 0), BYTE_HEIGHT, TITLE_BACKGROUND_COLOR);
-      GUI_DispStringInRect(BYTE_WIDTH * 2, 0, LCD_WIDTH - BYTE_WIDTH * ((infoJobStatus.inProgress) ? 9 : 2), BYTE_HEIGHT, (u8 *)textSelect(curMenuItems->title.index));
-      lastMessage.message = (char *)textSelect(curMenuItems->title.index);
+    } else {
+      menuTitle = (char *)textSelect(curMenuItems->title.index);
+      if (curMenuItems != NULL) {
+        if (lastMessage.message != menuTitle) {
+          if (infoHost.connected) {
+            GUI_FillRectColor(BYTE_WIDTH * ((infoHost.connected) ? 2 : 0), 0, LCD_WIDTH - BYTE_WIDTH * ((infoJobStatus.inProgress) ? 9 : 0), BYTE_HEIGHT, BACKGROUND_COLOR);
+            GUI_DispStringInRect(BYTE_WIDTH * 2, 0, LCD_WIDTH - BYTE_WIDTH * ((infoJobStatus.inProgress) ? 9 : 2), BYTE_HEIGHT, (u8 *)textSelect(curMenuItems->title.index));
+            lastMessage.message = (char *)textSelect(curMenuItems->title.index);
+          }
+        }
+      }
     }
     GUI_RestoreColorDefault();
     lastMessage.type = 0;
@@ -297,47 +310,10 @@ void timedMessage(u8 delay_secs, MESSAGE_TYPE type, char *string, ...) {
     }
     lastMessage.type    = type;
     lastMessage.timeout = OS_GetTime() + delay_secs * 100;
-    GUI_FillRectColor(BYTE_WIDTH * ((infoHost.connected) ? 2 : 0), 0, LCD_WIDTH - BYTE_WIDTH * ((infoJobStatus.inProgress) ? 9 : 0), BYTE_HEIGHT, TITLE_BACKGROUND_COLOR);
+    GUI_FillRectColor(BYTE_WIDTH * ((infoHost.connected) ? 2 : 0), 0, LCD_WIDTH - BYTE_WIDTH * ((infoJobStatus.inProgress) ? 9 : 0), BYTE_HEIGHT, BACKGROUND_COLOR);
     GUI_DispStringInRect(BYTE_WIDTH * 2, 0, LCD_WIDTH - BYTE_WIDTH * ((infoJobStatus.inProgress) ? 9 : 2), BYTE_HEIGHT, (u8 *)displayText);
     GUI_RestoreColorDefault();
     lastMessage.message = &displayText[0];
-  }
-}
-
-void drawXYZ(void) {
-  if (infoHost.connected) {
-    COORDINATE curGantryCoords;
-    coordinateGetAll(&curGantryCoords);
-    if (lastGcodeQueueValue != gcodeOutgoing.count) {
-      // *gCode queue size
-      GUI_SetColor(MAT_LOWWHITE);
-      GUI_DispString(0, BYTE_HEIGHT * 2, (u8 *)"Q:");
-      GUI_SetColor(queueTextColor);
-      GUI_DispDec(2 * BYTE_WIDTH, BYTE_HEIGHT * 2, gcodeOutgoing.count, 3, LEFT);
-    }
-    // *X location [X_MIN_POS - X_MAX_POS] (set in Configuration.c)
-    GUI_SetColor(MAT_RED);
-    GUI_DispString((LCD_WIDTH / 3) * 0 + 6 * BYTE_WIDTH, BYTE_HEIGHT * 2, (u8 *)"X:");
-    GUI_SetColor(MAT_YELLOW);
-    GUI_DispFloat((LCD_WIDTH / 3) * 0 + 8 * BYTE_WIDTH, BYTE_HEIGHT * 2, curGantryCoords.axis[X_AXIS], 4, 1, RIGHT);
-    // *Y location [Y_MIN_POS - Y_MAX_POS] (set in Configuration.c)
-    GUI_SetColor(MAT_BLUE);
-    GUI_DispString((LCD_WIDTH / 3) * 1 + 3 * BYTE_WIDTH, BYTE_HEIGHT * 2, (u8 *)"Y:");
-    GUI_SetColor(MAT_YELLOW);
-    GUI_DispFloat((LCD_WIDTH / 3) * 1 + 5 * BYTE_WIDTH, BYTE_HEIGHT * 2, curGantryCoords.axis[Y_AXIS], 4, 1, RIGHT);
-    // *Z location [Z_MIN_POS - Z_MAX_POS] (set in Configuration.c)
-    GUI_SetColor(MAT_GREEN);
-    GUI_DispString((LCD_WIDTH / 3) * 2 + 0 * BYTE_WIDTH, BYTE_HEIGHT * 2, (u8 *)"Z:");
-    GUI_SetColor(MAT_YELLOW);
-    GUI_DispFloat((LCD_WIDTH / 3) * 2 + 2 * BYTE_WIDTH, BYTE_HEIGHT * 2, curGantryCoords.axis[Z_AXIS], 3, 1, RIGHT);
-    // *CNC Coordinate space [53-59] (Defaults to G53 - Machine space)
-    if (infoJobStatus.coordSpace < 53) infoJobStatus.coordSpace = 53;
-    GUI_SetColor(WHITE);
-    GUI_DispString(LCD_WIDTH - 4 * BYTE_WIDTH, BYTE_HEIGHT * 2, (u8 *)"C:");
-    GUI_SetColor(MAT_YELLOW);
-    GUI_DispDec(LCD_WIDTH - 2 * BYTE_WIDTH, BYTE_HEIGHT * 2, infoJobStatus.coordSpace - 52, 1, RIGHT);
-
-    GUI_RestoreColorDefault();
   }
 }
 
@@ -370,7 +346,4 @@ void processGcode(void) {
   loopCheckMode();
 #endif
 
-#ifdef FIL_RUNOUT_PIN
-  loopFILRunoutDetect();
-#endif
 }

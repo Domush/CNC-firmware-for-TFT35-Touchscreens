@@ -1,9 +1,6 @@
-#include "System/variants.h"
-
 #ifdef SD_SDIO_SUPPORT
-
   #include "sdio_sdcard.h"
-  #include "string.h"
+  #include <string.h>
   #include "GPIO_Init.h"
 
 static u8 CardType = SDIO_STD_CAPACITY_SD_CARD_V1_1;

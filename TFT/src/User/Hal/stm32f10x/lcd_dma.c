@@ -1,10 +1,22 @@
+#include "lcd_dma.h"
 #include "includes.h"
-// #include "lcd_dma.h"
-// #include "System/variants.h"
-// #include "lcd.h"
-// #include "GUI.h"
-// #include "delay.h"
-// #include "w25qxx.h"
+
+// LCD init functions
+#include "lcd.h"
+#include "GUI.h"
+
+// Chip specific includes
+#include "Serial.h"
+#include "spi.h"
+
+// SD card support
+#include "Hal/w25qxx.h"
+
+// UI handling
+#include "ui_draw.h"
+
+// Gcode processing
+#include "Gcode/gcodeSender.h"
 
 #ifdef STM32_HAS_FSMC
   //Config for SPI Channel

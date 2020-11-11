@@ -1,20 +1,17 @@
 #include "spi_slave.h"
-#include "spi.h"
-#include "GPIO_Init.h"
-#include "stdlib.h"
 
 #ifdef ST7920_SPI
-//TODO:
-//now support SPI2 and PB12 CS only
-//more compatibility changes are needed
-//Config for SPI Channel
-#if ST7920_SPI == _SPI1
-#define ST7920_SPI_NUM SPI1
-#elif ST7920_SPI == _SPI2
-#define ST7920_SPI_NUM SPI2
-#elif ST7920_SPI == _SPI3
-#define W25QXX_SPI_NUM SPI3
-#endif
+  //TODO:
+  //now support SPI2 and PB12 CS only
+  //more compatibility changes are needed
+  //Config for SPI Channel
+  #if ST7920_SPI == _SPI1
+    #define ST7920_SPI_NUM SPI1
+  #elif ST7920_SPI == _SPI2
+    #define ST7920_SPI_NUM SPI2
+  #elif ST7920_SPI == _SPI3
+    #define W25QXX_SPI_NUM SPI3
+  #endif
 
 //#define _SPI_SLAVE_IRQ(n)  n##_IRQHandler
 //#define SPI_SLAVE_IRQ  _SPI_SLAVE_IRQ(W25QXX_SPI_NUM)

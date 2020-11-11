@@ -1,11 +1,16 @@
 #ifndef _LIST_ITEM_H_
 #define _LIST_ITEM_H_
-#include "includes.h"
+// LCD init functions
+#include "GUI.h"
 
-// #include "stdint.h"
-// #include "stdbool.h"
-// #include "GUI.h"
-// #include "menu.h"
+// Gcode processing
+#include "Gcode/gcodeFileHandler.h"
+
+// Base API functions
+#include "API/menu.h"
+
+// Timing functions
+#include "System/delay.h"
 
 enum {
   ICONCHAR_BLANK = 0,
@@ -152,4 +157,5 @@ void ListMenuSetItem(const LISTITEM* menuItem, uint8_t positon);
 void ListItem_DisplayToggle(uint16_t sx, uint16_t sy, uint8_t iconchar_state);
 void ListItem_DisplayCustomValue(const GUI_RECT* rect, uint8_t* value);
 GUI_POINT getTextStartPoint(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey, ICON_POS pos, const char* textchar);
+
 #endif

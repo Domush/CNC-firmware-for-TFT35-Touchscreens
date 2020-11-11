@@ -1,6 +1,7 @@
-#include "includes.h"
-// #include "my_misc.h"
-// #include "stdint.h"
+#include "helperFunctions.h"
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 
 int inRange(int cur, int tag, int range) {
   if ((cur <= tag + range) && (cur >= tag - range))
@@ -149,10 +150,6 @@ void my_sprintf(char *buf, const char *fmt, ...) {
   my_vsprintf(buf, fmt, ap);
   my_va_end(ap);
 }
-
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
 
 /**
  * substr.

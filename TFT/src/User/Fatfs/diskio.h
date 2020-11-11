@@ -1,9 +1,10 @@
 /*-----------------------------------------------------------------------/
-/  Low level disk interface modlue include file   (C)ChaN, 2019          /
+/  Low level disk interface module include file   (C)ChaN, 2019          /
 /-----------------------------------------------------------------------*/
-
 #ifndef _DISKIO_DEFINED
 #define _DISKIO_DEFINED
+// USB drive support (select TFT models)
+#include "usbh_usr.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -1,51 +1,51 @@
 /**
-  ******************************************************************************
-  * @file    stm32f10x.h
-  * @author  MCD Application Team
-  * @version V3.5.0
-  * @date    11-March-2011
-  * @brief   CMSIS Cortex-M3 Device Peripheral Access Layer Header File.
-  *          This file contains all the peripheral register's definitions, bits
-  *          definitions and memory mapping for STM32F10x Connectivity line,
-  *          High density, High density value line, Medium density,
-  *          Medium density Value line, Low density, Low density Value line
-  *          and XL-density devices.
-  *
-  *          The file is the unique include file that the application programmer
-  *          is using in the C source code, usually in main.c. This file contains:
-  *           - Configuration section that allows to select:
-  *              - The device used in the target application
-  *              - To use or not the peripheral�s drivers in application code(i.e.
-  *                code will be based on direct access to peripheral�s registers
-  *                rather than drivers API), this option is controlled by
-  *                "#define USE_STDPERIPH_DRIVER"
-  *              - To change few application-specific parameters such as the HSE
-  *                crystal frequency
-  *           - Data structures and the address mapping for all peripherals
-  *           - Peripheral's registers declarations and bits definition
-  *           - Macros to access peripheral�s registers hardware
-  *
-  ******************************************************************************
-  * @attention
-  *
-  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
-  * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
-  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
-  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
-  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
-  *
-  * <h2><center>&copy; COPYRIGHT 2011 STMicroelectronics</center></h2>
-  ******************************************************************************
-  */
+******************************************************************************
+* @file    stm32f10x.h
+* @author  MCD Application Team
+* @version V3.5.0
+* @date    11-March-2011
+* @brief   CMSIS Cortex-M3 Device Peripheral Access Layer Header File.
+*          This file contains all the peripheral register's definitions, bits
+*          definitions and memory mapping for STM32F10x Connectivity line,
+*          High density, High density value line, Medium density,
+*          Medium density Value line, Low density, Low density Value line
+*          and XL-density devices.
+*
+*          The file is the unique include file that the application programmer
+*          is using in the C source code, usually in main.c. This file contains:
+*           - Configuration section that allows to select:
+*              - The device used in the target application
+*              - To use or not the peripheral�s drivers in application code(i.e.
+*                code will be based on direct access to peripheral�s registers
+*                rather than drivers API), this option is controlled by
+*                "#define USE_STDPERIPH_DRIVER"
+*              - To change few application-specific parameters such as the HSE
+*                crystal frequency
+*           - Data structures and the address mapping for all peripherals
+*           - Peripheral's registers declarations and bits definition
+*           - Macros to access peripheral�s registers hardware
+*
+******************************************************************************
+* @attention
+*
+* THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+* WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+* TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+* DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+* FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+* CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+*
+* <h2><center>&copy; COPYRIGHT 2011 STMicroelectronics</center></h2>
+******************************************************************************
+*/
 
 /** @addtogroup CMSIS
-  * @{
-  */
+* @{
+*/
 
 /** @addtogroup stm32f10x
-  * @{
-  */
+* @{
+*/
 
 #ifndef __STM32F10x_H
   #define __STM32F10x_H
@@ -55,42 +55,42 @@ extern "C" {
   #endif
 
   /** @addtogroup Library_configuration_section
-  * @{
-  */
+* @{
+*/
 
   /* Uncomment the line below according to the target STM32 device used in your
-   application
-  */
-  #include "System/variants.h"
+application
+*/
+//  #include "System/variants.h"
   #if !defined(STM32F10X_LD) && !defined(STM32F10X_LD_VL) && !defined(STM32F10X_MD) && !defined(STM32F10X_MD_VL) && !defined(STM32F10X_HD) && !defined(STM32F10X_HD_VL) && !defined(STM32F10X_XL) && !defined(STM32F10X_CL)
-  /* #define STM32F10X_LD */    /*!< STM32F10X_LD: STM32 Low density devices */
-  /* #define STM32F10X_LD_VL */ /*!< STM32F10X_LD_VL: STM32 Low density Value Line devices */
-  /* #define STM32F10X_MD */    /*!< STM32F10X_MD: STM32 Medium density devices */
-  /* #define STM32F10X_MD_VL */ /*!< STM32F10X_MD_VL: STM32 Medium density Value Line devices */
-  /* #define STM32F10X_HD */    /*!< STM32F10X_HD: STM32 High density devices */
-  /* #define STM32F10X_HD_VL */ /*!< STM32F10X_HD_VL: STM32 High density value line devices */
-  /* #define STM32F10X_XL */    /*!< STM32F10X_XL: STM32 XL-density devices */
-  /* #define STM32F10X_CL */    /*!< STM32F10X_CL: STM32 Connectivity line devices */
+    /* #define STM32F10X_LD */    /*!< STM32F10X_LD: STM32 Low density devices */
+    /* #define STM32F10X_LD_VL */ /*!< STM32F10X_LD_VL: STM32 Low density Value Line devices */
+    /* #define STM32F10X_MD */    /*!< STM32F10X_MD: STM32 Medium density devices */
+    /* #define STM32F10X_MD_VL */ /*!< STM32F10X_MD_VL: STM32 Medium density Value Line devices */
+    #define STM32F10X_HD          /*!< STM32F10X_HD: STM32 High density devices */
+  /* #define STM32F10X_HD_VL */   /*!< STM32F10X_HD_VL: STM32 High density value line devices */
+  /* #define STM32F10X_XL */      /*!< STM32F10X_XL: STM32 XL-density devices */
+  /* #define STM32F10X_CL */      /*!< STM32F10X_CL: STM32 Connectivity line devices */
   #endif
 /*  Tip: To avoid modifying this file each time you need to switch between these
-        devices, you can define the device in your toolchain compiler preprocessor.
+  devices, you can define the device in your toolchain compiler preprocessor.
 
- - Low-density devices are STM32F101xx, STM32F102xx and STM32F103xx microcontrollers
-   where the Flash memory density ranges between 16 and 32 Kbytes.
- - Low-density value line devices are STM32F100xx microcontrollers where the Flash
-   memory density ranges between 16 and 32 Kbytes.
- - Medium-density devices are STM32F101xx, STM32F102xx and STM32F103xx microcontrollers
-   where the Flash memory density ranges between 64 and 128 Kbytes.
- - Medium-density value line devices are STM32F100xx microcontrollers where the
-   Flash memory density ranges between 64 and 128 Kbytes.
- - High-density devices are STM32F101xx and STM32F103xx microcontrollers where
-   the Flash memory density ranges between 256 and 512 Kbytes.
- - High-density value line devices are STM32F100xx microcontrollers where the
-   Flash memory density ranges between 256 and 512 Kbytes.
- - XL-density devices are STM32F101xx and STM32F103xx microcontrollers where
-   the Flash memory density ranges between 512 and 1024 Kbytes.
- - Connectivity line devices are STM32F105xx and STM32F107xx microcontrollers.
-  */
+- Low-density devices are STM32F101xx, STM32F102xx and STM32F103xx microcontrollers
+where the Flash memory density ranges between 16 and 32 Kbytes.
+- Low-density value line devices are STM32F100xx microcontrollers where the Flash
+memory density ranges between 16 and 32 Kbytes.
+- Medium-density devices are STM32F101xx, STM32F102xx and STM32F103xx microcontrollers
+where the Flash memory density ranges between 64 and 128 Kbytes.
+- Medium-density value line devices are STM32F100xx microcontrollers where the
+Flash memory density ranges between 64 and 128 Kbytes.
+- High-density devices are STM32F101xx and STM32F103xx microcontrollers where
+the Flash memory density ranges between 256 and 512 Kbytes.
+- High-density value line devices are STM32F100xx microcontrollers where the
+Flash memory density ranges between 256 and 512 Kbytes.
+- XL-density devices are STM32F101xx and STM32F103xx microcontrollers where
+the Flash memory density ranges between 512 and 1024 Kbytes.
+- Connectivity line devices are STM32F105xx and STM32F107xx microcontrollers.
+*/
 
   #if !defined(STM32F10X_LD) && !defined(STM32F10X_LD_VL) && !defined(STM32F10X_MD) && !defined(STM32F10X_MD_VL) && !defined(STM32F10X_HD) && !defined(STM32F10X_HD_VL) && !defined(STM32F10X_XL) && !defined(STM32F10X_CL)
     #error "Please select first the target STM32F10x device used in your application (in stm32f10x.h file)"
@@ -98,20 +98,20 @@ extern "C" {
 
   #if !defined USE_STDPERIPH_DRIVER
   /**
- * @brief Comment the line below if you will not use the peripherals drivers.
-   In this case, these drivers will not be included and the application code will
-   be based on direct access to peripherals registers
-   */
+* @brief Comment the line below if you will not use the peripherals drivers.
+In this case, these drivers will not be included and the application code will
+be based on direct access to peripherals registers
+*/
   /*#define USE_STDPERIPH_DRIVER*/
   #endif
 
   /**
- * @brief In the following line adjust the value of External High Speed oscillator (HSE)
-   used in your application
+* @brief In the following line adjust the value of External High Speed oscillator (HSE)
+used in your application
 
-   Tip: To avoid modifying this file each time you need to use different HSE, you
-        can define the HSE value in your toolchain compiler preprocessor.
-  */
+Tip: To avoid modifying this file each time you need to use different HSE, you
+  can define the HSE value in your toolchain compiler preprocessor.
+*/
   #if !defined HSE_VALUE
     #ifdef STM32F10X_CL
       #define HSE_VALUE ((uint32_t)8000000) /*!< Value of the External oscillator in Hz */
@@ -121,16 +121,16 @@ extern "C" {
   #endif                                     /* HSE_VALUE */
 
   /**
- * @brief In the following line adjust the External High Speed oscillator (HSE) Startup
-   Timeout value
-   */
+* @brief In the following line adjust the External High Speed oscillator (HSE) Startup
+Timeout value
+*/
   #define HSE_STARTUP_TIMEOUT ((uint16_t)0x0500) /*!< Time out for HSE start up */
 
   #define HSI_VALUE ((uint32_t)8000000) /*!< Value of the Internal oscillator in Hz*/
 
   /**
- * @brief STM32F10x Standard Peripheral Library version number
-   */
+* @brief STM32F10x Standard Peripheral Library version number
+*/
   #define __STM32F10X_STDPERIPH_VERSION_MAIN (0x03) /*!< [31:24] main version */
   #define __STM32F10X_STDPERIPH_VERSION_SUB1 (0x05) /*!< [23:16] sub1 version */
   #define __STM32F10X_STDPERIPH_VERSION_SUB2 (0x00) /*!< [15:8]  sub2 version */
@@ -138,16 +138,16 @@ extern "C" {
   #define __STM32F10X_STDPERIPH_VERSION      ((__STM32F10X_STDPERIPH_VERSION_MAIN << 24) | (__STM32F10X_STDPERIPH_VERSION_SUB1 << 16) | (__STM32F10X_STDPERIPH_VERSION_SUB2 << 8) | (__STM32F10X_STDPERIPH_VERSION_RC))
 
   /**
-  * @}
-  */
+* @}
+*/
 
   /** @addtogroup Configuration_section_for_CMSIS
-  * @{
-  */
+* @{
+*/
 
   /**
- * @brief Configuration of the Cortex-M3 Processor and Core Peripherals
- */
+* @brief Configuration of the Cortex-M3 Processor and Core Peripherals
+*/
   #ifdef STM32F10X_XL
     #define __MPU_PRESENT 1 /*!< STM32 XL-density devices provide an MPU */
   #else
@@ -157,9 +157,9 @@ extern "C" {
   #define __Vendor_SysTickConfig 0 /*!< Set to 1 if different SysTick Config is used */
 
 /**
- * @brief STM32F10x Interrupt Number Definition, according to the selected device
- *        in @ref Library_configuration_section
- */
+* @brief STM32F10x Interrupt Number Definition, according to the selected device
+*        in @ref Library_configuration_section
+*/
 typedef enum IRQn {
   /******  Cortex-M3 Processor Exceptions Numbers ***************************************************/
   NonMaskableInt_IRQn   = -14, /*!< 2 Non Maskable Interrupt                             */
@@ -370,8 +370,8 @@ typedef enum IRQn {
   DMA2_Channel3_IRQn      = 58, /*!< DMA2 Channel 3 global Interrupt                      */
   DMA2_Channel4_5_IRQn    = 59, /*!< DMA2 Channel 4 and Channel 5 global Interrupt        */
   DMA2_Channel5_IRQn      = 60  /*!< DMA2 Channel 5 global Interrupt (DMA2 Channel 5 is
-                                             mapped at position 60 only if the MISC_REMAP bit in
-                                             the AFIO_MAPR2 register is set)                      */
+                                       mapped at position 60 only if the MISC_REMAP bit in
+                                       the AFIO_MAPR2 register is set)                      */
   #endif                        /* STM32F10X_HD_VL */
 
   #ifdef STM32F10X_XL
@@ -467,16 +467,15 @@ typedef enum IRQn {
 } IRQn_Type;
 
 /**
-  * @}
-  */
+* @}
+*/
 
   #include "core_cm3.h"
   #include "system_stm32f10x.h"
-  #include <stdint.h>
 
 /** @addtogroup Exported_types
-  * @{
-  */
+* @{
+*/
 
 /*!< STM32F10x Standard Peripheral Library old types (maintained for legacy purpose) */
 typedef int32_t s32;
@@ -511,32 +510,39 @@ typedef __I uint32_t vuc32; /*!< Read Only */
 typedef __I uint16_t vuc16; /*!< Read Only */
 typedef __I uint8_t vuc8;   /*!< Read Only */
 
-typedef enum { RESET = 0,
-               SET   = !RESET } FlagStatus,
+typedef enum {
+  RESET = 0,
+  SET   = !RESET
+} FlagStatus,
     ITStatus;
 
-typedef enum { DISABLE = 0,
-               ENABLE  = !DISABLE } FunctionalState;
+typedef enum {
+  DISABLE = 0,
+  ENABLE  = !DISABLE
+} FunctionalState;
   #define IS_FUNCTIONAL_STATE(STATE) (((STATE) == DISABLE) || ((STATE) == ENABLE))
 
-typedef enum { ERROR   = 0,
-               SUCCESS = !ERROR } ErrorStatus;
+  #undef ERROR
+typedef enum {
+  ERROR   = 0,
+  SUCCESS = !ERROR
+} ErrorStatus;
 
   /*!< STM32F10x Standard Peripheral Library old definitions (maintained for legacy purpose) */
   #define HSEStartUp_TimeOut HSE_STARTUP_TIMEOUT
   #define HSE_Value          HSE_VALUE
   #define HSI_Value          HSI_VALUE
 /**
-  * @}
-  */
+* @}
+*/
 
 /** @addtogroup Peripheral_registers_structures
-  * @{
-  */
+* @{
+*/
 
 /**
-  * @brief Analog to Digital Converter
-  */
+* @brief Analog to Digital Converter
+*/
 
 typedef struct
 {
@@ -563,8 +569,8 @@ typedef struct
 } ADC_TypeDef;
 
 /**
-  * @brief Backup Registers
-  */
+* @brief Backup Registers
+*/
 
 typedef struct
 {
@@ -662,8 +668,8 @@ typedef struct
 } BKP_TypeDef;
 
 /**
-  * @brief Controller Area Network TxMailBox
-  */
+* @brief Controller Area Network TxMailBox
+*/
 
 typedef struct
 {
@@ -674,8 +680,8 @@ typedef struct
 } CAN_TxMailBox_TypeDef;
 
 /**
-  * @brief Controller Area Network FIFOMailBox
-  */
+* @brief Controller Area Network FIFOMailBox
+*/
 
 typedef struct
 {
@@ -686,8 +692,8 @@ typedef struct
 } CAN_FIFOMailBox_TypeDef;
 
 /**
-  * @brief Controller Area Network FilterRegister
-  */
+* @brief Controller Area Network FilterRegister
+*/
 
 typedef struct
 {
@@ -696,8 +702,8 @@ typedef struct
 } CAN_FilterRegister_TypeDef;
 
 /**
-  * @brief Controller Area Network
-  */
+* @brief Controller Area Network
+*/
 
 typedef struct
 {
@@ -730,8 +736,8 @@ typedef struct
 } CAN_TypeDef;
 
 /**
-  * @brief Consumer Electronics Control (CEC)
-  */
+* @brief Consumer Electronics Control (CEC)
+*/
 typedef struct
 {
   __IO uint32_t CFGR;
@@ -744,8 +750,8 @@ typedef struct
 } CEC_TypeDef;
 
 /**
-  * @brief CRC calculation unit
-  */
+* @brief CRC calculation unit
+*/
 
 typedef struct
 {
@@ -757,8 +763,8 @@ typedef struct
 } CRC_TypeDef;
 
 /**
-  * @brief Digital to Analog Converter
-  */
+* @brief Digital to Analog Converter
+*/
 
 typedef struct
 {
@@ -781,8 +787,8 @@ typedef struct
 } DAC_TypeDef;
 
 /**
-  * @brief Debug MCU
-  */
+* @brief Debug MCU
+*/
 
 typedef struct
 {
@@ -791,8 +797,8 @@ typedef struct
 } DBGMCU_TypeDef;
 
 /**
-  * @brief DMA Controller
-  */
+* @brief DMA Controller
+*/
 
 typedef struct
 {
@@ -809,8 +815,8 @@ typedef struct
 } DMA_TypeDef;
 
 /**
-  * @brief Ethernet MAC
-  */
+* @brief Ethernet MAC
+*/
 
 typedef struct
 {
@@ -880,8 +886,8 @@ typedef struct
 } ETH_TypeDef;
 
 /**
-  * @brief External Interrupt/Event Controller
-  */
+* @brief External Interrupt/Event Controller
+*/
 
 typedef struct
 {
@@ -894,8 +900,8 @@ typedef struct
 } EXTI_TypeDef;
 
 /**
-  * @brief FLASH Registers
-  */
+* @brief FLASH Registers
+*/
 
 typedef struct
 {
@@ -919,8 +925,8 @@ typedef struct
 } FLASH_TypeDef;
 
 /**
-  * @brief Option Bytes Registers
-  */
+* @brief Option Bytes Registers
+*/
 
 typedef struct
 {
@@ -935,8 +941,8 @@ typedef struct
 } OB_TypeDef;
 
 /**
-  * @brief Flexible Static Memory Controller
-  */
+* @brief Flexible Static Memory Controller
+*/
 
 typedef struct
 {
@@ -944,8 +950,8 @@ typedef struct
 } FSMC_Bank1_TypeDef;
 
 /**
-  * @brief Flexible Static Memory Controller Bank1E
-  */
+* @brief Flexible Static Memory Controller Bank1E
+*/
 
 typedef struct
 {
@@ -953,8 +959,8 @@ typedef struct
 } FSMC_Bank1E_TypeDef;
 
 /**
-  * @brief Flexible Static Memory Controller Bank2
-  */
+* @brief Flexible Static Memory Controller Bank2
+*/
 
 typedef struct
 {
@@ -967,8 +973,8 @@ typedef struct
 } FSMC_Bank2_TypeDef;
 
 /**
-  * @brief Flexible Static Memory Controller Bank3
-  */
+* @brief Flexible Static Memory Controller Bank3
+*/
 
 typedef struct
 {
@@ -981,8 +987,8 @@ typedef struct
 } FSMC_Bank3_TypeDef;
 
 /**
-  * @brief Flexible Static Memory Controller Bank4
-  */
+* @brief Flexible Static Memory Controller Bank4
+*/
 
 typedef struct
 {
@@ -994,8 +1000,8 @@ typedef struct
 } FSMC_Bank4_TypeDef;
 
 /**
-  * @brief General Purpose I/O
-  */
+* @brief General Purpose I/O
+*/
 
 typedef struct
 {
@@ -1009,8 +1015,8 @@ typedef struct
 } GPIO_TypeDef;
 
 /**
-  * @brief Alternate Function I/O
-  */
+* @brief Alternate Function I/O
+*/
 
 typedef struct
 {
@@ -1021,8 +1027,8 @@ typedef struct
   __IO uint32_t MAPR2;
 } AFIO_TypeDef;
 /**
-  * @brief Inter Integrated Circuit Interface
-  */
+* @brief Inter Integrated Circuit Interface
+*/
 
 typedef struct
 {
@@ -1047,8 +1053,8 @@ typedef struct
 } I2C_TypeDef;
 
 /**
-  * @brief Independent WATCHDOG
-  */
+* @brief Independent WATCHDOG
+*/
 
 typedef struct
 {
@@ -1059,8 +1065,8 @@ typedef struct
 } IWDG_TypeDef;
 
 /**
-  * @brief Power Control
-  */
+* @brief Power Control
+*/
 
 typedef struct
 {
@@ -1069,8 +1075,8 @@ typedef struct
 } PWR_TypeDef;
 
 /**
-  * @brief Reset and Clock Control
-  */
+* @brief Reset and Clock Control
+*/
 
 typedef struct
 {
@@ -1097,8 +1103,8 @@ typedef struct
 } RCC_TypeDef;
 
 /**
-  * @brief Real-Time Clock
-  */
+* @brief Real-Time Clock
+*/
 
 typedef struct
 {
@@ -1125,8 +1131,8 @@ typedef struct
 } RTC_TypeDef;
 
 /**
-  * @brief SD host Interface
-  */
+* @brief SD host Interface
+*/
 
 typedef struct
 {
@@ -1153,8 +1159,8 @@ typedef struct
 } SDIO_TypeDef;
 
 /**
-  * @brief Serial Peripheral Interface
-  */
+* @brief Serial Peripheral Interface
+*/
 
 typedef struct
 {
@@ -1179,8 +1185,8 @@ typedef struct
 } SPI_TypeDef;
 
 /**
-  * @brief TIM
-  */
+* @brief TIM
+*/
 
 typedef struct
 {
@@ -1227,8 +1233,8 @@ typedef struct
 } TIM_TypeDef;
 
 /**
-  * @brief Universal Synchronous Asynchronous Receiver Transmitter
-  */
+* @brief Universal Synchronous Asynchronous Receiver Transmitter
+*/
 
 typedef struct
 {
@@ -1249,8 +1255,8 @@ typedef struct
 } USART_TypeDef;
 
 /**
-  * @brief Window WATCHDOG
-  */
+* @brief Window WATCHDOG
+*/
 
 typedef struct
 {
@@ -1260,12 +1266,12 @@ typedef struct
 } WWDG_TypeDef;
 
 /**
-  * @}
-  */
+* @}
+*/
 
 /** @addtogroup Peripheral_memory_map
-  * @{
-  */
+* @{
+*/
 
   #define FLASH_BASE  ((uint32_t)0x08000000) /*!< FLASH base address in the alias region */
   #define SRAM_BASE   ((uint32_t)0x20000000) /*!< SRAM base address in the alias region */
@@ -1368,12 +1374,12 @@ typedef struct
   #define DBGMCU_BASE ((uint32_t)0xE0042000) /*!< Debug MCU registers base address */
 
 /**
-  * @}
-  */
+* @}
+*/
 
 /** @addtogroup Peripheral_declaration
-  * @{
-  */
+* @{
+*/
 
   #define TIM2          ((TIM_TypeDef *)TIM2_BASE)
   #define TIM3          ((TIM_TypeDef *)TIM3_BASE)
@@ -1451,16 +1457,16 @@ typedef struct
   #define DBGMCU        ((DBGMCU_TypeDef *)DBGMCU_BASE)
 
   /**
-  * @}
-  */
+* @}
+*/
 
   /** @addtogroup Exported_constants
-  * @{
-  */
+* @{
+*/
 
   /** @addtogroup Peripheral_Registers_Bits_Definition
-  * @{
-  */
+* @{
+*/
 
   /******************************************************************************/
   /*                         Peripheral Registers_Bits_Definition               */
@@ -7887,7 +7893,7 @@ typedef struct
     #define ETH_MACCR_RD        ((uint32_t)0x00000200) /* Retry disable */
     #define ETH_MACCR_APCS      ((uint32_t)0x00000080) /* Automatic Pad/CRC stripping */
     #define ETH_MACCR_BL        ((uint32_t)0x00000060) /* Back-off limit: random integer number (r) of slot time delays before rescheduling \ \ \ \ \ \ \ \ \ \ \ \
-                                                            a transmission attempt during retries after a collision: 0 =< r <2^k */
+                                                          a transmission attempt during retries after a collision: 0 =< r <2^k */
     #define ETH_MACCR_BL_10 ((uint32_t)0x00000000)     /* k = min (n, 10) */
     #define ETH_MACCR_BL_8  ((uint32_t)0x00000020)     /* k = min (n, 8) */
     #define ETH_MACCR_BL_4  ((uint32_t)0x00000040)     /* k = min (n, 4) */
@@ -7951,16 +7957,16 @@ typedef struct
     /* Bit definition for Ethernet MAC Remote Wake-UpFrame Filter Register */
     #define ETH_MACRWUFFR_D ((uint32_t)0xFFFFFFFF) /* Wake-up frame filter register data */
     /* Eight sequential Writes to this address (offset 0x28) will write all Wake-UpFrame Filter Registers.
-   Eight sequential Reads from this address (offset 0x28) will read all Wake-UpFrame Filter Registers. */
+Eight sequential Reads from this address (offset 0x28) will read all Wake-UpFrame Filter Registers. */
     /* Wake-UpFrame Filter Reg0 : Filter 0 Byte Mask
-   Wake-UpFrame Filter Reg1 : Filter 1 Byte Mask
-   Wake-UpFrame Filter Reg2 : Filter 2 Byte Mask
-   Wake-UpFrame Filter Reg3 : Filter 3 Byte Mask
-   Wake-UpFrame Filter Reg4 : RSVD - Filter3 Command - RSVD - Filter2 Command -
-                              RSVD - Filter1 Command - RSVD - Filter0 Command
-   Wake-UpFrame Filter Re5 : Filter3 Offset - Filter2 Offset - Filter1 Offset - Filter0 Offset
-   Wake-UpFrame Filter Re6 : Filter1 CRC16 - Filter0 CRC16
-   Wake-UpFrame Filter Re7 : Filter3 CRC16 - Filter2 CRC16 */
+Wake-UpFrame Filter Reg1 : Filter 1 Byte Mask
+Wake-UpFrame Filter Reg2 : Filter 2 Byte Mask
+Wake-UpFrame Filter Reg3 : Filter 3 Byte Mask
+Wake-UpFrame Filter Reg4 : RSVD - Filter3 Command - RSVD - Filter2 Command -
+                        RSVD - Filter1 Command - RSVD - Filter0 Command
+Wake-UpFrame Filter Re5 : Filter3 Offset - Filter2 Offset - Filter1 Offset - Filter0 Offset
+Wake-UpFrame Filter Re6 : Filter1 CRC16 - Filter0 CRC16
+Wake-UpFrame Filter Re7 : Filter3 CRC16 - Filter2 CRC16 */
 
     /* Bit definition for Ethernet MAC PMT Control and Status Register */
     #define ETH_MACPMTCSR_WFFRPR ((uint32_t)0x80000000) /* Wake-Up Frame Filter Register Pointer Reset */
@@ -8277,20 +8283,20 @@ typedef struct
   #endif                                               /* STM32F10X_CL */
 
 /**
-  * @}
-  */
+* @}
+*/
 
 /**
-  * @}
-  */
+* @}
+*/
 
   #ifdef USE_STDPERIPH_DRIVER
     #include "stm32f10x_conf.h"
   #endif
 
 /** @addtogroup Exported_macro
-  * @{
-  */
+* @{
+*/
 
   #define SET_BIT(REG, BIT) ((REG) |= (BIT))
 
@@ -8307,8 +8313,8 @@ typedef struct
   #define MODIFY_REG(REG, CLEARMASK, SETMASK) WRITE_REG((REG), (((READ_REG(REG)) & (~(CLEARMASK))) | (SETMASK)))
 
 /**
-  * @}
-  */
+* @}
+*/
 
   #ifdef __cplusplus
 }
@@ -8317,11 +8323,11 @@ typedef struct
 #endif /* __STM32F10x_H */
 
 /**
-  * @}
-  */
+* @}
+*/
 
 /**
-  * @}
-  */
+* @}
+*/
 
 /******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/

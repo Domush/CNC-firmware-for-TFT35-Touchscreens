@@ -1,5 +1,31 @@
-// #include "SendGcode.h"
+#include "menuTerminal.h"
 #include "includes.h"
+#include <string.h>
+
+// LCD init functions
+#include "lcd.h"
+#include "GUI.h"
+
+// Multi-language support
+#include "Language/Language.h"
+
+// Chip specific includes
+#include "Serial.h"
+#include "usart.h"
+
+// UI handling
+#include "ui_draw.h"
+#include "touch_process.h"
+#include "emulationToggle.h"
+
+// File handling
+#include "list_item.h"
+
+// Gcode processing
+#include "Gcode/gcodeSender.h"
+
+// Menus
+#include "includesMenus.h" // All menu headers
 
 typedef enum {
   SOFT_KEY_123 = 0,
@@ -142,7 +168,7 @@ void menuDrawSendGcode(void) {
   TSC_ReDrawIcon = sendGcodeReDrawButton;
 }
 
-void menuSendGcode(void) {
+void menuTerminal(void) {
   GUI_RECT gcodeRect = {rect_of_Gkey[GKEY_BACK].x1 + 10, rect_of_Gkey[GKEY_BACK].y0, rect_of_Gkey[GKEY_SEND].x0 - 10, rect_of_Gkey[GKEY_SEND].y1};
 
   char gcodeBuf[GCODE_MAX_CHARACTERS] = {0};
@@ -150,7 +176,7 @@ void menuSendGcode(void) {
           lastIndex                   = 0;
   GKEY_VALUES key_num                 = GKEY_IDLE;
   menuDrawSendGcode();
-  while (infoMenu.menu[infoMenu.active] == menuSendGcode) {
+  while (infoMenu.menu[infoMenu.active] == menuTerminal) {
     key_num = GKeyGetValue();
 
     switch (key_num) {
@@ -214,7 +240,7 @@ char terminalBuf[TERMINAL_MAX_CHAR];
 void showInTerminal(char *serial_text, COMMAND_SOURCE src) {
   if (strstr(serial_text, (const char *)"wait") && src) return;
   const char *const terminalSign[] = {"Sent: ", "Rcv: "};
-  // if (infoMenu.menu[infoMenu.active] != menuSendGcode && infoMenu.menu[infoMenu.active] != menuTerminal) return;
+  // if (infoMenu.menu[infoMenu.active] != menuTerminal && infoMenu.menu[infoMenu.active] != menuTerminal) return;
   if (strlen(terminalBuf) + strlen(serial_text) + strlen(terminalSign[src]) >= TERMINAL_MAX_CHAR) {
     terminalBuf[0] = 0;
   }
@@ -226,9 +252,9 @@ void showInTerminal(char *serial_text, COMMAND_SOURCE src) {
 #define CURSOR_END_X   LCD_WIDTH
 #define CURSOR_START_Y (BYTE_HEIGHT * 2)
 #define CURSOR_END_Y   LCD_HEIGHT
-void menuTerminal(void) {
+void menuTerminal2(void) {
   const GUI_RECT terminalRect = {0, 0, LCD_WIDTH, LCD_HEIGHT};
-  CHAR_INFO info;
+  CHAR_ATTR info;
   int16_t cursorX            = CURSOR_START_X,
           cursorY            = CURSOR_START_Y;
   uint16_t lastTerminalIndex = 0;
@@ -293,14 +319,13 @@ void showGcodeStatus(char *serial_text, COMMAND_SOURCE src) {
   static char *lastSentText;
   // *Disable on pages that need the extra space
   if (infoMenu.menu[infoMenu.active] == menuSettings ||
-      infoMenu.menu[infoMenu.active] == menuFeatureSettings ||
+      infoMenu.menu[infoMenu.active] == menuSettingsFeatures ||
       infoMenu.menu[infoMenu.active] == menuPrint ||
       infoMenu.menu[infoMenu.active] == menuPrintFromSource ||
-      infoMenu.menu[infoMenu.active] == menuSendGcode ||
-      infoMenu.menu[infoMenu.active] == menuBeforePrinting ||
-      infoMenu.menu[infoMenu.active] == menuMachineSettings ||
-      infoMenu.menu[infoMenu.active] == parametersetting ||
       infoMenu.menu[infoMenu.active] == menuTerminal ||
+      infoMenu.menu[infoMenu.active] == menuBeforePrinting ||
+      infoMenu.menu[infoMenu.active] == menuSettingsMisc ||
+      infoMenu.menu[infoMenu.active] == menuSettingsTMC ||
       !infoHost.connected) {
     return;
   }
@@ -319,7 +344,7 @@ void showGcodeStatus(char *serial_text, COMMAND_SOURCE src) {
   int width_x;
   char *final_text = serial_text;
   // *Strip out any leftover responses
-  const char ch[5] = "\n";
+  const char ch[2] = "\n";
   char *token;
   // *get the first token
   token = strtok(serial_text, ch);

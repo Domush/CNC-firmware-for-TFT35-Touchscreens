@@ -1,7 +1,23 @@
-// #include "ST7920_Simulator.h"
+#include "ST7920_Simulator.h"
 #include "includes.h"
-// #include "GUI.h"
-// #include "../../Configuration.h"
+
+// LCD init functions
+#include "GUI.h"
+
+// Chip specific includes
+#include "Serial.h"
+#include "usart.h"
+#include "spi_slave.h"
+
+// UI handling
+#include "LCD_Encoder.h"
+#include "emulationToggle.h"
+
+// Gcode processing
+#include "Gcode/gcodeSender.h"
+
+// Menus
+#include "Menu/menuSettingsHome.h"
 
 #ifdef ST7920_SPI
 

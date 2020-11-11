@@ -1,7 +1,31 @@
-// #include "Mode.h"
-#include "includes.h"
+#include "init.h"
+// C helper classes
+#include <string.h>
 
-// int MODEselect;
+// LCD init functions
+#include "lcd.h"
+#include "GUI.h"
+
+// Chip specific includes
+#include "Serial.h"
+
+// SD card support
+#include "Hal/sd.h"
+
+// UI handling
+#include "ui_draw.h"
+#include "touch_process.h"
+
+// File handling
+#include "Vfs/vfs.h"
+#include "list_item.h"
+
+// Timing functions
+#include "System/os_timer.h"
+
+// Menus
+#include "Menu/menuSettingsHome.h"
+#include "Menu/menuMain.h"  // Home screen
 
 void Serial_ReSourceDeInit(void) {
   memset(&infoHost, 0, sizeof(infoHost));
