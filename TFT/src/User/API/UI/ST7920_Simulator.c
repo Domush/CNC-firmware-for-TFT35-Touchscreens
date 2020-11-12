@@ -1,5 +1,5 @@
-#include "ST7920_Simulator.h"
 #include "includes.h"
+#include "ST7920_Simulator.h"
 
 // LCD init functions
 #include "GUI.h"
@@ -82,8 +82,8 @@ void ST7920_ParseRecv(u8 val) {
     rcvIndex = 0;
   } else {
     rcvData[rcvIndex++] = val;
-    if (rcvIndex == 1) return;   //high 4 bits in first byte and
-    rcvIndex = 0;                //low 4 bits in second byte is valid
+    if (rcvIndex == 1) return;  //high 4 bits in first byte and
+    rcvIndex = 0;               //low 4 bits in second byte is valid
 
     switch (status) {
       case ST7920_WCMD:
@@ -108,7 +108,7 @@ void ST7920_ParseRecv(u8 val) {
 
 void ST7920_WriteXY(u8 xy) {
   static uint8_t i = 0;
-  if (i == 0)   //y first
+  if (i == 0)  //y first
     st7920.y = xy;
   else
     st7920.x = xy;

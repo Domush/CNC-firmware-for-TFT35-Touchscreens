@@ -18,7 +18,7 @@
 #include "System/boot.h"
 
 // Menus
-#include "includesMenus.h" // All menu headers
+#include "includesMenus.h"  // All menu headers
 
 //1 title, ITEM_PER_PAGE items(icon+label)
 const MENUITEMS mainPageItems = {
@@ -33,8 +33,7 @@ const MENUITEMS mainPageItems = {
         {ICON_ROUTER, LABEL_ROUTER},
         {ICON_DISABLE_XY, LABEL_DISABLE_XY},
         {ICON_DISABLE_Z, LABEL_DISABLE_Z},
-        {ICON_SETTINGS, LABEL_SETTINGS},
-    }};
+        {ICON_SETTINGS, LABEL_SETTINGS}}};
 
 void menuMain(void) {
   KEY_VALUES key_num = KEY_IDLE;
@@ -65,11 +64,11 @@ void menuMain(void) {
         break;
       case KEY_ICON_5: {
         timedMessage(2, TIMED_INFO, "X,Y steppers disabled");
-        queueCommand(false, "M18 X Y\n");   //disable X and Y motors
+        queueCommand(false, "M18 X Y\n");  //disable X and Y motors
       } break;
       case KEY_ICON_6: {
         timedMessage(2, TIMED_INFO, "Z stepper disabled");
-        queueCommand(false, "M18 Z\n");   //disable Z motors
+        queueCommand(false, "M18 Z\n");  //disable Z motors
       } break;
       case KEY_ICON_7:
         infoMenu.menu[++infoMenu.active] = menuSettings;

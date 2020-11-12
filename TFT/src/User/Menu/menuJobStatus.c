@@ -35,7 +35,7 @@
 #include "System/boot.h"
 
 // Menus
-#include "includesMenus.h" // All menu headers
+#include "includesMenus.h"  // All menu headers
 
 //1title, ITEM_PER_PAGE item(icon + label)
 MENUITEMS printingItems = {
@@ -50,20 +50,17 @@ MENUITEMS printingItems = {
         {ICON_ROUTER, LABEL_ROUTER},
         {ICON_PERCENTAGE, LABEL_PERCENTAGE_SPEED},
         {ICON_BABYSTEP, LABEL_BABYSTEP},
-        {ICON_MOVE, LABEL_MOVE},
-    }};
+        {ICON_MOVE, LABEL_MOVE}}};
 
 const ITEM itemIsPause[2] = {
     // icon                       label
     {ICON_PAUSE, LABEL_PAUSE},
-    {ICON_RESUME, LABEL_RESUME},
-};
+    {ICON_RESUME, LABEL_RESUME}};
 
 const ITEM itemIsFinished[2] = {
     // icon                       label
     {ICON_STOP, LABEL_STOP},
-    {ICON_BACK, LABEL_BACK},
-};
+    {ICON_BACK, LABEL_BACK}};
 
 #ifndef M27_WATCH_OTHER_SOURCES
   #define M27_WATCH_OTHER_SOURCES false
@@ -155,7 +152,7 @@ u8* getGcodeFilename(char* path) {
 // Example: "SD:/CNC/Clocks/Bird/Profile 1.gcode"
 // Will return: "Bird/Profile 1.gcode"
 u8* getGcodePathFilename(char* fullFilename) {
-  int i          = strlen(fullFilename) - 6;   // -6 ignores the .gcode extension
+  int i          = strlen(fullFilename) - 6;  // -6 ignores the .gcode extension
   int pathsFound = 0;
   while (i > 0 && pathsFound < 2) {
     i--;
@@ -170,7 +167,7 @@ u8* getGcodePathFilename(char* fullFilename) {
 void menuBeforePrinting(void) {
   long size = 0;
   switch (infoFile.source) {
-    case BOARD_SD:   // GCode from file on ONBOARD SD
+    case BOARD_SD:  // GCode from file on ONBOARD SD
       size = request_M23(infoFile.title + 5);
 
       //  if( powerFailedCreate(infoFile.title)==false)
@@ -202,11 +199,11 @@ void menuBeforePrinting(void) {
       request_M27(0);
 #endif
 
-      infoHost.jobInProgress = true;   // Global lock info on printer is busy in printing.
+      infoHost.jobInProgress = true;  // Global lock info on printer is busy in printing.
       break;
 
     case TFT_UDISK:
-    case TFT_SD:   // GCode from file on TFT SD
+    case TFT_SD:  // GCode from file on TFT SD
       if (f_open(&infoJobStatus.file, infoFile.title, FA_OPEN_EXISTING | FA_READ) != FR_OK) {
         ExitDir();
         infoMenu.active--;
@@ -228,13 +225,13 @@ void menuBeforePrinting(void) {
   printingItems.title.address    = getGcodePathFilename(infoFile.title);
 }
 
-void resumeToPause(bool pauseCalled) {
+void showPausedIcon(bool pauseCalled) {
   if (infoMenu.menu[infoMenu.active] != menuJobStatus) return;
   printingItems.items[KEY_ICON_0] = itemIsPause[pauseCalled];
   menuDrawItem(&itemIsPause[pauseCalled], 0);
 }
 
-bool setPrintPause(bool pauseCalled) {
+bool setPaused(bool pauseCalled) {
   static bool pauseInProgress = false;
   extern u8 curRouterSpeed;
   if (pauseInProgress || infoJobStatus.isPaused == pauseCalled) {
@@ -271,12 +268,12 @@ bool setPrintPause(bool pauseCalled) {
 
       if (pauseCalled) {
         timedMessage(3, TIMED_INFO, "Pausing CNC");
-        curRouterSpeed = infoJobStatus.routerSpeed;   // *Save current router speed
-        routerControl(0);                             // *turn off the router
-        coordinateGetAll(&pauseCoords);               // *save the current gantry position
+        curRouterSpeed = infoJobStatus.routerSpeed;  // *Save current router speed
+        routerControl(0);                            // *turn off the router
+        coordinateGetAll(&pauseCoords);              // *save the current gantry position
         if (isCoorRelative == true) queueCommand(false, "G90\n");
         queueCommand(false, "G53\n");
-        if (coordinateIsClear()) {   // *move the gantry into paused position
+        if (coordinateIsClear()) {  // *move the gantry into paused position
           queueCommand(false, "G1 Z%.3f F%d\n", pauseCoords.axis[Z_AXIS] + SPINDLE_PAUSE_Z_RAISE, SPINDLE_PAUSE_Z_GANTRYSPEED);
           // queueCommand(false, "G1 X%d Y%d F%d\n", SPINDLE_PAUSE_X_POSITION, SPINDLE_PAUSE_Y_POSITION, SPINDLE_PAUSE_XY_GANTRYSPEED);
         }
@@ -291,19 +288,19 @@ bool setPrintPause(bool pauseCalled) {
         if (isCoorRelative == true) queueCommand(false, "G90\n");
 
         queueCommand(false, "G%d\n", infoJobStatus.coordSpace);
-        if (coordinateIsClear()) {   // *restore previous gantry position
+        if (coordinateIsClear()) {  // *restore previous gantry position
           queueCommand(false, "G1 X%.3f Y%.3f F%d\n", pauseCoords.axis[X_AXIS], pauseCoords.axis[Y_AXIS], SPINDLE_PAUSE_XY_GANTRYSPEED);
           // queueCommand(false, "G1 Z%.3f F%d\n", pauseCoords.axis[Z_AXIS], SPINDLE_PAUSE_Z_GANTRYSPEED);
         }
 
-        routerControl(curRouterSpeed);   // *resume previous router speed
+        routerControl(curRouterSpeed);  // *resume previous router speed
         queueCommand(false, "G1 F%d\n", pauseCoords.gantryspeed);
 
         if (isCoorRelative == true) queueCommand(false, "G91\n");
       }
       break;
   }
-  resumeToPause(pauseCalled);   // *change the pause/resume icon
+  showPausedIcon(pauseCalled);  // *change the pause/resume icon
   pauseInProgress = false;
   return true;
 }
@@ -311,9 +308,9 @@ bool setPrintPause(bool pauseCalled) {
 const GUI_RECT progressRect = {1 * SPACE_X_PER_ICON, 0 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y + ICON_HEIGHT / 4,
                                3 * SPACE_X_PER_ICON, 0 * ICON_HEIGHT + 0 * SPACE_Y + ICON_START_Y + ICON_HEIGHT * 3 / 4};
 
-#define PRINT_STATUS_ROUTER_X (progressRect.x1 - 10 * BYTE_WIDTH)
-#define PRINT_STATUS_SPEED_Y  (progressRect.y1 + 3)
-#define PRINT_STATUS_TIME_Y   (PRINT_STATUS_SPEED_Y + 1 * BYTE_HEIGHT + 3)
+#define JOB_STATUS_ROUTER_X (progressRect.x1 - 10 * BYTE_WIDTH)
+#define JOB_STATUS_SPEED_Y  (progressRect.y1 + 3)
+#define JOB_STATUS_TIME_Y   (JOB_STATUS_SPEED_Y + 1 * BYTE_HEIGHT + 3)
 
 void showPrintTime(void) {
   u8 hour = infoJobStatus.timeElapsed / 3600,
@@ -321,20 +318,20 @@ void showPrintTime(void) {
      sec  = infoJobStatus.timeElapsed % 60;
   if (hour > 0) {
     GUI_RestoreColorDefault();
-    GUI_DispString(PRINT_STATUS_ROUTER_X + 3 * BYTE_WIDTH, PRINT_STATUS_TIME_Y, (u8*)"h");
+    GUI_DispString(JOB_STATUS_ROUTER_X + 3 * BYTE_WIDTH, JOB_STATUS_TIME_Y, (u8*)"h");
     GUI_SetColor(YELLOW);
-    GUI_DispDec(PRINT_STATUS_ROUTER_X + 1 * BYTE_WIDTH, PRINT_STATUS_TIME_Y, hour, 2, RIGHT);
+    GUI_DispDec(JOB_STATUS_ROUTER_X + 1 * BYTE_WIDTH, JOB_STATUS_TIME_Y, hour, 2, RIGHT);
   }
   if (min > 0) {
     GUI_RestoreColorDefault();
-    GUI_DispString(PRINT_STATUS_ROUTER_X + 6 * BYTE_WIDTH, PRINT_STATUS_TIME_Y, (u8*)"m");
+    GUI_DispString(JOB_STATUS_ROUTER_X + 6 * BYTE_WIDTH, JOB_STATUS_TIME_Y, (u8*)"m");
     GUI_SetColor(YELLOW);
-    GUI_DispDec(PRINT_STATUS_ROUTER_X + 4 * BYTE_WIDTH, PRINT_STATUS_TIME_Y, min, 2, RIGHT);
+    GUI_DispDec(JOB_STATUS_ROUTER_X + 4 * BYTE_WIDTH, JOB_STATUS_TIME_Y, min, 2, RIGHT);
   }
   GUI_RestoreColorDefault();
-  GUI_DispString(PRINT_STATUS_ROUTER_X + 9 * BYTE_WIDTH, PRINT_STATUS_TIME_Y, (u8*)"s");
+  GUI_DispString(JOB_STATUS_ROUTER_X + 9 * BYTE_WIDTH, JOB_STATUS_TIME_Y, (u8*)"s");
   GUI_SetColor(YELLOW);
-  GUI_DispDec(PRINT_STATUS_ROUTER_X + 7 * BYTE_WIDTH, PRINT_STATUS_TIME_Y, sec, 2, RIGHT);
+  GUI_DispDec(JOB_STATUS_ROUTER_X + 7 * BYTE_WIDTH, JOB_STATUS_TIME_Y, sec, 2, RIGHT);
   GUI_RestoreColorDefault();
 }
 
@@ -364,11 +361,11 @@ void showPrintTimeUpper(void) {
 void showBabyStepValue(void) {
   if (infoJobStatus.babyStep != 0) {
     GUI_SetColor(MAT_LOWWHITE);
-    GUI_DispString(PRINT_STATUS_ROUTER_X + 0 * BYTE_WIDTH, PRINT_STATUS_SPEED_Y - BYTE_HEIGHT * 2, (u8*)"Adj:");
+    GUI_DispString(JOB_STATUS_ROUTER_X + 0 * BYTE_WIDTH, JOB_STATUS_SPEED_Y - BYTE_HEIGHT * 2, (u8*)"Adj:");
     GUI_RestoreColorDefault();
-    GUI_DispFloat(PRINT_STATUS_ROUTER_X + 5 * BYTE_WIDTH, PRINT_STATUS_SPEED_Y - BYTE_HEIGHT * 2, infoJobStatus.babyStep, 2, 1, RIGHT);
+    GUI_DispFloat(JOB_STATUS_ROUTER_X + 5 * BYTE_WIDTH, JOB_STATUS_SPEED_Y - BYTE_HEIGHT * 2, infoJobStatus.babyStep, 2, 1, RIGHT);
     // GUI_SetColor(MAT_LOWWHITE);
-    // GUI_DispString(PRINT_STATUS_ROUTER_X + 8 * BYTE_WIDTH, PRINT_STATUS_SPEED_Y - BYTE_HEIGHT * 2, (u8*)"mm");
+    // GUI_DispString(JOB_STATUS_ROUTER_X + 8 * BYTE_WIDTH, JOB_STATUS_SPEED_Y - BYTE_HEIGHT * 2, (u8*)"mm");
     GUI_RestoreColorDefault();
   }
 }
@@ -376,11 +373,11 @@ void showBabyStepValue(void) {
 void showCNCSpeed(void) {
   u8 cncSpeed = getCNCSpeedOverride();
   GUI_SetColor(MAT_LOWWHITE);
-  GUI_DispString(PRINT_STATUS_ROUTER_X + 0 * BYTE_WIDTH, PRINT_STATUS_SPEED_Y - BYTE_HEIGHT, (u8*)"CNC:");
+  GUI_DispString(JOB_STATUS_ROUTER_X + 0 * BYTE_WIDTH, JOB_STATUS_SPEED_Y - BYTE_HEIGHT, (u8*)"CNC:");
   GUI_RestoreColorDefault();
-  GUI_DispDec(PRINT_STATUS_ROUTER_X + 5 * BYTE_WIDTH, PRINT_STATUS_SPEED_Y - BYTE_HEIGHT, cncSpeed, 3, RIGHT);
+  GUI_DispDec(JOB_STATUS_ROUTER_X + 5 * BYTE_WIDTH, JOB_STATUS_SPEED_Y - BYTE_HEIGHT, cncSpeed, 3, RIGHT);
   GUI_SetColor(MAT_LOWWHITE);
-  GUI_DispString(PRINT_STATUS_ROUTER_X + 9 * BYTE_WIDTH, PRINT_STATUS_SPEED_Y - BYTE_HEIGHT, (u8*)"%");
+  GUI_DispString(JOB_STATUS_ROUTER_X + 9 * BYTE_WIDTH, JOB_STATUS_SPEED_Y - BYTE_HEIGHT, (u8*)"%");
   GUI_RestoreColorDefault();
 }
 
@@ -388,11 +385,11 @@ void showRouterSpeed(void) {
   u8 routerSpeedPercent;
   routerSpeedPercent = (infoJobStatus.routerSpeed * 100) / 255;
   GUI_SetColor(MAT_LOWWHITE);
-  GUI_DispString(PRINT_STATUS_ROUTER_X + 0 * BYTE_WIDTH, PRINT_STATUS_SPEED_Y, (u8*)"Bit:");
+  GUI_DispString(JOB_STATUS_ROUTER_X + 0 * BYTE_WIDTH, JOB_STATUS_SPEED_Y, (u8*)"Bit:");
   GUI_RestoreColorDefault();
-  GUI_DispDec(PRINT_STATUS_ROUTER_X + 5 * BYTE_WIDTH, PRINT_STATUS_SPEED_Y, routerSpeedPercent, 3, RIGHT);
+  GUI_DispDec(JOB_STATUS_ROUTER_X + 5 * BYTE_WIDTH, JOB_STATUS_SPEED_Y, routerSpeedPercent, 3, RIGHT);
   GUI_SetColor(MAT_LOWWHITE);
-  GUI_DispString(PRINT_STATUS_ROUTER_X + 9 * BYTE_WIDTH, PRINT_STATUS_SPEED_Y, (u8*)"%");
+  GUI_DispString(JOB_STATUS_ROUTER_X + 9 * BYTE_WIDTH, JOB_STATUS_SPEED_Y, (u8*)"%");
   GUI_RestoreColorDefault();
 }
 
@@ -401,7 +398,7 @@ void showPrintProgress(u8 progress) {
   // *Show graphical percent complete
   if (lastProgress != progress) {
     char buf[5];
-    const GUI_RECT percentageRect = {PRINT_STATUS_ROUTER_X, PRINT_STATUS_SPEED_Y - 3 * BYTE_HEIGHT, PRINT_STATUS_ROUTER_X + 10 * BYTE_WIDTH, PRINT_STATUS_SPEED_Y - 2 * BYTE_HEIGHT};
+    const GUI_RECT percentageRect = {JOB_STATUS_ROUTER_X, JOB_STATUS_SPEED_Y - 3 * BYTE_HEIGHT, JOB_STATUS_ROUTER_X + 10 * BYTE_WIDTH, JOB_STATUS_SPEED_Y - 2 * BYTE_HEIGHT};
     u16 progressX                 = map(progress, 0, 100, percentageRect.x0, percentageRect.x1);
     GUI_FillRectColor(percentageRect.x0, percentageRect.y0, progressX, percentageRect.y1, BLUE);
     GUI_FillRectColor(progressX, percentageRect.y0, percentageRect.x1, percentageRect.y1, GRAY);
@@ -458,7 +455,7 @@ void fetchPreviewIcon(bool showPreviewBMP) {
     char sample[128]   = "";
     char preview[128]  = "";
     // if model preview bmp exists, display bmp directly without writing to flash
-    filenameLength = strlen((const char*)infoFile.file[0]);   // -6 if you want to remove ".gcode"
+    filenameLength = strlen((const char*)infoFile.file[0]);  // -6 if you want to remove ".gcode"
     locationLength = strlen((const char*)infoFile.title);
     strncat(filename, (const char*)infoFile.title, locationLength - 6);
     strncat(sample, (const char*)infoFile.title, locationLength - filenameLength);
@@ -511,7 +508,7 @@ void menuJobStatus(void) {
 
     if (time != infoJobStatus.timeElapsed) {
       time = infoJobStatus.timeElapsed;
-      showPrintTimeUpper();   // job timer
+      showPrintTimeUpper();  // job timer
     }
     showBabyStepValue();
     showCNCSpeed();
@@ -520,7 +517,7 @@ void menuJobStatus(void) {
     key_num = menuKeyGetValue();
     switch (key_num) {
       case KEY_ICON_0:
-        setPrintPause(!jobIsPaused());
+        setPaused(!jobIsPaused());
         break;
 
       case KEY_ICON_3:
@@ -676,7 +673,7 @@ void getGcodeFromFile(void) {
   if (gcodeOutgoing.count || infoJobStatus.isPaused || infoJobStatus.isM0Paused) return;
 
   // If queue is full, don't fetch the next one
-  if (isQueueFull()) return;   //TODO (Check may be redundant)
+  if (isQueueFull()) return;  //TODO (Check may be redundant)
 
   for (; infoJobStatus.currentLine < infoJobStatus.size;) {
     if (f_read(&infoJobStatus.file, &sd_char, 1, &br) != FR_OK) break;
@@ -686,13 +683,13 @@ void getGcodeFromFile(void) {
     // Fetch only valid gcode
     if (sd_char == '\n') {
       // '\n' is end flag for per command
-      sd_comment_mode  = false;   //for new command
+      sd_comment_mode  = false;  //for new command
       sd_comment_space = true;
       if (sdCharIndex != 0) {
         gcodeOutgoing.queue[gcodeOutgoing.queueIndex].gcode[sdCharIndex++] = '\n';
-        gcodeOutgoing.queue[gcodeOutgoing.queueIndex].gcode[sdCharIndex]   = 0;   //terminate string
+        gcodeOutgoing.queue[gcodeOutgoing.queueIndex].gcode[sdCharIndex]   = 0;  //terminate string
         gcodeOutgoing.queue[gcodeOutgoing.queueIndex].src                  = SERIAL_PORT;
-        sdCharIndex                                                        = 0;   //clear buffer
+        sdCharIndex                                                        = 0;  //clear buffer
         gcodeOutgoing.queueIndex                                           = (gcodeOutgoing.queueIndex + 1) % GCODE_QUEUE_SIZE;
         gcodeOutgoing.count++;
         break;

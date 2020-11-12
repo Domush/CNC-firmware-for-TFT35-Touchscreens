@@ -27,7 +27,7 @@ LISTITEMS featureSettingsItems = {
         {ICONCHAR_BACKGROUND, LIST_LABEL, LABEL_BACKGROUND, LABEL_BACKGROUND},
         {ICONCHAR_PAGEUP, LIST_LABEL, LABEL_BACKGROUND, LABEL_BACKGROUND},
         {ICONCHAR_PAGEDOWN, LIST_LABEL, LABEL_BACKGROUND, LABEL_BACKGROUND},
-        {ICONCHAR_BACK, LIST_LABEL, LABEL_BACKGROUND, LABEL_BACKGROUND},
+        {ICONCHAR_BACK, LIST_LABEL, LABEL_BACKGROUND, LABEL_BACKGROUND}
     }};
 
 //
@@ -43,7 +43,7 @@ const LABEL itemRunout[ITEM_RUNOUT_NUM] = {
     //item value text(only for custom value)
     LABEL_OFF,
     LABEL_ON,
-    LABEL_SMART,
+    LABEL_SMART
 };
 
 #endif
@@ -53,7 +53,7 @@ const LABEL itemMoveSpeed[ITEM_SPEED_NUM] = {
     //item value text(only for custom value)
     LABEL_NORMAL_SPEED,
     LABEL_SLOW_SPEED,
-    LABEL_FAST_SPEED,
+    LABEL_FAST_SPEED
 };
 const u8 item_movespeed[ITEM_SPEED_NUM] = {LABEL_NORMAL_SPEED, LABEL_SLOW_SPEED, LABEL_FAST_SPEED};
 
@@ -62,7 +62,7 @@ const LABEL itemRouterControl[ITEM_ROUTER_CONTROL] = {
     //item value text(only for custom value)
     LABEL_DISABLED,
     LABEL_M3M5,
-    LABEL_FAN0,
+    LABEL_FAN0
 };
 const u8 item_routercontrol[ITEM_ROUTER_CONTROL] = {LABEL_DISABLED, LABEL_M3M5, LABEL_FAN0};
 #ifdef LED_color_PIN

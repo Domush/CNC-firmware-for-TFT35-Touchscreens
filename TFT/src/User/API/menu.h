@@ -13,7 +13,7 @@
 
 #define IDLE_TOUCH 0xFFFF
 
-typedef enum {
+typedef enum KEY_VALUES{
   KEY_ICON_0 = 0,
   KEY_ICON_1,
   KEY_ICON_2,
@@ -36,22 +36,22 @@ typedef enum {
 #define ITEM_PER_PAGE     8
 #define LISTITEM_PER_PAGE 5
 
-typedef union {
-  uint32_t index;   // language index, address = textSelect(index);
+typedef union LABEL {
+  uint32_t index;  // language index, address = textSelect(index);
   uint8_t *address;
 } LABEL;
 
-typedef struct {
+typedef struct ITEM {
   uint16_t icon;
   LABEL label;
 } ITEM;
 
-typedef struct {
+typedef struct MENUITEMS {
   LABEL title;
   ITEM items[ITEM_PER_PAGE];
 } MENUITEMS;
 
-typedef enum {
+typedef enum MESSAGE_TYPE {
   TIMED_STATUS = 0,
   TIMED_INFO,
   TIMED_WARNNG,
@@ -59,14 +59,14 @@ typedef enum {
   TIMED_CRITICAL
 } MESSAGE_TYPE;
 
-typedef struct {
+typedef struct REMINDER {
   GUI_RECT rect;
   uint32_t time;
   uint8_t status;
   int16_t inf;
 } REMINDER;
 
-typedef enum {
+typedef enum LISTITEM_TYPE {
   LIST_LABEL = 0,
   LIST_TOGGLE,
   LIST_RADIO,
@@ -74,19 +74,19 @@ typedef enum {
   LIST_CUSTOMVALUE,
 } LISTITEM_TYPE;
 
-typedef struct {
+typedef struct LISTITEM {
   uint16_t icon;
   LISTITEM_TYPE itemType;
   LABEL titlelabel;
   LABEL valueLabel;
 } LISTITEM;
 
-typedef struct {
+typedef struct LISTITEMS {
   LABEL title;
   LISTITEM items[ITEM_PER_PAGE];
 } LISTITEMS;
 
-typedef struct {
+typedef struct TIMEDMESSAGE {
   char *message;
   uint16_t timeout;
   MESSAGE_TYPE type;
@@ -105,7 +105,7 @@ void menuDrawItem(const ITEM *menuItem, uint8_t positon);
 void menuDrawIconOnly(const ITEM *item, uint8_t positon);
 void menuDrawListItem(const LISTITEM *item, uint8_t positon);
 void menuRefreshListPage(void);
-void menuDrawTitle(const uint8_t *content);   //(const MENUITEMS * menuItems);
+void menuDrawTitle(const uint8_t *content);  //(const MENUITEMS * menuItems);
 void menuDrawPage(const MENUITEMS *menuItems);
 void menuDrawListPage(const LISTITEMS *listItems);
 void itemDrawIconPress(uint8_t positon, uint8_t is_press);

@@ -10,17 +10,17 @@
 
 typedef struct
 {
-  FIL file;             // File details
-  u32 timeElapsed;      // Job time in sec
-  u32 size;             // Gcode file total size
-  u32 currentLine;      // Current Gcode line
-  u8 coordSpace;        // CNC coodinate space (53-59) [53 is the default machine coords]
-  u8 percentComplete;   // Print progress (0-100)
-  bool inProgress;      // true = job active, false = idle
-  bool isPaused;        // true = paused
-  bool isM0Paused;      // true = M0/M1 gcode triggered pause
-  u8 routerSpeed;       // Current router speed
-  float babyStep;       // Current Z-height adjustment
+  FIL file;            // File details
+  u32 timeElapsed;     // Job time in sec
+  u32 size;            // Gcode file total size
+  u32 currentLine;     // Current Gcode line
+  u8 coordSpace;       // CNC coodinate space (53-59) [53 is the default machine coords]
+  u8 percentComplete;  // Print progress (0-100)
+  bool inProgress;     // true = job active, false = idle
+  bool isPaused;       // true = paused
+  bool isM0Paused;     // true = M0/M1 gcode triggered pause
+  u8 routerSpeed;      // Current router speed
+  float babyStep;      // Current Z-height adjustment
 } JOBSTATUS;
 
 JOBSTATUS infoJobStatus;
@@ -30,7 +30,7 @@ void jobEnd(void);
 void jobComplete(void);
 void jobAbort(void);
 
-bool setPrintPause(bool pauseCalled);
+bool setPaused(bool pauseCalled);
 
 bool jobInProgress(void);
 bool jobIsPaused(void);

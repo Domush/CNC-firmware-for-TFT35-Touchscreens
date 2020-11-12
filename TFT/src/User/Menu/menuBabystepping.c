@@ -21,13 +21,13 @@
 #include "System/boot.h"
 
 // Menus
-#include "includesMenus.h" // All menu headers
+#include "includesMenus.h"  // All menu headers
 
 //1 title, ITEM_PER_PAGE items(icon+label)
 MENUITEMS babyStepItems = {
     //title
     LABEL_BABYSTEP,
-    //icon                        label
+    //icon label
     {
         {ICON_DEC, LABEL_DEC},
         {ICON_BACKGROUND, LABEL_BACKGROUND},
@@ -37,7 +37,8 @@ MENUITEMS babyStepItems = {
         {ICON_1_MM, LABEL_1_MM},
         {ICON_NORMAL_SPEED, LABEL_VALUE_ZERO},
         {ICON_BACK, LABEL_BACK},
-    }};
+    },
+};
 
 typedef struct
 {

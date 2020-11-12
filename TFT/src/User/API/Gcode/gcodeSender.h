@@ -38,8 +38,6 @@ void parseGcodeOutgoing(void);
 void menuM0Pause(void);
 void menuChangeBit(void);
 
-int lastGcodeQueueValue = 0;
-u16 queueTextColor      = MAT_LOWWHITE;
 void gcodeQueueStatus(void);
 
 #endif  // _GCODESENDER_H_

@@ -28,7 +28,7 @@ const MENUITEMS homeItems = {
         {ICON_HOME, LABEL_COORD_1},
         {ICON_HOME, LABEL_COORD_2},
         {ICON_HOME, LABEL_X0Y0},
-        {ICON_BACK, LABEL_BACK},
+        {ICON_BACK, LABEL_BACK}
     }};
 
 void menuHome(void) {

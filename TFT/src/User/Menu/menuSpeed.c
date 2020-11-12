@@ -34,13 +34,13 @@ MENUITEMS speedOverrideItems = {
         {ICON_JOBSETUP, LABEL_JOBSETUP},
         {ICON_E_5_MM, LABEL_5_PERCENT},
         {ICON_NORMAL_SPEED, LABEL_NORMAL_SPEED},
-        {ICON_BACK, LABEL_BACK},
+        {ICON_BACK, LABEL_BACK}
     }};
 
 #define ITEM_SPEEDOVERRIDE_NUM 2
 const ITEM itemSpeedOverrideIcons[ITEM_SPEEDOVERRIDE_NUM] = {
     // icon                       label
-    {ICON_MOVE, LABEL_PERCENTAGE_SPEED},
+    {ICON_MOVE, LABEL_PERCENTAGE_SPEED}
 };
 
 static u16 cncSpeedValue = 100;   // Speed
@@ -50,7 +50,7 @@ const ITEM itemIncrementIcons[ITEM_PERCENT_INCREMENT] = {
     // icon                       label
     {ICON_E_1_MM, LABEL_1_PERCENT},
     {ICON_E_5_MM, LABEL_5_PERCENT},
-    {ICON_E_10_MM, LABEL_10_PERCENT},
+    {ICON_E_10_MM, LABEL_10_PERCENT}
 };
 const u8 itemIncrementValues[ITEM_PERCENT_INCREMENT] = {1, 5, 10};
 static u8 itemIncrementIndex                         = 1;

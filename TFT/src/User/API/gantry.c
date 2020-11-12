@@ -18,7 +18,7 @@
 #include "API/coordinate.h"
 
 // Menus
-#include "includesMenus.h" // All menu headers
+#include "includesMenus.h"  // All menu headers
 
 SCROLL msgScroll;
 
@@ -119,13 +119,6 @@ void drawXYZ(void) {
   if (infoHost.connected) {
     COORDINATE curGantryCoords;
     coordinateGetAll(&curGantryCoords);
-    if (lastGcodeQueueValue != gcodeOutgoing.count) {
-      // *gCode queue size
-      GUI_SetColor(MAT_LOWWHITE);
-      GUI_DispString(0, BYTE_HEIGHT * 2, (u8 *)"Q:");
-      GUI_SetColor(queueTextColor);
-      GUI_DispDec(2 * BYTE_WIDTH, BYTE_HEIGHT * 2, gcodeOutgoing.count, 3, LEFT);
-    }
     // *X location [X_MIN_POS - X_MAX_POS] (set in Configuration.c)
     GUI_SetColor(MAT_RED);
     GUI_DispString((LCD_WIDTH / 3) * 0 + 6 * BYTE_WIDTH, BYTE_HEIGHT * 2, (u8 *)"X:");

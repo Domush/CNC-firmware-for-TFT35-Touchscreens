@@ -22,12 +22,12 @@
 #include "System/os_timer.h"
 
 // Menus
-#include "includesMenus.h" // All menu headers
+#include "includesMenus.h"  // All menu headers
 
 // RESPONSE_QUEUE gcodeResponse[3];   // Last gCode responses
-static char responseLine[RESPONSE_MAX_CHARS];   // Current response being processed
-static u8 responseLineIndex = 0;                // Char reference # of responseLine
-static u8 curSerialPort     = SERIAL_PORT;      // Defaults to direct CNC serial
+static char responseLine[RESPONSE_MAX_CHARS];  // Current response being processed
+static u8 responseLineIndex = 0;               // Char reference # of responseLine
+static u8 curSerialPort     = SERIAL_PORT;     // Defaults to direct CNC serial
 
 // *Ignore reply "echo:" messages containing these messages
 // *(Don't display as a popup)
@@ -56,7 +56,7 @@ void parseSerialGcode(void) {
         queueCommandFromSerial(port, responseLine);
         gcodeResponse[port].count--;
       }
-      infoHost.responseReceived[port] = false;   // *All response data has been processed
+      infoHost.responseReceived[port] = false;  // *All response data has been processed
     }
   }
 #endif
@@ -129,7 +129,7 @@ void showPopupMessage(char *title) {
   */
   if (strstr((const char *)responseLine + responseLineIndex, "//action:prompt_end")) {
     if (strstr((const char *)responseLine + responseLineIndex, "M0/1")) {
-      setPrintPause(true);
+      setPaused(true);
       popup_message = &responseLine[responseLineIndex];
       if (infoMenu.menu[infoMenu.active] != menuM0Pause) {
         infoMenu.menu[++infoMenu.active] = menuM0Pause;
@@ -177,28 +177,28 @@ void queueCncResponses(uint8_t port) {
   for (i = 0; cncIncoming[port].processedIndex != cncIncoming[port].pendingIndex && gcodeResponse[port].count < RESPONSE_QUEUE_SIZE; i++) {
     cncResponse[i] = cncIncoming[port].responseBuffer[cncIncoming[port].processedIndex + i];
     if (cncResponse[i] == '\n') {
-      cncResponse[i] = 0;   // End character
+      cncResponse[i] = 0;  // End character
       while (cncResponse[strlen(cncResponse) - 1] == ' ') {
         // Remove trailing spaces
-        cncResponse[strlen(cncResponse) - 1] = 0;                                                               // Remove last character
-        cncIncoming[port].processedIndex     = (cncIncoming[port].processedIndex + 1) % RESPONSE_BUFFER_SIZE;   // Account for the missing character
+        cncResponse[strlen(cncResponse) - 1] = 0;                                                              // Remove last character
+        cncIncoming[port].processedIndex     = (cncIncoming[port].processedIndex + 1) % RESPONSE_BUFFER_SIZE;  // Account for the missing character
       }
       addCncResponseToQueue(cncResponse, port);
-      cncResponse[0] = 0;    // Empty out the last response
-      i              = -1;   // Reset i to process the next response line
+      cncResponse[0] = 0;   // Empty out the last response
+      i              = -1;  // Reset i to process the next response line
     } else if (i == 0 && cncResponse[i] == ' ') {
       // Ignore leading spaces
-      cncIncoming[port].processedIndex = (cncIncoming[port].processedIndex + 1) % RESPONSE_MAX_CHARS;   // Account for the missing character
+      cncIncoming[port].processedIndex = (cncIncoming[port].processedIndex + 1) % RESPONSE_MAX_CHARS;  // Account for the missing character
 
-      i = -1;   // Reset i to ignore leading space
+      i = -1;  // Reset i to ignore leading space
     }
   }
 }
 
 //* Process all queued responses
 void parseGcodeResponse(void) {
-  static u8 connectionRetryDelay = 2;   // # of seconds to wait before retrying to connect
-  static u16 connectionRetryTime = 0;   // stored timestamp for reconnect attempt
+  static u8 connectionRetryDelay = 2;  // # of seconds to wait before retrying to connect
+  static u16 connectionRetryTime = 0;  // stored timestamp for reconnect attempt
   bool hideResponsesInTerminal   = false;
   queueCncResponses(SERIAL_PORT);
   // *Only process response data if data is waiting from SERIAL_PORT
@@ -208,7 +208,7 @@ void parseGcodeResponse(void) {
       timedMessage(1, TIMED_CRITICAL, (char *)textSelect(LABEL_UNCONNECTED));
       if (OS_GetTime() - connectionRetryDelay > connectionRetryTime) {
         connectionRetryTime = OS_GetTime();
-        queueCommand(false, "G53\n");   // *Attempts to send a "wake up" packet to trigger a connection
+        queueCommand(false, "G53\n");  // *Attempts to send a "wake up" packet to trigger a connection
       }
     }
     return;
@@ -318,7 +318,7 @@ void parseGcodeResponse(void) {
           // *Show any echo notice that hasn't been skipped
           showPopupMessage((char *)"CNC message:");
         }
-      }   // end non-"ok" response section
+      }  // end non-"ok" response section
       if (responseContains(" F0:", 0)) {
         routerControl(responseValue());
       }
@@ -334,5 +334,5 @@ void parseGcodeResponse(void) {
     }
     gcodeResponse[SERIAL_PORT].count--;
   }
-  infoHost.responseReceived[SERIAL_PORT] = false;   // *All response data has been processed
+  infoHost.responseReceived[SERIAL_PORT] = false;  // *All response data has been processed
 }

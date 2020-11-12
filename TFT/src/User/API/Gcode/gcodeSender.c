@@ -4,11 +4,9 @@
 // LCD init functions
 #include "GUI.h"
 
-
 // Chip specific includes
 #include "Serial.h"
 #include "usart.h"
-
 
 // UI handling
 #include "touch_process.h"
@@ -27,7 +25,7 @@
 #include "API/extendedFeatures.h"
 
 // Menus
-#include "includesMenus.h" // All menu headers
+#include "includesMenus.h"  // All menu headers
 
 // //1 title, ITEM_PER_PAGE items(icon+label)
 // MENUITEMS M0PauseItems = {
@@ -133,23 +131,23 @@ bool queueCommand(bool skipIfQueueFull, char *gcodeString, ...) {
     gcodeCommand[lineIndex] = gcodeCommandSet[setIndex];
     if (gcodeCommand[lineIndex] == '\n' || gcodeCommandSet[setIndex + 1] == 0) {
       if (gcodeCommand[lineIndex] == '\n') {
-        gcodeCommand[lineIndex] = 0;   // End character
+        gcodeCommand[lineIndex] = 0;  // End character
       } else {
         gcodeCommand[lineIndex + 1] = 0;
       }
       while (gcodeCommand[strlen(gcodeCommand) - 1] == ' ') {
         //* Remove trailing spaces
-        gcodeCommand[strlen(gcodeCommand) - 1] = 0;   // Remove last character
+        gcodeCommand[strlen(gcodeCommand) - 1] = 0;  // Remove last character
       }
       if (strlen(gcodeCommand) > 1) {
         if (!addGcodeCommand(skipIfQueueFull, gcodeCommand, SERIAL_PORT)) {
           return false;
         }
       }
-      lineIndex = -1;   // Reset lineIndex for next command
+      lineIndex = -1;  // Reset lineIndex for next command
     } else if (lineIndex == 0 && gcodeCommand[lineIndex] == ' ') {
       //* Ignore leading spaces
-      lineIndex = -1;   // Reset lineIndex to ignore leading space
+      lineIndex = -1;  // Reset lineIndex to ignore leading space
     }
     lineIndex++;
   }
@@ -193,64 +191,64 @@ void parseGcodeOutgoing(void) {
     case 'M':
       cmd = strtol(&gcodeLine[1], NULL, 10);
       switch (cmd) {
-        case 0:   // M0/1 Stop and wait for user.
+        case 0:  // M0/1 Stop and wait for user.
         case 1:
           popup_message                    = &gcodeLine[3];
           infoMenu.menu[++infoMenu.active] = menuM0Pause;
           infoJobStatus.isM0Paused         = true;
-          setPrintPause(true);
-          skipCommand = true;   //* Don't sent the command
+          setPaused(true);
+          skipCommand = true;  //* Don't sent the command
           break;
 
-        case 3:    //M3 Set the spindle CW speed or laser power
-        case 5:    //M5 Turn off spindle or laser
-          break;   // *No need to do anything special - All functions are handled by the CNC
+        case 3:   //M3 Set the spindle CW speed or laser power
+        case 5:   //M5 Turn off spindle or laser
+          break;  // *No need to do anything special - All functions are handled by the CNC
 
-        case 18:   //M18 Disable steppers (same as M84).
+        case 18:  //M18 Disable steppers (same as M84).
         case 84:
           coordinateSetClear(false);
           break;
 
-        case 24:   //M24 - Resume SD print
-          setPrintPause(false);
-          skipCommand = true;   //* Don't sent the command
+        case 24:  //M24 - Resume SD print
+          setPaused(false);
+          skipCommand = true;  //* Don't sent the command
           break;
 
-        case 25:   //M25 - Pause SD print
-          setPrintPause(true);
-          skipCommand = true;   //* Don't sent the command
+        case 25:  //M25 - Pause SD print
+          setPaused(true);
+          skipCommand = true;  //* Don't sent the command
           break;
 
-        case 27:   //M27 - Report SD print status
+        case 27:  //M27 - Report SD print status
           jobNeedUpdate(true);
           break;
 
-        case 80:   //M80 Turn on the power supply
+        case 80:  //M80 Turn on the power supply
 #ifdef PS_ON_PIN
           PS_ON_On();
 #endif
           break;
 
-        case 81:   //M81 Turn off the power supply.
+        case 81:  //M81 Turn off the power supply.
 #ifdef PS_ON_PIN
           PS_ON_Off();
 #endif
           break;
 
-        case 106:   //M106 Turn on a fan/router and set its speed
-          break;    // *No need to do anything special - All functions are handled by the CNC
+        case 106:  //M106 Turn on a fan/router and set its speed
+          break;   // *No need to do anything special - All functions are handled by the CNC
 
-        case 107:   //M107 Turn off a fan/router
-          break;    // *No need to do anything special - All functions are handled by the CNC
+        case 107:  //M107 Turn off a fan/router
+          break;   // *No need to do anything special - All functions are handled by the CNC
 
-        case 114:   //M114 Report the current tool position to the host.
+        case 114:  //M114 Report the current tool position to the host.
           break;
 
-        case 117:   //M117 Set the message line on the LCD.
+        case 117:  //M117 Set the message line on the LCD.
           popupReminder((u8 *)"M117 Notice", (u8 *)&gcodeLine[5]);
           break;
 
-        case 220:   //M220 Set the global CNC speed percentage.
+        case 220:  //M220 Set the global CNC speed percentage.
           if (gcodeContains((u8 *)'S', 4)) {
             setCNCSpeedOverride(gcodeValue());
           } else {
@@ -260,9 +258,9 @@ void parseGcodeOutgoing(void) {
           }
           break;
 
-        case 500:   //M500 Save EEPROM
-        case 501:   //M501 Load EEPROM
-        case 502:   //M502 Load default (firmware) settings
+        case 500:  //M500 Save EEPROM
+        case 501:  //M501 Load EEPROM
+        case 502:  //M502 Load default (firmware) settings
           infoHost.waitForResponse = false;
           break;
       }
@@ -271,8 +269,8 @@ void parseGcodeOutgoing(void) {
     case 'G':
       cmd = strtol(&gcodeLine[1], NULL, 10);
       switch (cmd) {
-        case 0:   //G0 Fast move
-        case 1:   //G1 Cut move
+        case 0:  //G0 Fast move
+        case 1:  //G1 Cut move
         {
           AXIS axis;
           for (axis = X_AXIS; axis < TOTAL_AXIS; axis++) {
@@ -286,11 +284,11 @@ void parseGcodeOutgoing(void) {
           break;
         }
 
-        case 28:   //G28 Auto home one or more axes.
+        case 28:  //G28 Auto home one or more axes.
           coordinateSetClear(true);
           break;
 
-        case 53:   //G53-59 Switch to CNC coordinate set.
+        case 53:  //G53-59 Switch to CNC coordinate set.
         case 54:
         case 55:
         case 56:
@@ -300,15 +298,15 @@ void parseGcodeOutgoing(void) {
           infoJobStatus.coordSpace = (u8)cmd;
           break;
 
-        case 90:   //G90 Absolute Positioning
+        case 90:  //G90 Absolute Positioning
           coorSetRelative(false);
           break;
 
-        case 91:   //G91 Relative Positioning
+        case 91:  //G91 Relative Positioning
           coorSetRelative(true);
           break;
 
-        case 92:   //G92 Set the current position of one or more axes.
+        case 92:  //G92 Set the current position of one or more axes.
         {
           AXIS axis;
           bool coorRelative = coorGetRelative();
@@ -333,11 +331,11 @@ void parseGcodeOutgoing(void) {
   }
   if (!skipCommand) {
     setGcodeCommandSource(gcodeOutgoing.queue[activeQueueIndex].src);
-    sendCommand(SERIAL_PORT, gcodeLine);   // Send the command to the CNC
+    sendCommand(SERIAL_PORT, gcodeLine);  // Send the command to the CNC
   }
-  showGcodeStatus(gcodeLine, TFT_SOURCE);   // Display sent gcode on the status line
+  showGcodeStatus(gcodeLine, TFT_SOURCE);  // Display sent gcode on the status line
   if (infoSettings.showResponseInTerminal) {
-    showInTerminal(gcodeLine, TFT_SOURCE);   // Display sent gcode on the terminal screen
+    showInTerminal(gcodeLine, TFT_SOURCE);  // Display sent gcode on the terminal screen
   }
   gcodeOutgoing.count--;
   // powerFailedEnable(true);
@@ -416,7 +414,7 @@ void menuChangeBit(void) {
     }
   }
   u16 key_num = IDLE_TOUCH;
-  setPrintPause(true);
+  setPaused(true);
   popupDrawPage(bottomDoubleBtn, (u8 *)"Bit Change", (u8 *)popup_message, (u8 *)confirmText, (u8 *)cancelText);
   // popupDrawPage(bottomDoubleBtn, textSelect(LABEL_WARNING), textSelect(LABEL_IS_PAUSE), textSelect(LABEL_CONFIRM), textSelect(LABEL_CANCEL));
 
@@ -436,7 +434,7 @@ void menuChangeBit(void) {
       case KEY_POPUP_CANCEL:
         infoJobStatus.isM0Paused = false;
         queueCommand(false, "G%d\n", infoJobStatus.coordSpace);
-        setPrintPause(false);
+        setPaused(false);
         drawXYZ();
         infoMenu.active--;
         break;
@@ -446,6 +444,9 @@ void menuChangeBit(void) {
 }
 
 void gcodeQueueStatus(void) {
+  static int lastGcodeQueueValue = 0;
+  static u16 queueTextColor      = MAT_LOWWHITE;
+
   if (!infoHost.connected || lastGcodeQueueValue == gcodeOutgoing.count) {
     return;
   }
@@ -464,7 +465,13 @@ void gcodeQueueStatus(void) {
   } else {
     queueTextColor = MAT_DARKGRAY;
   }
+  // *update gCode queue size indicator
+  GUI_SetColor(MAT_LOWWHITE);
+  GUI_DispString(0, BYTE_HEIGHT * 2, (u8 *)"Q:");
   GUI_SetColor(queueTextColor);
+  GUI_DispDec(2 * BYTE_WIDTH, BYTE_HEIGHT * 2, gcodeOutgoing.count, 3, LEFT);
+  // *update gCode queue size display
   GUI_FillCircle(BYTE_HEIGHT / 2, BYTE_HEIGHT / 2, BYTE_HEIGHT / 3);
   GUI_RestoreColorDefault();
+  lastGcodeQueueValue = gcodeOutgoing.count;
 }

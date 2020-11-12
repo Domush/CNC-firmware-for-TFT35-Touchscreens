@@ -1,6 +1,7 @@
 #ifndef _INCLUDESMENUS_H
 #define _INCLUDESMENUS_H
 
+#include "menu.h"
 #include "Menu/menuSettingsHome.h"
 #include "Menu/menuSettingsMisc.h"
 #include "Menu/menuSettingsFeatures.h"
@@ -19,6 +20,5 @@
 #include "Menu/menuBabystepping.h"
 #include "Menu/menuSpeed.h"
 #include "Menu/menuMain.h"  // Home screen
-
 
 #endif  //_INCLUDESMENUS_H

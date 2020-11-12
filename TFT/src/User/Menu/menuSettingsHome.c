@@ -102,14 +102,14 @@ MENUITEMS settingsItems = {
         {ICON_DISCONNECT, LABEL_DISCONNECT},
         {ICON_BAUDRATE, LABEL_BAUDRATE_115200},
         {ICON_BACKGROUND, LABEL_BACKGROUND},
-        {ICON_BACK, LABEL_BACK},
+        {ICON_BACK, LABEL_BACK}
     }};
 
 #define ITEM_BAUDRATE_NUM 2
 const ITEM itemBaudrate[ITEM_BAUDRATE_NUM] = {
     // icon                       label
     {ICON_BAUDRATE, LABEL_BAUDRATE_115200},
-    {ICON_BAUDRATE, LABEL_BAUDRATE_250000},
+    {ICON_BAUDRATE, LABEL_BAUDRATE_250000}
 };
 const u32 item_baudrate[ITEM_BAUDRATE_NUM] = {115200, 250000};
 static u8 item_baudrate_i                  = 0;

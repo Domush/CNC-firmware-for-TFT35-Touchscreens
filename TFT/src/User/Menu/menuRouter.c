@@ -24,7 +24,7 @@
 #include "System/boot.h"
 
 // Menus
-#include "includesMenus.h" // All menu headers
+#include "includesMenus.h"  // All menu headers
 
 //1 title, ITEM_PER_PAGE items(icon+label)
 const MENUITEMS routerItems = {
@@ -39,8 +39,7 @@ const MENUITEMS routerItems = {
         {ICON_ROUTER_OFF, LABEL_ROUTER_OFF},
         {ICON_CHANGE_BIT, LABEL_CHANGE_BIT},
         {ICON_ROUTER_ON, LABEL_ROUTER_ON},
-        {ICON_BACK, LABEL_BACK},
-    }};
+        {ICON_BACK, LABEL_BACK}}};
 
 const char* routerID  = ROUTER_ID;
 const u8 routerMaxPWM = ROUTER_MAX_PWM;
@@ -136,10 +135,10 @@ void menuRouter(void) {
   while (infoMenu.menu[infoMenu.active] == menuRouter) {
     key_num = menuKeyGetValue();
     switch (key_num) {
-      case KEY_ICON_0:   // Router speed --
+      case KEY_ICON_0:  // Router speed --
         if (infoJobStatus.routerSpeed > 0) {
           if ((infoJobStatus.routerSpeed - 2) > 0) {
-            infoJobStatus.routerSpeed -= 2;   //2.55 is 1 percent, rounding down
+            infoJobStatus.routerSpeed -= 2;  //2.55 is 1 percent, rounding down
             timedMessage(2, TIMED_INFO, "Reducing router speed");
           } else {
             infoJobStatus.routerSpeed = 0;
@@ -148,10 +147,10 @@ void menuRouter(void) {
         }
         break;
 
-      case KEY_ICON_3:   // Router speed ++
+      case KEY_ICON_3:  // Router speed ++
         if (infoJobStatus.routerSpeed < routerMaxPWM) {
           if (infoJobStatus.routerSpeed + 2 <= routerMaxPWM) {
-            infoJobStatus.routerSpeed += 2;   //2.55 is 1 percent, rounding down
+            infoJobStatus.routerSpeed += 2;  //2.55 is 1 percent, rounding down
             timedMessage(2, TIMED_INFO, "Increasing router speed");
           } else {
             infoJobStatus.routerSpeed = routerMaxPWM;
@@ -160,7 +159,7 @@ void menuRouter(void) {
         }
         break;
 
-      case KEY_ICON_4:   // Router off
+      case KEY_ICON_4:  // Router off
         if (jobInProgress() && !jobIsPaused()) {
           popupReminder((u8*)"Not allowed - Bit damage likely", (u8*)"You must first pause the CNC job.");
         } else {
@@ -169,17 +168,17 @@ void menuRouter(void) {
         }
         break;
 
-      case KEY_ICON_5:   // Swap bits
-        setPrintPause(true);
+      case KEY_ICON_5:  // Swap bits
+        setPaused(true);
         infoMenu.menu[infoMenu.active] = menuChangeBit;
         break;
 
-      case KEY_ICON_6:   // Router on
+      case KEY_ICON_6:  // Router on
         timedMessage(3, TIMED_INFO, "Powering up router");
         routerControl(routerMaxPWM);
         break;
 
-      case KEY_ICON_7:   // Back
+      case KEY_ICON_7:  // Back
         infoMenu.active--;
         break;
 

@@ -8,7 +8,11 @@
 #include "spi_slave.h"
 
 // SD card support
-#include "Hal/sd.h"
+#ifdef SD_SPI_SUPPORT
+  #include "sd.h"
+#else
+  #include "sdio_sdcard.h"
+#endif
 #include "Hal/w25qxx.h"
 #include "Hal/xpt2046.h"
 

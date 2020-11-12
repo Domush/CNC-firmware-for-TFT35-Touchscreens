@@ -46,7 +46,7 @@ MENUITEMS moveItems = {
         {ICON_X_DEC, LABEL_X_DEC},
         {ICON_Y_DEC, LABEL_Y_DEC},
         {ICON_X_INC, LABEL_X_INC},
-        {ICON_BACK, LABEL_BACK},
+        {ICON_BACK, LABEL_BACK}
     }};
 
 #define ITEM_MOVE_DISTANCE 3
@@ -54,7 +54,7 @@ const ITEM itemMoveDistance[ITEM_MOVE_DISTANCE] = {
     // icon                       label
     {ICON_10_MM, LABEL_10_MM},
     {ICON_1_MM, LABEL_1_MM},
-    {ICON_100_MM, LABEL_100_MM},
+    {ICON_100_MM, LABEL_100_MM}
 };
 
 const float moveDistance[ITEM_MOVE_DISTANCE] = {10, 1, 100};

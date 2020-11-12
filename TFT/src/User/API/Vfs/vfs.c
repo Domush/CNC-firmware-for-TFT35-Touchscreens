@@ -11,7 +11,11 @@
 #include "usbh_usr.h"
 
 // SD card support
-#include "Hal/sd.h"
+#ifdef SD_SPI_SUPPORT
+  #include "sd.h"
+#else
+  #include "sdio_sdcard.h"
+#endif
 
 // UI handling
 #include "ST7920_Simulator.h"

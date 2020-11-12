@@ -35,7 +35,7 @@ MENUITEMS screenSettingsItems = {
         {ICON_BACKGROUND, LABEL_BACKGROUND},
         {ICON_BACKGROUND, LABEL_BACKGROUND},
         {ICON_BACKGROUND, LABEL_BACKGROUND},
-        {ICON_BACK, LABEL_BACK},
+        {ICON_BACK, LABEL_BACK}
     }};
 
 #ifdef BUZZER_PIN   // Speaker
@@ -45,7 +45,7 @@ MENUITEMS screenSettingsItems = {
 const ITEM itemSilent[ITEM_SILENT_NUM] = {
     // icon                       label
     {ICON_SOUND_ON, LABEL_SOUND_ON},
-    {ICON_SOUND_OFF, LABEL_SOUND_OFF},
+    {ICON_SOUND_OFF, LABEL_SOUND_OFF}
 };
 const u8 item_silent[ITEM_SILENT_NUM] = {0, 1};
 static u8 item_silent_i               = 0;

@@ -17,7 +17,7 @@
 #include "System/boot.h"
 
 // Menus
-#include "includesMenus.h" // All menu headers
+#include "includesMenus.h"  // All menu headers
 
 void menuIsPause(void) {
   u16 key_num = IDLE_TOUCH;
@@ -28,7 +28,7 @@ void menuIsPause(void) {
     key_num = KEY_GetValue(2, doubleBtnRect);
     switch (key_num) {
       case KEY_POPUP_CONFIRM:
-        if (setPrintPause(true))
+        if (setPaused(true))
           infoMenu.menu[infoMenu.active] = menuMove;
         break;
 
@@ -52,8 +52,7 @@ MENUITEMS moreItems = {
         {ICON_BACKGROUND, LABEL_BACKGROUND},
         {ICON_BACKGROUND, LABEL_BACKGROUND},
         {ICON_BACKGROUND, LABEL_BACKGROUND},
-        {ICON_BACK, LABEL_BACK},
-    }};
+        {ICON_BACK, LABEL_BACK}}};
 
 void menuMore(void) {
   KEY_VALUES key_num = KEY_IDLE;

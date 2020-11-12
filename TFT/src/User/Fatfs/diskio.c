@@ -6,6 +6,7 @@
 /* This is an example of glue functions to attach various exsisting      */
 /* storage control modules to the FatFs module with a defined API.       */
 /*-----------------------------------------------------------------------*/
+#include "includes.h"
 #include "diskio.h" /* Declarations of disk functions */
 
 #ifdef SD_SPI_SUPPORT
@@ -77,9 +78,9 @@ DRESULT disk_read(
 
   switch (pdrv) {
     case DEV_MMC:
-      while (SD_ReadDisk(buff, sector, count))   // read error
+      while (SD_ReadDisk(buff, sector, count))  // read error
       {
-        SD_Init();   //init again
+        SD_Init();  //init again
       }
       return RES_OK;
 
@@ -111,9 +112,9 @@ DRESULT disk_write(
 
   switch (pdrv) {
     case DEV_MMC:
-      while (SD_WriteDisk((u8 *)buff, sector, count))   // write error
+      while (SD_WriteDisk((u8 *)buff, sector, count))  // write error
       {
-        SD_Init();   // init again
+        SD_Init();  // init again
       }
       return RES_OK;
 

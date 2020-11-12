@@ -34,7 +34,7 @@ const MENUITEMS jobSetupItems = {
         {ICON_HOME, LABEL_COORD_1},
         {ICON_HOME, LABEL_COORD_2},
         {ICON_HOME, LABEL_X0Y0},
-        {ICON_BACK, LABEL_BACK},
+        {ICON_BACK, LABEL_BACK}
     }};
 
 void menuJobSetup(void) {
@@ -106,7 +106,7 @@ const MENUITEMS manualLevelingItems = {
         {ICON_BACKGROUND, LABEL_BACKGROUND},
         {ICON_BACKGROUND, LABEL_BACKGROUND},
         {ICON_BACKGROUND, LABEL_BACKGROUND},
-        {ICON_BACK, LABEL_BACK},
+        {ICON_BACK, LABEL_BACK}
     }};
 
 void moveToLevelingPoint(u8 point) {
